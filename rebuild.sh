@@ -40,7 +40,7 @@ echo "Nix Rebuilding..."
 darwin-rebuild switch --flake /etc/nix &>darwin-switch.log || (cat darwin-switch.log | grep --color error && exit 1) # TODO: Dynamic based on OS
 
 # Get current generation metadata
-current=$(darwin-rebuild list-generations | grep current)
+current=$(darwin-rebuild --list-generations | grep current)
 
 # Commit all changes witih the generation metadata
 git commit -am "$current"
