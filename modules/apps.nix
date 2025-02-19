@@ -29,6 +29,10 @@
     discord # For some reason discord is availabe on mac via nixpkgs, but not firefox???
     fontconfig
     lazygit
+    zsh
+    oh-my-zsh
+    zsh-completions
+    zsh-powerlevel10k
 
     ## DEVELOPMENT ##
     # Nodejs

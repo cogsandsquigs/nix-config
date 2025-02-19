@@ -28,12 +28,8 @@
     # $ darwin-rebuild build --flake .#${hostname}
     darwinConfigurations."${hostname}" = nix-darwin.lib.darwinSystem {
       modules = [
-        ./modules/nix-core.nix
-        ./modules/darwin-system.nix
-        ./modules/darwin-host-users.nix
-        ./modules/darwin-apps.nix # MacOS-specific apps
-        ./modules/apps.nix # All apps
-        ./modules/fonts.nix
+        ./modules # Global config
+        ./modules/darwin # MacOS-specific config apps
       ];
     };
   };
