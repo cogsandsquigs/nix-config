@@ -54,6 +54,7 @@
       "firefox" # For some reason, not provided w/ nixos for aarch64-darwin
       "whatsapp"
       "tailscale"
+      "steam"
     ];
   };
 }

@@ -28,9 +28,9 @@
     kitty
     discord # For some reason discord is availabe on mac via nixpkgs, but not firefox???
     fontconfig
-    alejandra
     lazygit
 
+    ## DEVELOPMENT ##
     # Nodejs
     nodejs_23
     bun
@@ -40,5 +40,14 @@
 
     # Rust
     rustup
+
+    # nix
+    alejandra # Formatter
+
+    ## FUN ##
+    modrinth-app # Minecraft launcher
+    #  steam
   ];
+
+  # programs.steam.enable = true;
 }
