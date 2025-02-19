@@ -1,5 +1,5 @@
 # Derived from https://github.com/ryan4yin/nix-darwin-kickstarter/blob/main/minimal/modules/apps.nix
-{ pkgs, ... }: {
+{pkgs, ...}: {
   ##########################################################################
   #
   #  Install all apps and packages here.

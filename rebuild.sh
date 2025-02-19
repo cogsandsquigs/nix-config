@@ -37,7 +37,7 @@ git diff -U0 '*.nix'
 echo "Nix Rebuilding..."
 
 # Rebuild, output simplified errors, log trackebacks
-sudo darwin-rebuild switch &>nixos-switch.log || (cat darwin-switch.log | grep --color error && exit 1) # TODO: Dynamic based on OS
+darwin-rebuild switch --flake /etc/nix &>darwin-switch.log || (cat darwin-switch.log | grep --color error && exit 1) # TODO: Dynamic based on OS
 
 # Get current generation metadata
 current=$(darwin-rebuild list-generations | grep current)
