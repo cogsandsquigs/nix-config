@@ -1,0 +1,4 @@
+macos-keychain.crt
+nix.conf*
+nix.custom.conf*
+registry.json
