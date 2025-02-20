@@ -23,15 +23,7 @@
     nix-darwin,
     nixpkgs,
     home-manager,
-  }: let
-    # TODO replace with your own username, system and hostname
-    specialArgs =
-      inputs
-      // {
-        inherit;
-      };
-  in {
-    # pacakges.aarch64-darwin
+  }: {
     # Build darwin flake using:
     # $ darwin-rebuild build --flake .#${hostname}
     darwinConfigurations."Ians-GlorpBook-Pro" = nix-darwin.lib.darwinSystem {
