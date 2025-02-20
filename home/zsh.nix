@@ -18,7 +18,9 @@
     ];
 
     shellAliases = {
-      ls = "ls --color";
+      ls = "exa";
+      du = "dust";
+      cat = "bat"; # Better cat via `bat`
       cd = "z"; # Better cd via `zoxide`
       nv = "nvim";
       rebuild = "/etc/nix/rebuild.sh";
