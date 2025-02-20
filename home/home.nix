@@ -1,6 +1,14 @@
 {pkgs, ...}: {
   home.stateVersion = "25.05";
 
+  imports = [
+    ./zsh.nix
+    ./kitty.nix
+    ./git.nix
+    ./zoxide.nix
+    ./eza.nix
+  ];
+
   # User-only packages
   home.packages = with pkgs; [
     ## USERLAND ##
@@ -45,12 +53,5 @@
     discord # For some reason discord is availabe on mac via nixpkgs, but not firefox???
     fontconfig
     obsidian
-  ];
-
-  imports = [
-    ./zsh.nix
-    ./kitty.nix
-    ./git.nix
-    ./zoxide.nix
   ];
 }
