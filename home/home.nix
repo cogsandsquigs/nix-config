@@ -5,8 +5,6 @@
   home.packages = with pkgs; [
     zsh
     oh-my-zsh
-    zsh-autosuggestions
-    zsh-syntax-highlighting
   ];
 
   programs.zsh = {
