@@ -28,6 +28,8 @@
     git # <3
     lazygit # Makes git awesomer
     gnupg # Signatures
+    zsh
+    oh-my-zsh
 
     # Nodejs
     nodejs_23
@@ -44,7 +46,6 @@
 
     ## FUN ##
     modrinth-app # Minecraft launcher
-    #  steam
 
     ## MISCELLANEOUS ##
     magic-wormhole
@@ -52,6 +53,4 @@
     fontconfig
     obsidian
   ];
-
-  # programs.steam.enable = true;
 }

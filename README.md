@@ -6,7 +6,8 @@ My nix configuration!
 
 - `modules`: Split configuration, including applications and such
   - `modules/darwin`: MacOS configuration
-- `home`: Home-Manager configuration, used to configure dotfiles and such
+- `home`: Home-Manager configuration, used to configure dotfiles and such. This is where things like the shell, programs
+  with configuration in `~/.config`, etc. are configured.
 
 ## Notes (for me!)
 
