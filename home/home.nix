@@ -17,7 +17,7 @@
     autocd = true;
 
     # Enable powerlevel10k theme
-    initExtraFirst = "~/.p10k.zsh";
+    initExtra = "source ~/.p10k.zsh";
 
     plugins = [
       {
