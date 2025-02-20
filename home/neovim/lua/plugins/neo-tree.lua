@@ -1,6 +1,5 @@
 return {
     "nvim-neo-tree/neo-tree.nvim",
-    enabled = false,
     branch = "v3.x",
     dependencies = {
         "nvim-lua/plenary.nvim",
@@ -42,6 +41,12 @@ return {
         window = {
             position = "left",
             width = 30,
+            mappings = {
+                ["e"] = {
+                    "toggle_node",
+                    nowait = false, -- disable `nowait` if you have existing combos starting with this char that you want to use
+                },
+            },
         },
 
         filesystem = {
