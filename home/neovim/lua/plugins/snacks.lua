@@ -11,6 +11,11 @@ return {
             terminal = {
                 height = 0.3,
             },
+
+            lazygit = {
+                width = 0.7,
+                height = 0.8,
+            },
         },
 
         lazygit = { enabled = true },
