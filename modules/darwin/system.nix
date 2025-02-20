@@ -13,6 +13,8 @@
 #
 ###################################################################################
 {
+  nixpkgs.hostPlatform = "aarch64-darwin";
+
   system = {
     stateVersion = 6;
     # activationScripts are executed every time you boot the system or run `nixos-rebuild` / `darwin-rebuild`.
@@ -55,8 +57,6 @@
       };
     };
   };
-
-  nixpkgs.hostPlatform = "aarch64-darwin";
 
   # Add ability to used TouchID for sudo authentication
   security.pam.enableSudoTouchIdAuth = true;

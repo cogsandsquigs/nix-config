@@ -6,7 +6,6 @@
 #############################################################
 let
   username = "ianpratt";
-  platform = "aarch64-darwin"; # aarch64-darwin or x86_64-darwin
   hostname = "Ians-GlorpBook-Pro";
 in {
   networking.hostName = hostname;
