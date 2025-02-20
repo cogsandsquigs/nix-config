@@ -7,8 +7,8 @@ return {
         -- or leave it empty to use the default settings
         -- refer to the configuration section below
         lazygit = { enabled = true },
+
         toggleterm = { enabled = true },
-        explorer = { enabled = false },
 
         dashboard = {
             enabled = true,
@@ -50,6 +50,27 @@ return {
                     },
 
                     { icon = " ", key = "q", desc = "Quit", action = ":qa" },
+                },
+            },
+        },
+
+        explorer = { enabled = true },
+        picker = {
+            sources = {
+                explorer = {
+                    exclude = {
+                        "node_modules",
+                        "target",
+                        "lazy-lock.json",
+                        "package-lock.json",
+                        "bun.lockb",
+                        ".astro",
+                        ".svelte",
+                        "dist-newstyle", -- Haskell
+                        "*/.git", -- Because git directories should never be directly interfaced with - only through git CLI.
+                        "*/.DS_Store",
+                        "thumbs.db",
+                    },
                 },
             },
         },
