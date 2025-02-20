@@ -14,16 +14,10 @@
     enableAutosuggestions = true;
     syntaxHighlighting.enable = true;
     history.size = 10000;
-
-    plugins = [
-      {
-        name = "zsh-powerlevel10k";
-        src = "${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
-      }
-    ];
+    autocd = true;
 
     # Enable powerlevel10k theme
-    # promptInit = "source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+    initExtraFirst = "source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
 
     shellAliases = {
       ls = "ls --color";
