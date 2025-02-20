@@ -25,7 +25,7 @@
     oh-my-zsh = {
       enable = true;
       theme = "robbyrussell";
-      plugins = ["git" "zsh-autosuggestions" "zsh-syntax-highlighting"];
+      plugins = ["git" "zsh-users/zsh-autosuggestions" "zsh-syntax-highlighting"];
     };
   };
 }

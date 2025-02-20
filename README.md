@@ -12,3 +12,7 @@ My nix configuration!
 ## Notes (for me!)
 
 - Old brew stuff is in `Brewfile`
+
+## Resources
+
+- [Set up Nix on macOS using flakes, nix-darwin and home-manager](https://noghartt.dev/blog/set-up-nix-on-macos-using-flakes-nix-darwin-and-home-manager/)
