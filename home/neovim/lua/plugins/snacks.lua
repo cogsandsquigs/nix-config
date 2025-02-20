@@ -7,8 +7,9 @@ return {
         -- or leave it empty to use the default settings
         -- refer to the configuration section below
         styles = {
+            -- NOTE: Terminal styles
             terminal = {
-                height = 0.4,
+                height = 0.3,
             },
         },
 
