@@ -12,7 +12,7 @@
   programs.zsh = {
     enable = true;
     enableCompletion = true;
-    # autosuggestions.enable = true;
+    enableAutosuggestions = true;
     syntaxHighlighting.enable = true;
     history.size = 10000;
 
@@ -25,7 +25,7 @@
     oh-my-zsh = {
       enable = true;
       theme = "robbyrussell";
-      plugins = ["git" "zsh-users/zsh-autosuggestions" "zsh-syntax-highlighting"];
+      plugins = ["git"];
     };
   };
 }
