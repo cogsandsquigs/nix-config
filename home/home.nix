@@ -17,7 +17,15 @@
     autocd = true;
 
     # Enable powerlevel10k theme
-    initExtraFirst = "source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+    initExtraFirst = "~/.p10k.zsh";
+
+    plugins = [
+      {
+        name = "powerlevel10k";
+        src = pkgs.zsh-powerlevel10k;
+        file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+      }
+    ];
 
     shellAliases = {
       ls = "ls --color";
