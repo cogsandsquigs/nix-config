@@ -1,3 +1,5 @@
+# NOTE: See:
+#   - https://www.danielcorin.com/til/nix-darwin/launch-agents/
 {pkgs, ...}: {
   launchd.user.agents = {
     raycast = {
