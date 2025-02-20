@@ -28,8 +28,6 @@
     git # <3
     lazygit # Makes git awesomer
     gnupg # Signatures
-    zsh
-    oh-my-zsh
 
     # Nodejs
     nodejs_23
