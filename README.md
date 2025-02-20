@@ -16,3 +16,4 @@ My nix configuration!
 ## Resources
 
 - [Set up Nix on macOS using flakes, nix-darwin and home-manager](https://noghartt.dev/blog/set-up-nix-on-macos-using-flakes-nix-darwin-and-home-manager/)
+- [NixOS & Flakes Book](https://nixos-and-flakes.thiscute.world/)

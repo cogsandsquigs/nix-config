@@ -8,6 +8,8 @@
     zsh-powerlevel10k
   ];
 
+  programs.kitty = {};
+
   programs.zsh = {
     enable = true;
     enableCompletion = true;

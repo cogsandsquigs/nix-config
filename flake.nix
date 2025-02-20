@@ -25,19 +25,16 @@
     home-manager,
   }: let
     # TODO replace with your own username, system and hostname
-    username = "ianpratt";
-    platform = "aarch64-darwin"; # aarch64-darwin or x86_64-darwin
-    hostname = "Ians-GlorpBook-Pro";
-
     specialArgs =
       inputs
       // {
-        inherit username hostname;
+        inherit;
       };
   in {
+    # pacakges.aarch64-darwin
     # Build darwin flake using:
     # $ darwin-rebuild build --flake .#${hostname}
-    darwinConfigurations."${hostname}" = nix-darwin.lib.darwinSystem {
+    darwinConfigurations."Ians-GlorpBook-Pro" = nix-darwin.lib.darwinSystem {
       modules = [
         ./modules # Global config
         ./modules/darwin # MacOS-specific config
@@ -51,7 +48,7 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.backupFileExtension = "backup"; # Backup files when moving to home-manager config
-          home-manager.users."${username}" = import ./home/home.nix;
+          home-manager.users."ianpratt" = import ./home/home.nix;
         }
       ];
     };
