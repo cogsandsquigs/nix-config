@@ -55,26 +55,27 @@ return {
 
         explorer = {
             enabled = true,
-            exclude = {
-                "node_modules",
-                "target",
-                "lazy-lock.json",
-                "package-lock.json",
-                "bun.lockb",
-                ".astro",
-                ".svelte",
-                "dist-newstyle", -- Haskell
-                "*/.git", -- Because git directories should never be directly interfaced with - only through git CLI.
-                "*/.DS_Store",
-                "*.nix",
-                "thumbs.db",
-            },
         },
-        --[[
+
         picker = {
             sources = {
                 explorer = {
-                    layout = {},
+                    hidden = true,
+                    ignored = true,
+                    exclude = {
+                        "node_modules",
+                        "target",
+                        "lazy-lock.json",
+                        "package-lock.json",
+                        "bun.lockb",
+                        ".astro",
+                        ".svelte",
+                        "dist-newstyle", -- Haskell
+                        "*/.git", -- Because git directories should never be directly interfaced with - only through git CLI.
+                        "*/.DS_Store",
+                        "*.nix", -- WARN: TESTING!
+                        "thumbs.db",
+                    },
                 },
             },
             layout = {
@@ -82,7 +83,7 @@ return {
                     width = 30,
                 },
             },
-        },]]
+        },
 
         indent = {
             indent = {
