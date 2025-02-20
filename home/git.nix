@@ -14,6 +14,10 @@
     # Diff highlighting
     delta = {
       enable = true;
+
+      options = {
+        diff-highlight = true;
+      };
     };
 
     # Extra configuration for sections not provided by top-level options:
