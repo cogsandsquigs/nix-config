@@ -28,6 +28,7 @@
     dust # Better du
     bat # Better cat
     ripgrep
+    neofetch
 
     ## DEVELOPMENT ##
 
