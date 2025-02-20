@@ -8,7 +8,7 @@ return {
         -- refer to the configuration section below
         styles = {
             terminal = {
-                height = 40,
+                height = 0.4,
             },
         },
 
