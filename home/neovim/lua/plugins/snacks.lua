@@ -73,14 +73,11 @@ return {
                         "dist-newstyle", -- Haskell
                         "*/.git", -- Because git directories should never be directly interfaced with - only through git CLI.
                         "*/.DS_Store",
-                        "*.nix", -- WARN: TESTING!
                         "thumbs.db",
                     },
-                },
-            },
-            layout = {
-                explorer = {
-                    width = 30,
+                    layout = {
+                        width = 30,
+                    },
                 },
             },
         },
