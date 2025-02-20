@@ -1,7 +1,7 @@
 # Derived from https://github.com/ryan4yin/nix-darwin-kickstarter/blob/main/minimal/modules/system.nix
 {
   pkgs,
-  platform,
+  config,
   ...
 }:
 ###################################################################################
@@ -12,11 +12,7 @@
 #    https://daiderd.com/nix-darwin/manual/index.html#sec-options
 #
 ###################################################################################
-let
-  username = "ianpratt";
-  platform = "aarch64-darwin"; # aarch64-darwin or x86_64-darwin
-  hostname = "Ians-GlorpBook-Pro";
-in {
+{
   system = {
     stateVersion = 6;
     # activationScripts are executed every time you boot the system or run `nixos-rebuild` / `darwin-rebuild`.
@@ -53,8 +49,30 @@ in {
     };
   };
 
-  nixpkgs.hostPlatform = platform;
+  nixpkgs.hostPlatform = "aarch64-darwin";
 
   # Add ability to used TouchID for sudo authentication
   security.pam.enableSudoTouchIdAuth = true;
+
+  system.activationScripts.applications.text = let
+    env = pkgs.buildEnv {
+      name = "system-applications";
+      paths = config.environment.systemPackages;
+      pathsToLink = [
+        "/Applications"
+      ];
+    };
+  in
+    pkgs.lib.mkForce ''
+      # Set up applications.
+      echo "setting up /Applications..." >&2
+      rm -rf /Applications/Nix\ Apps
+      mkdir -p /Applications/Nix\ Apps
+      find ${env}/Applications -maxdepth 1 -type l -exec readlink '{}' + |
+      while read -r src; do
+        app_name=$(basename "$src")
+        echo "copying $src" >&2
+        ${pkgs.mkalias}/bin/mkalias "$src" "/Applications/Nix Apps/$app_name"
+      done
+    '';
 }

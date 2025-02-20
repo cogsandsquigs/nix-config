@@ -19,6 +19,7 @@
     net-news-wire
     skimpdf
     pinentry_mac
+    mkalias
   ];
 
   # TODO To make this work, homebrew need to be installed manually, see https://brew.sh
