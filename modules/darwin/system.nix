@@ -50,6 +50,19 @@
         ];
       };
 
+      /*
+      "com.apple.AdLib" = {
+        allowApplePersonalizedAdvertising = false;
+      };
+
+      # Prevent Photos from opening automatically when devices are plugged in
+      "com.apple.ImageCapture".disableHotPlug = true;
+      */
+
+      SoftwareUpdate = {
+        AutomaticallyInstallMacOSUpdates = true;
+      };
+
       loginwindow.GuestEnabled = false;
 
       NSGlobalDomain = {
@@ -59,7 +72,9 @@
   };
 
   # Add ability to used TouchID for sudo authentication
-  security.pam.enableSudoTouchIdAuth = true;
+  security = {
+    pam.enableSudoTouchIdAuth = true;
+  };
 
   /*
   system.activationScripts.applications.text = let
