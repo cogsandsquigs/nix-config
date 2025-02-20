@@ -50,6 +50,7 @@
     magic-wormhole
     discord # For some reason discord is availabe on mac via nixpkgs, but not firefox???
     fontconfig
+    obsidian
   ];
 
   # programs.steam.enable = true;

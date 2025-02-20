@@ -52,10 +52,6 @@
     # `brew install --cask`
     # TODO Feel free to add your favorite apps here.
     casks = [
-      # "google-chrome"
-      # "skim" # PDF viewer for latex
-      # "raycast" # Raycast, better spotlight
-      "obsidian" # NOTE: see ./apps.nix as to why this is here
       "firefox" # For some reason, not provided w/ nixos for aarch64-darwin
       "whatsapp"
       "tailscale"

@@ -41,6 +41,17 @@
       modules = [
         ./modules # Global config
         ./modules/darwin # MacOS-specific config
+
+        # Home-manager (darwin, i think?)
+        inputs.home-manager.darwinModules.home-manager
+        {
+          nixpkgs = {
+            config.allowUnfree = true;
+          };
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.users."${username}" = import ./home/home.nix;
+        }
       ];
     };
   };

@@ -27,24 +27,31 @@
 
       # other macOS's defaults configuration.
       # ......
+
       dock = {
         autohide = true;
         autohide-delay = 0.0;
         autohide-time-modifier = 0.5;
         persistent-apps = [
           "/System/Applications/Launchpad.app"
-          "/Applications/Nix Apps/kitty.app"
+          "${pkgs.kitty}/Applications/kitty.app"
           "/System/Applications/System Settings.app"
           "/Applications/Firefox.app"
-          "/Applications/Obsidian.app"
-          "/Applications/Nix Apps/NetNewsWire.app"
-          "/Applications/Nix Apps/Discord.app"
+          "${pkgs.obsidian}/Applications/Obsidian.app"
+          "${pkgs.net-news-wire}/Applications/NetNewsWire.app"
+          "${pkgs.discord}/Applications/Discord.app"
           "/System/Applications/Messages.app"
           "/Applications/WhatsApp.app"
           "/System/Applications/Calendar.app"
           "/System/Applications/Reminders.app"
           "/System/Applications/Photos.app"
         ];
+      };
+
+      loginwindow.GuestEnabled = false;
+
+      NSGlobalDomain = {
+        AppleInterfaceStyle = "Dark";
       };
     };
   };
@@ -54,6 +61,7 @@
   # Add ability to used TouchID for sudo authentication
   security.pam.enableSudoTouchIdAuth = true;
 
+  /*
   system.activationScripts.applications.text = let
     env = pkgs.buildEnv {
       name = "system-applications";
@@ -75,4 +83,5 @@
         ${pkgs.mkalias}/bin/mkalias "$src" "/Applications/Nix Apps/$app_name"
       done
     '';
+  */
 }
