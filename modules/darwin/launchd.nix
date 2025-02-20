@@ -6,7 +6,7 @@
     raycast = {
       command = "open ${pkgs.raycast}/Applications/Raycast.app";
       serviceConfig = {
-        KeepAlive = true;
+        KeepAlive = false; # When it stops, do *NOT* restart it (otherwise it just keeps opening lmao :p)
         RunAtLoad = true;
         StandardOutPath = "/tmp/raycast.out.log";
         StandardErrorPath = "/tmp/raycast.err.log";
