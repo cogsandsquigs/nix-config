@@ -76,7 +76,9 @@ return {
                         "thumbs.db",
                     },
                     layout = {
-                        width = 0.3,
+                        layout = {
+                            width = 30,
+                        },
                     },
                 },
             },
