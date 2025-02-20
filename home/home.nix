@@ -11,5 +11,6 @@
   imports = [
     ./zsh.nix
     ./kitty.nix
+    ./git.nix
   ];
 }
