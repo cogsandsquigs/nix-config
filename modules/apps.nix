@@ -22,15 +22,13 @@
   # Related Discussion: https://discourse.nixos.org/t/darwin-again/29331
   # NOTE: If a package isn't here, check the system-specific packages
   environment.systemPackages = with pkgs; [
-    git
-    gnupg
-    neovim
-    kitty
-    discord # For some reason discord is availabe on mac via nixpkgs, but not firefox???
-    fontconfig
-    lazygit
-
     ## DEVELOPMENT ##
+    kitty # Terminal
+    neovim # Editor
+    git # <3
+    lazygit # Makes git awesomer
+    gnupg # Signatures
+
     # Nodejs
     nodejs_23
     bun
@@ -47,6 +45,11 @@
     ## FUN ##
     modrinth-app # Minecraft launcher
     #  steam
+
+    ## MISCELLANEOUS ##
+    magic-wormhole
+    discord # For some reason discord is availabe on mac via nixpkgs, but not firefox???
+    fontconfig
   ];
 
   # programs.steam.enable = true;
