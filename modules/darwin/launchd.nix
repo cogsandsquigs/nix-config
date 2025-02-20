@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   launchd.user.agents = {
     raycast = {
-      command = "${pkgs.raycast}";
+      command = "${pkgs.raycast}/Applications/Raycast.app";
       serviceConfig = {
         KeepAlive = true;
         RunAtLoad = true;
