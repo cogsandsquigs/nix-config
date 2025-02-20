@@ -8,7 +8,9 @@
     autocd = true;
 
     # Enable powerlevel10k theme
-    initExtra = "source ~/.p10k.zsh";
+    initExtra =
+      "source ~/.p10k.zsh\n"
+      + "eval '$(zoxide init zsh)'";
 
     plugins = [
       {
