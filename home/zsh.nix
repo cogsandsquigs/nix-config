@@ -20,6 +20,7 @@
 
     shellAliases = {
       ls = "ls --color";
+      cd = "zoxide"; # Better cd
       nv = "nvim";
       rebuild = "/etc/nix/rebuild.sh";
     };
