@@ -30,9 +30,9 @@
     enable = true;
 
     onActivation = {
-      autoUpdate = false;
-      # 'zap': uninstalls all formulae(and related files) not listed here.
-      # cleanup = "zap";
+      autoUpdate = true;
+      upgrade = true;
+      cleanup = "zap"; # 'zap': uninstalls all formulae(and related files) not listed here.
     };
 
     taps = [
