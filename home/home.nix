@@ -11,6 +11,7 @@
     gnupg # Signatures
     delta # Git diff highlighting
     zoxide # Better CD
+    fzf # Fuzzy finder
     zsh
     oh-my-zsh
     zsh-powerlevel10k
