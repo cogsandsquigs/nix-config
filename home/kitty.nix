@@ -25,10 +25,10 @@
     themeFile = "Catppuccin-Mocha";
 
     settings = {
-      "cursor_shape" = "beam";
-      "modify_font cell_width" = "+0px";
-      "modify_font cell_height" = "+0px";
-      "enabled_layouts" = "tall:bias=50;full_size=1;mirrored=false";
+      "cursor_shape" = "beam"; # Make cursor look like |
+      "modify_font cell_width" = "+0px"; # Font fixes
+      "modify_font cell_height" = "+0px"; # Font fixes
+      "enabled_layouts" = "tall:bias=50;full_size=1;mirrored=false"; # Enable tall layout priority w/ multiple terminals
     };
   };
 }
