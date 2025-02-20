@@ -1,4 +1,4 @@
-macos-keychain.crt
+*.crt
 nix.conf*
 nix.custom.conf*
 registry.json
