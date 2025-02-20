@@ -6,6 +6,8 @@
 
     shellAliases = {
       ls = "ls --color";
+      nv = "nvim";
+      rebuild = "/etc/nix/rebuild.sh";
     };
   };
 }
