@@ -8,10 +8,7 @@
     autocd = true;
 
     # Enable powerlevel10k theme
-    initExtra =
-      "source ~/.p10k.zsh\n"
-      + "eval '$(zoxide init zsh)'";
-
+    initExtra = "source ~/.p10k.zsh";
     plugins = [
       {
         name = "powerlevel10k";
@@ -22,7 +19,7 @@
 
     shellAliases = {
       ls = "ls --color";
-      cd = "zoxide"; # Better cd
+      cd = "z"; # Better cd via `zoxide`
       nv = "nvim";
       rebuild = "/etc/nix/rebuild.sh";
     };
