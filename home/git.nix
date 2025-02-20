@@ -7,7 +7,7 @@
 
     signing = {
       key = "E0DB58169CA551AA!";
-      gpgPath = "${pkgs.gnupg}/bin/gpg2";
+      signer = "${pkgs.gnupg}/bin/gpg2";
       signByDefault = true;
     };
 

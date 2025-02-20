@@ -21,7 +21,7 @@ $EDITOR /etc/nix # TODO: Make this dynamic
 pushd /etc/nix # TODO: Make this dynamic
 
 # Early return if no changes were detected (thanks @singiamtel!)
-if git diff --quiet '**/*.nix'; then
+if git diff --quiet  '*.nix' '**/*.nix' '*.lock'; then
     echo "No changes detected, exiting."
     popd
     exit 0

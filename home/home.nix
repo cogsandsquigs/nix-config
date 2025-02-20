@@ -3,6 +3,7 @@
 
   # User-only packages (basically just shell + plugins)
   home.packages = with pkgs; [
+    delta # Git diff highlighting
     zsh
     oh-my-zsh
     zsh-powerlevel10k
