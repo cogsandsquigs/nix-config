@@ -27,6 +27,7 @@
     eza # Better ls
     dust # Better du
     bat # Better cat
+    ripgrep
 
     ## DEVELOPMENT ##
 
