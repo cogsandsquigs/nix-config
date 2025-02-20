@@ -8,6 +8,8 @@ return {
         -- refer to the configuration section below
         lazygit = { enabled = true },
         toggleterm = { enabled = true },
+        explorer = { enabled = false },
+
         dashboard = {
             enabled = true,
             preset = {
@@ -51,6 +53,7 @@ return {
                 },
             },
         },
+
         indent = {
             indent = {
                 enabled = true, -- enable highlighting the current scope
@@ -116,6 +119,7 @@ return {
             },
         },
     },
+
     keys = {
         {
             "<leader>lg",
