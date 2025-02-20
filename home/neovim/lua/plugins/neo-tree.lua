@@ -42,7 +42,7 @@ return {
             position = "left",
             width = 30,
             mappings = {
-                ["e"] = {
+                ["<leader>e"] = {
                     "toggle_node",
                     nowait = false, -- disable `nowait` if you have existing combos starting with this char that you want to use
                 },
