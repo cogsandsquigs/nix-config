@@ -11,6 +11,10 @@
 
   programs.zsh = {
     enable = true;
+    enableCompletion = true;
+    # autosuggestions.enable = true;
+    syntaxHighlighting.enable = true;
+    history.size = 10000;
 
     shellAliases = {
       ls = "ls --color";
@@ -20,7 +24,7 @@
 
     oh-my-zsh = {
       enable = true;
-      theme = "robbyrusell";
+      theme = "robbyrussell";
       plugins = ["git" "zsh-autosuggestions" "zsh-syntax-highlighting"];
     };
   };
