@@ -7,7 +7,6 @@ return {
         -- or leave it empty to use the default settings
         -- refer to the configuration section below
         lazygit = { enabled = true },
-
         toggleterm = { enabled = true },
 
         dashboard = {
@@ -58,6 +57,7 @@ return {
         picker = {
             sources = {
                 explorer = {
+                    layout = {},
                     exclude = {
                         "node_modules",
                         "target",
@@ -71,6 +71,11 @@ return {
                         "*/.DS_Store",
                         "thumbs.db",
                     },
+                },
+            },
+            layout = {
+                explorer = {
+                    width = 30,
                 },
             },
         },
