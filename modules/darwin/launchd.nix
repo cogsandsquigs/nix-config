@@ -2,6 +2,7 @@
 #   - https://www.danielcorin.com/til/nix-darwin/launch-agents/
 #   - https://daiderd.com/nix-darwin/manual/index.html#opt-launchd.user.agents._name_.serviceConfig
 #   - https://daiderd.com/nix-darwin/manual/index.html#opt-launchd.user.agents._name_.serviceConfig.StartCalendarInterval
+#   - https://daiderd.com/nix-darwin/manual/index.html#opt-launchd.user.agents._name_.serviceConfig.StartInterval
 {pkgs, ...}: {
   launchd.user.agents = {
     # Open raycast on startup
