@@ -2,8 +2,9 @@
 #   - https://www.danielcorin.com/til/nix-darwin/launch-agents/
 {pkgs, ...}: {
   launchd.user.agents = {
+    # Open raycast on startup
     raycast = {
-      command = "${pkgs.raycast}/Applications/Raycast.app";
+      command = "open ${pkgs.raycast}/Applications/Raycast.app";
       serviceConfig = {
         KeepAlive = true;
         RunAtLoad = true;
