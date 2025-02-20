@@ -1,9 +1,5 @@
 # Derived from https://github.com/ryan4yin/nix-darwin-kickstarter/blob/main/minimal/modules/system.nix
-{
-  pkgs,
-  config,
-  ...
-}:
+{pkgs, ...}:
 ###################################################################################
 #
 #  macOS's System configuration
@@ -50,15 +46,6 @@
         ];
       };
 
-      /*
-      "com.apple.AdLib" = {
-        allowApplePersonalizedAdvertising = false;
-      };
-
-      # Prevent Photos from opening automatically when devices are plugged in
-      "com.apple.ImageCapture".disableHotPlug = true;
-      */
-
       SoftwareUpdate = {
         AutomaticallyInstallMacOSUpdates = true;
       };
@@ -71,32 +58,10 @@
     };
   };
 
+  launchd = {};
+
   # Add ability to used TouchID for sudo authentication
   security = {
     pam.enableSudoTouchIdAuth = true;
   };
-
-  /*
-  system.activationScripts.applications.text = let
-    env = pkgs.buildEnv {
-      name = "system-applications";
-      paths = config.environment.systemPackages;
-      pathsToLink = [
-        "/Applications"
-      ];
-    };
-  in
-    pkgs.lib.mkForce ''
-      # Set up applications.
-      echo "setting up /Applications..." >&2
-      rm -rf /Applications/Nix\ Apps
-      mkdir -p /Applications/Nix\ Apps
-      find ${env}/Applications -maxdepth 1 -type l -exec readlink '{}' + |
-      while read -r src; do
-        app_name=$(basename "$src")
-        echo "copying $src" >&2
-        ${pkgs.mkalias}/bin/mkalias "$src" "/Applications/Nix Apps/$app_name"
-      done
-    '';
-  */
 }
