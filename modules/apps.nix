@@ -39,6 +39,9 @@
     # Rust
     rustup
 
+    # Kotlin
+    jetbrains.idea-ultimate
+
     # nix
     alejandra # Formatter
 
