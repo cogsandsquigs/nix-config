@@ -21,7 +21,7 @@ $EDITOR /etc/nix # TODO: Make this dynamic
 pushd /etc/nix # TODO: Make this dynamic
 
 # Early return if no changes were detected (thanks @singiamtel!)
-if git diff --quiet  '*.nix' '**/*.nix' '*.lock'; then
+if git diff --quiet '*.nix' '**/*.nix' '*.lock' 'home/**/*'; then
     echo "No changes detected, exiting."
     popd
     exit 0
@@ -32,7 +32,7 @@ alejandra . &>/dev/null \
   || ( alejandra . ; echo "formatting failed!" && exit 1)
 
 # Shows your changes
-git diff -U0 '**/*.nix'
+git diff -U0 '*.nix' '**/*.nix' '*.lock' 'home/**/*'
 
 echo "Nix Rebuilding..."
 
