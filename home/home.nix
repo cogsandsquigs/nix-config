@@ -7,13 +7,14 @@
     ./git.nix
     ./zoxide.nix
     ./eza.nix
+    ./neovim
   ];
 
   # User-only packages
   home.packages = with pkgs; [
     ## USERLAND ##
     kitty # Terminal
-    neovim # Editor
+    # neovim # Editor NOTE: Removed, see here: https://discourse.nixos.org/t/home-manager-neovim-collision/16963
     git # <3
     lazygit # Makes git awesomer
     gnupg # Signatures
