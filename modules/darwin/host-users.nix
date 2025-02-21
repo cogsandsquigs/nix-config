@@ -5,7 +5,7 @@
 #
 #############################################################
 let
-  username = "ianpratt";
+  username = "cogs";
   hostname = "Ians-GlorpBook-Pro";
 in {
   networking.hostName = hostname;

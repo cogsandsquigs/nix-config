@@ -8,6 +8,7 @@
     ./zoxide.nix
     ./eza.nix
     ./neovim
+    ./p10k
   ];
 
   # User-only packages

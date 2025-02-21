@@ -8,7 +8,10 @@
     autocd = true;
 
     # Enable powerlevel10k theme
-    initExtra = "source ~/.p10k.zsh";
+    initExtra =
+      "source /etc/profile.d/nix.sh\n" # Source nix environment variables
+      + "source ~/.p10k.zsh\n"; # Source powerlevel10k theme
+
     plugins = [
       {
         name = "powerlevel10k";

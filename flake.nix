@@ -23,7 +23,22 @@
     nix-darwin,
     nixpkgs,
     home-manager,
-  }: {
+  }: let
+    inherit (self) outputs;
+
+    mkDarwinConfiguration = hostname: username:
+      nix-darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        specialArgs = {
+          inherit inputs outputs hostname;
+          # userConfig = users.${username};
+        };
+        modules = [
+          ./home.nix
+          home-manager.darwinModules.home-manager
+        ];
+      };
+  in {
     # Build darwin flake using:
     # $ darwin-rebuild build --flake .#${hostname}
     darwinConfigurations."Ians-GlorpBook-Pro" = nix-darwin.lib.darwinSystem {
@@ -40,7 +55,7 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.backupFileExtension = "backup"; # Backup files when moving to home-manager config
-          home-manager.users."ianpratt" = import ./home/home.nix;
+          home-manager.users."cogs" = import ./home/home.nix;
         }
       ];
     };
