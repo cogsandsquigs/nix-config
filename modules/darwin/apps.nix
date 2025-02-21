@@ -34,8 +34,8 @@
     enable = true;
 
     onActivation = {
-      autoUpdate = true;
-      upgrade = true;
+      autoUpdate = false;
+      upgrade = false; # Don't upgrade all packages on activation / switch
       cleanup = "zap"; # 'zap': uninstalls all formulae(and related files) not listed here.
     };
 

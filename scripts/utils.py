@@ -2,26 +2,25 @@
 Utilities to update and upgrade the Nix configuration.
 """
 
+import sys
 from os import path
 from platform import system
-from subprocess import run
+from subprocess import Popen, run
 
 NIX_FLAKE_PATH = path.dirname(path.dirname(__file__))  # Gets nix flake location
 
 
-def update(stdout, stderr):
+def upgrade(stdout, stderr):
     """
-    Updates the system's Nix configuration.
+    Upgrades the system's Nix configuration.
     Internally, it calls `nix flake update --flake $NIX_FLAKE_PATH`, where $NIX_FLAKE_PATH is the
     path to the directory containing the flake.nix file (w.r.t this file's folder, its `./..`).
     """
 
-    run(
+    Popen(
         ["nix", "flake", "update", "--flake", NIX_FLAKE_PATH],
         stdout=stdout,
         stderr=stderr,
-        capture_output=True,
-        check=True,
     )
 
 
@@ -41,17 +40,16 @@ def rebuild(stdout, stderr):
 
     match system():
         case "MacOS" | "Darwin":
-            REBUILD_CMD = "darwin-rebuild"
+            rebuild_cmd = "darwin-rebuild"
         case _:
-            REBUILD_CMD = "nixos-rebuild"  # Default to NixOS
+            rebuild_cmd = "nixos-rebuild"  # Default to NixOS
 
     run(
-        [REBUILD_CMD, "switch", "--flake", NIX_FLAKE_PATH],
+        [rebuild_cmd, "switch", "--flake", NIX_FLAKE_PATH],
         stdout=stdout,
         stderr=stderr,
-        capture_output=False,
         check=True,
     )
 
 
-rebuild(None, None)
+upgrade(None, None)
