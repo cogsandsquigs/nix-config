@@ -38,6 +38,7 @@
           "${pkgs.obsidian}/Applications/Obsidian.app"
           "${pkgs.net-news-wire}/Applications/NetNewsWire.app"
           "${pkgs.discord}/Applications/Discord.app"
+          "${pkgs.spotify}/Applications/Spotify.app"
           "/System/Applications/Messages.app"
           "/Applications/WhatsApp.app"
           "/System/Applications/Calendar.app"
