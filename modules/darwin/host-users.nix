@@ -1,21 +1,21 @@
-{...}:
+{specialArgs, ...}:
 #############################################################
 #
 #  Host & Users configuration
 #
 #############################################################
 let
-  username = "cogs";
-  hostname = "Ians-GlorpBook-Pro";
+  # username = "cogs";
+  #hostname = "Ians-GlorpBook-Pro";
 in {
-  networking.hostName = hostname;
-  networking.computerName = hostname;
-  system.defaults.smb.NetBIOSName = hostname;
+  networking.hostName = specialArgs.hostname;
+  networking.computerName = specialArgs.hostname;
+  system.defaults.smb.NetBIOSName = specialArgs.hostname;
 
-  users.users."${username}" = {
-    home = "/Users/${username}";
-    description = username;
+  users.users."${specialArgs.username}" = {
+    home = "/Users/${specialArgs.username}";
+    description = specialArgs.username;
   };
 
-  nix.settings.trusted-users = [username];
+  nix.settings.trusted-users = [specialArgs.username];
 }

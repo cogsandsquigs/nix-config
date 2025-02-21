@@ -24,40 +24,36 @@
     nixpkgs,
     home-manager,
   }: let
-    inherit (self) outputs;
+    inherit (self) inputs outputs;
 
     mkDarwinConfiguration = hostname: username:
       nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         specialArgs = {
-          inherit inputs outputs hostname;
-          # userConfig = users.${username};
+          inherit inputs outputs hostname username;
         };
         modules = [
-          ./home.nix
+          ./modules # Global config
+          ./modules/darwin # MacOS-specific config
+
           home-manager.darwinModules.home-manager
+          {
+            /*
+            nixpkgs = {
+              config.allowUnfree = true;
+            };
+            */
+
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.backupFileExtension = "backup"; # Backup files when moving to home-manager config
+            home-manager.users.${username} = import ./home/home.nix;
+          }
         ];
       };
   in {
     # Build darwin flake using:
     # $ darwin-rebuild build --flake .#${hostname}
-    darwinConfigurations."Ians-GlorpBook-Pro" = nix-darwin.lib.darwinSystem {
-      modules = [
-        ./modules # Global config
-        ./modules/darwin # MacOS-specific config
-
-        # Home-manager (darwin, i think?)
-        inputs.home-manager.darwinModules.home-manager
-        {
-          nixpkgs = {
-            config.allowUnfree = true;
-          };
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.backupFileExtension = "backup"; # Backup files when moving to home-manager config
-          home-manager.users."cogs" = import ./home/home.nix;
-        }
-      ];
-    };
+    darwinConfigurations."Ians-GlorpBook-Pro" = mkDarwinConfiguration "Ians-GlorpBook-Pro" "cogs";
   };
 }

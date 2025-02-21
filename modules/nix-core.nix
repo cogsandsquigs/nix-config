@@ -19,4 +19,8 @@
   # Auto upgrade nix package and the daemon service.
   nix.enable = true;
   nix.package = pkgs.nix;
+
+  nixpkgs = {
+    config.allowUnfree = true;
+  };
 }
