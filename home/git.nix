@@ -7,8 +7,8 @@
 
     signing = {
       key = "E0DB58169CA551AA!";
-      signer = "${pkgs.gnupg}/bin/gpg2";
       signByDefault = true;
+      # signer = "${pkgs.gnupg}/bin/gpg"; # NOTE: See `extraConfig.gpg.program`
     };
 
     # Diff highlighting
@@ -38,6 +38,9 @@
       # Credential helper
       # TODO: Dynamic based on host OS
       credential.credentialStore = "osxkeychain";
+
+      # For some reason `signing.signer` doesn't set the GPG program, so I gotta do this
+      gpg.program = "${pkgs.gnupg}/bin/gpg";
     };
   };
 }
