@@ -14,8 +14,8 @@
   # User-only packages
   home.packages = with pkgs; [
     ## USERLAND ##
-    kitty # Terminal
     # neovim # Editor NOTE: Removed, see here: https://discourse.nixos.org/t/home-manager-neovim-collision/16963
+    kitty # Terminal
     git # <3
     lazygit # Makes git awesomer
     gnupg # Signatures
@@ -30,8 +30,12 @@
     bat # Better cat
     ripgrep
     neofetch
+    jq
 
     ## DEVELOPMENT ##
+
+    # C/C++
+    cmake
 
     # Nodejs
     nodejs_23
@@ -43,14 +47,17 @@
     # Rust
     rustup
 
-    # Kotlin
+    # Java/Kotlin
+    jdk21
+    gradle
+    kotlin
     jetbrains.idea-ultimate
 
     # nix
     alejandra # Formatter
 
     # Latex
-    texliveFull # Install `latexmk` + co (unneeded) for vimtex (see neovim config)
+    texliveMedium # Install `latexmk` + co (unneeded) for vimtex (see neovim config)
 
     ## FUN ##
     modrinth-app # Minecraft launcher
