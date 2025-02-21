@@ -37,6 +37,9 @@
     # C/C++
     cmake
 
+    # Python
+    python3
+
     # Nodejs
     nodejs_23
     bun
