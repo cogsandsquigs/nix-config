@@ -22,8 +22,9 @@
   # Related Discussion: https://discourse.nixos.org/t/darwin-again/29331
   # NOTE: If a package isn't here, check the system-specific packages
   environment.systemPackages = with pkgs; [
-    # Why `firefox-unwrapped` and not `firefox`?
+    # NOTE: Why `firefox-unwrapped` and not `firefox`?
     # See: https://github.com/NixOS/nixpkgs/issues/366581
     firefox-unwrapped
+    spotify
   ];
 }
