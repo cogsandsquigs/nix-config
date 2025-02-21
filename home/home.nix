@@ -49,6 +49,9 @@
     # nix
     alejandra # Formatter
 
+    # Latex
+    texlivePackages.latexmk
+
     ## FUN ##
     modrinth-app # Minecraft launcher
 
