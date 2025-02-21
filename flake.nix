@@ -3,7 +3,9 @@
   description = "Example nix-darwin system flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    # Main packages repo
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable"; # Unstable
+    # nixpkgs.url = "github:nixos/nixpkgs/release-24.11"; # Stable
 
     # MacOS config
     nix-darwin = {

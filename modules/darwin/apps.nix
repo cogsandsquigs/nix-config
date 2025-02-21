@@ -20,6 +20,10 @@
     skimpdf
     pinentry_mac
     mkalias
+    # zapzap # Open source whatsapp alt.
+    # whatsapp-for-mac
+    # Unfortunately, due to this error: https://github.com/NixOS/nixpkgs/issues/364195,
+    # I am not able to install this. So homebrew :/
   ];
 
   # TODO To make this work, homebrew need to be installed manually, see https://brew.sh
@@ -52,7 +56,7 @@
     # `brew install --cask`
     # TODO Feel free to add your favorite apps here.
     casks = [
-      "firefox" # For some reason, not provided w/ nixos for aarch64-darwin
+      # "firefox" # For some reason, not provided w/ nixos for aarch64-darwin
       "whatsapp"
       "tailscale"
       "steam"
