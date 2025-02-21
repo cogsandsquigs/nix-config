@@ -23,7 +23,7 @@
     ];
 
     shellAliases = {
-      ls = "exa";
+      ls = "eza";
       du = "dust";
       cat = "bat"; # Better cat via `bat`
       cd = "z"; # Better cd via `zoxide`

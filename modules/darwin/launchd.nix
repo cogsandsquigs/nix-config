@@ -16,5 +16,25 @@
         StandardErrorPath = "/tmp/raycast.err.log";
       };
     };
+
+    # Collect nix garbage
+    nix-collect-garbage = {
+      command = "nix-collect-garbage -d";
+
+      serviceConfig = {
+        KeepAlive = false; # When it stops, do *NOT* restart it
+        RunAtLoad = false;
+
+        # Run every week on sunday at midnight
+        StartCalendarInterval = {
+          Minute = 0;
+          Hour = 0;
+          Weekday = 0;
+        };
+
+        StandardOutPath = "/tmp/nix-collect-garbage.out.log";
+        StandardErrorPath = "/tmp/nix-collect-garbage.err.log";
+      };
+    };
   };
 }

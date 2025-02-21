@@ -24,10 +24,12 @@
     nixpkgs,
     home-manager,
   }: let
-    inherit (self) inputs outputs;
+    inherit (self) outputs;
 
     mkDarwinConfiguration = hostname: username:
       nix-darwin.lib.darwinSystem {
+        # NOTE: Doing this allows us to import `specialArgs` in `{sspecialArgs, ...}: <...>`, which lets us
+        # get certain information we need
         system = "aarch64-darwin";
         specialArgs = {
           inherit inputs outputs hostname username;
@@ -38,12 +40,6 @@
 
           home-manager.darwinModules.home-manager
           {
-            /*
-            nixpkgs = {
-              config.allowUnfree = true;
-            };
-            */
-
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup"; # Backup files when moving to home-manager config
