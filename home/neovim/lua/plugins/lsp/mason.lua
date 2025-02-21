@@ -40,7 +40,7 @@ return {
                     "nil_ls",
                     "pest_ls",
                     "prismals",
-                    "pyright",
+                    -- "pyright", -- NOTE: Using local install
                     "rust_analyzer",
                     "svelte",
                     "tailwindcss",
@@ -58,7 +58,7 @@ return {
         lazy = false,
         opts = {
             ensure_installed = {
-                "black", -- python formatter
+                -- "black", -- python formatter -- NOTE: Using local install
                 "clang-format", -- C/C++/etc. formatter
                 "cmakelint", -- CMake linter
                 "eslint_d", -- js linter
@@ -70,7 +70,7 @@ return {
                 "latexindent",
                 -- "nixpkgs-fmt", -- Nix formatter NOTE: Using local install of alejandra instead
                 "prettierd", -- prettier formatter
-                "pylint", -- python linter
+                -- "pylint", -- python linter NOTE: Using local install
                 "shellcheck", -- Shell script linter,
                 "sqlfluff", -- SQL formatter
                 "stylua", -- lua formatter

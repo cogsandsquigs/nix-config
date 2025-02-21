@@ -39,11 +39,13 @@
 
     # Python
     python3
+    black # Formatter
+    pyright # Typechecker
+    pylint # Linter
 
     # Nodejs
     nodejs_23
     bun
-
     # Ruby
     rbenv
 
