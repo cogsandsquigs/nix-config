@@ -8,7 +8,7 @@
     };
   };
 
-  programs.gpg-agent = {
+  services.gpg-agent = {
     enable = true;
     pinentryPackage = pkgs.pinentry-mac; # TODO: Dynamic based on platform/etc.
   };
