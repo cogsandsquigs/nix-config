@@ -28,7 +28,8 @@
       cat = "bat"; # Better cat via `bat`
       cd = "z"; # Better cd via `zoxide`
       nv = "nvim";
-      rebuild = "/etc/nix/rebuild.sh";
+      upgrade = "/etc/nix/scripts/run.py upgrade";
+      rebuild = "/etc/nix/scripts/run.py rebuild";
     };
 
     oh-my-zsh = {
