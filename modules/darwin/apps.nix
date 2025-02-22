@@ -50,7 +50,7 @@
     ];
 
     masApps = {
-      "Xcode" = 497799835;
+      #"Xcode" = 497799835; # NOTE: Worst idea to automate this EVER. Why does xcode take so long :'(
     };
 
     # `brew install --cask`

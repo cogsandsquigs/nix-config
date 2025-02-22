@@ -62,7 +62,7 @@
     alejandra # Formatter
 
     # Latex
-    texliveMedium # Install `latexmk` + co (unneeded) for vimtex (see neovim config)
+    texliveFull # Install `latexmk` + co (unneeded) for vimtex (see neovim config)
 
     ## FUN ##
     modrinth-app # Minecraft launcher
