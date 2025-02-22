@@ -55,10 +55,18 @@ def git_commit_push():
     """
 
     invoke_process_popen_poll_live(
-        ["git", "commit", "-am", "Nix rebuild"], "'git commit'-ing"
+        ["git", "commit", "-am", "Nix rebuild"], "📦 'git commit'-ing"
     )
 
-    invoke_process_popen_poll_live(["git", "push"], "'git push'-ing")
+    invoke_process_popen_poll_live(["git", "push"], "📤 'git push'-ing")
+
+
+def git_pull():
+    """
+    Git pulls the latest changes from the upstream repository.
+    """
+
+    invoke_process_popen_poll_live(["git", "pull"], "📥 'git pull'-ing")
 
 
 # Partially derived from:
