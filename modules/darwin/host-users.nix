@@ -4,10 +4,7 @@
 #  Host & Users configuration
 #
 #############################################################
-let
-  # username = "cogs";
-  #hostname = "Ians-GlorpBook-Pro";
-in {
+{
   networking.hostName = specialArgs.hostname;
   networking.computerName = specialArgs.hostname;
   system.defaults.smb.NetBIOSName = specialArgs.hostname;
