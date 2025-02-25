@@ -58,12 +58,14 @@ def git_commit_push():
         ["git", "commit", "-am", "Nix rebuild"],
         "📦 'git commit'-ing",
         cwd=NIX_FLAKE_PATH,
+        ignore_errors=True,
     )
 
     invoke_process_popen_poll_live(
         ["git", "push"],
         "📤 'git push'-ing",
         cwd=NIX_FLAKE_PATH,
+        ignore_errors=True,
     )
 
 
@@ -76,12 +78,15 @@ def git_pull():
         ["git", "pull"],
         "📥 'git pull'-ing",
         cwd=NIX_FLAKE_PATH,
+        ignore_errors=True,
     )
 
 
 # Partially derived from:
 # https://github.com/fabianlee/blogcode/blob/master/python/runProcessWithLiveOutput.py
-def invoke_process_popen_poll_live(command, display, display_lines=5, cwd=None) -> int:
+def invoke_process_popen_poll_live(
+    command, display, display_lines=5, cwd=None, ignore_errors=False
+) -> int:
     """runs subprocess with Popen/poll so that live stdout is shown"""
 
     env = environ.copy()
@@ -122,9 +127,10 @@ def invoke_process_popen_poll_live(command, display, display_lines=5, cwd=None) 
 
         result = process.poll()
 
-        if result is not None and result != 0:
+        if result is not None and result != 0 and not ignore_errors:
             print("\n\033[1;31mERROR:\033[0m")
             print("\n".join(map(lambda x: f"\033[0;31m{x}\033[0m", proc_out)))
+            sys.exit()
         else:
             print(f"\033[{len(proc_out) + 1}A\033[J")
             print(f"{display}... Done! ✨")
