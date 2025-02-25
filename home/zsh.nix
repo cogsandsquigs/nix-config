@@ -12,7 +12,9 @@
       "source /etc/profile.d/nix.sh\n" # Source nix environment variables
       + "source ~/.p10k.zsh\n"; # Source powerlevel10k theme
 
-    envExtra = "export EDITOR=nvim"; # Set default editor to nvim
+    envExtra =
+      "export EDITOR=nvim\n" # Set default editor to nvim
+      + "export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))\n";
 
     plugins = [
       {
