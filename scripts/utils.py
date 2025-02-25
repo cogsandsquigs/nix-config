@@ -120,8 +120,14 @@ def invoke_process_popen_poll_live(command, display, display_lines=5, cwd=None) 
                 end="",
             )
 
-        print(f"\033[{len(proc_out) + 1}A\033[J")
-        print(f"{display}... Done! ✨")
+        result = process.poll()
+
+        if result is not None and result != 0:
+            print("ERROR: ")
+            print("\n".join(proc_out))
+        else:
+            print(f"\033[{len(proc_out) + 1}A\033[J")
+            print(f"{display}... Done! ✨")
 
         return process.poll()
 
