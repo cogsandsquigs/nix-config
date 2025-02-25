@@ -34,7 +34,8 @@
           "/System/Applications/Launchpad.app"
           "${pkgs.kitty}/Applications/kitty.app"
           "/System/Applications/System Settings.app"
-          "${pkgs.firefox-unwrapped}/Applications/Firefox.app" # NOTE: See modules/apps.nix for why it's `firefox-unwrapped`
+          # "${pkgs.firefox-unwrapped}/Applications/Firefox.app" # NOTE: See modules/apps.nix for why it's `firefox-unwrapped`
+          "/Applications/Firefox.app" # NOTE: See modules/apps.nix for why it's `firefox-unwrapped`
           "${pkgs.obsidian}/Applications/Obsidian.app"
           "${pkgs.net-news-wire}/Applications/NetNewsWire.app"
           "${pkgs.discord}/Applications/Discord.app"
