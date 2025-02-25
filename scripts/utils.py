@@ -123,6 +123,7 @@ def invoke_process_popen_poll_live(command, display, display_lines=5, cwd=None) 
         result = process.poll()
 
         if result is not None and result != 0:
+            print("\n\033[1;31mERROR:\033[0m")
             print("\n".join(map(lambda x: f"\033[0;31m{x}\033[0m", proc_out)))
         else:
             print(f"\033[{len(proc_out) + 1}A\033[J")
