@@ -53,7 +53,7 @@
     rustup
 
     # Java/Kotlin
-    jdk21_headless
+    jdk
     gradle
     kotlin
     jetbrains.idea-ultimate
