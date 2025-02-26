@@ -37,6 +37,16 @@
     # C/C++
     cmake
 
+    # Docker
+    docker
+    docker-client
+
+    # Java/Kotlin
+    jdk
+    gradle
+    kotlin
+    jetbrains.idea-ultimate
+
     # Python
     python3
     black # Formatter
@@ -52,13 +62,7 @@
     # Rust
     rustup
 
-    # Java/Kotlin
-    jdk
-    gradle
-    kotlin
-    jetbrains.idea-ultimate
-
-    # nix
+    # Nix
     alejandra # Formatter
 
     # Latex
