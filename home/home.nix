@@ -37,9 +37,11 @@
     # C/C++
     cmake
 
-    # Docker
+    # Docker/VMs
     docker
-    docker-client
+    docker-compose
+    colima
+    lima
 
     # Java/Kotlin
     jdk
