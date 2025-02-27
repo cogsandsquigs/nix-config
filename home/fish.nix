@@ -3,7 +3,7 @@
 
   programs.fish = {
     enable = true;
-    generateCompletions = true;
+    #generateCompletions = true;
     #autosuggestion.enable = true;
     #syntaxHighlighting.enable = true;
     #history.size = 10000;
@@ -26,15 +26,15 @@
     #  }
     #];
 
-    shellAliases = {
-      ls = "eza --icons";
-      du = "dust";
-      cat = "bat"; # Better cat via `bat`
-      cd = "z"; # Better cd via `zoxide`
-      nv = "nvim";
-      upgrade = "python3 /etc/nix/scripts/run.py upgrade";
-      rebuild = "python3 /etc/nix/scripts/run.py rebuild";
-    };
+    #shellAliases = {
+    #  ls = "eza --icons";
+    #  du = "dust";
+    #  cat = "bat"; # Better cat via `bat`
+    #  cd = "z"; # Better cd via `zoxide`
+    #  nv = "nvim";
+    #  upgrade = "python3 /etc/nix/scripts/run.py upgrade";
+    #  rebuild = "python3 /etc/nix/scripts/run.py rebuild";
+    #};
 
     #oh-my-zsh = {
     #  enable = true;
