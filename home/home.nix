@@ -2,14 +2,14 @@
   home.stateVersion = "25.05";
 
   imports = [
-    ./zsh.nix
+    #./zsh.nix
+    ./fish.nix
     ./kitty.nix
     ./git.nix
     ./zoxide.nix
     ./eza.nix
     ./neovim
     ./p10k
-    ./fish.nix
   ];
 
   # User-only packages
