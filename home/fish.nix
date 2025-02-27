@@ -2,7 +2,7 @@
   #  shell = pkgs.fish;
 
   programs.fish = {
-    enable = true;
+    enable = false;
     #generateCompletions = true;
     #autosuggestion.enable = true;
     #syntaxHighlighting.enable = true;

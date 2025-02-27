@@ -2,7 +2,7 @@
   home.stateVersion = "25.05";
 
   imports = [
-    #./zsh.nix
+    ./zsh.nix
     ./fish.nix
     ./kitty.nix
     ./git.nix
