@@ -1,4 +1,6 @@
 {pkgs, ...}: {
+  #  shell = pkgs.fish;
+
   programs.fish = {
     enable = true;
     generateCompletions = true;
