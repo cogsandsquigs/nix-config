@@ -9,6 +9,7 @@
     ./eza.nix
     ./neovim
     ./p10k
+    ./fish.nix
   ];
 
   # User-only packages
@@ -24,6 +25,7 @@
     fzf # Fuzzy finder
     zsh
     oh-my-zsh
+    fish
     zsh-powerlevel10k
     eza # Better ls
     dust # Better du
