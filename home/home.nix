@@ -10,6 +10,7 @@
     ./eza.nix
     ./neovim
     ./p10k
+    ./librewolf.nix
   ];
 
   # User-only packages
@@ -85,6 +86,7 @@
     # NOTE: Why no use? B/c not preserving firefox config thru reinstalls.
     # So use homebrew to install on mac
     # firefox-unwrapped
+    librewolf
     spotify
   ];
 }
