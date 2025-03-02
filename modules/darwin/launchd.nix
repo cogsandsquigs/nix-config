@@ -36,5 +36,21 @@
         StandardErrorPath = "/tmp/nix-collect-garbage.err.log";
       };
     };
+
+    # Update and upgrade the system
+    upgrade-system = {
+      command = "python3 /etc/nix/scripts/run.py upgrade";
+
+      serviceConfig = {
+        KeepAlive = false; # When it stops, do *NOT* restart it
+        RunAtLoad = true;
+
+        # Run every 6 hours
+        StartInterval = 21600;
+
+        StandardOutPath = "/tmp/upgrade-system.out.log";
+        StandardErrorPath = "/tmp/upgrade-system.err.log";
+      };
+    };
   };
 }
