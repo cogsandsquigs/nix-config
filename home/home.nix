@@ -61,11 +61,14 @@
     # Nodejs
     nodejs_23
     bun
+
     # Ruby
     rbenv
 
     # Rust
     rustup
+    cargo-watch
+    cargo-workspaces
 
     # Nix
     alejandra # Formatter
