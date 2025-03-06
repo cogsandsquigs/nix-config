@@ -78,6 +78,7 @@
 
     ## FUN ##
     modrinth-app # Minecraft launcher
+    ghidra-bin # just a lil silly :3
 
     ## MISCELLANEOUS ##
     magic-wormhole
