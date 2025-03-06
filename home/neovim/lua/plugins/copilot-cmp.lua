@@ -1,4 +1,4 @@
 return {
-    "giuxtaposition/blink-cmp-copilot",
+    "fang2hou/blink-copilot",
     enabled = true,
 }

@@ -36,7 +36,7 @@ return { -- add blink.compat
                 providers = {
                     copilot = {
                         name = "copilot",
-                        module = "blink-cmp-copilot",
+                        module = "blink-copilot",
                         score_offset = 100,
                         async = true,
                         transform_items = function(_, items)
