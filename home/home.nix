@@ -76,6 +76,9 @@
     # Latex
     texliveFull # Install `latexmk` + co (unneeded) for vimtex (see neovim config)
 
+    # Documentation generation
+    mdbook # Docs from MD: https://rust-lang.github.io/mdBook/index.html
+
     ## FUN ##
     modrinth-app # Minecraft launcher
     ghidra-bin # just a lil silly :3
