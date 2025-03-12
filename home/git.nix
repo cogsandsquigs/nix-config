@@ -23,9 +23,11 @@
     # Extra configuration for sections not provided by top-level options:
     extraConfig = {
       url = {
+        /*
         "ssh://git@github.com/" = {
           insteadOf = "https://github.com/";
         };
+        */
         "ssh://git@gitlab.doc.ic.ac.uk/" = {
           insteadOf = "https://gitlab.doc.ic.ac.uk/";
         };
