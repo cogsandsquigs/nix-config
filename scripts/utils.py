@@ -103,6 +103,7 @@ def invoke_process_popen_poll_live(
         cwd=cwd,
     ) as process:
         proc_out = []
+        num_displayed_lines = 0
 
         while process.poll() is None:
             # Get output
@@ -113,15 +114,16 @@ def invoke_process_popen_poll_live(
             # Erase last `display_lines` or `len(proc_out)` lines, prep. to write new ones
             # NOTE: len(proc_out) > 0 so that we don't erase the cmd invoke/prev. line
             if len(proc_out) > 0:
-                print(f"\033[{min(len(proc_out), display_lines)}A\033[J")
+                print(f"\033[{num_displayed_lines}A\033[J")
 
             proc_out.append(output)
+            num_displayed_lines = min(len(proc_out), display_lines)
 
             print(
                 "\n".join(
                     map(
                         lambda x: f"\033[90m> {x}\x1b[0m",
-                        proc_out[: min(display_lines, len(proc_out))],
+                        proc_out[:num_displayed_lines],
                     )
                 ),
                 end="",
