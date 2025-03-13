@@ -110,18 +110,20 @@ def invoke_process_popen_poll_live(
             if output == "":
                 continue
 
-            # Erase last `len(proc_out)` lines, prep. to write new ones
+            # Erase last `display_lines` or `len(proc_out)` lines, prep. to write new ones
             # NOTE: len(proc_out) > 0 so that we don't erase the cmd invoke/prev. line
             if len(proc_out) > 0:
-                print(f"\033[{len(proc_out)}A\033[J")
+                print(f"\033[{min(len(proc_out), display_lines)}A\033[J")
 
-            # Update proc_out to be scrolling
             proc_out.append(output)
-            if len(proc_out) > display_lines:
-                proc_out = proc_out[1:]
 
             print(
-                "\n".join(map(lambda x: f"\033[90m> {x}\x1b[0m", proc_out)),
+                "\n".join(
+                    map(
+                        lambda x: f"\033[90m> {x}\x1b[0m",
+                        proc_out[: min(display_lines, len(proc_out))],
+                    )
+                ),
                 end="",
             )
 

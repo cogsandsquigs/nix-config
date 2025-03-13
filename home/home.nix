@@ -67,6 +67,7 @@
 
     # Rust
     rustup
+    #cargo-afl # Fuzzing
     cargo-watch
     cargo-workspaces
 
