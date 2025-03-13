@@ -113,7 +113,7 @@ def invoke_process_popen_poll_live(
 
             # Erase last `display_lines` or `len(proc_out)` lines, prep. to write new ones
             # NOTE: len(proc_out) > 0 so that we don't erase the cmd invoke/prev. line
-            if len(proc_out) > 0:
+            if num_displayed_lines > 0:
                 print(f"\033[{num_displayed_lines}A\033[J")
 
             proc_out.append(output)
@@ -123,7 +123,7 @@ def invoke_process_popen_poll_live(
                 "\n".join(
                     map(
                         lambda x: f"\033[90m> {x}\x1b[0m",
-                        proc_out[:-num_displayed_lines],
+                        proc_out[-num_displayed_lines:],
                     )
                 ),
                 end="",
