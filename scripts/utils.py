@@ -136,7 +136,7 @@ def invoke_process_popen_poll_live(
             print("\n".join(map(lambda x: f"\033[0;31m{x}\033[0m", proc_out)))
             sys.exit()
         else:
-            print(f"\033[{num_displayed_lines}A\033[J")
+            print(f"\033[{num_displayed_lines + 1}A\033[J")
             print(f"{display}... Done! ✨")
 
         return process.poll()
