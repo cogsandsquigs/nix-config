@@ -28,7 +28,7 @@ return {
                 ensure_installed = {
                     "astro",
                     "clangd",
-                    "cmake",
+                    -- "cmake", -- NOTE: Using local install
                     "cssls",
                     "emmet_ls",
                     "glsl_analyzer",
@@ -41,7 +41,7 @@ return {
                     "pest_ls",
                     "prismals",
                     -- "pyright", -- NOTE: Using local install
-                    "rust_analyzer",
+                    -- "rust_analyzer", -- NOTE: using local install
                     "svelte",
                     "tailwindcss",
                     "taplo",
@@ -59,7 +59,7 @@ return {
         opts = {
             ensure_installed = {
                 -- "black", -- python formatter -- NOTE: Using local install
-                "clang-format", -- C/C++/etc. formatter
+                -- "clang-format", -- C/C++/etc. formatter -- NOTE: Using local install
                 "cmakelint", -- CMake linter
                 "eslint_d", -- js linter
                 "fourmolu", -- Haskell formatter

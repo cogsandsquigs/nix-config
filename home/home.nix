@@ -38,6 +38,7 @@
     ## DEVELOPMENT ##
 
     # C/C++
+    clang
     cmake
 
     # Docker/VMs
@@ -46,21 +47,30 @@
     colima
     lima
 
+    # Documentation generation
+    mdbook # Docs from MD: https://rust-lang.github.io/mdBook/index.html
+
     # Java/Kotlin
     jdk
     gradle
     kotlin
     jetbrains.idea-ultimate
 
+    # Latex
+    texliveFull # Install `latexmk` + co (unneeded) for vimtex (see neovim config)
+
+    # Nix
+    alejandra # Formatter
+
+    # Nodejs
+    nodejs_23
+    bun
+
     # Python
     python3
     black # Formatter
     pyright # Typechecker
     pylint # Linter
-
-    # Nodejs
-    nodejs_23
-    bun
 
     # Ruby
     rbenv
@@ -71,17 +81,8 @@
     cargo-watch
     cargo-workspaces
 
-    # Nix
-    alejandra # Formatter
-
-    # Latex
-    texliveFull # Install `latexmk` + co (unneeded) for vimtex (see neovim config)
-
-    # Documentation generation
-    mdbook # Docs from MD: https://rust-lang.github.io/mdBook/index.html
-
     ## FUN ##
-    modrinth-app # Minecraft launcher
+    # modrinth-app # Minecraft launcher # NOTE: Disabled for now due to issues w/ compile
     ghidra-bin # just a lil silly :3
 
     ## MISCELLANEOUS ##

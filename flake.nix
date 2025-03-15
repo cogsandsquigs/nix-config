@@ -9,7 +9,8 @@
 
     # MacOS config
     nix-darwin = {
-      url = "github:LnL7/nix-darwin/master";
+      url = "github:LnL7/nix-darwin/master"; # Unstable
+      # url = "github:LnL7/nix-darwin/nix-darwin-24.11"; # Stable
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
