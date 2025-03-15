@@ -20,5 +20,12 @@ return {
 
             -- NOTE: Rust linting via clippy (currently configured in `lspconfig.lua` via rust-analyzer)
         },
+
+        -- Custom linters
+        linters = {
+            clang = {
+                cmd = "clang",
+            },
+        },
     },
 }
