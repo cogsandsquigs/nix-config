@@ -27,7 +27,7 @@ return {
             mason_lspconfig.setup({ -- list of servers for mason to install
                 ensure_installed = {
                     "astro",
-                    -- "clangd", -- NOTE: Using local install
+                    "clangd", -- NOTE: Using local install
                     -- "cmake", -- NOTE: Using local install
                     "cssls",
                     "emmet_ls",
@@ -48,6 +48,8 @@ return {
                     "texlab",
                     "ts_ls",
                 },
+
+                automatic_installation = true,
             })
         end,
     },

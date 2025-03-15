@@ -13,8 +13,8 @@ return {
             svelte = { "eslint_d" },
             astro = { "eslint_d" }, 
             ]]
-            c = { "clang-tidy" },
-            cpp = { "clang-tidy" },
+            -- c = { "clang-tidy" },
+            -- cpp = { "clang-tidy" },
             python = { "pylint" },
             haskell = { "hlint" },
 
