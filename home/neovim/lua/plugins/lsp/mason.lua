@@ -41,7 +41,7 @@ return {
                     "pest_ls",
                     "prismals",
                     -- "pyright", -- NOTE: Using local install
-                    -- "rust_analyzer", -- NOTE: using local install
+                    "rust_analyzer",
                     "svelte",
                     "tailwindcss",
                     "taplo",

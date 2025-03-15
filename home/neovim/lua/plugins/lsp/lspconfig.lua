@@ -159,6 +159,7 @@ return {
 
                 ["rust_analyzer"] = function()
                     -- configure rust-analyzer server
+
                     lspconfig["rust_analyzer"].setup({
                         capabilities = capabilities,
                         settings = {
