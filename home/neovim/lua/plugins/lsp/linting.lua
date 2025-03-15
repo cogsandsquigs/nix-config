@@ -13,19 +13,12 @@ return {
             svelte = { "eslint_d" },
             astro = { "eslint_d" }, 
             ]]
-            c = { "clang" },
-            cpp = { "clang" },
+            c = { "clang-tidy" },
+            cpp = { "clang-tidy" },
             python = { "pylint" },
             haskell = { "hlint" },
 
             -- NOTE: Rust linting via clippy (currently configured in `lspconfig.lua` via rust-analyzer)
-        },
-
-        -- Custom linters
-        linters = {
-            clang = {
-                cmd = "clang",
-            },
         },
     },
 }
