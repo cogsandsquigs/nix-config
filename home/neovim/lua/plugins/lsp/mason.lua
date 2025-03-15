@@ -68,16 +68,14 @@ return {
                 "ktfmt", -- Kotlin formatter
                 "ktlint", -- Kotlin linter + formatter (not used)
                 "latexindent",
-                -- "nixpkgs-fmt", -- Nix formatter NOTE: Using local install of alejandra instead
+                -- "nixpkgs-fmt", -- Nix formatter -- NOTE: Using local install of alejandra instead
                 "prettierd", -- prettier formatter
-                -- "pylint", -- python linter NOTE: Using local install
+                -- "pylint", -- python linter -- NOTE: Using local install
                 "shellcheck", -- Shell script linter,
                 "sqlfluff", -- SQL formatter
                 "stylua", -- lua formatter
                 "taplo", -- TOML formatter
-                -- NOTE: Not installing this with tool-installer as it is recommended to use the system-installed
-                -- version.
-                -- "rustfmt", -- rust formatter
+                -- "rustfmt", -- rust formatter -- NOTE: Using local install
             },
 
             auto_update = true,
