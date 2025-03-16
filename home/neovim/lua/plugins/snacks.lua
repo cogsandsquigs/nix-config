@@ -86,6 +86,7 @@ return {
                         "*/.git", -- Because git directories should never be directly interfaced with - only through git CLI.
                         "*/.DS_Store",
                         "thumbs.db",
+                        ".direnv",
                     },
                     layout = {
                         layout = {
