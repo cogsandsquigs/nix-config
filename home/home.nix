@@ -11,6 +11,7 @@
     ./neovim
     ./p10k
     ./librewolf.nix
+    ./direnv.nix
   ];
 
   # User-only packages
@@ -62,6 +63,7 @@
 
     # Nix
     alejandra # Formatter
+    # direnv # NOTE: Not needed! See: https://github.com/nix-community/nix-direnv
 
     # Nodejs
     nodejs_23
