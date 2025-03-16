@@ -2,8 +2,7 @@
   home.stateVersion = "25.05";
 
   imports = [
-    ./zsh.nix
-    ./fish.nix
+    ./shell.nix
     ./kitty.nix
     ./git.nix
     ./zoxide.nix
@@ -16,19 +15,26 @@
 
   # User-only packages
   home.packages = with pkgs; [
+    ## SHELLS ##
+
+    # Zsh
+    zsh
+    oh-my-zsh
+    zsh-powerlevel10k
+
+    # Fish
+    fish
+
     ## USERLAND ##
-    # neovim # Editor NOTE: Removed, see here: https://discourse.nixos.org/t/home-manager-neovim-collision/16963
+
     kitty # Terminal
+    # neovim # Editor NOTE: Removed, see here: https://discourse.nixos.org/t/home-manager-neovim-collision/16963
     git # <3
     lazygit # Makes git awesomer
     gnupg # Signatures
     delta # Git diff highlighting
     zoxide # Better CD
     fzf # Fuzzy finder
-    zsh
-    oh-my-zsh
-    fish
-    zsh-powerlevel10k
     eza # Better ls
     dust # Better du
     bat # Better cat

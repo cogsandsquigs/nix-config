@@ -1,3 +1,4 @@
+# The shell configuration I use!
 {pkgs, ...}: {
   programs.zsh = {
     enable = true;
@@ -39,5 +40,9 @@
       theme = "robbyrussell";
       plugins = ["git"];
     };
+  };
+
+  programs.fish = {
+    enable = false;
   };
 }
