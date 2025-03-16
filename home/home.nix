@@ -72,7 +72,7 @@
     # direnv # NOTE: Not needed! See: https://github.com/nix-community/nix-direnv
 
     # Nodejs
-    nodejs_23
+    nodejs
     bun
 
     # Python
