@@ -17,6 +17,18 @@
       };
     };
 
+    # Open tailscale on startup
+    tailscale = {
+      command = "open /Applications/Tailscale.app";
+
+      serviceConfig = {
+        KeepAlive = false; # When it stops, do *NOT* restart it (otherwise it just keeps opening lmao :p)
+        RunAtLoad = true;
+        StandardOutPath = "/tmp/tailscale.out.log";
+        StandardErrorPath = "/tmp/tailscale.err.log";
+      };
+    };
+
     # Collect nix garbage
     nix-collect-garbage = {
       command = "nix-collect-garbage -d";
