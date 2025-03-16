@@ -44,15 +44,17 @@
       "homebrew/services"
     ];
 
-    # `brew install`
-    # TODO Feel free to add your favorite apps here.
-    brews = [
-      # "aria2"  # download tool
-    ];
-
+    # MacOS App Store apps.
+    # NOTE: You need the App ID to install apps from the App Store. Can be found on the app's page URL
+    # on the App Store.
     masApps = {
       #"Xcode" = 497799835; # NOTE: Worst idea to automate this EVER. Why does xcode take so long :'(
     };
+
+    # `brew install`
+    brews = [
+      "ca-certificates" # NOTE: For some reason this is required by `bun` and also some others
+    ];
 
     # `brew install --cask`
     # TODO Feel free to add your favorite apps here.
