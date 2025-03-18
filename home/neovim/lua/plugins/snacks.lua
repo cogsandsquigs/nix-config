@@ -75,18 +75,18 @@ return {
                     hidden = true,
                     ignored = true,
                     exclude = {
-                        "node_modules",
-                        "target",
+                        "node_modules/",
+                        "target/",
                         "lazy-lock.json",
                         "package-lock.json",
                         "bun.lockb",
-                        ".astro",
-                        ".svelte",
+                        "*/.astro",
+                        "*/.svelte",
                         "dist-newstyle", -- Haskell
                         "*/.git", -- Because git directories should never be directly interfaced with - only through git CLI.
                         "*/.DS_Store",
                         "thumbs.db",
-                        ".direnv",
+                        "*/.direnv",
                     },
                     layout = {
                         layout = {
