@@ -63,6 +63,7 @@
       "whatsapp"
       "tailscale"
       "steam"
+      "olympus" # Celeste mod loader
     ];
   };
 }
