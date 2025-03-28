@@ -47,6 +47,7 @@
     # C/C++
     clang
     cmake
+    libiconv
     llvmPackages.clang-tools # tools for clang!
 
     # Docker/VMs
