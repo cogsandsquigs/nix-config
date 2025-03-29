@@ -108,5 +108,6 @@
     # firefox-unwrapped
     librewolf
     spotify
+    postman
   ];
 }
