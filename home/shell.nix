@@ -1,5 +1,11 @@
 # The shell configuration I use!
-{pkgs, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: let
+  inherit (pkgs) stdenv;
+in {
   programs.zsh = {
     enable = true;
     enableCompletion = true;
@@ -18,7 +24,13 @@
       + "export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))\n"
       # + "export CC=${pkgs.clang}\n"
       # + "export AR=${pkgs.llvm}\n"
-      + "export PATH=\"/usr/bin/:$PATH\"\n"; # Force to be apple native CC
+      +
+      # Force to be apple native CC
+      (
+        if stdenv.isDarwin
+        then "export PATH=\"/usr/bin/:$PATH\"\n"
+        else ""
+      );
 
     plugins = [
       {
