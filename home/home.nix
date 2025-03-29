@@ -75,6 +75,7 @@
       # Nodejs
       nodejs
       bun
+      deno
 
       # Python
       python3
