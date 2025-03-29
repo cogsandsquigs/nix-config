@@ -46,9 +46,10 @@
     ## DEVELOPMENT ##
 
     # C/C++
-    # clang
-    # clang-analyzer
-    # cmake
+    llvm
+    clang
+    clang-analyzer
+    cmake
 
     # Docker/VMs
     docker
