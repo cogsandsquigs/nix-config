@@ -18,7 +18,7 @@
       + "export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))\n"
       # + "export CC=${pkgs.clang}\n"
       # + "export AR=${pkgs.llvm}\n"
-      + "export $LIBRARY_PATH:${pkgs.libiconv}/lib"; # Needed to compile C/C++ programs, link libraries
+      + "export PATH=\"/usr/bin/:$PATH\"\n"; # Force to be apple native CC
 
     plugins = [
       {

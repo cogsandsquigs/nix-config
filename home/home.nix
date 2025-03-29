@@ -46,11 +46,11 @@
     ## DEVELOPMENT ##
 
     # C/C++
-    llvm
-    clang
+    #llvm
+    #clang
     clang-analyzer
     cmake
-    libiconv # Needed libraries
+    # libiconv # Needed libraries
 
     # Docker/VMs
     docker
