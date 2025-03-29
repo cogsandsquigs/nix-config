@@ -16,8 +16,9 @@
     envExtra =
       "export EDITOR=nvim\n" # Set default editor to nvim
       + "export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))\n"
-      + "export CC=${pkgs.clang}"
-      + "export AR=${pkgs.llvm}";
+      # + "export CC=${pkgs.clang}"
+      # + "export AR=${pkgs.llvm}"
+      ;
 
     plugins = [
       {
