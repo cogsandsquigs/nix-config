@@ -19,7 +19,9 @@ in {
       "export EDITOR=nvim\n" # Set default editor to nvim
       + "export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))\n"
       + (
-        # Force to be apple native CC
+        # Force to be apple native CC.
+        # NOTE: Needed because otherwise cc from installed clang/nix will override and cause issues on
+        # darwin systems, e.x. Rust compilation of external C libraries (e.x. libiconv).
         if stdenv.isDarwin
         then "export PATH=\"/usr/bin/:$PATH\"\n"
         else ""
