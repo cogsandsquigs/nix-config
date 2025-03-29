@@ -46,7 +46,7 @@
     ## DEVELOPMENT ##
 
     # C/C++
-    clang
+    # clang
     clang-analyzer
     cmake
 
