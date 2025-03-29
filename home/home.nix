@@ -41,6 +41,7 @@
     ripgrep
     neofetch
     jq
+    tree-sitter
 
     ## DEVELOPMENT ##
 
