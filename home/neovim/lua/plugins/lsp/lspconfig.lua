@@ -4,9 +4,6 @@ return {
         event = { "BufReadPre", "BufNewFile" },
         dependencies = {
             { "antosha417/nvim-lsp-file-operations", config = true },
-            -- NOTE: The rest of these plugins are LSP-style language plugins that bundle
-            -- formatting/linting/syntax highlight together.
-            { "pest-parser/pest.vim" },
         },
         config = function()
             -- import lspconfig plugin
@@ -170,11 +167,7 @@ return {
                         },
                     })
                 end,
-                --[[
-                ["pest_ls"] = function()
-                    require("pest-vim").setup({ capabilities = capabilities })
-                end,
-                ]]
+
                 ["taplo"] = function()
                     -- configure taplo server
                     lspconfig["taplo"].setup({
