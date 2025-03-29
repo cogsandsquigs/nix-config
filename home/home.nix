@@ -50,6 +50,7 @@
     clang
     clang-analyzer
     cmake
+    libiconv # Needed libraries
 
     # Docker/VMs
     docker
