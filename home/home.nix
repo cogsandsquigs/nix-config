@@ -48,7 +48,7 @@
     # C/C++
     # clang
     # clang-analyzer
-    cmake
+    # cmake
 
     # Docker/VMs
     docker
