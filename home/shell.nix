@@ -18,7 +18,7 @@
       + "export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))\n"
       # + "export CC=${pkgs.clang}\n"
       # + "export AR=${pkgs.llvm}\n"
-      + "export $LIBRARY_PATH:${pkgs.libiconv}"; # Needed to compile C/C++ programs, link libraries
+      + "export $LIBRARY_PATH:${pkgs.libiconv}/lib:${pkgs.libiconv}/bin"; # Needed to compile C/C++ programs, link libraries
 
     plugins = [
       {
