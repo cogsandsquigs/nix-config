@@ -94,7 +94,7 @@
     cargo-workspaces
 
     ## FUN ##
-    # modrinth-app # Minecraft launcher # NOTE: Disabled for now due to issues w/ compile
+    modrinth-app # Minecraft launcher # NOTE: Disabled for now due to issues w/ compile
     ghidra-bin # just a lil silly :3
 
     ## MISCELLANEOUS ##

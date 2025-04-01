@@ -37,11 +37,18 @@ def rebuild():
     `nixos-rebuild`.
     """
 
-    match system():
-        case "MacOS" | "Darwin":
-            rebuild_cmd = "darwin-rebuild"
-        case _:
-            rebuild_cmd = "nixos-rebuild"  # Default to NixOS
+    if system() in ["MacOS", "Darwin"]:
+        rebuild_cmd = "darwin-rebuild"
+    else:
+        rebuild_cmd = "nixos-rebuild"  # Default to NixOS
+
+    # NOTE: Syntax for py >= 3.10
+    #
+    # match system():
+    #     case "MacOS" | "Darwin":
+    #         rebuild_cmd = "darwin-rebuild"
+    #     case _:
+    #         rebuild_cmd = "nixos-rebuild"  # Default to NixOS
 
     return invoke_process_popen_poll_live(
         [rebuild_cmd, "switch", "--verbose", "--flake", NIX_FLAKE_PATH],
@@ -141,5 +148,5 @@ def invoke_process_popen_poll_live(
 
         return process.poll()
 
-    print(f"ERROR {sys.exc_info()[1]} while running {command.join(" ")}")
+    print(f"ERROR {sys.exc_info()[1]} while running {command.join(' ')}")
     return None
