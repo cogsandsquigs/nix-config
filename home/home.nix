@@ -60,6 +60,11 @@
     # Documentation generation
     mdbook # Docs from MD: https://rust-lang.github.io/mdBook/index.html
 
+    # Haskell
+    ghc
+    haskell-language-server
+    cabal-install
+
     # Java/Kotlin
     jdk
     gradle
@@ -94,8 +99,7 @@
     cargo-workspaces
 
     ## FUN ##
-    modrinth-app # Minecraft launcher # NOTE: Disabled for now due to issues w/ compile
-    ghidra-bin # just a lil silly :3
+    modrinth-app # Minecraft launcher
 
     ## MISCELLANEOUS ##
     magic-wormhole
