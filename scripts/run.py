@@ -4,7 +4,7 @@ Runs/Rebuilds/Updates the Nix configuration
 
 import argparse
 
-from utils import git_commit_push, git_pull, rebuild, update
+from utils import git_commit_push, git_pull, nix_gc, rebuild, update
 
 parser = argparse.ArgumentParser(
     prog="NixRunner",
@@ -30,8 +30,10 @@ elif args.action == "upgrade":
     update()
     rebuild()
     git_commit_push()
+elif args.action == "cleanup":
+    nix_gc()
 else:
-    print("Invalid action. Please choose either 'rebuild' or 'upgrade'.")
+    print("Invalid action. Please choose 'rebuild', 'upgrade', or 'cleanup'.")
 
 # NOTE: Syntax for py >= 3.10
 #

@@ -43,6 +43,7 @@ in {
       nv = "nvim";
       upgrade = "python3 /etc/nix/scripts/run.py upgrade";
       rebuild = "python3 /etc/nix/scripts/run.py rebuild";
+      cleanup = "python3 /etc/nix/scripts/run.py cleanup";
     };
 
     oh-my-zsh = {

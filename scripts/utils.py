@@ -89,6 +89,18 @@ def git_pull():
     )
 
 
+def nix_gc():
+    """
+    Gets rid of old generations of Nix packages.
+    """
+    invoke_process_popen_poll_live(
+        ["sudo", "nix-collect-garbage", "-d"],
+        "🗑️ Collecting old Nix generations",
+        cwd=NIX_FLAKE_PATH,
+        ignore_errors=False,
+    )
+
+
 # Partially derived from:
 # https://github.com/fabianlee/blogcode/blob/master/python/runProcessWithLiveOutput.py
 def invoke_process_popen_poll_live(
