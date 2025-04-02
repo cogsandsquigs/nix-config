@@ -31,7 +31,7 @@
 
     # Collect nix garbage
     nix-collect-garbage = {
-      command = "nix-collect-garbage -d";
+      command = "sudo nix-collect-garbage -d";
 
       serviceConfig = {
         KeepAlive = false; # When it stops, do *NOT* restart it
