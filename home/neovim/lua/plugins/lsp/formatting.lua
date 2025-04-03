@@ -28,7 +28,7 @@ return {
                 markdown = { "prettierd" },
                 mdx = { "prettierd" },
                 nix = { "alejandra" },
-                pest = { "pestfmt" },
+                -- pest = { "pestfmt" }, -- NOTE: Disabling b/c formatter SUCKS
                 python = { "isort", "black" },
                 rust = { "rustfmt" },
                 sass = { "prettierd" },
