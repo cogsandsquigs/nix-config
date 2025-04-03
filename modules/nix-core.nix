@@ -22,7 +22,7 @@
   nix.enable = true;
   nix.package = pkgs.nix;
 
-  nixpkgs = {
-    config.allowUnfree = true;
+  nixpkgs.config = {
+    allowUnfree = true;
   };
 }
