@@ -28,6 +28,7 @@ return {
                 markdown = { "prettierd" },
                 mdx = { "prettierd" },
                 nix = { "alejandra" },
+                pest = { "pestfmt" },
                 python = { "isort", "black" },
                 rust = { "rustfmt" },
                 sass = { "prettierd" },
@@ -49,7 +50,6 @@ return {
 
             -- Configure formatters
             formatters = {
-
                 alejandra = {
                     command = "alejandra",
                 },
@@ -78,6 +78,12 @@ return {
                     args = {
                         '-y="defaultIndent:"    ""',
                         "-",
+                    },
+                },
+
+                pestfmt = {
+                    args = {
+                        "pestfmt",
                     },
                 },
 
