@@ -18,17 +18,14 @@ in {
     envExtra =
       "export EDITOR=nvim\n" # Set default editor to nvim
       + "export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))\n"
+      + "export PATH='$HOME/.cargo/bin:$PATH'\n" # Add cargo bin to path
+      # Force to be apple native CC.
+      # NOTE: Needed because otherwise cc from installed clang/nix will override and cause issues on
+      # darwin systems, e.x. Rust compilation of external C libraries (e.x. libiconv).
       + (
-        "export PATH='$HOME/.cargo/bin"
-        + (
-          # Force to be apple native CC.
-          # NOTE: Needed because otherwise cc from installed clang/nix will override and cause issues on
-          # darwin systems, e.x. Rust compilation of external C libraries (e.x. libiconv).
-          if stdenv.isDarwin
-          then ":/usr/bin/"
-          else ""
-        )
-        + "':$PATH"
+        if stdenv.isDarwin
+        then "export PATH='/usr/bin/:$PATH'\n"
+        else ""
       );
 
     plugins = [
