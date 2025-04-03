@@ -38,6 +38,7 @@ return {
                     "lua_ls",
                     "marksman",
                     "nil_ls",
+                    "pest_ls",
                     "prismals",
                     -- "pyright", -- NOTE: Using local install
                     "rust_analyzer",

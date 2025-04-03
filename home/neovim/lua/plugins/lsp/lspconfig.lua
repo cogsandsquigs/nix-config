@@ -4,6 +4,7 @@ return {
         event = { "BufReadPre", "BufNewFile" },
         dependencies = {
             { "antosha417/nvim-lsp-file-operations", config = true },
+            { "pest-parser/pest.vim" }, -- NOTE: For pest-language-server to work
         },
         config = function()
             -- import lspconfig plugin
@@ -75,124 +76,14 @@ return {
             end
 
             mason_lspconfig.setup_handlers({
-                -- default handler for installed servers
+                -- Default handler for installed servers
                 function(server_name)
                     lspconfig[server_name].setup({
                         capabilities = capabilities,
                     })
                 end,
 
-                ["hls"] = function()
-                    lspconfig["hls"].setup({
-                        capabilities = capabilities,
-                        command = "haskell-language-server-wrapper",
-                        settings = {
-                            haskell = {
-                                formattingProvider = "fourmolu",
-                                hlintOn = true,
-                                useSnippetsOnType = true,
-                                useSimpleTypeCheck = true,
-                            },
-                        },
-                    })
-                end,
-
-                ["svelte"] = function()
-                    -- configure svelte server
-                    lspconfig["svelte"].setup({
-                        capabilities = capabilities,
-                        on_attach = function(client, bufnr)
-                            vim.api.nvim_create_autocmd("BufWritePost", {
-                                pattern = { "*.js", "*.ts" },
-                                callback = function(ctx)
-                                    -- Here use ctx.match instead of ctx.file
-                                    client.notify("$/onDidChangeTsOrJsFile", { uri = ctx.match })
-                                end,
-                            })
-                        end,
-                    })
-                end,
-
-                ["graphql"] = function()
-                    -- configure graphql language server
-                    lspconfig["graphql"].setup({
-                        capabilities = capabilities,
-                        filetypes = { "graphql", "gql", "svelte", "typescriptreact", "javascriptreact" },
-                    })
-                end,
-
-                ["emmet_ls"] = function()
-                    -- configure emmet language server
-                    lspconfig["emmet_ls"].setup({
-                        capabilities = capabilities,
-                        filetypes = {
-                            "html",
-                            "typescriptreact",
-                            "javascriptreact",
-                            "css",
-                            "sass",
-                            "scss",
-                            "less",
-                            "svelte",
-                        },
-                    })
-                end,
-
-                ["lua_ls"] = function()
-                    -- configure lua server (with special settings)
-                    lspconfig["lua_ls"].setup({
-                        capabilities = capabilities,
-                        settings = {
-                            Lua = {
-                                -- make the language server recognize "vim" global
-                                diagnostics = {
-                                    globals = { "vim" },
-                                },
-                                completion = {
-                                    callSnippet = "Replace",
-                                },
-                            },
-                        },
-                    })
-                end,
-
-                ["ts_ls"] = function()
-                    lspconfig["ts_ls"].setup({
-                        capabilities = capabilities,
-                        settings = {
-                            javascript = {
-                                implicitProjectConfiguration = {
-                                    checkJs = true,
-                                },
-                            },
-                        },
-                    })
-                end,
-
-                ["rust_analyzer"] = function()
-                    -- configure rust-analyzer server
-                    lspconfig["rust_analyzer"].setup({
-                        capabilities = capabilities,
-                        settings = {
-                            ["rust-analyzer"] = {
-                                check = {
-                                    command = "clippy",
-                                },
-                            },
-                        },
-                    })
-                end,
-
-                ["taplo"] = function()
-                    -- configure taplo server
-                    lspconfig["taplo"].setup({
-                        capabilities = capabilities,
-                        filetypes = {
-                            "toml",
-                        },
-                    })
-                end,
-
+                -- Custom handlers
                 ["clangd"] = function()
                     lspconfig["clangd"].setup({
                         capabilities = capabilities,
@@ -217,6 +108,23 @@ return {
                     })
                 end,
 
+                ["emmet_ls"] = function()
+                    -- configure emmet language server
+                    lspconfig["emmet_ls"].setup({
+                        capabilities = capabilities,
+                        filetypes = {
+                            "html",
+                            "typescriptreact",
+                            "javascriptreact",
+                            "css",
+                            "sass",
+                            "scss",
+                            "less",
+                            "svelte",
+                        },
+                    })
+                end,
+
                 ["eslint"] = function()
                     lspconfig["eslint"].setup({
                         capabilities = capabilities,
@@ -225,6 +133,106 @@ return {
                             "javascriptreact",
                             "typescript",
                             "typescriptreact",
+                        },
+                    })
+                end,
+
+                ["graphql"] = function()
+                    -- configure graphql language server
+                    lspconfig["graphql"].setup({
+                        capabilities = capabilities,
+                        filetypes = { "graphql", "gql", "svelte", "typescriptreact", "javascriptreact" },
+                    })
+                end,
+
+                ["hls"] = function()
+                    lspconfig["hls"].setup({
+                        capabilities = capabilities,
+                        command = "haskell-language-server-wrapper",
+                        settings = {
+                            haskell = {
+                                formattingProvider = "fourmolu",
+                                hlintOn = true,
+                                useSnippetsOnType = true,
+                                useSimpleTypeCheck = true,
+                            },
+                        },
+                    })
+                end,
+
+                ["lua_ls"] = function()
+                    -- configure lua server (with special settings)
+                    lspconfig["lua_ls"].setup({
+                        capabilities = capabilities,
+                        settings = {
+                            Lua = {
+                                -- make the language server recognize "vim" global
+                                diagnostics = {
+                                    globals = { "vim" },
+                                },
+                                completion = {
+                                    callSnippet = "Replace",
+                                },
+                            },
+                        },
+                    })
+                end,
+
+                ["pest_ls"] = function()
+                    require("pest-vim").setup({
+                        capabilities = capabilities,
+                    })
+                end,
+
+                ["rust_analyzer"] = function()
+                    -- configure rust-analyzer server
+                    lspconfig["rust_analyzer"].setup({
+                        capabilities = capabilities,
+                        settings = {
+                            ["rust-analyzer"] = {
+                                check = {
+                                    command = "clippy",
+                                },
+                            },
+                        },
+                    })
+                end,
+
+                ["svelte"] = function()
+                    -- configure svelte server
+                    lspconfig["svelte"].setup({
+                        capabilities = capabilities,
+                        on_attach = function(client, bufnr)
+                            vim.api.nvim_create_autocmd("BufWritePost", {
+                                pattern = { "*.js", "*.ts" },
+                                callback = function(ctx)
+                                    -- Here use ctx.match instead of ctx.file
+                                    client.notify("$/onDidChangeTsOrJsFile", { uri = ctx.match })
+                                end,
+                            })
+                        end,
+                    })
+                end,
+
+                ["taplo"] = function()
+                    -- configure taplo server
+                    lspconfig["taplo"].setup({
+                        capabilities = capabilities,
+                        filetypes = {
+                            "toml",
+                        },
+                    })
+                end,
+
+                ["ts_ls"] = function()
+                    lspconfig["ts_ls"].setup({
+                        capabilities = capabilities,
+                        settings = {
+                            javascript = {
+                                implicitProjectConfiguration = {
+                                    checkJs = true,
+                                },
+                            },
                         },
                     })
                 end,
