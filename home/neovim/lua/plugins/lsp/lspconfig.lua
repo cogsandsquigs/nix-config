@@ -82,6 +82,21 @@ return {
                     })
                 end,
 
+                ["hls"] = function()
+                    lspconfig["hls"].setup({
+                        capabilities = capabilities,
+                        command = "haskell-language-server-wrapper",
+                        settings = {
+                            haskell = {
+                                formattingProvider = "fourmolu",
+                                hlintOn = true,
+                                useSnippetsOnType = true,
+                                useSimpleTypeCheck = true,
+                            },
+                        },
+                    })
+                end,
+
                 ["svelte"] = function()
                     -- configure svelte server
                     lspconfig["svelte"].setup({

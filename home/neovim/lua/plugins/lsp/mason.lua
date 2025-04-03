@@ -33,7 +33,7 @@ return {
                     "emmet_ls",
                     "glsl_analyzer",
                     "graphql",
-                    "hls",
+                    -- "hls", -- NOTE: Using local install
                     "html",
                     "lua_ls",
                     "marksman",
