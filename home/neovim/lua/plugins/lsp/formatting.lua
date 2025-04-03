@@ -82,9 +82,7 @@ return {
                 },
 
                 pestfmt = {
-                    args = {
-                        "pestfmt",
-                    },
+                    command = "pestfmt",
                 },
 
                 taplo = {
