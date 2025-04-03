@@ -83,6 +83,9 @@ return {
 
                 pestfmt = {
                     command = "pestfmt",
+                    args = {
+                        "--stdin",
+                    },
                 },
 
                 taplo = {
