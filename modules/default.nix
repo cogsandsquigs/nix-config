@@ -1,6 +1,6 @@
 {
-  imports = [
-    ./nix-core.nix
-    ./fonts.nix
-  ];
+    imports = [
+        ./nix-core.nix
+        ./fonts.nix
+    ];
 }
