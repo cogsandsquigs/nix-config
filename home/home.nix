@@ -114,6 +114,6 @@
         librewolf
         spotify
         postman
-        kicad
+        # kicad
     ];
 }
