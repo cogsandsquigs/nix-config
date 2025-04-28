@@ -65,6 +65,7 @@
             "steam"
             "olympus" # Celeste mod loader
             "tomatobar" # Pomorodro timer
+            "roblox"
         ];
     };
 }
