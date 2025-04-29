@@ -61,7 +61,7 @@ return {
         opts = {
             ensure_installed = {
                 -- "black", -- python formatter -- NOTE: Using local install
-                -- "clang-format", -- C/C++/etc. formatter -- NOTE: Using local install
+                "clang-format", -- C/C++/etc. formatter
                 "cmakelint", -- CMake linter
                 "eslint_d", -- js linter
                 "fourmolu", -- Haskell formatter
