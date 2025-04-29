@@ -48,8 +48,10 @@
         # C/C++
         llvm
         clang
+        clang-tools
         clang-analyzer
         cmake
+        platformio # hardware stuffs
 
         # Docker/VMs
         docker
