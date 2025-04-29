@@ -16,6 +16,8 @@ return {
                 glsl = { lsp_format = "first" },
                 graphql = { "prettierd" },
                 haskell = { "fourmolu" },
+                h = { "clang-format" },
+                hpp = { "clang-format" },
                 html = { "prettierd" },
                 javascript = { "prettierd" },
                 javascriptreact = { "prettierd" },
