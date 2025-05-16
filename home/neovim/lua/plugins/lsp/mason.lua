@@ -65,6 +65,7 @@ return {
                 "cmakelint", -- CMake linter
                 "eslint_d", -- js linter
                 "fourmolu", -- Haskell formatter
+                "gersemi" -- CMake formatter
                 "hlint", -- Haskell linter
                 "isort", -- python formatter
                 "ktfmt", -- Kotlin formatter
@@ -78,6 +79,7 @@ return {
                 "stylua", -- lua formatter
                 "taplo", -- TOML formatter
                 -- "rustfmt", -- rust formatter -- NOTE: Using local install
+            
             },
 
             auto_update = true,

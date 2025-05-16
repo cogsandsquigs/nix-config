@@ -12,6 +12,7 @@ return {
                 astro = { "prettierd" },
                 c = { "clang-format" },
                 cpp = { "clang-format" },
+                cmake = { "gersemi" },
                 css = { "prettierd" },
                 glsl = { lsp_format = "first" },
                 graphql = { "prettierd" },
