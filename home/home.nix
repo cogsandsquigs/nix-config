@@ -101,10 +101,8 @@
         cargo-watch
         cargo-workspaces
 
-        /*
-    ## FUN ##
-    modrinth-app # Minecraft launcher
-    */
+        ## FUN ##
+        modrinth-app-unwrapped # Minecraft launcher
 
         ## MISCELLANEOUS ##
         magic-wormhole
