@@ -15,7 +15,7 @@
 
     # User-only packages
     home.packages = with pkgs; [
-        /*
+        
     ## SHELLS ##
 
     # Zsh
@@ -69,6 +69,7 @@
     haskell-language-server
     cabal-install
 
+        /*
     # Java/Kotlin
     jdk
     gradle
