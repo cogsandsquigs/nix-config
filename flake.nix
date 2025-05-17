@@ -31,12 +31,14 @@
 
         mkDarwinConfiguration = hostname: username:
             nix-darwin.lib.darwinSystem {
-                # NOTE: Doing this allows us to import `specialArgs` in `{sspecialArgs, ...}: <...>`, which lets us
-                # get certain information we need
                 system = "aarch64-darwin";
+
+                # NOTE: Doing this allows us to import `specialArgs` in `{specialArgs, ...}: <...>`, which lets us
+                # get certain information we need
                 specialArgs = {
                     inherit inputs outputs hostname username;
                 };
+
                 modules = [
                     ./modules # Global config
                     ./modules/darwin # MacOS-specific config

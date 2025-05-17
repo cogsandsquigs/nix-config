@@ -1,5 +1,9 @@
 # Derived from https://github.com/ryan4yin/nix-darwin-kickstarter/blob/main/minimal/modules/system.nix
-{pkgs, ...}:
+{
+    pkgs,
+    specialArgs,
+    ...
+}:
 ###################################################################################
 #
 #  macOS's System configuration
@@ -12,12 +16,16 @@
     nixpkgs.hostPlatform = "aarch64-darwin";
 
     system = {
+        primaryUser = specialArgs.username; # The primary user of the system
+
         stateVersion = 6;
+
         # activationScripts are executed every time you boot the system or run `nixos-rebuild` / `darwin-rebuild`.
-        activationScripts.postUserActivation.text = ''
+        activationScripts.postActivation.text = ''
             # activateSettings -u will reload the settings from the database and apply them to the current session,
             # so we do not need to logout and login again to make the changes take effect.
-            /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+            # We do `sudo -u ${specialArgs.username}` to run the command as the user
+            sudo -u ${specialArgs.username} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
         '';
 
         defaults = {
