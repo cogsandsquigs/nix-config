@@ -102,13 +102,13 @@
         cargo-workspaces
 
         /*
-
     ## FUN ##
     modrinth-app # Minecraft launcher
-
-    ## MISCELLANEOUS ##
-    magic-wormhole
     */
+
+        ## MISCELLANEOUS ##
+        magic-wormhole
+
         discord # For some reason discord is availabe on mac via nixpkgs, but not firefox???
         fontconfig
         obsidian
