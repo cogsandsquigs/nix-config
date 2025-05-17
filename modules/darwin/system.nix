@@ -20,7 +20,7 @@
 
         stateVersion = 6;
 
-        /*
+        
         # activationScripts are executed every time you boot the system or run `nixos-rebuild` / `darwin-rebuild`.
         activationScripts.postActivation.text = ''
             # activateSettings -u will reload the settings from the database and apply them to the current session,
@@ -28,7 +28,7 @@
             # We do `sudo -u ${specialArgs.username}` to run the command as the user
             sudo -u ${specialArgs.username} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
         '';
-        */
+        
 
         defaults = {
             menuExtraClock.Show24Hour = false; # show 24 hour clock

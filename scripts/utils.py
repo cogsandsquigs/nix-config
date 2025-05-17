@@ -51,7 +51,7 @@ def rebuild():
     #         rebuild_cmd = "nixos-rebuild"  # Default to NixOS
 
     return invoke_process_popen_poll_live(
-        [rebuild_cmd, "switch", "--verbose", "--flake", NIX_FLAKE_PATH],
+        ["sudo", rebuild_cmd, "switch", "--verbose", "--flake", NIX_FLAKE_PATH],
         "🔄 Rebuilding",
     )
 
