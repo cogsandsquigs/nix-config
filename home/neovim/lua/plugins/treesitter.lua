@@ -40,7 +40,7 @@ return {
             "graphql",
             "haskell",
             "html",
-            "html_django",
+            "htmldjango",
             "ini",
             "javascript",
             "json",
