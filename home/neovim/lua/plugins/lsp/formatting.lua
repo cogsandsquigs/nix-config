@@ -21,6 +21,7 @@ return {
                 h = { "clang-format" },
                 hpp = { "clang-format" },
                 html = { "prettierd" },
+                htmldjango = { "djlint" },
                 javascript = { "prettierd" },
                 javascriptreact = { "prettierd" },
                 json = { "prettierd" },
