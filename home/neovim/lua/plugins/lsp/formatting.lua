@@ -76,7 +76,6 @@ return {
                         "--format-css",
                         "--format-js",
                         "--max-blank-lines=1",
-                        "--preserve-blank-lines",
                         "--profile='jinja'",
                         "--quiet",
                         "--use-gitignore",
