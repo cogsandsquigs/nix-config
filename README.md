@@ -22,6 +22,9 @@ My nix configuration!
 ## Notes (for me!)
 
 - Old brew stuff is in `Brewfile`
+- In order to keep a global standard for C/C++ formatting, but _also allow local overrides if desired_ (e.g. formatting
+  standard for group project), we specify a `.clang-format` that's copied to the home directory in
+  `home/neovim/.clang-format`. For local control, specify a `.clang-format` in the local directory.
 
 ## Resources
 
