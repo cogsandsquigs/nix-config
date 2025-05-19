@@ -56,6 +56,7 @@ return {
             "rust",
             "scss",
             "svelte",
+            "tera",
             "tsx",
             "typescript",
             "vim",
