@@ -8,4 +8,9 @@
         "nvim/lua".source = ./lua;
         "nvim/init.lua".source = ./init.lua;
     };
+
+    # NOTE: Necessary for clang-format to always have same config/formatting rules, etc. everywhere
+    home.file = {
+        ".clang-format".source = ./.clang-format;
+    };
 }
