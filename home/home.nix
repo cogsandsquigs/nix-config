@@ -101,6 +101,9 @@
         cargo-watch
         cargo-workspaces
 
+        # SSG/Webdev
+        zola
+
         ## FUN ##
         modrinth-app-unwrapped # Minecraft launcher
 
