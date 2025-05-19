@@ -63,7 +63,8 @@ return {
                 ["clang-format"] = {
                     command = "clang-format",
                     args = {
-                        "--style={BasedOnStyle: LLVM, UseTab: Never, IndentWidth: 4, TabWidth: 4, BreakBeforeBraces: Attach, AllowShortIfStatementsOnASingleLine: AllIfsAndElse, IndentCaseLabels: true, ColumnLimit: 80, AccessModifierOffset: -4, NamespaceIndentation: All, FixNamespaceComments: false }",
+                        "--fallback-style={BasedOnStyle: LLVM, UseTab: Never, IndentWidth: 4, TabWidth: 4, BreakBeforeBraces: Attach, AllowShortIfStatementsOnASingleLine: AllIfsAndElse, IndentCaseLabels: true, ColumnLimit: 80, AccessModifierOffset: -4, NamespaceIndentation: All, FixNamespaceComments: false, PointerAlignment: Left }",
+                        "--style=file",
                     },
                 },
 
