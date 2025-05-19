@@ -69,9 +69,9 @@ return {
                 djlint = {
                     command = "djlint",
                     args = {
-                        "--indent 4",
-                        "--indent-css 4",
-                        "--indent-js 4",
+                        "--indent=4",
+                        "--indent-css=4",
+                        "--indent-j=4",
                         "--format-css",
                         "--format-js",
                     },
