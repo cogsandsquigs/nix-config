@@ -73,7 +73,7 @@ return {
                         "--reformat",
                         "--indent=4",
                         "--indent-css=4",
-                        "--indent-j=4",
+                        "--indent-js=4",
                         "--format-css",
                         "--format-js",
                     },
