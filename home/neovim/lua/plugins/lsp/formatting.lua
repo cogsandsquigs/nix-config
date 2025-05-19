@@ -69,6 +69,8 @@ return {
                 djlint = {
                     command = "djlint",
                     args = {
+                        "$FILENAME",
+                        "--reformat",
                         "--indent=4",
                         "--indent-css=4",
                         "--indent-j=4",
