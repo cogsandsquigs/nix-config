@@ -55,7 +55,6 @@ return {
             "query",
             "ron",
             "rust",
-            "sass",
             "scss",
             "svelte",
             "tera",
