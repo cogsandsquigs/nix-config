@@ -35,7 +35,7 @@ in {
                     # NOTE: Needed because otherwise cc from installed clang/nix will override and cause issues on
                     # darwin systems, e.x. Rust compilation of external C libraries (e.x. libiconv).
                     if stdenv.isDarwin
-                    then "export PATH=\"$PATH:/usr/bin/:/usr/lib/\""
+                    then "export PATH=\"/usr/bin/:$PATH\""
                     else ""
                 }
             '';
