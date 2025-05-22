@@ -51,7 +51,6 @@
         cmake
         llvmPackages_20.clang
         llvmPackages_20.clang-tools
-        llvmPackages_20.stdenv
         clang-analyzer # Not in LLVM pkgs :/
         platformio # hardware stuffs
 
