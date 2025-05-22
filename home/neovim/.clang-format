@@ -3,10 +3,23 @@ UseTab: Never
 IndentWidth: 4
 TabWidth: 4
 BreakBeforeBraces: Attach
-AllowShortIfStatementsOnASingleLine: AllIfsAndElse
 IndentCaseLabels: true
 ColumnLimit: 80
 AccessModifierOffset: -4
 NamespaceIndentation: All
 FixNamespaceComments: false
 PointerAlignment: Left
+AlignConsecutiveBitFields:
+  Enabled: true
+  AcrossEmptyLines: true
+  AcrossComments: false
+  AlignCompound: true
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseExpressionOnASingleLine: true
+AllowShortCompoundRequirementOnASingleLine: true
+AllowShortEnumsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AllowShortLambdasOnASingleLine: All
+AllowShortLoopsOnASingleLine: true
+AllowShortNamespacesOnASingleLine: true
