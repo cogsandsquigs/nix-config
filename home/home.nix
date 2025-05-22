@@ -55,6 +55,7 @@
         llvmPackages_20.libcxx # C++ libraries
         clang-analyzer # Not in LLVM pkgs :/
         platformio # hardware stuffs
+        pkg-config
 
         # Docker/VMs
         docker
