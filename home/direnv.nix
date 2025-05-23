@@ -9,6 +9,6 @@
         # Integrate with shells
         enableBashIntegration = true;
         enableZshIntegration = true;
-        enableFishIntegration = true;
+        # enableFishIntegration = true; # TODO: Why is this not good?
     };
 }
