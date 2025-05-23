@@ -16,6 +16,20 @@ in {
             rebuild = "python3 /etc/nix/scripts/run.py rebuild";
             cleanup = "python3 /etc/nix/scripts/run.py cleanup";
         };
+
+        shellInit = ''
+            set -gx EDITOR nvim # Set default editor to nvim
+            set -gx JAVA_HOME $(dirname $(dirname $(readlink -f $(which java)))) # Add java home
+            fish_add_path $HOME/.cargo/bin # export PATH="$HOME/.cargo/bin:$PATH" # Add cargo bin to path
+            ${
+                # Force to be apple native CC.
+                # NOTE: Needed because otherwise cc from installed clang/nix will override and cause issues on
+                # darwin systems, e.x. Rust compilation of external C libraries (e.x. libiconv).
+                if stdenv.isDarwin
+                then "" # "export PATH=\"/usr/bin:$PATH\""
+                else ""
+            }
+        '';
     };
 
     programs.zsh = {
