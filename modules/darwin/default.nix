@@ -1,7 +1,7 @@
 {
     imports = [
         ./apps.nix
-        ./host-users.nix
+        ./environment.nix
         ./system.nix
         ./launchd.nix
     ];

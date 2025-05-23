@@ -1,4 +1,8 @@
-{specialArgs, ...}:
+{
+    pkgs,
+    specialArgs,
+    ...
+}:
 #############################################################
 #
 #  Host & Users configuration
@@ -12,6 +16,7 @@
     users.users."${specialArgs.username}" = {
         home = "/Users/${specialArgs.username}";
         description = specialArgs.username;
+        shell = pkgs.fish; # Default shell
     };
 
     nix.settings.trusted-users = [specialArgs.username];
