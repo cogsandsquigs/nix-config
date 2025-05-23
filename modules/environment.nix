@@ -8,6 +8,7 @@
         ];
     };
 
+    # Enable these shells
     programs.zsh.enable = true;
     programs.fish.enable = true;
 }

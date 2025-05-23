@@ -4,6 +4,18 @@
 in {
     programs.fish = {
         enable = true;
+        generateCompletions = true;
+
+        shellAliases = {
+            ls = "eza --icons";
+            du = "dust";
+            cat = "bat"; # Better cat via `bat`
+            cd = "z"; # Better cd via `zoxide`
+            nv = "nvim";
+            upgrade = "python3 /etc/nix/scripts/run.py upgrade";
+            rebuild = "python3 /etc/nix/scripts/run.py rebuild";
+            cleanup = "python3 /etc/nix/scripts/run.py cleanup";
+        };
     };
 
     programs.zsh = {
