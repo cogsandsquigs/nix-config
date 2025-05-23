@@ -11,6 +11,7 @@
         ./p10k
         ./librewolf.nix
         ./direnv.nix
+        ./starship.nix
     ];
 
     # User-only packages
@@ -24,6 +25,7 @@
 
         # Fish
         fish
+        starship # Like P10k but for any shell
 
         ## USERLAND ##
 
