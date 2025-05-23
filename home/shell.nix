@@ -17,6 +17,10 @@ in {
             cleanup = "python3 /etc/nix/scripts/run.py cleanup";
         };
 
+        interactiveShellInit = ''
+            set fish_greeting # Disable fish greeting
+        '';
+
         shellInit = ''
             set -gx EDITOR nvim # Set default editor to nvim
             set -gx JAVA_HOME $(dirname $(dirname $(readlink -f $(which java)))) # Add java home
