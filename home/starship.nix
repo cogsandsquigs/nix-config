@@ -11,7 +11,7 @@
 
             # The format of the prompt, which is a string containing the various symbols and styles.
             format = ''
-                [╭─](bright-black) $os$directory$git_branch$git_commit$git_state$git_metrics$git_status$c$cpp$rust$fill $cmd_duration at $time
+                [╭─](bright-black) $os$directory$git_branch$git_commit$git_state$git_metrics$git_status$c$cpp$rust$fill$cmd_duration at $time
                 [╰─](bright-black) $character
             '';
 
@@ -81,6 +81,13 @@
             c = {
                 symbol = " ";
                 detect_extensions = ["c" "h"];
+                detect_files = ["clang-format" "clang-tidy" "compile_commands.json"];
+            };
+
+            # C++ language things
+            cpp = {
+                symbol = " ";
+                detect_extensions = ["cpp" "hpp" "cxx" "hxx"];
                 detect_files = ["clang-format" "clang-tidy" "compile_commands.json"];
             };
         };
