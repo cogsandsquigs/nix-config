@@ -58,7 +58,7 @@
                 format = "took [ $duration](bold yellow)";
                 style = "bold yellow";
                 show_notifications = true;
-                min_time_to_notify = 0; # Min time (in millis) for a cmd to be run for notifications to be shown.
+                min_time_to_notify = 10000; # Min time (in millis) for a cmd to be run for notifications to be shown.
             };
 
             # Time/terminal clock
