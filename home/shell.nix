@@ -36,6 +36,7 @@ in {
         '';
 
         # Like shellInit, but runs last.
+        # See: https://starship.rs/advanced-config/#transientprompt-and-transientrightprompt-in-fish
         shellInitLast = ''
             enable_transience
         '';

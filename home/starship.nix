@@ -10,7 +10,7 @@
 
             # The format of the prompt, which is a string containing the various symbols and styles.
             format = ''
-                [╭─](bright-black) $os$directory$git_branch$git_commit$git_state$git_metrics$git_status
+                [╭─](bright-black) $os$directory$git_branch$git_commit$git_state$git_metrics$git_status $fill
                 [╰─](bright-black) $character
             '';
 
@@ -55,6 +55,12 @@
                 format = "[ $time]($style) ";
                 time_format = "%I:%M:%S %P";
                 style = "bold purple";
+            };
+
+            # Filler btwn prompts
+            fill = {
+                symbol = "·";
+                style = "bright-black";
             };
 
             # OS detection and symbols
