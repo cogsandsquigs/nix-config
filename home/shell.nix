@@ -36,7 +36,15 @@ in {
         '';
 
         # Like shellInit, but runs last.
-        shellInitLast = '''';
+        # HACK: This is really jank and technically inits starship twice, but it works.
+        # TODO: Make this faster/less jank?
+        shellInitLast = ''
+            function starship_transient_prompt_func
+                starship module character
+            end
+            starship init fish | source
+            enable_transience
+        '';
     };
 
     programs.zsh = {
