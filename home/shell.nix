@@ -33,6 +33,10 @@ in {
                 then "" # "export PATH=\"/usr/bin:$PATH\""
                 else ""
             }
+            # Necessary for using the starship prompt character for transience prompts.
+            function starship_transient_prompt_func
+                starship module character
+            end
         '';
 
         # Like shellInit, but runs last.
