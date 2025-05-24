@@ -10,7 +10,7 @@
 
             # The format of the prompt, which is a string containing the various symbols and styles.
             format = ''
-                [╭─](bright-black) $os $directory 
+                [╭─](bright-black) $os $directory $git_branch $git_commit $git_state $git_metrics $git_status 
                 [╰─](bright-black) $character'';
 
             # Format on right side of prompt
@@ -35,6 +35,7 @@
                 # SYMBOLS #
                 ###########
 
+                truncation_symbol = "…/";
                 read_only = "";
                 home_symbol = "";
             };
