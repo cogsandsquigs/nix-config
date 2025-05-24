@@ -8,9 +8,11 @@
         settings = {
             add_newline = false; # Disable the blank line at the start of the prompt
             format = ''
-                [┌───────────────────>](bold green)
-                [│](bold green)$directory$rust$package
-                [└─>](bold green)'';
+                ╭─   ~
+                ╰─$character '';
+
+            # Format on right side of prompt
+            right_format = '''';
         };
     };
 }
