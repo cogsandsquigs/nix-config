@@ -46,6 +46,11 @@
                 home_symbol = "~";
             };
 
+            # Direnv detection
+            direnv = {
+                disabled = false;
+            };
+
             # Command duration
             cmd_duration = {
                 disabled = false;
