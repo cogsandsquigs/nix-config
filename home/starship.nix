@@ -14,7 +14,7 @@
                 [╰─](bright-black) $character'';
 
             # Format on right side of prompt
-            right_format = ''took  20s'';
+            right_format = ''$duration at  09:33:12 a.m. '';
 
             # The prompt used when we write an incomplete statement, i.e. `rm \` or a newline or whatever.
             continuation_prompt = "[∙](bright-black)";
@@ -43,7 +43,7 @@
             # Command duration
             cmd_duration = {
                 min_time = 500;
-                format = "took  [$duration](bold yellow)";
+                format = "took [ $duration](bold yellow)";
             };
 
             # OS detection and symbols
