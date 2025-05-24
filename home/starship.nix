@@ -7,6 +7,8 @@
         # TODO: Use this at some point: https://starship.rs/presets/catppuccin-powerline#catppuccin-powerline-preset
         settings = {
             add_newline = false; # Disable the blank line at the start of the prompt
+
+            # The format of the prompt, which is a string containing the various symbols and styles.
             format = ''
                 [╭─](bright-black) $os  ~
                 [╰─](bright-black) $character'';
@@ -14,11 +16,14 @@
             # Format on right side of prompt
             right_format = '''';
 
+            # The prompt used when we write an incomplete statement, i.e. `rm \` or a newline or whatever.
+            continuation_prompt = "[∙](bright-black)";
+
             # Character symbol
             character = {
                 format = "$symbol ";
-                success_symbol = "[⏵](bold green)";
-                error_symbol = "[⏵](bold red)";
+                success_symbol = "[⏵](bold bright-green)";
+                error_symbol = "[⏵](bold bright-red)";
             };
 
             # OS detection and symbols
