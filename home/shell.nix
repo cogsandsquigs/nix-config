@@ -37,6 +37,7 @@ in {
 
         # Like shellInit, but runs last.
         # NOTE: This enables the starship prompt character for transient prompts.
+        # See: https://starship.rs/advanced-config/#transientprompt-and-transientrightprompt-in-fish
         shellInitLast = ''
             function starship_transient_prompt_func
                 starship module character
