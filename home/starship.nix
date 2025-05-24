@@ -79,8 +79,9 @@
 
             # C language things
             c = {
-                # The file extensions that trigger C language to show up.
-                detect_extensions = ["c" "h" "clang-format" "clang-tidy"];
+                symbol = "";
+                detect_extensions = ["c" "h"];
+                detect_files = ["clang-format" "clang-tidy" "compile_commands.json"];
             };
         };
     };
