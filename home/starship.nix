@@ -37,7 +37,7 @@
 
                 truncation_symbol = "…/";
                 read_only = "";
-                home_symbol = "";
+                home_symbol = "~";
             };
 
             # Command duration
