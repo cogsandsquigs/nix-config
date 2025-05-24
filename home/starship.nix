@@ -9,7 +9,7 @@
             add_newline = false; # Disable the blank line at the start of the prompt
             format = ''
                 [╭─](bright-black)   ~
-                [│ ](bright-black) $character'';
+                [╰─](bright-black) $character'';
 
             # Format on right side of prompt
             right_format = '''';
