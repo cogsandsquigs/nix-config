@@ -8,15 +8,15 @@
         settings = {
             add_newline = false; # Disable the blank line at the start of the prompt
             format = ''
-                [╭─](dimmed)   ~
-                [│ ](dimmed)$character'';
+                [╭─](bright-black)   ~
+                [│ ](bright-black) $character'';
 
             # Format on right side of prompt
             right_format = '''';
 
             # Character symbol
             character = {
-                format = "$symbol";
+                format = "$symbol ";
                 success_symbol = "[⏵](bold green)";
                 error_symbol = "[⏵](bold red)";
             };
