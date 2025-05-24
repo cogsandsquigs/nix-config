@@ -14,7 +14,7 @@
             # NOTE: $package should come after all language symbols as it displays the package manager + version for the
             # current language.
             format = ''
-                [╭─](bright-black) $os$directory$git_branch$git_commit$git_state$git_metrics$git_status$c$cpp$rust$nodejs$bun$python$go$java$kotlin$scala$package$fill $cmd_duration at $time
+                [╭─](bright-black) $os$directory$git_branch$git_commit$git_state$git_metrics$git_status$c$cpp$rust$nodejs$bun$python$go$java$kotlin$scala$package$direnv$fill $cmd_duration at $time
                 [╰─](bright-black) $character
             '';
 
