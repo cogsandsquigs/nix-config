@@ -7,7 +7,7 @@
         # Equivalent to writting starship.toml
         # TODO: Use this at some point: https://starship.rs/presets/catppuccin-powerline#catppuccin-powerline-preset
         settings = {
-            add_newline = true; # Disable the blank line at the start of the prompt
+            add_newline = false; # Disable the blank line at the start of the prompt
 
             # The format of the prompt, which is a string containing the various symbols and styles.
             format = ''

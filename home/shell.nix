@@ -19,11 +19,6 @@ in {
 
         interactiveShellInit = ''
             set fish_greeting # Disable fish greeting
-            # HACK: This is really jank and technically inits starship twice, but it works.
-            # TODO: Make this faster/less jank?
-            function starship_transient_prompt_func
-                starship module character
-            end
         '';
 
         shellInit = ''
@@ -41,7 +36,12 @@ in {
         '';
 
         # Like shellInit, but runs last.
-        shellInitLast = '''';
+        # NOTE: This enables the starship prompt character for transient prompts.
+        shellInitLast = ''
+            function starship_transient_prompt_func
+                starship module character
+            end
+        '';
     };
 
     programs.zsh = {
