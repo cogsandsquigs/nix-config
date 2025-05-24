@@ -79,7 +79,7 @@
 
             # C language things
             c = {
-                symbol = "";
+                symbol = " ";
                 detect_extensions = ["c" "h"];
                 detect_files = ["clang-format" "clang-tidy" "compile_commands.json"];
             };
