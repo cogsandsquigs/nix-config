@@ -50,7 +50,7 @@
             # Time/terminal clock
             time = {
                 disabled = false;
-                format = " [\[ $time \]]($style) ";
+                format = " [$time]($style) ";
                 time_format = "%I:%M:%S %P";
                 style = "bold purple";
             };
