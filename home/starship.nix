@@ -10,12 +10,9 @@
 
             # The format of the prompt, which is a string containing the various symbols and styles.
             format = ''
-                [╭─](bright-black) $os$directory$git_branch$git_commit$git_state$git_metrics$git_status $fill
+                [╭─](bright-black) $os$directory$git_branch$git_commit$git_state$git_metrics$git_status $fill $cmd_duration at $time
                 [╰─](bright-black) $character
             '';
-
-            # Format on right side of prompt
-            right_format = ''$cmd_duration at $time '';
 
             # The prompt used when we write an incomplete statement, i.e. `rm \` or a newline or whatever.
             continuation_prompt = "[∙](bright-black)";
