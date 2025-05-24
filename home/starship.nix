@@ -10,7 +10,7 @@
 
             # The format of the prompt, which is a string containing the various symbols and styles.
             format = ''
-                [╭─](bright-black) $os  ~
+                [╭─](bright-black) $os $directory 
                 [╰─](bright-black) $character'';
 
             # Format on right side of prompt
@@ -26,6 +26,19 @@
                 error_symbol = "[⏵](bold bright-red)";
             };
 
+            # Directory/cwd
+            directory = {
+                format = "[$path]($style)[$read_only]($read_only_style) ";
+                style = "bold cyan";
+
+                ###########
+                # SYMBOLS #
+                ###########
+
+                read_only = "";
+                home_symbol = "";
+            };
+
             # OS detection and symbols
             os = {
                 format = "[$symbol]($style)";
@@ -36,6 +49,16 @@
                 symbols = {
                     Macos = "";
                 };
+            };
+
+            ##########################
+            # LANGUAGES AND PACKAGES #
+            ##########################
+
+            # C language things
+            c = {
+                # The file extensions that trigger C language to show up.
+                detect_extensions = ["c" "h" "clang-format" "clang-tidy"];
             };
         };
     };
