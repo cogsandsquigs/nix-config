@@ -8,7 +8,7 @@
         settings = {
             add_newline = false; # Disable the blank line at the start of the prompt
             format = ''
-                [╭─](bright-black)   ~
+                [╭─](bright-black) $os  ~
                 [╰─](bright-black) $character'';
 
             # Format on right side of prompt
@@ -19,6 +19,11 @@
                 format = "$symbol ";
                 success_symbol = "[⏵](bold green)";
                 error_symbol = "[⏵](bold red)";
+            };
+
+            # OS detection and symbols
+            os = {
+                disabled = false;
             };
         };
     };
