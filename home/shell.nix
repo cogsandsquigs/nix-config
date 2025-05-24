@@ -19,10 +19,6 @@ in {
 
         interactiveShellInit = ''
             set fish_greeting # Disable fish greeting
-            # Necessary for using the starship prompt character for transience prompts.
-            function starship_transient_prompt_func
-                starship module character
-            end
         '';
 
         shellInit = ''
@@ -40,10 +36,7 @@ in {
         '';
 
         # Like shellInit, but runs last.
-        # See: https://starship.rs/advanced-config/#transientprompt-and-transientrightprompt-in-fish
-        shellInitLast = ''
-            enable_transience
-        '';
+        shellInitLast = '''';
     };
 
     programs.zsh = {

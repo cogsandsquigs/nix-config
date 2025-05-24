@@ -2,6 +2,7 @@
     programs.starship = {
         enable = true;
         enableFishIntegration = true;
+        enableTransience = true; # See: https://starship.rs/advanced-config/#transientprompt-and-transientrightprompt-in-fish
 
         # Equivalent to writting starship.toml
         # TODO: Use this at some point: https://starship.rs/presets/catppuccin-powerline#catppuccin-powerline-preset
