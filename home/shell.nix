@@ -19,6 +19,13 @@ in {
 
         interactiveShellInit = ''
             set fish_greeting # Disable fish greeting
+            # HACK: This is really jank and technically inits starship twice, but it works.
+            # TODO: Make this faster/less jank?
+            function starship_transient_prompt_func
+                starship module character
+            end
+            starship init fish | source
+            enable_transience
         '';
 
         shellInit = ''
@@ -36,15 +43,7 @@ in {
         '';
 
         # Like shellInit, but runs last.
-        # HACK: This is really jank and technically inits starship twice, but it works.
-        # TODO: Make this faster/less jank?
-        shellInitLast = ''
-            function starship_transient_prompt_func
-                "⏵"
-            end
-            starship init fish | source
-            enable_transience
-        '';
+        shellInitLast = '''';
     };
 
     programs.zsh = {
