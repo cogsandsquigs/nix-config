@@ -9,10 +9,17 @@
             add_newline = false; # Disable the blank line at the start of the prompt
             format = ''
                 ╭─   ~
-                ╰─$character '';
+                ╰─$character'';
 
             # Format on right side of prompt
             right_format = '''';
+
+            # Character symbol
+            character = {
+                format = "$symbol ";
+                success_symbol = "[➜](bold green)";
+                error_symbol = "[➜](bold red)";
+            };
         };
     };
 }
