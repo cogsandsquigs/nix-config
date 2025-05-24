@@ -29,7 +29,7 @@
             # Directory/cwd
             directory = {
                 format = "[$path]($style)[$read_only]($read_only_style) ";
-                style = "bold cyan";
+                style = "bold blue";
 
                 ###########
                 # SYMBOLS #
