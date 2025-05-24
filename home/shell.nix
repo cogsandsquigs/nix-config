@@ -34,6 +34,11 @@ in {
                 else ""
             }
         '';
+
+        # Like shellInit, but runs last.
+        shellInitLast = ''
+            enable_transience
+        '';
     };
 
     programs.zsh = {
