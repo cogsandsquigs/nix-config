@@ -14,7 +14,7 @@
                 [╰─](bright-black) $character'';
 
             # Format on right side of prompt
-            right_format = ''$duration at $time '';
+            right_format = ''$cmd_duration at $time '';
 
             # The prompt used when we write an incomplete statement, i.e. `rm \` or a newline or whatever.
             continuation_prompt = "[∙](bright-black)";
@@ -42,7 +42,8 @@
 
             # Command duration
             cmd_duration = {
-                min_time = 500;
+                disabled = false;
+                min_time = 500; # in millis
                 format = "took [ $duration](bold yellow)";
                 style = "bold yellow";
             };
@@ -50,7 +51,7 @@
             # Time/terminal clock
             time = {
                 disabled = false;
-                format = " [$time]($style) ";
+                format = "[ $time]($style) ";
                 time_format = "%I:%M:%S %P";
                 style = "bold purple";
             };
