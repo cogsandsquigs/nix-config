@@ -8,7 +8,7 @@
         # TODO: Use this at some point: https://starship.rs/presets/catppuccin-powerline#catppuccin-powerline-preset
         settings = {
             add_newline = false; # Disable the blank line at the start of the prompt
-            command_timeout = 750;
+            command_timeout = 750; # Number of millis to wait for a command to finish before timing out.
 
             # The format of the prompt, which is a string containing the various symbols and styles.
             format = ''
