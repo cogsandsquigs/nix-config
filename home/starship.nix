@@ -23,7 +23,14 @@
 
             # OS detection and symbols
             os = {
+                format = "[$symbol]($style)";
+                style = "bold white";
                 disabled = false;
+
+                # The symbols corresponding to each OS. If the OS is not in this list, it will use the default symbol.
+                symbols = {
+                    Macos = "";
+                };
             };
         };
     };
