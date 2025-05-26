@@ -80,7 +80,6 @@ return {
                 "stylua", -- lua formatter
                 "taplo", -- TOML formatter
                 -- "rustfmt", -- rust formatter -- NOTE: Using local install
-                "leptosfmt", --- Leptos `view!` macro formatter
             },
 
             auto_update = true,
