@@ -35,7 +35,7 @@ return {
                 nix = { "alejandra" },
                 -- pest = { "pestfmt" }, -- NOTE: Disabling b/c formatter SUCKS
                 python = { "isort", "black" },
-                rust = { "rustfmt" },
+                rust = { "rustfmt", "leptosfmt" },
                 sass = { "prettierd" },
                 scss = { "prettierd" },
                 sql = { "sqlfluff" },
