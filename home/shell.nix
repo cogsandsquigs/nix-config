@@ -12,7 +12,7 @@ in {
             cat = "bat"; # Better cat via `bat`
             cd = "z"; # Better cd via `zoxide`
             nv = "nvim";
-            editnix = "cd /etc/nix; nv; upgrade";
+            editnix = "cd /etc/nix; $EDITOR; upgrade";
             upgrade = "python3 /etc/nix/scripts/run.py upgrade";
             rebuild = "python3 /etc/nix/scripts/run.py rebuild";
             cleanup = "python3 /etc/nix/scripts/run.py cleanup";
