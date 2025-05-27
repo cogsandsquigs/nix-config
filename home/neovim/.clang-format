@@ -9,6 +9,10 @@ AccessModifierOffset: -4
 NamespaceIndentation: All
 FixNamespaceComments: false
 PointerAlignment: Left
+AlignConsecutiveAssignments:
+  Enabled: true
+  AcrossEmptyLines: true
+  AcrossComments: false
 AlignConsecutiveBitFields:
   Enabled: true
   AcrossEmptyLines: true
