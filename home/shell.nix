@@ -25,7 +25,8 @@ in {
         shellInit = ''
             set -gx EDITOR nvim # Set default editor to nvim
             set -gx JAVA_HOME $(dirname $(dirname $(readlink -f $(which java)))) # Add java home
-            fish_add_path $HOME/.cargo/bin # export PATH="$HOME/.cargo/bin:$PATH" # Add cargo bin to path
+            fish_add_path $HOME/.cargo/bin # Add cargo bin to path
+            fish_add_path ${pkgs.llvmPackages_20.clang-tools}/bin # Add clang tools to path
             ${
                 # Force to be apple native CC.
                 # NOTE: Needed because otherwise cc from installed clang/nix will override and cause issues on
