@@ -22,6 +22,7 @@
         mkalias
         openssl
         darwin.libiconv
+        libiconv
         # zapzap # Open source whatsapp alt.
         # whatsapp-for-mac
         # Unfortunately, due to this error: https://github.com/NixOS/nixpkgs/issues/364195,
