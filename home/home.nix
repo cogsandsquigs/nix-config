@@ -53,8 +53,6 @@
         cmake
         llvmPackages_20.clang
         llvmPackages_20.clang-tools
-        # llvmPackages_20.libc # C libraries
-        llvmPackages_20.libcxx # C++ libraries
         clang-analyzer # Not in LLVM pkgs :/
         platformio # hardware stuffs
         pkg-config
