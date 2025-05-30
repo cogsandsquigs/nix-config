@@ -3,10 +3,10 @@ vim.cmd("let g:netrw_liststyle = 3") -- Make file explorer match output of `tree
 local opt = vim.opt
 
 -- Line numbers
-opt.relativenumber = true
+-- opt.relativenumber = true
 opt.number = true
 
-opt.textwidth = 120 -- Wrap text at 120 characters
+opt.textwidth = 80 -- Wrap text at 80 characters
 
 -- Tabs, Indentation, and Whitespace
 opt.tabstop = 4 -- 4 spaces for tabs
