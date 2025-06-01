@@ -30,7 +30,6 @@
         ## USERLAND ##
 
         kitty # Terminal
-        # neovim # Editor NOTE: Removed, see here: https://discourse.nixos.org/t/home-manager-neovim-collision/16963
         git # <3
         lazygit # Makes git awesomer
         gnupg # Signatures
@@ -46,6 +45,10 @@
         tree-sitter
 
         ## DEVELOPMENT ##
+
+        # Editor/IDE
+        # neovim # Editor NOTE: Removed, see here: https://discourse.nixos.org/t/home-manager-neovim-collision/16963
+        python313Packages.pylatexenc # Needed for converting inline LaTeX in MD to unicode
 
         # C/C++
         # NOTE: Using LLVM v20 for C/C++ development
