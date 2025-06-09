@@ -5,6 +5,7 @@
         ../all
     ];
 
+    # MacOS specific-packages
     home.packages = with pkgs; [
         raycast
         net-news-wire
