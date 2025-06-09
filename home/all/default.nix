@@ -11,6 +11,8 @@
         ./librewolf.nix
         ./direnv.nix
         ./starship.nix
+        ./gpg.nix
+        ./gpg-agent.nix
     ];
 
     # User-only packages

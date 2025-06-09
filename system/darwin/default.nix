@@ -1,6 +1,6 @@
 {
     imports = [
-        ./apps.nix
+        ./homebrew.nix
         ./environment.nix
         ./system.nix
         ./launchd.nix

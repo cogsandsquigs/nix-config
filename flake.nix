@@ -1,6 +1,8 @@
 # Mostly taken from https://github.com/ryan4yin/nix-darwin-kickstarter/blob/main/minimal/flake.nix
 {
-    description = "Example nix-darwin system flake";
+    description = ''
+        My personal NixOS/Nix-Darwin configuration for my daily driver devices.
+    '';
 
     inputs = {
         # Main packages repo
@@ -40,15 +42,24 @@
                 };
 
                 modules = [
-                    ./modules # Global config
-                    ./modules/darwin # MacOS-specific config
+                    ./system/all # Global config
+                    ./system/darwin # MacOS-specific config
 
                     home-manager.darwinModules.home-manager
                     {
                         home-manager.useGlobalPkgs = true;
                         home-manager.useUserPackages = true;
                         home-manager.backupFileExtension = "backup"; # Backup files when moving to home-manager config
-                        home-manager.users.${username} = import ./home/darwin;
+                        home-manager.extraSpecialArgs = {inherit inputs outputs hostname username;};
+                        home-manager.users.${username} = {specialArgs, ...}: {
+                            # Essentially, we create a module here that just
+                            # imports the home-manager configuration for the
+                            # user.
+                            imports = [
+                                ./home/all
+                                ./home/darwin
+                            ];
+                        };
                     }
                 ];
             };

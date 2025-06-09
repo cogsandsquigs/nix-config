@@ -1,17 +1,17 @@
 {pkgs, ...}: {
-    # NOTE: We do this so that we can include everything we "usually" want.
-    # The `darwin` module is `all` + any darwin-specific modules.
     imports = [
-        ../all
+        ./gpg-agent.nix
     ];
 
     # MacOS specific-packages
     home.packages = with pkgs; [
-        raycast
-        net-news-wire
-        skimpdf
-        pinentry_mac
+        raycast # Spotlight replacement (fast!)
+        net-news-wire # RSS reader
+        skimpdf # PDF viewer for nvim TODO: Make this multi-platform for nvim use on all devices.
+        pinentry_mac # EZ pinentry for GPG
         mkalias
-        openssl
+        openssl # TODO: Why?
+        whatsapp-for-mac # Whatsapp desktop client
+        appcleaner # For cleaning up rogue `.app`s
     ];
 }

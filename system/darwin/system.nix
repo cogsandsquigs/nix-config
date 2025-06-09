@@ -42,14 +42,14 @@
                     "/System/Applications/Launchpad.app"
                     "${pkgs.kitty}/Applications/kitty.app"
                     "/System/Applications/System Settings.app"
-                    # "${pkgs.firefox-unwrapped}/Applications/Firefox.app" # NOTE: See modules/apps.nix for why it's `firefox-unwrapped`
-                    "/Applications/Firefox.app" # NOTE: See modules/apps.nix for why it's `firefox-unwrapped`
+                    # "${pkgs.firefox-unwrapped}/Applications/Firefox.app" # NOTE: See system/homebrew.nix for why it's `firefox-unwrapped`
+                    "/Applications/Firefox.app" # NOTE: See system/homebrew.nix for why it's `firefox-unwrapped`
                     "${pkgs.obsidian}/Applications/Obsidian.app"
                     "${pkgs.net-news-wire}/Applications/NetNewsWire.app"
                     "${pkgs.discord}/Applications/Discord.app"
                     "${pkgs.spotify}/Applications/Spotify.app"
                     "/System/Applications/Messages.app"
-                    "/Applications/WhatsApp.app"
+                    "${pkgs.whatsapp-for-mac}/Applications/WhatsApp.app"
                     "/System/Applications/Calendar.app"
                     "/System/Applications/Reminders.app"
                     "/System/Applications/Photos.app"
