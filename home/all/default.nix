@@ -1,8 +1,6 @@
-{
-    self,
-    pkgs,
-    ...
-}: {
+{pkgs, ...}: {
+    home.stateVersion = "25.05"; # Home Manager version
+
     imports = [
         ./shell.nix
         ./kitty.nix
