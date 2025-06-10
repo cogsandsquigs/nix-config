@@ -87,6 +87,13 @@ return {
                         "*/.DS_Store",
                         "thumbs.db",
                         "*/.direnv",
+                        "*/.cache",
+                        "*/.vscode",
+                        "*/.idea",
+                        "*/.venv",
+                        "compile_commands.json",
+                        ".envrc",
+                        "flake.lock",
                     },
                     layout = {
                         layout = {
