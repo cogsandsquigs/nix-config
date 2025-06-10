@@ -5,7 +5,7 @@
 
     # MacOS specific-packages
     home.packages = with pkgs; [
-        raycast # Spotlight replacement (fast!)
+        # raycast # Spotlight replacement (meh...)
         net-news-wire # RSS reader
         skimpdf # PDF viewer for nvim TODO: Make this multi-platform for nvim use on all devices.
         pinentry_mac # EZ pinentry for GPG
