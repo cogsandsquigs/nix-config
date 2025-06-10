@@ -43,6 +43,7 @@
         ripgrep
         neofetch
         jq
+        just
         tree-sitter
         tree
 
