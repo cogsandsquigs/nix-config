@@ -35,7 +35,6 @@ return {
                     "graphql",
                     -- "hls", -- NOTE: Using local install
                     "html",
-                    "just-lsp",
                     "lua_ls",
                     "marksman",
                     "nil_ls",
@@ -70,6 +69,7 @@ return {
                 "gersemi", -- CMake formatter
                 "hlint", -- Haskell linter
                 "isort", -- python formatter
+                "just-lsp", -- Justfile lsp -- NOTE: For some reason, this needs to be installed via mason-tool-installer
                 "ktfmt", -- Kotlin formatter
                 "ktlint", -- Kotlin linter + formatter (not used)
                 "latexindent",
