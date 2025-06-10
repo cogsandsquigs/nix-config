@@ -26,6 +26,7 @@ return {
                 javascriptreact = { "prettierd" },
                 json = { "prettierd" },
                 jsonc = { "prettierd" },
+                just = { "just" },
                 kotlin = { "ktfmt" },
                 latex = { "latexindent" },
                 liquid = { "prettierd" },

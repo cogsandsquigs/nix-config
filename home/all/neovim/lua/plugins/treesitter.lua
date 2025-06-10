@@ -44,6 +44,7 @@ return {
             "ini",
             "javascript",
             "json",
+            "just",
             "kotlin",
             "latex",
             "lua",
