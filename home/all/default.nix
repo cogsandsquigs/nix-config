@@ -44,6 +44,7 @@
         neofetch
         jq
         tree-sitter
+        tree
 
         ## DEVELOPMENT ##
 
