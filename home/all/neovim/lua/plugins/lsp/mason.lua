@@ -35,6 +35,7 @@ return {
                     "graphql",
                     -- "hls", -- NOTE: Using local install
                     "html",
+                    "just_lsp",
                     "lua_ls",
                     "marksman",
                     "nil_ls",
