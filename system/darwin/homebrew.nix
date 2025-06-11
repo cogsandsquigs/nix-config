@@ -1,9 +1,11 @@
-{
+{username, ...}: {
     # NOTE: Since `homebrew` is not managed by home-manager, we need to include
     # in in the system-wide configuration for `darwin` systems. So, it's here.
     # Oh well ¯\_(ツ)_/¯
     homebrew = {
         enable = true;
+
+        user = username; # User owning the Homebrew prefix
 
         onActivation = {
             autoUpdate = true; # Auto-update
