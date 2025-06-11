@@ -46,6 +46,7 @@
         just
         tree-sitter
         tree
+        neofetch # System info
 
         ## DEVELOPMENT ##
 

@@ -12,6 +12,7 @@ in {
             cat = "bat"; # Better cat via `bat`
             cd = "z"; # Better cd via `zoxide`
             nv = "nvim";
+            neofetch = "fastfetch"; # Neofetch via fastfetch
             editnix = "cd /etc/nix; $EDITOR; upgrade; cd -";
             upgrade = "python3 /etc/nix/scripts/run.py upgrade";
             rebuild = "python3 /etc/nix/scripts/run.py rebuild";
