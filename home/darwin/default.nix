@@ -13,5 +13,6 @@
         openssl # TODO: Why?
         whatsapp-for-mac # Whatsapp desktop client
         appcleaner # For cleaning up rogue `.app`s
+        aldente # Battery limiter tool
     ];
 }
