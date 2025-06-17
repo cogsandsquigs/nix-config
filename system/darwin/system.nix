@@ -1,7 +1,7 @@
 # Derived from https://github.com/ryan4yin/nix-darwin-kickstarter/blob/main/minimal/modules/system.nix
 {
     pkgs,
-    specialArgs,
+    username,
     ...
 }:
 ###################################################################################
@@ -16,7 +16,7 @@
     nixpkgs.hostPlatform = "aarch64-darwin";
 
     system = {
-        primaryUser = specialArgs.username; # The primary user of the system
+        primaryUser = username; # The primary user of the system
 
         stateVersion = 6;
 
@@ -24,8 +24,8 @@
         activationScripts.postActivation.text = ''
             # activateSettings -u will reload the settings from the database and apply them to the current session,
             # so we do not need to logout and login again to make the changes take effect.
-            # We do `sudo -u ${specialArgs.username}` to run the command as the user
-            sudo -u ${specialArgs.username} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+            # We do `sudo -u ${username}` to run the command as the user
+            sudo -u ${username} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
         '';
 
         defaults = {

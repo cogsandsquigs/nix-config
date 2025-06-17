@@ -51,7 +51,7 @@
                         home-manager.useUserPackages = true;
                         home-manager.backupFileExtension = "backup"; # Backup files when moving to home-manager config
                         home-manager.extraSpecialArgs = {inherit inputs outputs hostname username;};
-                        home-manager.users.${username} = {specialArgs, ...}: {
+                        home-manager.users.${username} = {...}: {
                             # Essentially, we create a module here that just
                             # imports the home-manager configuration for the
                             # user.
