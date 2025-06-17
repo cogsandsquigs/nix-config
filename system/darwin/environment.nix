@@ -1,6 +1,8 @@
 {
     pkgs,
     specialArgs,
+    username,
+    hostname,
     ...
 }:
 #############################################################
@@ -11,10 +13,10 @@
 {
     networking.hostName = specialArgs.hostname;
     networking.computerName = specialArgs.hostname;
-    system.defaults.smb.NetBIOSName = specialArgs.hostname;
+    system.defaults.smb.NetBIOSName = hostname;
 
-    users.users."${specialArgs.username}" = {
-        home = "/Users/${specialArgs.username}";
+    users.users."${username}" = {
+        home = "/Users/${username}";
         description = specialArgs.username;
         shell = pkgs.fish; # Default shell
     };
