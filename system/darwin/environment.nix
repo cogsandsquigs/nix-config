@@ -1,6 +1,5 @@
 {
     pkgs,
-    specialArgs,
     username,
     hostname,
     ...
@@ -11,15 +10,15 @@
 #
 #############################################################
 {
-    networking.hostName = specialArgs.hostname;
-    networking.computerName = specialArgs.hostname;
+    networking.hostName = hostname;
+    networking.computerName = hostname;
     system.defaults.smb.NetBIOSName = hostname;
 
     users.users."${username}" = {
         home = "/Users/${username}";
-        description = specialArgs.username;
+        description = username;
         shell = pkgs.fish; # Default shell
     };
 
-    nix.settings.trusted-users = [specialArgs.username];
+    nix.settings.trusted-users = [username];
 }
