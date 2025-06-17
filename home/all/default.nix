@@ -46,7 +46,7 @@
         just
         tree-sitter
         tree
-        neofetch # System info
+        fastfetch # System info
 
         ## DEVELOPMENT ##
 
