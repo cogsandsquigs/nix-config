@@ -13,6 +13,7 @@
         ./starship.nix
         ./gpg.nix
         ./gpg-agent.nix
+        ./ssh.nix
     ];
 
     # User-only packages
