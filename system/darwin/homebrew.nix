@@ -33,7 +33,7 @@
         # TODO Feel free to add your favorite apps here.
         casks = [
             "firefox"
-            "tailscale"
+            "tailscale-app"
             "steam"
             "olympus" # Celeste mod loader
             "roblox"

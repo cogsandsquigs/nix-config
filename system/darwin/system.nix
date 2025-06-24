@@ -1,9 +1,4 @@
 # Derived from https://github.com/ryan4yin/nix-darwin-kickstarter/blob/main/minimal/modules/system.nix
-{
-    pkgs,
-    username,
-    ...
-}:
 ###################################################################################
 #
 #  macOS's System configuration
@@ -13,6 +8,11 @@
 #
 ###################################################################################
 {
+    username,
+    pkgs,
+    config,
+    ...
+}: {
     nixpkgs.hostPlatform = "aarch64-darwin";
 
     system = {
@@ -21,12 +21,28 @@
         stateVersion = 6;
 
         # activationScripts are executed every time you boot the system or run `nixos-rebuild` / `darwin-rebuild`.
-        activationScripts.postActivation.text = ''
-            # activateSettings -u will reload the settings from the database and apply them to the current session,
-            # so we do not need to logout and login again to make the changes take effect.
-            # We do `sudo -u ${username}` to run the command as the user
-            sudo -u ${username} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
-        '';
+        activationScripts = {
+            postActivation.text = ''
+                # activateSettings -u will reload the settings from the database and apply them to the current session,
+                # so we do not need to logout and login again to make the changes take effect.
+                # We do `sudo -u ${username}` to run the command as the user
+                sudo -u ${username} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+            '';
+
+            # This is a workaround for this issure: https://github.com/nix-darwin/nix-darwin/issues/214
+            # Workaround detailed here: https://github.com/nix-darwin/nix-darwin/issues/139#issuecomment-666771621
+            applications.text = pkgs.lib.mkForce ''
+                echo "setting up ~/Applications/Nix..."
+                rm -rf ~/Applications/Nix
+                mkdir -p ~/Applications/Nix
+                chown ${username} ~/Applications/Nix
+                find ${config.system.build.applications}/Applications -maxdepth 1 -type l | while read -r f; do
+                    src="$(/usr/bin/stat -f%Y '$f')"
+                    appname="$(basename '$src')"
+                    osascript -e "tell app \"Finder\" to make alias file at POSIX file \"/Users/${username}/Applications/Nix/\" to POSIX file \"$src\" with properties {name: \"$appname\"}";
+                done
+            '';
+        };
 
         defaults = {
             menuExtraClock.Show24Hour = false; # show 24 hour clock
