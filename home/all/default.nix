@@ -48,6 +48,7 @@
         tree-sitter
         tree
         fastfetch # System info
+        home-manager
 
         ## DEVELOPMENT ##
 
