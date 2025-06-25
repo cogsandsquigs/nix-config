@@ -31,6 +31,7 @@ in {
             ];
 
             builders-use-substitutes = true;
+            auto-optimise-store = mkIf stdenv.isLinux true;
         };
 
         # Collect garbage.
