@@ -31,18 +31,21 @@
 
         # Collect nix garbage
         nix-collect-garbage = {
-            command = "sudo nix-collect-garbage -d";
+            command = "python3 /etc/nix/scripts/run.py cleanup";
 
             serviceConfig = {
                 KeepAlive = false; # When it stops, do *NOT* restart it
                 RunAtLoad = false;
 
-                # Run every week on sunday at midnight
-                StartCalendarInterval = {
-                    Minute = 0;
-                    Hour = 0;
-                    Weekday = 0;
-                };
+                # # Run every week on sunday at midnight
+                # StartCalendarInterval = {
+                #     Minute = 0;
+                #     Hour = 0;
+                #     Weekday = 0;
+                # };
+
+                # Run every 24 hours
+                StartInterval = 86400;
 
                 StandardOutPath = "/tmp/nix-collect-garbage.out.log";
                 StandardErrorPath = "/tmp/nix-collect-garbage.err.log";

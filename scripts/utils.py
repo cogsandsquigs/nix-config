@@ -94,7 +94,7 @@ def nix_gc():
     Gets rid of old generations of Nix packages.
     """
     invoke_process_popen_poll_live(
-        ["sudo", "nix-collect-garbage", "-d"],
+        ["sudo", "nix-collect-garbage", "--delete-older-than", "3d"],
         "🗑️ Collecting old Nix generations",
         cwd=NIX_FLAKE_PATH,
         ignore_errors=False,
