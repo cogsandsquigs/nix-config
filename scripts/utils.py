@@ -92,10 +92,26 @@ def git_pull():
 def nix_gc():
     """
     Gets rid of old generations of Nix packages.
+    See: https://www.reddit.com/r/NixOS/comments/1j70gew/how_to_clean_nixstore/
     """
+
     invoke_process_popen_poll_live(
-        ["sudo", "nix-collect-garbage", "--delete-older-than", "3d"],
-        "🗑️ Collecting old Nix generations",
+        ["sudo", "nix-collect-garbage", "-d"],
+        "🗑️ Cleaning old Nix generations",
+        cwd=NIX_FLAKE_PATH,
+        ignore_errors=False,
+    )
+
+    invoke_process_popen_poll_live(
+        ["nix", "store", "gc"],
+        "🗑️ Cleaning out the Nix store",
+        cwd=NIX_FLAKE_PATH,
+        ignore_errors=False,
+    )
+
+    invoke_process_popen_poll_live(
+        ["sudo", "nix", "profile", "wipe-history"],
+        "🗑️ Wiping Nix profile history",
         cwd=NIX_FLAKE_PATH,
         ignore_errors=False,
     )
