@@ -103,6 +103,13 @@ def nix_gc():
     )
 
     invoke_process_popen_poll_live(
+        ["home-manager", "expire-generations", "-d"],
+        "🗑️ Cleaning old Home Manager generations",
+        cwd=NIX_FLAKE_PATH,
+        ignore_errors=False,
+    )
+
+    invoke_process_popen_poll_live(
         ["nix", "store", "gc"],
         "🗑️ Cleaning out the Nix store",
         cwd=NIX_FLAKE_PATH,
