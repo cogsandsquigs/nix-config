@@ -80,11 +80,11 @@
                 autohide-delay = 0.0;
                 autohide-time-modifier = 0.5;
                 persistent-apps = [
-                    "/System/Applications/Launchpad.app"
+                    # "/System/Applications/Launchpad.app" # NOTE: Not recommended since MacOS 26!
                     "${pkgs.kitty}/Applications/kitty.app"
                     "/System/Applications/System Settings.app"
-                    # "${pkgs.firefox-unwrapped}/Applications/Firefox.app" # NOTE: See system/homebrew.nix for why it's `firefox-unwrapped`
-                    "/Applications/Firefox.app" # NOTE: See system/homebrew.nix for why it's `firefox-unwrapped`
+                    # "${pkgs.firefox-unwrapped}/Applications/Firefox.app" # NOTE: See homebrew.nix for why it's `firefox-unwrapped`
+                    "/Applications/Firefox.app" # NOTE: See homebrew.nix for why it's `firefox-unwrapped`
                     "${pkgs.obsidian}/Applications/Obsidian.app"
                     "${pkgs.net-news-wire}/Applications/NetNewsWire.app"
                     "${pkgs.discord}/Applications/Discord.app"

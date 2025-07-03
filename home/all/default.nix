@@ -129,6 +129,7 @@
         librewolf
         spotify
         postman
+        zoom-us
         # kicad-testing
         # NOTE: Why `firefox-unwrapped` and not `firefox`?
         # See: https://github.com/NixOS/nixpkgs/issues/366581
