@@ -6,7 +6,7 @@
         # General settings
         # See: https://docs.helix-editor.com/configuration.html
         settings = {
-            theme = "Catppuccin-Mocha";
+            theme = "catppuccin_mocha";
         };
 
         # Language-specific settings
