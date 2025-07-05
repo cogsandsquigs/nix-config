@@ -31,14 +31,18 @@
                 };
 
                 whitespace = {
-                    render = "all";
+                    render = {
+                        tab = "all";
+                        space = "all";
+                        nbsp = "none";
+                        nnbsp = "none";
+                        newline = "none";
+                    };
 
                     characters = {
                         tab = "→";
                         tabpad = " "; # Tabs will look like this: "→   "
                         space = "·";
-                        nbsp = "⍽";
-                        nnbsp = "␣";
                     };
                 };
 
