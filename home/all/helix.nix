@@ -10,11 +10,12 @@
 
             editor = {
                 mouse = true; # Allow use of the mouse
+                gutters = ["diagnostics" "spacer" "line-numbers" "spacer" "diff"];
 
                 statusline = {
-                    left = ["mode" "separator" "version-control"];
-                    center = ["file-name" "separator" "file-modification-indicator" "separator" "diagnostics"];
-                    right = ["file-type" "separator" "file-encoding" "separator" "spinner" "separator" "register"];
+                    left = ["mode" "version-control"];
+                    center = ["file-name" "file-modification-indicator" "diagnostics"];
+                    right = ["file-type" "file-encoding" "spinner" "register"];
 
                     separator = "|";
 
@@ -27,6 +28,24 @@
                     insert = "bar";
                     normal = "block";
                     select = "underline";
+                };
+
+                whitespace = {
+                    render = "all";
+
+                    characters = {
+                        tab = "→";
+                        tabpad = " "; # Tabs will look like this: "→   "
+                        space = "·";
+                        nbsp = "⍽";
+                        nnbsp = "␣";
+                    };
+                };
+
+                indent-guides = {
+                    render = true;
+                    character = "│";
+                    skip-levels = 1;
                 };
             };
         };
