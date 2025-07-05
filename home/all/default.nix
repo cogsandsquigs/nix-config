@@ -70,8 +70,6 @@
         # Docker/Kubernetes/VMs
         docker
         docker-compose
-        colima
-        lima
         minikube
         kubectl
 

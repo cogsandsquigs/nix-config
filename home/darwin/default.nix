@@ -14,5 +14,9 @@
         whatsapp-for-mac # Whatsapp desktop client
         appcleaner # For cleaning up rogue `.app`s
         # aldente # Battery limiter tool
+
+        # Container utilities (ez docker on macos)
+        colima
+        lima
     ];
 }
