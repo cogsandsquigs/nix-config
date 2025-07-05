@@ -70,6 +70,7 @@
         # Docker/Kubernetes/VMs
         docker
         docker-compose
+        podman
         minikube
         kubectl
 
