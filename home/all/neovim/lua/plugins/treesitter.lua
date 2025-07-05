@@ -13,16 +13,11 @@ return {
             },
         },
 
-        -- enable indentation, except for YAML files (we wanna use 4-spaces!)
-        indent = {
-            enable = true,
-            disable = { "yaml" },
-        },
+        -- enable indentation
+        indent = { enable = true },
 
         -- enable autotagging (w/ nvim-ts-autotag plugin)
-        autotag = {
-            enable = true,
-        },
+        autotag = { enable = true },
 
         -- ensure these language parsers are installed
         ensure_installed = {
