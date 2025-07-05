@@ -54,7 +54,7 @@
 
         # Editor/IDE
         # neovim # Editor NOTE: Removed, see here: https://discourse.nixos.org/t/home-manager-neovim-collision/16963
-        python313Packages.pylatexenc # Needed for converting inline LaTeX in MD to unicode
+        helix
 
         # C/C++
         # NOTE: Using LLVM v20 for C/C++ development
@@ -91,6 +91,7 @@
 
         # Latex
         texliveFull # Install `latexmk` + co (unneeded) for vimtex (see neovim config)
+        python313Packages.pylatexenc # Needed for converting inline LaTeX in MD to unicode
 
         # Nix
         alejandra # Formatter
