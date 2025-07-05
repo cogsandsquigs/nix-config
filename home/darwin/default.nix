@@ -18,5 +18,6 @@
         # Container utilities (ez docker on macos)
         colima
         lima
+        lima-additional-guestagents
     ];
 }
