@@ -31,6 +31,7 @@ return {
             "bash",
             "bibtex",
             "c",
+            "caddy",
             "cpp",
             "css",
             "dockerfile",
