@@ -67,11 +67,13 @@
         pkg-config
         # valgrind # Memory profiler/debugger # NOTE: Currently broken :/
 
-        # Docker/VMs
+        # Docker/Kubernetes/VMs
         docker
         docker-compose
         colima
         lima
+        minikube
+        kubectl
 
         # Documentation generation
         mdbook # Docs from MD: https://rust-lang.github.io/mdBook/index.html
