@@ -5,6 +5,6 @@ vim.filetype.add({
         mdx = "mdx",
         tf = "terraform",
         tera = "tera",
-        Caddyfile = "caddy",
+        Caddyfile = "Caddyfile",
     },
 })
