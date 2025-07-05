@@ -71,6 +71,7 @@
         docker
         docker-compose
         podman
+        podman-compose
         minikube
         kubectl
 
