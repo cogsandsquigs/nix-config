@@ -14,6 +14,7 @@
         ./gpg.nix
         ./gpg-agent.nix
         ./ssh.nix
+        ./helix.nix
     ];
 
     # User-only packages
