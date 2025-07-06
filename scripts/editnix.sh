@@ -6,4 +6,4 @@ $EDITOR
 
 python3 ./scripts/sysutil/run.py rebuild
 
-cd -
+# cd -
