@@ -57,15 +57,14 @@ in {
         shellAliases = aliases;
 
         settings = {
-            shell_integration = true;
             completions.external.enable = true; # Enable external completions
             use_kitty_protocol = true;
         };
 
-        loginFile.text = ''
+        envFile.text = ''
             $env.EDITOR = ${editor} # Set default editor to nvim
             $env.JAVA_HOME = (dirname (dirname (readlink -f ...(which java | get path)))) # Add java home
-            nushell config set path $nu.path $HOME/.cargo/bin # Add cargo bin to path
+            $env.path = $env.path | prepend ($env.home)/.cargo/bin # Add cargo bin to path
             ${
                 # Force to be apple native CC.
                 # NOTE: Needed because otherwise cc from installed clang/nix will override and cause issues on
