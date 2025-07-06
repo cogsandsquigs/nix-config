@@ -9,7 +9,7 @@
         cd = "z"; # Better cd via `zoxide`
         nv = "nvim";
         neofetch = "fastfetch"; # Neofetch via fastfetch
-        editnix = "sh -c /etc/nix/scripts/editnix.sh";
+        editnix = "sh /etc/nix/scripts/editnix.sh";
         upgrade = "python3 /etc/nix/scripts/sysutil/run.py upgrade";
         rebuild = "python3 /etc/nix/scripts/sysutil/run.py rebuild";
         cleanup = "python3 /etc/nix/scripts/sysutil/run.py cleanup";
