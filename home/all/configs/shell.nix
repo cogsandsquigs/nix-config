@@ -15,7 +15,7 @@
         cleanup = "python3 /etc/nix/scripts/sysutil/run.py cleanup";
     };
 
-    editor = pkgs.neovim;
+    editor = "nvim";
 in {
     programs.fish = {
         enable = true;
