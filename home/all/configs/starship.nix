@@ -1,6 +1,7 @@
 {...}: {
     programs.starship = {
         enable = true;
+        enableBashIntegration = true; # Enable starship in bash
         enableFishIntegration = true;
         enableNushellIntegration = true;
         enableZshIntegration = true;

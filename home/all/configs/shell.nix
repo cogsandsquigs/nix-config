@@ -65,6 +65,8 @@ in {
             $env.EDITOR = ${editor} # Set default editor to nvim
             $env.JAVA_HOME = (dirname (dirname (readlink -f ...(which java | get path)))) # Add java home
             $env.path = $env.path | prepend ($env.home)/.cargo/bin # Add cargo bin to path
+            $env.path = $env.path | prepend ${pkgs.llvmPackages_20.clang-tools}/bin # Add clang tools to path
+            $env.path = $env.path | prepend ($env.home)/local/bin # Add local bin to path
             ${
                 # Force to be apple native CC.
                 # NOTE: Needed because otherwise cc from installed clang/nix will override and cause issues on
