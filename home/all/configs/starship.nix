@@ -2,6 +2,8 @@
     programs.starship = {
         enable = true;
         enableFishIntegration = true;
+        enableNushellIntegration = true;
+        enableZshIntegration = true;
         enableTransience = true; # See: https://starship.rs/advanced-config/#transientprompt-and-transientrightprompt-in-fish
 
         # Equivalent to writting starship.toml

@@ -4,8 +4,9 @@ My nix configuration!
 
 ## Layout
 
-- `modules`: Split configuration, including applications and such
-  - `modules/darwin`: MacOS configuration
+- `system`: System configuration, including applications and such
+  - `system/all`: configuration for all systems.
+  - `system/darwin`: MacOS configuration
 - `home`: Home-Manager configuration, used to configure dotfiles and such. This is where things like the shell, programs
   with configuration in `~/.config`, etc. are configured. Each separate program should have it's own
   `home/<program-name>.nix` file (see `home/git.nix`, etc.).

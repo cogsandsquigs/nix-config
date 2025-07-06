@@ -50,6 +50,29 @@ in {
         '';
     };
 
+    programs.nushell = {
+        enable = true;
+        shellAliases = aliases;
+
+        settings = {
+            completions.external.enable = true; # Enable external completions
+        };
+
+        loginFile.text = ''
+            set -gx EDITOR nvim # Set default editor to nvim
+            set -gx JAVA_HOME (dirname (dirname (readlink -f (which java)))) # Add java home
+            nushell config set path $nu.path $HOME/.cargo/bin # Add cargo bin to path
+            ${
+                # Force to be apple native CC.
+                # NOTE: Needed because otherwise cc from installed clang/nix will override and cause issues on
+                # darwin systems, e.x. Rust compilation of external C libraries (e.x. libiconv).
+                if stdenv.isDarwin
+                then "" # "export PATH=\"/usr/bin:$PATH\""
+                else ""
+            }
+        '';
+    };
+
     programs.zsh = {
         enable = true;
         enableCompletion = true;
@@ -78,20 +101,22 @@ in {
             }
         '';
 
-        plugins = [
-            {
-                name = "powerlevel10k";
-                src = pkgs.zsh-powerlevel10k;
-                file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
-            }
-        ];
-
         shellAliases = aliases;
 
-        oh-my-zsh = {
-            enable = true;
-            theme = "robbyrussell";
-            plugins = ["git"];
-        };
+        /*
+    plugins = [
+        {
+            name = "powerlevel10k";
+            src = pkgs.zsh-powerlevel10k;
+            file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+        }
+    ];
+
+    oh-my-zsh = {
+        enable = true;
+        theme = "robbyrussell";
+        plugins = ["git"];
+    };
+    */
     };
 }
