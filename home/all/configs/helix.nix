@@ -51,6 +51,11 @@
                     character = "│";
                     skip-levels = 1;
                 };
+
+                inline-diagnostics = {
+                    cursor-line = "hint";
+                    other-lines = "hint";
+                };
             };
         };
 

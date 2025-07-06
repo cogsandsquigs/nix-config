@@ -47,7 +47,6 @@
 
                     home-manager.darwinModules.home-manager
                     {
-                        home-manager.useGlobalPkgs = true;
                         home-manager.useUserPackages = true;
                         home-manager.backupFileExtension = "backup"; # Backup files when moving to home-manager config
                         home-manager.extraSpecialArgs = {inherit inputs outputs hostname username;};
