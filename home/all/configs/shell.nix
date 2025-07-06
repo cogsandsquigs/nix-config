@@ -1,23 +1,25 @@
 # The shell configuration I use!
 {pkgs, ...}: let
     inherit (pkgs) stdenv;
+
+    aliases = {
+        ls = "eza --icons";
+        du = "dust";
+        cat = "bat"; # Better cat via `bat`
+        cd = "z"; # Better cd via `zoxide`
+        nv = "nvim";
+        neofetch = "fastfetch"; # Neofetch via fastfetch
+        editnix = "cd /etc/nix; $EDITOR; upgrade; cd -";
+        upgrade = "python3 /etc/nix/scripts/run.py upgrade";
+        rebuild = "python3 /etc/nix/scripts/run.py rebuild";
+        cleanup = "python3 /etc/nix/scripts/run.py cleanup";
+    };
 in {
     programs.fish = {
         enable = true;
         generateCompletions = true;
 
-        shellAliases = {
-            ls = "eza --icons";
-            du = "dust";
-            cat = "bat"; # Better cat via `bat`
-            cd = "z"; # Better cd via `zoxide`
-            nv = "nvim";
-            neofetch = "fastfetch"; # Neofetch via fastfetch
-            editnix = "cd /etc/nix; $EDITOR; upgrade; cd -";
-            upgrade = "python3 /etc/nix/scripts/run.py upgrade";
-            rebuild = "python3 /etc/nix/scripts/run.py rebuild";
-            cleanup = "python3 /etc/nix/scripts/run.py cleanup";
-        };
+        shellAliases = aliases;
 
         interactiveShellInit = ''
             set fish_greeting # Disable fish greeting
@@ -84,16 +86,7 @@ in {
             }
         ];
 
-        shellAliases = {
-            ls = "eza --icons";
-            du = "dust";
-            cat = "bat"; # Better cat via `bat`
-            cd = "z"; # Better cd via `zoxide`
-            nv = "nvim";
-            upgrade = "python3 /etc/nix/scripts/run.py upgrade";
-            rebuild = "python3 /etc/nix/scripts/run.py rebuild";
-            cleanup = "python3 /etc/nix/scripts/run.py cleanup";
-        };
+        shellAliases = aliases;
 
         oh-my-zsh = {
             enable = true;
