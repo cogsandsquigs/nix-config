@@ -17,6 +17,12 @@
 
     editor = "nvim";
 in {
+    home.shell = {
+        enableFishIntegration = true; # Enable fish shell integration
+        enableNushellIntegration = true; # Enable nushell shell integration
+        enableZshIntegration = true; # Enable zsh shell integration
+    };
+
     programs.fish = {
         enable = true;
         generateCompletions = true;
@@ -57,6 +63,7 @@ in {
         shellAliases = aliases;
 
         settings = {
+            shell_integration = true;
             completions.external.enable = true; # Enable external completions
         };
 
