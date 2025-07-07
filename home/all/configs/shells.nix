@@ -72,11 +72,9 @@ in {
 
     programs.nushell = {
         enable = true;
-        # NOTE: `//` means 'update', see:
-        # https://nix.dev/manual/nix/2.18/language/operators#update
-        # We do this so that we can use the nushell `ls`, since it outputs
+        # NOTE: We do this so that we can use the nushell `ls`, since it outputs
         # nushell-native structures/datatypes.
-        shellAliases = aliases // {ls = "";};
+        shellAliases = removeAttrs aliases ["ls"];
 
         settings = {
             completions.external.enable = true; # Enable external completions
