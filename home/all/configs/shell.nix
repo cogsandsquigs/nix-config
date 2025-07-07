@@ -65,7 +65,7 @@ in {
 
         # NOTE: For some reason, `envFile` doesn't seem to work here, so we use
         # `loginFile` instead.
-        loginFile.text = ''
+        envFile.text = ''
             $env.EDITOR = "${editor}" # Set default editor to nvim
             $env.JAVA_HOME = (dirname (dirname (readlink -f ...(which java | get path)))) # Add java home
 
