@@ -108,7 +108,8 @@ in {
             $env.TRANSIENT_PROMPT_COMMAND = ^starship module character
         '';
 
-        loginFile.text = let
+        # Configuration. i.e., we set the theme here!
+        configFile.text = let
             catppuccin-nushell = pkgs.fetchFromGitHub {
                 owner = "catppuccin";
                 repo = "nushell";
