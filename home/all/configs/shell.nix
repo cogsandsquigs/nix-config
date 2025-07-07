@@ -63,20 +63,9 @@ in {
             show_banner = false; # Disable nushell banner/welcome message
         };
 
-        # NOTE: For some reason, `envFile` doesn't seem to work here, so we use
-        # `loginFile` instead.
         envFile.text = ''
             $env.EDITOR = "${editor}" # Set default editor to nvim
             $env.JAVA_HOME = (dirname (dirname (readlink -f ...(which java | get path)))) # Add java home
-
-            # Set PATH variables
-            $env.PATH = $env.PATH | prepend ($env.HOME)/.cargo/bin # Add cargo bin to path
-            $env.PATH = $env.PATH | prepend ${pkgs.llvmPackages_20.clang-tools}/bin # Add clang tools to path
-            $env.PATH = $env.PATH | prepend ($env.HOME)/local/bin # Add local bin to path
-            $env.PATH = $env.PATH | prepend ($env.HOME)/.nix-profile/bin # Add nix profile bin to path
-            $env.PATH = $env.PATH | prepend /nix/var/nix/profiles/default/bin
-            $env.PATH = $env.PATH | prepend /etc/profiles/per-user/($env.USER)/bin
-            $env.PATH = $env.PATH | prepend /run/current-system/sw/bin
             ${
                 # Force to be apple native CC.
                 # NOTE: Needed because otherwise cc from installed clang/nix will override and cause issues on
@@ -85,6 +74,15 @@ in {
                 then "" # "export PATH=\"/usr/bin:$PATH\""
                 else ""
             }
+
+            # Set PATH variables
+            $env.PATH = $env.PATH | prepend ($env.HOME)/.cargo/bin # Add cargo bin to path
+            $env.PATH = $env.PATH | prepend ${pkgs.llvmPackages_20.clang-tools}/bin # Add clang tools to path
+            $env.PATH = $env.PATH | prepend ($env.HOME)/local/bin # Add local bin to path
+            $env.PATH = $env.PATH | prepend ($env.HOME)/.nix-profile/bin # Add nix profile bin to path
+            $env.PATH = $env.PATH | prepend /nix/var/nix/profiles/default/bin # Add nix binaries to path
+            $env.PATH = $env.PATH | prepend /etc/profiles/per-user/($env.USER)/bin # Add nix user binaries to path
+            $env.PATH = $env.PATH | prepend /run/current-system/sw/bin # Add nix current system binaries to path
 
             # Set transient prompt
             # NOTE: the `^` at the beginning of the command tells Nushell to run
