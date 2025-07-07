@@ -40,6 +40,9 @@ in {
                 then "" # "export PATH=\"/usr/bin:$PATH\""
                 else ""
             }
+
+            # Set theme
+            fish_config theme save "Catppuccin Mocha"
         '';
 
         # Like shellInit, but runs last.
@@ -50,18 +53,19 @@ in {
                 starship module character
             end
         '';
-    };
 
-    # NOTE: Setting fish theme like this.
-    xdg.configFile = let
-        catppuccin-fish = pkgs.fetchFromGitHub {
-            owner = "catppuccin";
-            repo = "fish";
-            rev = "a3b9eb5eaf2171ba1359fe98f20d226c016568cf";
-            hash = "sha256-shQxlyoauXJACoZWtRUbRMxmm10R8vOigXwjxBhG8ng=";
-        };
-    in {
-        "fish/themes/Catppuccin Mocha.theme".source = "${catppuccin-fish}/themes/Catppuccin Mocha.theme";
+        # Plugins
+        plugins = [
+            {
+                name = "catppuccin";
+                src = pkgs.fetchFromGitHub {
+                    owner = "catppuccin";
+                    repo = "fish";
+                    rev = "a3b9eb5eaf2171ba1359fe98f20d226c016568cf";
+                    hash = "sha256-shQxlyoauXJACoZWtRUbRMxmm10R8vOigXwjxBhG8ng=";
+                };
+            }
+        ];
     };
 
     programs.nushell = {
