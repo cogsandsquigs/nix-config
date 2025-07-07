@@ -7,5 +7,6 @@
         podman-compose
         minikube
         kubectl
+        kompose # Docker compose -> kubernetes
     ];
 }
