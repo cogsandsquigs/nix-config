@@ -25,6 +25,10 @@ in {
 
         interactiveShellInit = ''
             set fish_greeting # Disable fish greeting
+            fish_config theme choose "Catppuccin Mocha" # Set theme. We use `choose` since using
+                                                        # `save` forces a prompt, which is annoying,
+                                                        # even though `choose` doesn't make it
+                                                        # "permanent".
         '';
 
         shellInit = ''
@@ -41,8 +45,6 @@ in {
                 else ""
             }
 
-            # Set theme
-            fish_config theme save "Catppuccin Mocha"
         '';
 
         # Like shellInit, but runs last.
