@@ -70,13 +70,13 @@ in {
             $env.JAVA_HOME = (dirname (dirname (readlink -f ...(which java | get path)))) # Add java home
 
             # Set PATH variables
-            $env.path = $env.path | prepend ($env.home)/.cargo/bin # Add cargo bin to path
-            $env.path = $env.path | prepend ${pkgs.llvmPackages_20.clang-tools}/bin # Add clang tools to path
-            $env.path = $env.path | prepend ($env.home)/local/bin # Add local bin to path
-            $env.path = $env.path | prepend ($env.home)/.nix-profile/bin # Add nix profile bin to path
-            $env.path = $env.path | prepend /nix/var/nix/profiles/default/bin
-            $env.path = $env.path | prepend /etc/profiles/per-user/($env.user)/bin
-            $env.path = $env.path | prepend /run/current-system/sw/bin
+            $env.PATH = $env.PATH | prepend ($env.HOME)/.cargo/bin # Add cargo bin to path
+            $env.PATH = $env.PATH | prepend ${pkgs.llvmPackages_20.clang-tools}/bin # Add clang tools to path
+            $env.PATH = $env.PATH | prepend ($env.HOME)/local/bin # Add local bin to path
+            $env.PATH = $env.PATH | prepend ($env.HOME)/.nix-profile/bin # Add nix profile bin to path
+            $env.PATH = $env.PATH | prepend /nix/var/nix/profiles/default/bin
+            $env.PATH = $env.PATH | prepend /etc/profiles/per-user/($env.USER)/bin
+            $env.PATH = $env.PATH | prepend /run/current-system/sw/bin
             ${
                 # Force to be apple native CC.
                 # NOTE: Needed because otherwise cc from installed clang/nix will override and cause issues on
@@ -85,6 +85,11 @@ in {
                 then "" # "export PATH=\"/usr/bin:$PATH\""
                 else ""
             }
+
+            # Set transient prompt
+            # NOTE: the `^` at the beginning of the command tells Nushell to run
+            # the command, and use the output as the value.
+            $env.TRANSIENT_PROMPT_COMMAND = ^starship module character
         '';
     };
 
