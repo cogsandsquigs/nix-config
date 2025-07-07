@@ -1,11 +1,11 @@
 {...}: {
     imports = [
-        ./shell.nix
+        ./neovim
+        ./shells.nix
         ./kitty.nix
         ./git.nix
         ./zoxide.nix
         ./eza.nix
-        ./neovim
         ./librewolf.nix
         ./direnv.nix
         ./starship.nix
