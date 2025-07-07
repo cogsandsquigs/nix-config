@@ -58,8 +58,9 @@ in {
 
         settings = {
             completions.external.enable = true; # Enable external completions
-            use_kitty_protocol = true;
-            buffer_editor = editor;
+            use_kitty_protocol = true; # Since we use Kitty, set kitty protocol
+            buffer_editor = editor; # Set the editor
+            show_banner = false; # Disable nushell banner/welcome message
         };
 
         # NOTE: For some reason, `envFile` doesn't seem to work here, so we use
@@ -67,9 +68,15 @@ in {
         loginFile.text = ''
             $env.EDITOR = "${editor}" # Set default editor to nvim
             $env.JAVA_HOME = (dirname (dirname (readlink -f ...(which java | get path)))) # Add java home
+
+            # Set PATH variables
             $env.path = $env.path | prepend ($env.home)/.cargo/bin # Add cargo bin to path
             $env.path = $env.path | prepend ${pkgs.llvmPackages_20.clang-tools}/bin # Add clang tools to path
             $env.path = $env.path | prepend ($env.home)/local/bin # Add local bin to path
+            $env.path = $env.path | prepend ($env.home)/.nix-profile/bin # Add nix profile bin to path
+            $env.path = $env.path | prepend /nix/var/nix/profiles/default/bin
+            $env.path = $env.path | prepend /etc/profiles/per-user/($env.user)/bin
+            $env.path = $env.path | prepend /run/current-system/sw/bin
             ${
                 # Force to be apple native CC.
                 # NOTE: Needed because otherwise cc from installed clang/nix will override and cause issues on
