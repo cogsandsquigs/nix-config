@@ -1,9 +1,18 @@
-{username, ...}: {
+{
+    pkgs,
+    lib,
+    ...
+}: let
+    inherit (pkgs) stdenv;
+    inherit (lib) mkIf;
+in {
     programs.ssh = {
         enable = true;
 
-        # Required for Colima to work properly
-        includes = ["~/.colima/ssh_config"];
+        includes = [
+            # Required for Colima to work properly
+            (mkIf stdenv.isDarwin "~/.colima/ssh_config")
+        ];
 
         extraConfig = ''
             IdentityFile ~/.ssh/id_ed25519
