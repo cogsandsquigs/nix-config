@@ -107,6 +107,18 @@ in {
             # the command, and use the output as the value.
             $env.TRANSIENT_PROMPT_COMMAND = ^starship module character
         '';
+
+        loginFile.text = let
+            catppuccin-nushell = pkgs.fetchFromGitHub {
+                owner = "catppuccin";
+                repo = "nushell";
+                rev = "10a429db05e74787b12766652dc2f5478da43b6f";
+                hash = "sha256-7XfoWsrMRGefc3ygxixUqAOfkg2ssj7o60Gi74S2lXw=";
+            };
+        in ''
+            # Source the theme.
+            source ${catppuccin-nushell}/themes/catppuccin_mocha.nu
+        '';
     };
 
     programs.zsh = {
