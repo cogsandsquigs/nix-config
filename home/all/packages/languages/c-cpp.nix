@@ -13,7 +13,6 @@
 
     # NOTE: Necessary for clang-format to always have same config/formatting rules, etc. everywhere
     home.file.".clang-format".text = ''
-        # yahoo! this works!
         BasedOnStyle: LLVM
         UseTab: Never
         IndentWidth: 4
