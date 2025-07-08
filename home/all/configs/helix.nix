@@ -8,6 +8,11 @@
         settings = {
             theme = "catppuccin_mocha";
 
+            keys.normal = {
+                # Thx to this article: https://dev.to/rajasegar/helix-tmux-and-lazygit-7nj
+                "space-g" = ":sh zellij popup -d \"#{pane_current_path}\" -xC -yC -w80% -h80% -E lazygit";
+            };
+
             editor = {
                 mouse = true; # Allow use of the mouse
                 gutters = ["diagnostics" "spacer" "line-numbers" "spacer" "diff"];
