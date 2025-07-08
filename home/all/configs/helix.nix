@@ -9,7 +9,7 @@
             theme = "catppuccin_mocha";
 
             keys.normal = {
-                C-g = [":new" ":insert-output lazygit" ":buffer-close!" ":redraw"];
+                space-g = [":new" ":insert-output lazygit" ":buffer-close!" ":redraw" ":reload-all"];
             };
 
             editor = {
