@@ -9,8 +9,7 @@
             theme = "catppuccin_mocha";
 
             keys.normal = {
-                # Thx to this article: https://dev.to/rajasegar/helix-tmux-and-lazygit-7nj
-                "g" = ":sh tmux popup -d \"#{pane_current_path}\" -xC -yC -w80% -h80% -E lazygit";
+                C-g = [":new" ":insert-output lazygit" ":buffer-close!" ":redraw"];
             };
 
             editor = {
