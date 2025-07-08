@@ -96,8 +96,8 @@ def nix_gc():
     """
 
     invoke_process_popen_poll_live(
-        ["sudo", "nix-collect-garbage", "-d"],
-        "🗑️ Cleaning old Nix generations",
+        ["nix", "store", "gc"],
+        "🗑️ Cleaning out the Nix store",
         cwd=NIX_FLAKE_PATH,
         ignore_errors=False,
     )
@@ -110,14 +110,7 @@ def nix_gc():
     )
 
     invoke_process_popen_poll_live(
-        ["nix", "store", "gc"],
-        "🗑️ Cleaning out the Nix store",
-        cwd=NIX_FLAKE_PATH,
-        ignore_errors=False,
-    )
-
-    invoke_process_popen_poll_live(
-        ["sudo", "nix", "profile", "wipe-history"],
+        ["nix", "profile", "wipe-history"],
         "🗑️ Wiping Nix profile history",
         cwd=NIX_FLAKE_PATH,
         ignore_errors=False,
