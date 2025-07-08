@@ -10,5 +10,7 @@
         ./ruby.nix
         ./rust.nix
         ./toml.nix
+        ./json.nix
+        ./yaml.nix
     ];
 }
