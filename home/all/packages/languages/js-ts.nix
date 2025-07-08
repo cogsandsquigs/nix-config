@@ -3,5 +3,9 @@
         nodejs
         bun
         deno
+
+        # Utils
+        typescript-language-server
+        prettierd
     ];
 }
