@@ -10,7 +10,7 @@
 
             keys.normal = {
                 # Thx to this article: https://dev.to/rajasegar/helix-tmux-and-lazygit-7nj
-                "space-g" = ":sh zellij popup -d \"#{pane_current_path}\" -xC -yC -w80% -h80% -E lazygit";
+                "g" = ":sh tmux popup -d \"#{pane_current_path}\" -xC -yC -w80% -h80% -E lazygit";
             };
 
             editor = {
