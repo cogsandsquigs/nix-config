@@ -9,6 +9,7 @@
             theme = "catppuccin_mocha";
 
             # Keys in space-mode (after pressing leader/space)
+            # See: https://github.com/helix-editor/helix/issues/2841
             keys.normal.space = {
                 g = [":new" ":insert-output lazygit" ":buffer-close!" ":redraw" ":reload-all"];
             };
