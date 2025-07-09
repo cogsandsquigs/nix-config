@@ -8,7 +8,7 @@
         package = pkgs.zellij;
 
         settings = {
-            theme = "catppuccin-mocha";
+            theme = "catppuccin-macciato";
         };
     };
 }
