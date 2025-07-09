@@ -48,7 +48,7 @@
                     characters = {
                         tab = "→";
                         tabpad = " "; # Tabs will look like this: "→   "
-                        space = "·";
+                        space = " "; # NOTE: only doing this b/c then spaces btwn words get annoying characters in them
                     };
                 };
 
@@ -69,10 +69,27 @@
         # See: https://docs.helix-editor.com/languages.html
         languages = {
             # Language-server settings.
-            language-server = {};
+            language-server = {
+                rust-analyzer = {
+                    command = "rust-analyzer";
+
+                    # See: https://rust-analyzer.github.io/book/configuration
+                    config.rust-analyzer = {
+                        check.command = "clippy";
+                        procMacro.enable = true;
+                        cargo.buildScripts.enable = true;
+                    };
+                };
+            };
 
             # Language configurations for each language.
-            language = [];
+            language = [
+                {
+                    name = "rust";
+                    language-servers = ["rust-analyzer"];
+                    formatter = "rustfmt";
+                }
+            ];
         };
     };
 }
