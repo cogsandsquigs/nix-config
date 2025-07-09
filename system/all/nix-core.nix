@@ -2,6 +2,7 @@
 {
     pkgs,
     lib,
+    username,
     ...
 }: let
     inherit (pkgs) stdenv;
@@ -38,6 +39,8 @@ in {
                 "cachix.cachix.org-1:eWNHQldwUO7G2VkjpnjDbWwy4KQ/HNxht7H4SSoMckM="
                 "nixpkgs.cachix.org-1:q91R6hxbwFvDqTSDKwDAV4T5PxqXGxswD8vhONFMeOE="
             ];
+
+            trusted-users = [username];
 
             builders-use-substitutes = true;
             auto-optimise-store = mkIf stdenv.isLinux true;
