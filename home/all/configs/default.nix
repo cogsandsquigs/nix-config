@@ -13,5 +13,6 @@
         ./gpg-agent.nix
         ./ssh.nix
         ./helix.nix
+        ./zellij.nix
     ];
 }

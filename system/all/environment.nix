@@ -13,7 +13,7 @@
     };
 
     users.users.${username} = {
-        shell = pkgs.nushell;
+        shell = pkgs.fish;
         description = username;
     };
 
