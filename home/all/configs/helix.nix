@@ -8,8 +8,9 @@
         settings = {
             theme = "catppuccin_mocha";
 
-            keys.normal = {
-                space-g = [":new" ":insert-output lazygit" ":buffer-close!" ":redraw" ":reload-all"];
+            # Keys in space-mode (after pressing leader/space)
+            keys.normal.space = {
+                g = [":new" ":insert-output lazygit" ":buffer-close!" ":redraw" ":reload-all"];
             };
 
             editor = {
