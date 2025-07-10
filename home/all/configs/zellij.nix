@@ -1,10 +1,4 @@
-{
-    pkgs,
-    inputs,
-    ...
-}: let
-    inputs.zjstatus.url = "github:dj95/zjstatus";
-in {
+{pkgs, ...}: {
     programs.zellij = {
         enable = true;
         package = pkgs.zellij;
@@ -17,6 +11,7 @@ in {
 
         settings = {
             theme = "catppuccin-mocha";
+            default_layout = "compact";
         };
     };
 }
