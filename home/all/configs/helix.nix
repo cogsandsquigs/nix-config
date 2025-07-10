@@ -15,6 +15,7 @@
                 # See: https://github.com/helix-editor/helix/issues/2841
                 space = let
                     floating_pane_size_percent = 80;
+                    side_pane_size_percent = 30;
 
                     # Opens a Zellij floating pane of height and width
                     # `floating_pane_size_percent` percent of the screen.
@@ -31,7 +32,7 @@
 
                     # Opens a file picker using `nnn` via via `space-f`.
                     # NOTE: Overrides the default helix file picker!
-                    f = make_zellij_floating_pane "nnn -d -p";
+                    # f = make_zellij_floating_pane "nnn -d";
                 };
             };
 
