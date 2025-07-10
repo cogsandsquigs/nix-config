@@ -55,11 +55,11 @@
 
                         # [keys.normal.C-y]
                         # Open the file(s) in the current window
-                        y = ":sh zellij run -n Yazi -c -f -x 10% -y 10% --width 80% --height 80% -- bash ~/.config/helix/yazi-picker.sh open";
+                        y = ":sh zellij run -n Yazi -c -f -x 10% -y 10% --width 80% --height 80% -- bash ${yazi_picker_script} open";
                         # Open the file(s) in a vertical split
-                        v = ":sh zellij run -n Yazi -c -f -x 10% -y 10% --width 80% --height 80% -- bash ~/.config/helix/yazi-picker.sh vsplit";
+                        v = ":sh zellij run -n Yazi -c -f -x 10% -y 10% --width 80% --height 80% -- bash ${yazi_picker_script} vsplit";
                         # Open the file(s) in a horizontal split
-                        h = ":sh zellij run -n Yazi -c -f -x 10% -y 10% --width 80% --height 80% -- bash ~/.config/helix/yazi-picker.sh hsplit";
+                        h = ":sh zellij run -n Yazi -c -f -x 10% -y 10% --width 80% --height 80% -- bash ${yazi_picker_script} hsplit";
                     };
             };
 
