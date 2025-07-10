@@ -131,8 +131,9 @@
           name = "nix";
           language-servers = ["nil"];
           formatter = {
-            command = "alejandra";
-            args = [];
+            command = "nixfmt";
+            args = ["--width=80" "--indent=4" "--quiet" "--strict"];
+            
           };
         }
       ];
