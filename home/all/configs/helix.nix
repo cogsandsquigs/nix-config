@@ -21,11 +21,11 @@
                         # Opens a Zellij floating pane of height and width
                         # `floating_pane_size_percent` percent of the screen.
                         # NOTE: Requires Zellij to be installed and configured.
-                        make_zellij_floating_pane = cmd: [
+                        make_zellij_floating_pane =
+                            cmd:
                             ":sh zellij run --close-on-exit --height ${builtins.toString floating_pane_size_percent}% --width ${builtins.toString floating_pane_size_percent}% --floating -x ${
                                 builtins.toString ((100 - floating_pane_size_percent) / 2)
-                            }% -y ${builtins.toString ((100 - floating_pane_size_percent) / 2)}% -- ${cmd}"
-                        ];
+                            }% -y ${builtins.toString ((100 - floating_pane_size_percent) / 2)}% -- ${cmd}";
 
                         yazi_picker_script = builtins.toFile "yazi-picker.sh" ''
                             #!/usr/bin/env bash
@@ -35,7 +35,7 @@
                             if [[ -n "$paths" ]]; then
                                 zellij action toggle-floating-panes
                                 zellij action write 27 # send <Escape> key
-                                zellij action write-chars ":$1 $paths"
+                                zellij action write-chars ":open $paths"
                                 zellij action write 13 # send <Enter> key
                             else
                                 zellij action toggle-floating-panes
@@ -51,15 +51,8 @@
 
                         # Opens a file picker using `nnn` via via `space-f`.
                         # NOTE: Overrides the default helix file picker!
-                        # f = make_zellij_floating_pane "nnn -d";
-
-                        # [keys.normal.C-y]
-                        # Open the file(s) in the current window
-                        y = ":sh zellij run -n Yazi -c -f -x 10% -y 10% --width 80% --height 80% -- bash ${yazi_picker_script} open";
-                        # Open the file(s) in a vertical split
-                        v = ":sh zellij run -n Yazi -c -f -x 10% -y 10% --width 80% --height 80% -- bash ${yazi_picker_script} vsplit";
-                        # Open the file(s) in a horizontal split
-                        h = ":sh zellij run -n Yazi -c -f -x 10% -y 10% --width 80% --height 80% -- bash ${yazi_picker_script} hsplit";
+                        # See: https://yazi-rs.github.io/docs/tips/#helix-with-zellij
+                        f = make_zellij_floating_pane "bash ${yazi_picker_script}";
                     };
             };
 
