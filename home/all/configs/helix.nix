@@ -112,7 +112,8 @@ h = ":sh zellij run -n Yazi -c -f -x 10% -y 10% --width 80% --height 80% -- bash
                 };
 
                 nil = {
-                    command = "nil";  
+                    command = "nil";
+                    args = ["--stdio"];
                 };
             };
 
