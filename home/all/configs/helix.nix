@@ -23,11 +23,15 @@
                         ":sh zellij run --close-on-exit --height ${builtins.toString floating_pane_size_percent}% --width ${builtins.toString floating_pane_size_percent}% --floating -x ${builtins.toString ((100 - floating_pane_size_percent) / 2)}% -y ${builtins.toString ((100 - floating_pane_size_percent) / 2)}% -- ${cmd}"
                     ];
                 in {
-                    # Opens a lazygit floating pane.
-                    lg = make_zellij_floating_pane "lazygit";
+                    # Opens a lazygit floating pane via `space-l-g`.
+                    l.g = make_zellij_floating_pane "lazygit";
 
-                    # Opens a terminal-interface floating pane.
+                    # Opens a terminal-interface floating pane via `space-t`.
                     t = make_zellij_floating_pane "$SHELL";
+
+                    # Opens a file picker using `nnn` via via `space-f`.
+                    # NOTE: Overrides the default helix file picker!
+                    f = make_zellij_floating_pane "nnn -d -p";
                 };
             };
 
