@@ -4,6 +4,8 @@ My nix configuration!
 
 ## Layout
 
+- `flake.nix`: The flake that specifies how to load each system configuration
+  for each OS/arch type
 - `system`: System configuration, including applications and such
   - `system/all`: configuration for all systems.
   - `system/darwin`: MacOS configuration

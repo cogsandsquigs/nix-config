@@ -8,10 +8,27 @@
         settings = {
             theme = "catppuccin_mocha";
 
-            # Keys in space-mode (after pressing leader/space)
-            # See: https://github.com/helix-editor/helix/issues/2841
-            keys.normal.space = {
-                g = [":new" ":insert-output lazygit" ":buffer-close!" ":redraw" ":reload-all"];
+            # Keys in normal-mode (not highlighting/selecting or inserting
+            # text).
+            keys.normal = {
+                # Keys in space-mode (after pressing leader/space)
+                # See: https://github.com/helix-editor/helix/issues/2841
+                space = let
+                    floating_pane_size_percent = 80;
+
+                    # Opens a Zellij floating pane of height and width
+                    # `floating_pane_size_percent` percent of the screen.
+                    # NOTE: Requires Zellij to be installed and configured.
+                    make_zellij_floating_pane = cmd: [
+                        ":sh zellij run --close-on-exit --height ${builtins.toString floating_pane_size_percent}% --width ${builtins.toString floating_pane_size_percent}% --floating -x ${builtins.toString ((100 - floating_pane_size_percent) / 2)}% -y ${builtins.toString ((100 - floating_pane_size_percent) / 2)}% -- ${cmd}"
+                    ];
+                in {
+                    # Opens a lazygit floating pane.
+                    g = make_zellij_floating_pane "lazygit";
+
+                    # Opens a terminal-interface floating pane.
+                    t = make_zellij_floating_pane "$SHELL";
+                };
             };
 
             editor = {
@@ -87,7 +104,10 @@
                 {
                     name = "rust";
                     language-servers = ["rust-analyzer"];
-                    formatter = "rustfmt";
+                    formatter = {
+                        command = "rustfmt";
+                        args = [];
+                    };
                 }
             ];
         };
