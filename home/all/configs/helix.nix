@@ -33,6 +33,14 @@
                     # Opens a file picker using `nnn` via via `space-f`.
                     # NOTE: Overrides the default helix file picker!
                     # f = make_zellij_floating_pane "nnn -d";
+                
+                    # [keys.normal.C-y]
+# Open the file(s) in the current window
+y = ":sh zellij run -n Yazi -c -f -x 10% -y 10% --width 80% --height 80% -- bash ~/.config/helix/yazi-picker.sh open";
+# Open the file(s) in a vertical split
+v = ":sh zellij run -n Yazi -c -f -x 10% -y 10% --width 80% --height 80% -- bash ~/.config/helix/yazi-picker.sh vsplit";
+# Open the file(s) in a horizontal split
+h = ":sh zellij run -n Yazi -c -f -x 10% -y 10% --width 80% --height 80% -- bash ~/.config/helix/yazi-picker.sh hsplit";
                 };
             };
 
@@ -101,6 +109,10 @@
                         procMacro.enable = true;
                         cargo.buildScripts.enable = true;
                     };
+                };
+
+                nil = {
+                    command = "nil";  
                 };
             };
 
