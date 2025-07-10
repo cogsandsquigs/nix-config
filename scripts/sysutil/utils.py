@@ -4,7 +4,8 @@ Utilities to update and upgrade the Nix configuration.
 
 import subprocess
 import sys
-from os import environ, path
+import math
+from os import environ, path, get_terminal_size
 from platform import system
 
 NIX_FLAKE_PATH = path.dirname(path.dirname(__file__))  # Gets nix flake location
@@ -149,7 +150,9 @@ def invoke_process_popen_poll_live(
             # Erase last `display_lines` or `len(proc_out)` lines, prep. to write new ones
             # NOTE: len(proc_out) > 0 so that we don't erase the cmd invoke/prev. line
             if num_displayed_lines > 0:
-                print(f"\033[{num_displayed_lines}A\033[J")
+                max_width = get_terminal_size().columns
+                real_displayed_lines = sum(map(lambda line: (len(line) % max_width) + math.floor(len(line) / max_width), proc_out[-num_displayed_lines:]))
+                print(f"\033[{real_displayed_lines}A\033[J")
 
             proc_out.append(output)
             num_displayed_lines = min(len(proc_out), display_lines)
