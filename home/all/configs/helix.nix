@@ -27,10 +27,12 @@
                                 builtins.toString ((100 - floating_pane_size_percent) / 2)
                             }% -y ${builtins.toString ((100 - floating_pane_size_percent) / 2)}% -- ${cmd}";
 
+                        # Script to use Yazi as a file picker for helix.
+                        # NOTE: Assumes that helix is the previously-selected (I think?) or only pane!
                         yazi_picker_script = builtins.toFile "yazi-picker.sh" ''
                             #!/usr/bin/env bash
 
-                            paths=$(yazi --chooser-file=/dev/stdout | while read -r; do printf "%q " "$REPLY"; done)
+                            paths=$(yazi "$2" --chooser-file=/dev/stdout | while read -r; do printf "%q " "$REPLY"; done)
 
                             if [[ -n "$paths" ]]; then
                                 zellij action toggle-floating-panes
@@ -52,7 +54,10 @@
                         # Opens a file picker using `nnn` via via `space-f`.
                         # NOTE: Overrides the default helix file picker!
                         # See: https://yazi-rs.github.io/docs/tips/#helix-with-zellij
-                        f = make_zellij_floating_pane "bash ${yazi_picker_script}";
+                        # NOTE: When Helix allows command expansion variables (see: https://github.com/helix-editor/helix/pull/12527)
+                        # then we can pass 2nd argument as `%{buffer_name}`. For now, we pass `$(pwd)` to
+                        # not upset `yazi`.
+                        f = make_zellij_floating_pane "bash ${yazi_picker_script} $(pwd)";
                     };
             };
 
