@@ -1,6 +1,7 @@
-{pkgs, ...}: {
-    home.packages = with pkgs; [
-        kitty # Terminal
-        zellij # Terminal multiplexer
-    ];
+{ pkgs, ... }:
+{
+  home.packages = with pkgs; [
+    kitty # Terminal
+    zellij # Terminal multiplexer
+  ];
 }

@@ -1,7 +1,7 @@
 {
-    programs.eza = {
-        colors = "auto";
-        git = true;
-        icons = true;
-    };
+  programs.eza = {
+    colors = "auto";
+    git = true;
+    icons = true;
+  };
 }

@@ -1,8 +1,8 @@
 {
-    imports = [
-        ./nix-core.nix
-        ./fonts.nix
-        ./environment.nix
-        ./libraries.nix
-    ];
+  imports = [
+    ./nix-core.nix
+    ./fonts.nix
+    ./environment.nix
+    ./libraries.nix
+  ];
 }

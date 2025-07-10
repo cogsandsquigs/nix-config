@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   programs.helix = {
     enable = true;
     package = pkgs.helix;
@@ -13,44 +14,66 @@
       keys.normal = {
         # Keys in space-mode (after pressing leader/space)
         # See: https://github.com/helix-editor/helix/issues/2841
-        space = let
-          floating_pane_size_percent = 80;
+        space =
+          let
+            floating_pane_size_percent = 80;
 
-          # Opens a Zellij floating pane of height and width
-          # `floating_pane_size_percent` percent of the screen.
-          # NOTE: Requires Zellij to be installed and configured.
-          make_zellij_floating_pane = cmd: [
-            ":sh zellij run --close-on-exit --height ${builtins.toString floating_pane_size_percent}% --width ${builtins.toString floating_pane_size_percent}% --floating -x ${builtins.toString ((100 - floating_pane_size_percent) / 2)}% -y ${builtins.toString ((100 - floating_pane_size_percent) / 2)}% -- ${cmd}"
-          ];
-        in {
-          # Opens a lazygit floating pane via `space-l-g`.
-          l.g = make_zellij_floating_pane "lazygit";
+            # Opens a Zellij floating pane of height and width
+            # `floating_pane_size_percent` percent of the screen.
+            # NOTE: Requires Zellij to be installed and configured.
+            make_zellij_floating_pane = cmd: [
+              ":sh zellij run --close-on-exit --height ${builtins.toString floating_pane_size_percent}% --width ${builtins.toString floating_pane_size_percent}% --floating -x ${
+                builtins.toString ((100 - floating_pane_size_percent) / 2)
+              }% -y ${builtins.toString ((100 - floating_pane_size_percent) / 2)}% -- ${cmd}"
+            ];
+          in
+          {
+            # Opens a lazygit floating pane via `space-l-g`.
+            l.g = make_zellij_floating_pane "lazygit";
 
-          # Opens a terminal-interface floating pane via `space-t`.
-          t = make_zellij_floating_pane "$SHELL";
+            # Opens a terminal-interface floating pane via `space-t`.
+            t = make_zellij_floating_pane "$SHELL";
 
-          # Opens a file picker using `nnn` via via `space-f`.
-          # NOTE: Overrides the default helix file picker!
-          # f = make_zellij_floating_pane "nnn -d";
+            # Opens a file picker using `nnn` via via `space-f`.
+            # NOTE: Overrides the default helix file picker!
+            # f = make_zellij_floating_pane "nnn -d";
 
-          # [keys.normal.C-y]
-          # Open the file(s) in the current window
-          y = ":sh zellij run -n Yazi -c -f -x 10% -y 10% --width 80% --height 80% -- bash ~/.config/helix/yazi-picker.sh open";
-          # Open the file(s) in a vertical split
-          v = ":sh zellij run -n Yazi -c -f -x 10% -y 10% --width 80% --height 80% -- bash ~/.config/helix/yazi-picker.sh vsplit";
-          # Open the file(s) in a horizontal split
-          h = ":sh zellij run -n Yazi -c -f -x 10% -y 10% --width 80% --height 80% -- bash ~/.config/helix/yazi-picker.sh hsplit";
-        };
+            # [keys.normal.C-y]
+            # Open the file(s) in the current window
+            y = ":sh zellij run -n Yazi -c -f -x 10% -y 10% --width 80% --height 80% -- bash ~/.config/helix/yazi-picker.sh open";
+            # Open the file(s) in a vertical split
+            v = ":sh zellij run -n Yazi -c -f -x 10% -y 10% --width 80% --height 80% -- bash ~/.config/helix/yazi-picker.sh vsplit";
+            # Open the file(s) in a horizontal split
+            h = ":sh zellij run -n Yazi -c -f -x 10% -y 10% --width 80% --height 80% -- bash ~/.config/helix/yazi-picker.sh hsplit";
+          };
       };
 
       editor = {
         mouse = true; # Allow use of the mouse
-        gutters = ["diagnostics" "spacer" "line-numbers" "spacer" "diff"];
+        gutters = [
+          "diagnostics"
+          "spacer"
+          "line-numbers"
+          "spacer"
+          "diff"
+        ];
         auto-format = true;
         statusline = {
-          left = ["mode" "version-control"];
-          center = ["file-name" "file-modification-indicator" "diagnostics"];
-          right = ["file-type" "file-encoding" "spinner" "register"];
+          left = [
+            "mode"
+            "version-control"
+          ];
+          center = [
+            "file-name"
+            "file-modification-indicator"
+            "diagnostics"
+          ];
+          right = [
+            "file-type"
+            "file-encoding"
+            "spinner"
+            "register"
+          ];
 
           separator = "|";
 
@@ -112,7 +135,7 @@
 
         nil = {
           command = "nil";
-          args = ["--stdio"];
+          args = [ "--stdio" ];
         };
       };
 
@@ -120,20 +143,27 @@
       language = [
         {
           name = "rust";
-          language-servers = ["rust-analyzer"];
+          language-servers = [ "rust-analyzer" ];
+          auto-format = true;
           formatter = {
             command = "rustfmt";
-            args = [];
+            args = [ ];
           };
         }
 
         {
           name = "nix";
-          language-servers = ["nil"];
+          language-servers = [ "nil" ];
+          auto-format = true;
           formatter = {
             command = "nixfmt";
-            args = ["--width=80" "--indent=4" "--quiet" "--strict"];
-            
+            args = [
+              "--width=80"
+              "--indent=4"
+              "--quiet"
+              "--strict"
+            ];
+
           };
         }
       ];

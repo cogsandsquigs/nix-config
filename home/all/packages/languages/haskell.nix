@@ -1,7 +1,8 @@
-{pkgs, ...}: {
-    home.packages = with pkgs; [
-        ghc
-        haskell-language-server
-        cabal-install
-    ];
+{ pkgs, ... }:
+{
+  home.packages = with pkgs; [
+    ghc
+    haskell-language-server
+    cabal-install
+  ];
 }

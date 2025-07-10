@@ -1,5 +1,6 @@
-{pkgs, ...}: {
-    home.packages = with pkgs; [
-        rbenv
-    ];
+{ pkgs, ... }:
+{
+  home.packages = with pkgs; [
+    rbenv
+  ];
 }
