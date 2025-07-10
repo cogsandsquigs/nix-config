@@ -151,7 +151,13 @@ def invoke_process_popen_poll_live(
             # NOTE: len(proc_out) > 0 so that we don't erase the cmd invoke/prev. line
             if num_displayed_lines > 0:
                 max_width = get_terminal_size().columns
-                real_displayed_lines = sum(map(lambda line: (len(line) % max_width) + math.floor(len(line) / max_width), proc_out[-num_displayed_lines:]))
+                real_displayed_lines = sum(
+                    map(
+                        lambda line: (len(line) % max_width)
+                        + math.floor(len(line) / max_width),
+                        proc_out[-num_displayed_lines:],
+                    )
+                )
                 print(f"\033[{real_displayed_lines}A\033[J")
 
             proc_out.append(output)

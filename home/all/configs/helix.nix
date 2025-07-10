@@ -141,6 +141,7 @@
         languages = {
             # Language-server settings.
             language-server = {
+                # Rust language server
                 rust-analyzer = {
                     command = "rust-analyzer";
 
@@ -152,9 +153,16 @@
                     };
                 };
 
+                # Nix language server
                 nil = {
                     command = "nil";
                     args = [ "--stdio" ];
+                };
+
+                # Python language server
+                ruff = {
+                    command = "ruff";
+                    args = [ "server" ];
                 };
             };
 
@@ -173,7 +181,6 @@
                         args = [ ];
                     };
                 }
-
                 {
                     name = "nix";
                     language-servers = [ "nil" ];
@@ -191,6 +198,23 @@
                             "--strict"
                         ];
 
+                    };
+                }
+
+                {
+                    name = "python";
+                    language-servers = [ "ruff" ];
+                    auto-format = true;
+                    indent = {
+                        tab-width = 4;
+                        unit = "    ";
+                    };
+                    formatter = {
+                        command = "ruff";
+                        args = [
+                            "format"
+                            "-"
+                        ];
                     };
                 }
             ];
