@@ -32,11 +32,17 @@
                         yazi_picker_script = builtins.toFile "yazi-picker.sh" ''
                             #!/usr/bin/env bash
 
-                            paths=$(yazi "$2" --chooser-file=/dev/stdout | while read -r; do printf "%q " "$REPLY"; done)
+                            # NOTE: In the original script (see the file picker key), this took in `$2`
+                            # since the 1st argument was either `open`, `hsplit`, or `vsplit`.
+                            paths=$(yazi "$1" --chooser-file=/dev/stdout | while read -r; do printf "%q " "$REPLY"; done)
 
                             if [[ -n "$paths" ]]; then
                                 zellij action toggle-floating-panes
                                 zellij action write 27 # send <Escape> key
+                                
+                                # NOTE: In the original script (see the file picker key), this took
+                                # in `$1` in place of `open` since the 1st argument was either `open`,
+                                #  `hsplit`, or `vsplit`.
                                 zellij action write-chars ":open $paths"
                                 zellij action write 13 # send <Enter> key
                             else
