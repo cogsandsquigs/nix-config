@@ -127,6 +127,16 @@ h = ":sh zellij run -n Yazi -c -f -x 10% -y 10% --width 80% --height 80% -- bash
                         args = [];
                     };
                 }
+
+{
+                    name = "nix";
+                    language-servers = ["nil"];
+                    formatter = {
+                        command = "alejandra";
+                        args = [];
+                    };
+                }
+                
             ];
         };
     };
