@@ -153,6 +153,10 @@
                     name = "rust";
                     language-servers = [ "rust-analyzer" ];
                     auto-format = true;
+                    indent = {
+                        tab-width = 4;
+                        unit = "    ";
+                    };
                     formatter = {
                         command = "rustfmt";
                         args = [ ];
@@ -163,6 +167,10 @@
                     name = "nix";
                     language-servers = [ "nil" ];
                     auto-format = true;
+                    indent = {
+                        tab-width = 4;
+                        unit = "    ";
+                    };
                     formatter = {
                         command = "nixfmt";
                         args = [
