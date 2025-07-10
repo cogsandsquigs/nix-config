@@ -209,11 +209,14 @@
                         tab-width = 4;
                         unit = "    ";
                     };
+                    # This is gonna be a biiit weird
+                    # See: https://stackoverflow.com/questions/77876253/sort-imports-alphabetically-with-ruff
+                    # And: https://github.com/helix-editor/helix/discussions/7749
                     formatter = {
-                        command = "ruff";
+                        command = "bash";
                         args = [
-                            "format"
-                            "-"
+                            "-c"
+                            "ruff check --select I --fix - | ruff format -"
                         ];
                     };
                 }

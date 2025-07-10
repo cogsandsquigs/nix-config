@@ -3,8 +3,8 @@ Utilities to update and upgrade the Nix configuration.
 """
 
 import subprocess
-import sys
 import math
+import sys
 from os import environ, path, get_terminal_size
 from platform import system
 
