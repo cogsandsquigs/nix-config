@@ -24,7 +24,7 @@
                     ];
                 in {
                     # Opens a lazygit floating pane.
-                    g = make_zellij_floating_pane "lazygit";
+                    lg = make_zellij_floating_pane "lazygit";
 
                     # Opens a terminal-interface floating pane.
                     t = make_zellij_floating_pane "$SHELL";
