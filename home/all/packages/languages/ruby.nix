@@ -1,6 +1,4 @@
 { pkgs, ... }:
 {
-  home.packages = with pkgs; [
-    rbenv
-  ];
+    home.packages = with pkgs; [ rbenv ];
 }
