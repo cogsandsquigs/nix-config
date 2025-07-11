@@ -4,6 +4,5 @@
         kitty # Terminal
         alacritty # Terminal
         zellij # Terminal multiplexer
-        tmux # Terminal multiplexer
     ];
 }
