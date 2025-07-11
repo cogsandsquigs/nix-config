@@ -181,6 +181,7 @@
                         args = [ ];
                     };
                 }
+
                 {
                     name = "nix";
                     language-servers = [ "nil" ];
@@ -219,6 +220,36 @@
                             "ruff check --select I --fix - | ruff format -"
                         ];
                     };
+                }
+
+                {
+                    name = "markdown";
+                    auto-format = true;
+                    indent = {
+                        tab-width = 4;
+                        unit = "    ";
+                    };
+                    formatter =
+                        let
+
+                            # NOTE: Schema for configuration is here: https://dprint.dev/config/
+                            dprint-config = builtins.toFile "dprint.json" (
+                                builtins.toJson {
+                                    lineWidth = 80;
+                                    # markdown config goes here
+                                    markdown = { };
+                                    plugins = [
+                                        "https://plugins.dprint.dev/markdown-0.19.0.wasm"
+                                        "https://plugins.dprint.dev/typescript-0.95.8.wasm"
+                                        "https://plugins.dprint.dev/json-0.20.0.wasm"
+                                    ];
+                                }
+                            );
+                        in
+                        {
+
+                        };
+
                 }
             ];
         };
