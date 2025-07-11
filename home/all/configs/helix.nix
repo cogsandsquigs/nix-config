@@ -50,7 +50,7 @@ in
             keys.normal = {
                 # Replace regular yank keybinds with clipboard ones
                 y = [ ":clipboard-yank" ];
-                Y = [ ":main-clipboard-yank" ];
+                Y = [ ":primary-clipboard-yank" ];
 
                 # Ctrl-c Ctrl-v !
                 "C-c" = [ ":clipboard-yank" ];
