@@ -234,7 +234,7 @@
 
                             # NOTE: Schema for configuration is here: https://dprint.dev/config/
                             dprint-config = builtins.toFile "dprint.json" (
-                                builtins.toJson {
+                                builtins.toJSON {
                                     lineWidth = 80;
                                     # markdown config goes here
                                     markdown = { };
@@ -247,6 +247,11 @@
                             );
                         in
                         {
+                            command = "dprint";
+                            args = [
+                                "fmt"
+                                "--config=${dprint-config}"
+                            ];
 
                         };
 
