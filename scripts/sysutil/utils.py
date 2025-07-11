@@ -2,7 +2,6 @@
 Utilities to update and upgrade the Nix configuration.
 """
 
-import math
 import subprocess
 import sys
 from os import environ, get_terminal_size, path
@@ -155,7 +154,7 @@ def invoke_process_popen_poll_live(
                     sum(
                         map(
                             lambda line: (len(line) % max_width)
-                            + math.floor(len(line) / max_width),
+                            + (len(line) // max_width),
                             proc_out[-num_displayed_lines:],
                         )
                     )
