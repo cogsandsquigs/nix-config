@@ -2,6 +2,7 @@
 {
     imports = [
         ./neovim
+        ./alacritty.nix
         ./shells.nix
         ./kitty.nix
         ./git.nix
