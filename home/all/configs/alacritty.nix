@@ -4,7 +4,9 @@
         enable = true;
         package = pkgs.alacritty;
         settings = {
-            live_config_reload = true;
+            general = {
+                live_config_reload = true;
+            };
 
             env = {
                 TERM = "xterm-256color";
@@ -21,7 +23,7 @@
                     family = "FiraCode Nerd Font Mono";
                     style = "Regular";
                 };
-                size = 16.0;
+                size = 13.0;
             };
 
             cursor = {
