@@ -54,7 +54,7 @@ in
 
                 # Ctrl-c Ctrl-v !
                 "C-c" = [ ":clipboard-yank" ];
-                "C-v" = [ ":clipboard-paste" ];
+                "C-v" = [ ":clipboard-paste-after" ];
 
                 # Keys in space-mode (after pressing leader/space)
                 # See: https://github.com/helix-editor/helix/issues/2841
