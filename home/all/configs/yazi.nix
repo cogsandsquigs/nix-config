@@ -7,10 +7,8 @@
         enableFishIntegration = true;
         enableZshIntegration = true;
 
-        theme = {
-            flavor = {
-                dark = "catppuccin-mocha";
-            };
+        settings = {
+            title_format = "";
         };
 
         flavors =
@@ -25,5 +23,11 @@
             {
                 catppuccin-mocha = "${yazi-flavors}/catppuccin-mocha.yazi";
             };
+
+        theme = {
+            flavor = {
+                dark = "catppuccin-mocha";
+            };
+        };
     };
 }
