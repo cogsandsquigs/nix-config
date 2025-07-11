@@ -160,7 +160,7 @@ def invoke_process_popen_poll_live(
                     )
                     - 1  # NOTE: `-1` since it rms 1 more line than necessary
                 )
-                print(f"\033[{real_displayed_lines}A\033[J")
+                print("\x1b[1A\x1b[2K" * real_displayed_lines, end="")
 
             proc_out.append(output)
             num_displayed_lines = min(len(proc_out), display_lines)
