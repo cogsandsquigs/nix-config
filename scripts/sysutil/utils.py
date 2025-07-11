@@ -157,6 +157,8 @@ def invoke_process_popen_poll_live(
 
             proc_out.append(output)
             num_displayed_lines = min(len(proc_out), display_lines)
+
+            # Snip it to terminal width!
             max_width = (
                 get_terminal_size().columns - 5
             )  # NOTE: -5 so we can add `> ` and `...`
