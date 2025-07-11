@@ -12,10 +12,8 @@
         tree
         gnupg # Signatures
         fastfetch # System info
-        mdbook # Docs from MD: https://rust-lang.github.io/mdBook/index.html
         magic-wormhole
         fontconfig
-        # nnn # Nice terminal file manager
         yazi # Terminal file manager
     ];
 }
