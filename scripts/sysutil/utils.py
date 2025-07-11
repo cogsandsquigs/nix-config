@@ -4,6 +4,7 @@ Utilities to update and upgrade the Nix configuration.
 
 import subprocess
 import sys
+from math import ceil
 from os import environ, get_terminal_size, path
 from platform import system
 
@@ -149,27 +150,27 @@ def invoke_process_popen_poll_live(
             # Erase last `display_lines` or `len(proc_out)` lines, prep. to write new ones
             # NOTE: len(proc_out) > 0 so that we don't erase the cmd invoke/prev. line
             if num_displayed_lines > 0:
-                max_width = get_terminal_size().columns
-                real_displayed_lines = (
-                    sum(
-                        map(
-                            lambda line: (len(line) % max_width)
-                            + (len(line) // max_width),
-                            proc_out[-num_displayed_lines:],
-                        )
-                    )
-                    - 1  # NOTE: `-1` since it rms 1 more line than necessary
+                print(
+                    f"\033[{num_displayed_lines}A\033[J",
+                    end="\n",
                 )
-                print("\x1b[1A\x1b[2K" * real_displayed_lines, end="")
 
             proc_out.append(output)
             num_displayed_lines = min(len(proc_out), display_lines)
+            max_width = (
+                get_terminal_size().columns - 5
+            )  # NOTE: -5 so we can add `> ` and `...`
 
             print(
                 "\n".join(
                     map(
                         lambda x: f"\033[90m> {x}\x1b[0m",
-                        proc_out[-num_displayed_lines:],
+                        map(
+                            lambda x: x[:max_width] + "..."
+                            if len(x) >= max_width
+                            else x,
+                            proc_out[-num_displayed_lines:],
+                        ),
                     )
                 ),
                 end="",
@@ -189,3 +190,9 @@ def invoke_process_popen_poll_live(
 
     print(f"ERROR {sys.exc_info()[1]} while running {command.join(' ')}")
     return None
+
+
+def delete_last_lines(n=1):
+    for _ in range(n):
+        sys.stdout.write(CURSOR_UP_ONE)
+        sys.stdout.write(ERASE_LINE)
