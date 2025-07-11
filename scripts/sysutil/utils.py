@@ -192,9 +192,3 @@ def invoke_process_popen_poll_live(
 
     print(f"ERROR {sys.exc_info()[1]} while running {command.join(' ')}")
     return None
-
-
-def delete_last_lines(n=1):
-    for _ in range(n):
-        sys.stdout.write(CURSOR_UP_ONE)
-        sys.stdout.write(ERASE_LINE)
