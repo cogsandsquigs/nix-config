@@ -13,5 +13,6 @@
         ./toml.nix
         ./json.nix
         ./yaml.nix
+        ./markdown.nix
     ];
 }
