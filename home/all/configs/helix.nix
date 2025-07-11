@@ -49,11 +49,11 @@ in
             # text).
             keys.normal = {
                 # Replace regular yank keybinds with clipboard ones
-                y = [ ":clipboard-yank" ];
+                y = [ ":primary-clipboard-yank" ];
                 Y = [ ":primary-clipboard-yank" ];
 
                 # Ctrl-c Ctrl-v !
-                "C-c" = [ ":clipboard-yank" ];
+                "C-c" = [ ":primary-clipboard-yank" ];
                 "C-v" = [ ":clipboard-paste-after" ];
 
                 # Keys in space-mode (after pressing leader/space)
