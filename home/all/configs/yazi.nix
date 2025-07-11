@@ -1,4 +1,5 @@
 { pkgs, ... }:
+
 {
     programs.yazi = {
         enable = true;
@@ -8,7 +9,9 @@
         enableZshIntegration = true;
 
         settings = {
-            title_format = "";
+            mgr = {
+                title_format = "";
+            };
         };
 
         flavors =
