@@ -82,7 +82,8 @@
                 autohide-time-modifier = 0.5;
                 persistent-apps = [
                     # "/System/Applications/Launchpad.app" # NOTE: Not recommended since MacOS 26!
-                    "${pkgs.kitty}/Applications/kitty.app"
+                    # "${pkgs.kitty}/Applications/kitty.app"
+                    "${pkgs.alacritty}/Applications/Alacritty.app"
                     "/System/Applications/System Settings.app"
                     # "${pkgs.firefox-unwrapped}/Applications/Firefox.app" # NOTE: See homebrew.nix for why it's `firefox-unwrapped`
                     "/Applications/Firefox.app" # NOTE: See homebrew.nix for why it's `firefox-unwrapped`
