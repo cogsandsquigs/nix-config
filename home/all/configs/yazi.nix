@@ -9,9 +9,7 @@
         enableZshIntegration = true;
 
         settings = {
-            mgr = {
-                title_format = "";
-            };
+            mgr = { };
         };
 
         flavors =
@@ -31,6 +29,10 @@
             flavor = {
                 dark = "catppuccin-mocha";
             };
+
+            # Disable some annoying UI components:
+            mgr.cwd = false; # That top line showing path. Since I use zellij, it's redundant!
+
         };
     };
 }
