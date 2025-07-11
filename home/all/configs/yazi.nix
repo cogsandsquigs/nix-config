@@ -31,7 +31,10 @@
             };
 
             # Disable some annoying UI components:
-            mgr.cwd = false; # That top line showing path. Since I use zellij, it's redundant!
+            # That top line showing path. Since I use zellij, it's redundant!
+            mgr.cwd = {
+                hidden = false;
+            };
 
         };
     };
