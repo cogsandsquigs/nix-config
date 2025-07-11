@@ -29,13 +29,6 @@
             flavor = {
                 dark = "catppuccin-mocha";
             };
-
-            # Disable some annoying UI components:
-            # That top line showing path. Since I use zellij, it's redundant!
-            mgr.cwd = {
-                hidden = false;
-            };
-
         };
     };
 }
