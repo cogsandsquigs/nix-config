@@ -264,6 +264,16 @@ in
                           };
                     */
                 }
+
+                {
+                    name = "latex";
+                    auto-format = true;
+                    indent = {
+                        tab-width = 4;
+                        unit = "    ";
+                    };
+
+                }
             ];
         };
     };
