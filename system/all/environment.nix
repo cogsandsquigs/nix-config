@@ -7,6 +7,11 @@
             pkgs.bash
             pkgs.nushell
         ];
+
+        systemPackages = with pkgs; [
+            util-linux # System utils for Linux and MacOS (?)
+        ];
+
     };
 
     users.users.${username} = {

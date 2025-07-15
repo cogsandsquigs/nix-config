@@ -17,8 +17,10 @@
             # The format of the prompt, which is a string containing the various symbols and styles.
             # NOTE: $package should come after all language symbols as it displays the package manager + version for the
             # current language.
+            # NOTE: We need to use `''` in front of any `${<...snip...>}` since that's how nix string interpolation is
+            # escaped. See: https://nix.dev/manual/nix/2.25/language/string-interpolation
             format = ''
-                [╭─](bright-black) $os$directory$git_branch$git_commit$git_state$git_metrics$git_status$c$cpp$rust$nodejs$bun$python$go$java$kotlin$scala$package$direnv$fill $cmd_duration at $time
+                [╭─](bright-black) $os$directory$git_branch$git_commit$git_state$git_metrics$git_status$c$cpp$rust$nodejs$bun$python$go$java$kotlin$scala$package$direnv$fill $cmd_duration$time''${custom.zellij}
                 [╰─](bright-black) $character
             '';
 
@@ -46,7 +48,7 @@
                 ###########
 
                 truncation_symbol = "…/";
-                read_only = "";
+                read_only = " ";
                 home_symbol = "~";
             };
 
@@ -59,14 +61,14 @@
             cmd_duration = {
                 disabled = false;
                 min_time = 500; # in millis
-                format = "took [ $duration](bold yellow)";
+                format = "took [ $duration](bold yellow) ";
                 style = "bold yellow";
             };
 
             # Time/terminal clock
             time = {
                 disabled = false;
-                format = "[ $time]($style) ";
+                format = "at [ $time]($style) ";
                 time_format = "%I:%M:%S %P";
                 style = "bold purple";
             };
@@ -121,6 +123,21 @@
                     "clang-tidy"
                     "compile_commands.json"
                 ];
+            };
+
+            ###################
+            # CUSTOM COMMANDS #
+            ###################
+
+            custom = {
+                # Zellij integration
+                zellij = {
+                    # NOTE: We need to do `\\` so it outputs the string `\(...\)` which then gets interpolated via Starship
+                    format = "in [Zellij \\($output\\)]($style) ";
+                    style = "green bold";
+                    when = "test $ZELLIJ && test ! $__ZELLIJ_DONT_SHOW_STATUS"; # NOTE: `$__ZELLIJ_DONT_SHOW_STATUS` set by layout(s) that show zellij status
+                    command = ''echo $ZELLIJ_SESSION_NAME'';
+                };
             };
         };
     };

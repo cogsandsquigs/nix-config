@@ -24,6 +24,7 @@
                     style = "Regular";
                 };
                 size = 13.0;
+                builtin_box_drawing = false;
             };
 
             cursor = {
@@ -31,6 +32,14 @@
                     shape = "Beam";
                     blinking = "Never";
                 };
+            };
+
+            terminal = {
+                osc52 = "CopyPaste";
+            };
+
+            mouse = {
+                hide_when_typing = true;
             };
         };
         theme = "catppuccin_mocha";
