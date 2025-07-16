@@ -25,9 +25,10 @@ let
 
     variables = {
         EDITOR = editor;
+
         LIBRARY_PATH = pkgs.lib.makeLibraryPath [
             pkgs.llvmPackages_20.clang
-            pkgs.libiconvReal
+            # pkgs.libiconvReal
         ];
 
         JAVA_HOME = "$(dirname $(dirname $(readlink -f $(which java))))"; # Add java home
