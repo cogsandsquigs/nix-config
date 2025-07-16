@@ -4,7 +4,6 @@
         enable = true;
         enableBashIntegration = true; # Enable starship in bash
         enableFishIntegration = true;
-        enableNushellIntegration = true;
         enableZshIntegration = true;
         enableTransience = true; # See: https://starship.rs/advanced-config/#transientprompt-and-transientrightprompt-in-fish
 
