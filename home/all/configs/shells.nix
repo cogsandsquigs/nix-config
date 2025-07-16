@@ -25,7 +25,7 @@ let
 
     variables = {
         EDITOR = editor;
-        LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
+        LIBRARY_PATH = pkgs.lib.makeLibraryPath [
             pkgs.llvmPackages_20.clang
             pkgs.libiconvReal
         ];
