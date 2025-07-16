@@ -71,7 +71,7 @@ in
                     # NOTE: When Helix allows command expansion variables (see: https://github.com/helix-editor/helix/pull/12527)
                     # then we can pass 2nd argument as `%{buffer_name}`. For now, we pass `$(pwd)` to
                     # not upset `yazi`.
-                    f = make_zellij_floating_pane "bash ${yazi_picker_script} $(pwd)";
+                    f = make_zellij_floating_pane "bash ${yazi_picker_script} %{buffer_name}";
                 };
             };
 
@@ -258,6 +258,8 @@ in
                             args = [
                                 "fmt"
                                 "--config=${dprint-config}"
+                                "--stdin"
+                                "%{buffer_name}"
                             ];
 
                         };
