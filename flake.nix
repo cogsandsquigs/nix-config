@@ -22,6 +22,12 @@
             url = "github:nix-community/home-manager";
             inputs.nixpkgs.follows = "nixpkgs";
         };
+
+        # Glob imports
+        globset = {
+            url = "github:pdtpartners/globset";
+            inputs.nixpkgs-lib.follows = "nixpkgs";
+        };
     };
 
     outputs =
@@ -30,6 +36,7 @@
             nix-darwin,
             nixpkgs,
             home-manager,
+            globset,
         }:
         let
             inherit (self) outputs;

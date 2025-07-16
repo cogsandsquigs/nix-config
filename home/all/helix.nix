@@ -16,6 +16,8 @@ let
 
 in
 {
+    home.packages = with pkgs; [ helix ];
+
     programs.helix = {
         enable = true;
         package = pkgs.helix;

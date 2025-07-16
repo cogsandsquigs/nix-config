@@ -1,5 +1,16 @@
-{ ... }:
+{ pkgs, ... }:
 {
+    home.packages = with pkgs; [ gnupg ];
+
+    programs.gpg = {
+        enable = true;
+
+        settings = {
+            use-agent = true;
+            no-tty = true;
+        };
+    };
+
     # Make sure the mac-specific pinentry is available for GPG agent.
     services.gpg-agent = {
         enable = true;

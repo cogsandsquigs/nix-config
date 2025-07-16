@@ -1,5 +1,7 @@
 { pkgs, ... }:
 {
+    home.packages = with pkgs; [ neovim ];
+
     programs.neovim = {
         # enable = true;
         package = pkgs.neovim; # Necessary since by default programs.neovim.enable uses a different package

@@ -6,7 +6,6 @@
     ...
 }:
 let
-    inherit (pkgs) stdenv;
     inherit (lib.strings) concatMapStrings;
     inherit (lib.attrsets) mapAttrsToList;
 
@@ -26,6 +25,7 @@ let
     variables = {
         EDITOR = editor;
         JAVA_HOME = "$(dirname $(dirname $(readlink -f $(which java))))"; # Add java home
+
         # NOTE: Necessary for (some) rust compilation things/libs
         LIBRARY_PATH = pkgs.lib.makeLibraryPath [ pkgs.libiconvReal ];
     };
@@ -40,19 +40,7 @@ let
         "/etc/profiles/per-user/${username}/bin"
         "/run/current-system/sw/bin"
 
-        # Force to be apple native CC.
-        # NOTE: Needed because otherwise cc from installed clang/nix will override and cause issues on
-        # darwin systems, e.x. Rust compilation of external C libraries (e.x. libiconv).
-        (
-            if stdenv.isDarwin then
-                "" # "export PATH=\"/usr/bin:$PATH\""
-            else
-                ""
-        )
-
     ];
-
-    libPaths = [ ];
 
     # Maps every variable in `variables` to a string for a specific shell.
     # @param `f`: A function `f :: String -> Any -> String` that takes the variable name,
@@ -71,6 +59,14 @@ let
     editor = "hx";
 in
 {
+    home.packages = with pkgs; [
+        fish
+        bash
+        zsh
+        oh-my-zsh
+        zsh-powerlevel10k
+    ];
+
     programs.fish = {
         enable = true;
         generateCompletions = true;

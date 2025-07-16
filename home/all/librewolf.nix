@@ -1,4 +1,7 @@
+{ pkgs, ... }:
 {
+    home.packages = with pkgs; [ librewolf ];
+
     # Librewolf-specific settings
     programs.librewolf = {
         enable = true;
