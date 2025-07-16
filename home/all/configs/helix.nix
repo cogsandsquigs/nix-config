@@ -218,10 +218,8 @@ in
                         command = "taplo";
                         args = [
                             "fmt"
-                            "-o"
-                            "align_entries=true"
-                            "-o"
-                            "align-comments"
+                            "-o=align_entries=true"
+                            "-o=align-comments"
                             "-o"
                             "allowed_blank_lines=1"
                             "-o"
