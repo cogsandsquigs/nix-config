@@ -1,6 +1,5 @@
 # nix
 
-
 My nix configuration!
 
 ## Layout
@@ -12,7 +11,7 @@ My nix configuration!
   - `system/darwin`: MacOS configuration
 - `home`: Home-Manager configuration, used to configure dotfiles and such. This is where things like the shell, programs
   with configuration in `~/.config`, etc. are configured. Each separate program should have it's own
-  `home/config/<program-name>.nix` file (see `home/git.nix`, etc.).
+  `home/config/<program-name>.nix` file (see `home/git.nix`, etc.). Some things package-only may be in `home/config/packages/<file>.nix`
 
 > [!NOTE]
 > The only exception for this are programming languages, which have their own file in `home/packages/languages/<language>.nix`
