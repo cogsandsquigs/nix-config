@@ -25,13 +25,9 @@ let
 
     variables = {
         EDITOR = editor;
-
-        LIBRARY_PATH = pkgs.lib.makeLibraryPath [
-            pkgs.llvmPackages_20.clang
-            # pkgs.libiconvReal
-        ];
-
         JAVA_HOME = "$(dirname $(dirname $(readlink -f $(which java))))"; # Add java home
+        # NOTE: Necessary for (some) rust compilation things/libs
+        LIBRARY_PATH = pkgs.lib.makeLibraryPath [ pkgs.libiconvReal ];
     };
 
     binPaths = [
