@@ -12,28 +12,6 @@ let
             builtins.toString ((100 - floating_pane_size_percent) / 2)
         }% -y ${builtins.toString ((100 - floating_pane_size_percent) / 2)}% -- ${cmd}";
 
-    # Script to use Yazi as a file picker for helix.
-    # NOTE: Assumes that helix is the previously-selected (I think?) or only pane!
-    yazi_picker_script = builtins.toFile "yazi-picker.sh" ''
-        #!/usr/bin/env bash
-
-        # NOTE: In the original script (see the file picker key), this took in `$2`
-        # since the 1st argument was either `open`, `hsplit`, or `vsplit`.
-        paths=$(yazi "$1" --chooser-file=/dev/stdout | while read -r; do printf "%q " "$REPLY"; done)
-
-        if [[ -n "$paths" ]]; then
-            zellij action toggle-floating-panes
-            zellij action write 27 # send <Escape> key
-            
-            # NOTE: In the original script (see the file picker key), this took
-            # in `$1` in place of `open` since the 1st argument was either `open`,
-            #  `hsplit`, or `vsplit`.
-            zellij action write-chars ":open $paths"
-            zellij action write 13 # send <Enter> key
-        else
-            zellij action toggle-floating-panes
-        fi
-    '';
 in
 {
     programs.helix = {
@@ -71,7 +49,26 @@ in
                     # NOTE: When Helix allows command expansion variables (see: https://github.com/helix-editor/helix/pull/12527)
                     # then we can pass 2nd argument as `%{buffer_name}`. For now, we pass `$(pwd)` to
                     # not upset `yazi`.
-                    f = make_zellij_floating_pane "bash ${yazi_picker_script} %{buffer_name}";
+                    f =
+                        let
+                            # Script to use Yazi as a file picker for helix.
+                            # NOTE: Assumes that helix is the previously-selected (I think?) or only pane!
+                            yazi_picker_script = builtins.toFile "yazi-picker.sh" ''
+                                #!/usr/bin/env bash
+
+                                paths=$(yazi "$2" --chooser-file=/dev/stdout | while read -r; do printf "%q " "$REPLY"; done)
+
+                                if [[ -n "$paths" ]]; then
+                                	zellij action toggle-floating-panes
+                                	zellij action write 27 # send <Escape> key
+                                	zellij action write-chars ":$1 $paths"
+                                	zellij action write 13 # send <Enter> key
+                                else
+                                	zellij action toggle-floating-panes
+                                fi
+                            '';
+                        in
+                        make_zellij_floating_pane "bash ${yazi_picker_script} open %{buffer_name}";
                 };
             };
 
@@ -171,6 +168,26 @@ in
                 ruff = {
                     command = "ruff";
                     args = [ "server" ];
+                };
+
+                # LaTeX language server
+                # See: https://github.com/helix-editor/helix/issues/340#issuecomment-1167200354
+                texlab = {
+                    config.texlab = {
+                        build = {
+                            onSave = true;
+                            forwardSearchAfter = true;
+
+                        };
+
+                        forwardSearch = {
+                            executable = "???"; # TODO: This!
+                            args = [ ]; # TODO: This! (synctex args)
+                        };
+
+                        chktex.onEdit = true;
+                    };
+
                 };
             };
 
@@ -272,7 +289,11 @@ in
                         tab-width = 4;
                         unit = "    ";
                     };
-
+                    language-servers = [ "texlab" ];
+                    formatter = {
+                        command = "latexindent";
+                        args = [ "-" ];
+                    };
                 }
             ];
         };
