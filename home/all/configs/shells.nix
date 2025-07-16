@@ -19,10 +19,15 @@ let
     };
 
     variables = {
-        TEST123YAA = "jorkit";
         EDITOR = editor;
         JAVA_HOME = "$(dirname $(dirname $(readlink -f $(which java))))"; # Add java home
     };
+
+    path = [
+        "/rawr"
+        "$HOME/.cargo/bin"
+        "${pkgs.llvmPackages_20.clang-tools}/bin"
+    ];
 
     # Maps every variable in `variables` to a string for a specific shell.
     # @param `f`: A function `f :: String -> Any -> String` that takes the variable name,
@@ -31,6 +36,12 @@ let
     # @returns the string of all variables to be loaded in a shell.
     variablesToString =
         f: (concatMapStrings (s: s + "\n") (mapAttrsToList f variables));
+
+    # Maps every path entry in `path` to a string for a specific shell
+    # @param `f`: A function `f :: String -> String` that takes the path entry, then returns
+    # a command to add it to the path.
+    # @returns a string of commands to add things to path.
+    pathToString = f: (concatMapStrings (s: (f s) + "\n") path);
 
     editor = "hx";
 in
@@ -51,8 +62,9 @@ in
 
         shellInit = ''
             ${variablesToString (name: val: "set -gx ${name} ${val}")}
-            fish_add_path $HOME/.cargo/bin # Add cargo bin to path
-            fish_add_path ${pkgs.llvmPackages_20.clang-tools}/bin # Add clang tools to path
+            ${pathToString (path: "fish_add_path ${path}")}
+            # fish_add_path $HOME/.cargo/bin # Add cargo bin to path
+            # fish_add_path ${pkgs.llvmPackages_20.clang-tools}/bin # Add clang tools to path
             ${
                 # Force to be apple native CC.
                 # NOTE: Needed because otherwise cc from installed clang/nix will override and cause issues on
@@ -163,8 +175,7 @@ in
         '';
 
         envExtra = ''
-            export EDITOR=${editor} # Set default editor to nvim
-            export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java)))) # Add java home
+            ${variablesToString (name: val: "export ${name}=\"${val}\"")}
             export PATH="$HOME/.cargo/bin:$PATH" # Add cargo bin to path
             ${
                 # Force to be apple native CC.
