@@ -1,6 +1,5 @@
 # The shell configuration I use!
 {
-    config,
     pkgs,
     lib,
     username,
@@ -26,7 +25,10 @@ let
 
     variables = {
         EDITOR = editor;
-        LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [ pkgs.llvmPackages_20.clang ];
+        LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
+            pkgs.llvmPackages_20.clang
+            pkgs.libiconvReal
+        ];
 
         JAVA_HOME = "$(dirname $(dirname $(readlink -f $(which java))))"; # Add java home
     };
