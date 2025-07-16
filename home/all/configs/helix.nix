@@ -8,9 +8,11 @@ let
     # NOTE: Requires Zellij to be installed and configured.
     make_zellij_floating_pane =
         cmd:
-        ":sh zellij run --close-on-exit --height ${builtins.toString floating_pane_size_percent}% --width ${builtins.toString floating_pane_size_percent}% --floating -x ${
+        ":sh zellij run --close-on-exit --height ${builtins.toString floating_pane_size_percent}%% --width ${builtins.toString floating_pane_size_percent}%% --floating -x ${
             builtins.toString ((100 - floating_pane_size_percent) / 2)
-        }% -y ${builtins.toString ((100 - floating_pane_size_percent) / 2)}% -- ${cmd}";
+        }%% -y ${
+            builtins.toString ((100 - floating_pane_size_percent) / 2)
+        }%% -- ${cmd}";
 
 in
 {
