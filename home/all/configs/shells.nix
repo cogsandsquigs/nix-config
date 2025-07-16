@@ -1,7 +1,9 @@
 # The shell configuration I use!
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 let
     inherit (pkgs) stdenv;
+    inherit (lib.strings) concatMapStrings;
+    inherit (lib.attrsets) mapAttrsToList;
 
     aliases = {
         ls = "eza --icons";
@@ -15,6 +17,19 @@ let
         rebuild = "python3 /etc/nix/scripts/sysutil/run.py rebuild";
         cleanup = "python3 /etc/nix/scripts/sysutil/run.py cleanup";
     };
+
+    variables = {
+        EDITOR = editor;
+        JAVA_HOME = "$(dirname $(dirname $(readlink -f $(which java))))"; # Add java home
+    };
+
+    # Maps every variable in `variables` to a string for a specific shell.
+    # @param `f`: A function `f :: String -> Any -> String` that takes the variable name,
+    # then value, then returns a string that loads the variable in a specific shell the
+    # user wants.
+    # @returns the string of all variables to be loaded in a shell.
+    variablesToString =
+        f: (concatMapStrings (s: s + "\n") (mapAttrsToList f variables));
 
     editor = "hx";
 in
@@ -34,8 +49,9 @@ in
         '';
 
         shellInit = ''
-            set -gx EDITOR ${editor} # Set default editor to nvim
-            set -gx JAVA_HOME $(dirname $(dirname $(readlink -f $(which java)))) # Add java home
+            ${variablesToString (name: val: "set -gx ${name} ${val}")}
+            # set -gx EDITOR ${editor} # Set default editor to nvim
+            # set -gx JAVA_HOME $(dirname $(dirname $(readlink -f $(which java)))) # Add java home
             fish_add_path $HOME/.cargo/bin # Add cargo bin to path
             fish_add_path ${pkgs.llvmPackages_20.clang-tools}/bin # Add clang tools to path
             ${
