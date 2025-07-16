@@ -19,6 +19,7 @@ let
     };
 
     variables = {
+        TEST123YAA = "jorkit";
         EDITOR = editor;
         JAVA_HOME = "$(dirname $(dirname $(readlink -f $(which java))))"; # Add java home
     };
@@ -50,8 +51,6 @@ in
 
         shellInit = ''
             ${variablesToString (name: val: "set -gx ${name} ${val}")}
-            # set -gx EDITOR ${editor} # Set default editor to nvim
-            # set -gx JAVA_HOME $(dirname $(dirname $(readlink -f $(which java)))) # Add java home
             fish_add_path $HOME/.cargo/bin # Add cargo bin to path
             fish_add_path ${pkgs.llvmPackages_20.clang-tools}/bin # Add clang tools to path
             ${
@@ -108,8 +107,7 @@ in
         };
 
         envFile.text = ''
-            $env.EDITOR = "${editor}" # Set default editor to nvim
-            $env.JAVA_HOME = (dirname (dirname (readlink -f ...(which java | get path)))) # Add java home
+            ${variablesToString (name: val: "$env.${name} = ${val}")}
             ${
                 # Force to be apple native CC.
                 # NOTE: Needed because otherwise cc from installed clang/nix will override and cause issues on
