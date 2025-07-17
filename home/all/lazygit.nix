@@ -25,7 +25,6 @@
         in
         # NOTE: Oyr configuration (specified in `settings`) ends in .yml.
         # See: https://nix-community.github.io/home-manager/options.xhtml#opt-programs.lazygit.settings
-        # Also, we put quotes since MacOS path includes `Application Support` or whatev.
         "${catppuccin-theme}/themes/mocha/sapphire.yml,$(lazygit --print-config-dir)/config.yml";
 
 }
