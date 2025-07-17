@@ -23,5 +23,5 @@
                 hash = "sha256-aKK4UUjVoniScVYp0AbpTukZeAZWZOA/eb+Vb0LhrfQ=";
             };
         in
-        "${catppuccin-theme}/themes/mocha/sapphire.yaml"; # ,$(lazygit --print-config-dir)";
+        "${catppuccin-theme}/themes/mocha/sapphire.yaml,$(lazygit --print-config-dir)";
 }
