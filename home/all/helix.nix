@@ -236,6 +236,21 @@ in
                 }
 
                 {
+                    name = "pest";
+                    auto-format = true;
+                    indent = {
+                        tab-width = 4;
+                        unit = "    ";
+                    };
+                    # NOTE: No need to configure, pest-language-server is default
+                    # language-servers = [];
+                    formatter = {
+                        command = "pestfmt";
+                        args = [ "--stdin" ];
+                    };
+                }
+
+                {
                     name = "nix";
                     language-servers = [ "nil" ];
                     auto-format = true;
