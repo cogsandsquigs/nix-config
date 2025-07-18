@@ -243,18 +243,8 @@ in
                         unit = "    ";
                     };
                     # NOTE: No need to configure, pest-language-server is default
-                    language-servers = [
-                        {
-                            name = "pest-language-server";
-                            except-features = [ "format" ];
-                        }
-                    ];
-                    # NOTE: Formatter doesn't really format well & just adds a newline
-                    # at the end of the file every time (annoying!)
-                    # formatter = {
-                    #     command = "pestfmt";
-                    #     args = [ "--stdin" ];
-                    # };
+                    # NOTE: LSP comes with formatter, no need for formatter!
+                    language-servers = [ "pest-language-server" ];
                 }
 
                 {
