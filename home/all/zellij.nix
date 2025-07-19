@@ -17,8 +17,7 @@
             theme = "catppuccin-mocha";
             show_startup_tips = false;
             pane_frames = false; # Removes the border around panes
-
-            on_force_close = "quit"; # Quit when term window is quit.
+            on_force_close = "quit"; # Quit when term window is quit, prevents zellij from hanging around when not wanted.
 
             default_layout = "simple"; # NOTE: See below (outside of `programs.zellij`)!
 
@@ -30,21 +29,30 @@
             };
 
         };
+
+        ###############################################################
+        # Custom layouts for Zellij!                                  #
+        # NOTE: These layouts are written using KDL: https://kdl.dev/ #
+        ###############################################################
+
+        layouts = {
+            simple = {
+                layout = {
+                    pane = { };
+                };
+            };
+        };
     };
 
-    ###############################################################
-    # Custom layouts for Zellij!                                  #
-    # NOTE: These layouts are written using KDL: https://kdl.dev/ #
-    ###############################################################
-
-    # Simple layout! gets rid of the bottom/top bars, since I made a Zellij
-    # integration for Starship (shows info n stuff!).
-    xdg.configFile."zellij/layouts/simple.kdl".text = ''
-        layout {
-            pane // panes can be bare
-        }
-    '';
-
+    /*
+        # Simple layout! gets rid of the bottom/top bars, since I made a Zellij
+        # integration for Starship (shows info n stuff!).
+        xdg.configFile."zellij/layouts/simple.kdl".text = ''
+            layout {
+                pane // panes can be bare
+            }
+        '';
+    */
     # Uses `zjstatus` to create a (much nicer!) terminal status bar.
     # NOTE: Sets `__ZELLIJ_DONT_SHOW_STATUS` so that we know not to show it
     # in Starship.
