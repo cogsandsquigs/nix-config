@@ -18,6 +18,8 @@
             show_startup_tips = false;
             pane_frames = false; # Removes the border around panes
 
+            on_force_close = "quit"; # Quit when term window is quit.
+
             default_layout = "simple"; # NOTE: See below (outside of `programs.zellij`)!
 
             # UI Settings
