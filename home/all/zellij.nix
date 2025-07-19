@@ -36,77 +36,72 @@
         ###############################################################
 
         layouts = {
+            # Simple layout! gets rid of the bottom/top bars, since I made a Zellij
+            # integration for Starship (shows info n stuff!).
             simple = {
                 layout = {
+                    # panes can be bare
                     pane = { };
                 };
             };
         };
     };
 
-    /*
-        # Simple layout! gets rid of the bottom/top bars, since I made a Zellij
-        # integration for Starship (shows info n stuff!).
-        xdg.configFile."zellij/layouts/simple.kdl".text = ''
-            layout {
-                pane // panes can be bare
-            }
-        '';
-    */
     # Uses `zjstatus` to create a (much nicer!) terminal status bar.
     # NOTE: Sets `__ZELLIJ_DONT_SHOW_STATUS` so that we know not to show it
     # in Starship.
-    xdg.configFile."zellij/layouts/better.kdl".text =
-        let
-            zjstatus = pkgs.fetchurl {
-                url = "https://github.com/dj95/zjstatus/releases/download/v0.21.0/zjstatus.wasm";
-                hash = "sha256-p6JTnAyim0T3TkJzGhEitzc3JpPovL5k7jb8gv+oLD4=";
-            };
-        in
-        ''
-            env {
-                __ZELLIJ_DONT_SHOW_STATUS 0
-            }
+    /*
+      xdg.configFile."zellij/layouts/better.kdl".text =
+          let
+              zjstatus = pkgs.fetchurl {
+                  url = "https://github.com/dj95/zjstatus/releases/download/v0.21.0/zjstatus.wasm";
+                  hash = "sha256-p6JTnAyim0T3TkJzGhEitzc3JpPovL5k7jb8gv+oLD4=";
+              };
+          in
+          ''
+              env {
+                  __ZELLIJ_DONT_SHOW_STATUS 0
+              }
 
-            layout {
-                pane split_direction="horizontal" {
-                    // Statusbar
-                    pane size=1 borderless=true {
-                        plugin location="file:${zjstatus}" {
-                            format_left   "{mode} #[fg=#89B4FA,bold]{session}"
-                            format_center "{tabs}"
-                            format_right  "{command_git_branch} {datetime}"
-                            format_space  ""
+              layout {
+                  pane split_direction="horizontal" {
+                      // Statusbar
+                      pane size=1 borderless=true {
+                          plugin location="file:${zjstatus}" {
+                              format_left   "{mode} #[fg=#89B4FA,bold]{session}"
+                              format_center "{tabs}"
+                              format_right  "{command_git_branch} {datetime}"
+                              format_space  ""
 
-                            border_enabled  "false"
-                            border_char     "─"
-                            border_format   "#[fg=#6C7086]{char}"
-                            border_position "top"
+                              border_enabled  "false"
+                              border_char     "─"
+                              border_format   "#[fg=#6C7086]{char}"
+                              border_position "top"
 
-                            hide_frame_for_single_pane "true"
+                              hide_frame_for_single_pane "true"
 
-                            mode_normal  "#[bg=blue] "
-                            mode_tmux    "#[bg=#ffc387] "
+                              mode_normal  "#[bg=blue] "
+                              mode_tmux    "#[bg=#ffc387] "
 
-                            tab_normal   "#[fg=#6C7086] {name} "
-                            tab_active   "#[fg=#9399B2,bold,italic] {name} "
+                              tab_normal   "#[fg=#6C7086] {name} "
+                              tab_active   "#[fg=#9399B2,bold,italic] {name} "
 
-                            command_git_branch_command     "git rev-parse --abbrev-ref HEAD"
-                            command_git_branch_format      "#[fg=blue] {stdout} "
-                            command_git_branch_interval    "10"
-                            command_git_branch_rendermode  "static"
+                              command_git_branch_command     "git rev-parse --abbrev-ref HEAD"
+                              command_git_branch_format      "#[fg=blue] {stdout} "
+                              command_git_branch_interval    "10"
+                              command_git_branch_rendermode  "static"
 
-                            datetime        "#[fg=#6C7086,bold] {format} "
-                            datetime_format "%A, %d %b %Y %H:%M"
-                            datetime_timezone "Europe/Berlin"
-                        }
-                    }
+                              datetime        "#[fg=#6C7086,bold] {format} "
+                              datetime_format "%A, %d %b %Y %H:%M"
+                              datetime_timezone "Europe/Berlin"
+                          }
+                      }
 
-                    // Actual screen
-                    // NOTE: We put statusbar on top!
-                    pane
-                }            
-            }
-        '';
-
+                      // Actual screen
+                      // NOTE: We put statusbar on top!
+                      pane
+                  }
+              }
+          '';
+    */
 }
