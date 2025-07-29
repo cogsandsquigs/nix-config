@@ -34,7 +34,7 @@
             "firefox"
             "tailscale-app"
             "steam"
-            "olympus" # Celeste mod loader
+            # "olympus" # Celeste mod loader
             "roblox"
             "whatsapp" # Updated more freq. than whatsapp-for-mac nix
         ];
