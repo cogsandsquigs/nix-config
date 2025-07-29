@@ -5,5 +5,6 @@
         #cargo-afl # Fuzzing
         cargo-watch
         cargo-workspaces
+        trunk # Wasm packaging for Rust
     ];
 }

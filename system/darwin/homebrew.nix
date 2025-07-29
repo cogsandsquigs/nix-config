@@ -36,6 +36,7 @@
             "steam"
             "olympus" # Celeste mod loader
             "roblox"
+            "whatsapp" # Updated more freq. than whatsapp-for-mac nix
         ];
     };
 }

@@ -77,6 +77,7 @@ in
             };
 
             editor = {
+                # rainbow-brackets = true; # Rainbow-colored brackets NOTE: uncomment on next major (?) release, not included yet!
                 mouse = true; # Allow use of the mouse
                 gutters = [
                     "diagnostics"

@@ -92,7 +92,7 @@
                     "${pkgs.discord}/Applications/Discord.app"
                     "${pkgs.spotify}/Applications/Spotify.app"
                     "/System/Applications/Messages.app"
-                    "${pkgs.whatsapp-for-mac}/Applications/WhatsApp.app"
+                    "/Applications/WhatsApp.app" # "${pkgs.whatsapp-for-mac}/Applications/WhatsApp.app"
                     "/System/Applications/Calendar.app"
                     "/System/Applications/Reminders.app"
                     "/System/Applications/Photos.app"
