@@ -37,6 +37,13 @@
             "olympus" # Celeste mod loader
             "roblox"
             "whatsapp" # Updated more freq. than whatsapp-for-mac nix
+            # See what persistence elements are installed:
+            # https://objective-see.org/products/knockknock.html
+            "knockknock"
+            # Notify on persistence elements installed:
+            # https://objective-see.org/products/blockblock.html
+            "blockblock"
+            "transmission" # Bittorrent client (MacOS GUI !!!, other guis shit b/c gtk ...)
         ];
     };
 }

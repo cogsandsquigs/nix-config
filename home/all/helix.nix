@@ -167,6 +167,16 @@ in
                 nil = {
                     command = "nil";
                     args = [ "--stdio" ];
+                    config.nil = {
+                        # // Auto-archiving behavior which may use network.
+                        # //
+                        # // - null: Ask every time.
+                        # // - true: Automatically run `nix flake archive` when necessary.
+                        # // - false: Do not archive. Only load inputs that are already on disk.
+                        # // Type: null | boolean
+                        # // Example: true
+                        flake.autoArchive = true;
+                    };
                 };
 
                 # Python language server
@@ -229,8 +239,8 @@ in
                             "-o=indent_entries=true"
                             "-o=indent_tables=true"
                             "-o=indent_string=    "
-                            "-o=reorder_arrays"
-                            "-o=reorder_keys"
+                            "-o=reorder_arrays=true"
+                            "-o=reorder_keys=true"
                             "-"
                         ];
                     };
