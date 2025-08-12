@@ -6,7 +6,6 @@
 
     programs.lazygit = {
         enable = true;
-        package = pkgs.lazygit;
         # NOTE: Any settings we want here.
         settings = { };
     };

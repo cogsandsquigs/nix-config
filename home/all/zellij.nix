@@ -3,9 +3,7 @@
     home.packages = with pkgs; [ zellij ];
 
     programs.zellij = {
-
         enable = true;
-        package = pkgs.zellij;
 
         enableZshIntegration = true;
         enableFishIntegration = true; # For some reason zellij is slow rn?

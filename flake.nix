@@ -17,6 +17,12 @@
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
+        # Link apps to spotlight
+        nix-darwin-linking = {
+            url = "github:dwt/nix-darwin/application-linking-done-right";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
+
         # Home Manager
         home-manager = {
             url = "github:nix-community/home-manager";
@@ -28,6 +34,7 @@
         inputs@{
             self,
             nix-darwin,
+            nix-darwin-linking,
             nixpkgs,
             home-manager,
         }:
@@ -51,6 +58,10 @@
                     };
 
                     modules = [
+                        # This enables us to link our applications to Spotlight search
+                        { disabledModules = [ "system/applications.nix" ]; }
+                        "${inputs.nix-darwin-linking}/modules/system/applications.nix"
+
                         ./system/all # Global config
                         ./system/darwin # MacOS-specific config
 
