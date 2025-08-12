@@ -44,6 +44,7 @@
             # https://objective-see.org/products/blockblock.html
             "blockblock"
             "transmission" # Bittorrent client (MacOS GUI !!!, other guis shit b/c gtk ...)
+            "porting-kit" # Port windows games to mac via wine
         ];
     };
 }
