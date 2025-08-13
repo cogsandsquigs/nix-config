@@ -109,5 +109,8 @@ in
         };
     };
 
-    nixpkgs.config.allowUnfree = true;
+    nixpkgs = {
+        config.allowUnfree = true;
+        config.qt = true;
+    };
 }
