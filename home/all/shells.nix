@@ -39,7 +39,8 @@ let
         "/nix/var/nix/profiles/default/bin"
         "/etc/profiles/per-user/${username}/bin"
         "/run/current-system/sw/bin"
-
+        "/opt/homebrew/bin"
+        "/opt/homebrew/sbin"
     ];
 
     # Maps every variable in `variables` to a string for a specific shell.
