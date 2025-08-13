@@ -111,6 +111,6 @@ in
 
     nixpkgs = {
         config.allowUnfree = true;
-        config.qt = true;
+        config.qt.enable = true;
     };
 }
