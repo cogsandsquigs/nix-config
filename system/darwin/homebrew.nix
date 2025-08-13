@@ -43,7 +43,6 @@
             # Notify on persistence elements installed:
             # https://objective-see.org/products/blockblock.html
             "blockblock"
-            "transmission" # Bittorrent client (MacOS GUI !!!, other guis shit b/c gtk ...)
             "the-unofficial-homestuck-collection" # :3
         ];
     };
