@@ -44,7 +44,6 @@
             # https://objective-see.org/products/blockblock.html
             "blockblock"
             "the-unofficial-homestuck-collection" # :3
-            "deluge" # :33
         ];
     };
 }
