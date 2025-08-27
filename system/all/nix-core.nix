@@ -110,7 +110,9 @@ in
     };
 
     nixpkgs = {
-        config.allowUnfree = true;
-        config.qt.enable = true;
+        config = {
+            allowUnfree = true;
+            qt.enable = true;
+        };
     };
 }

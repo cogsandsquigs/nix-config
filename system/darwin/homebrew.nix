@@ -44,6 +44,7 @@
             # https://objective-see.org/products/blockblock.html
             "blockblock"
             "the-unofficial-homestuck-collection" # :3
+            "porting-kit" # Windows -> Mac
         ];
     };
 }
