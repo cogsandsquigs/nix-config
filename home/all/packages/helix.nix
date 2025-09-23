@@ -163,6 +163,14 @@ in
                     };
                 };
 
+                # Haskell language server
+                haskell-language-server = {
+                    command = "haskell-language-server-wrapper";
+                    args = [ "--lsp" ];
+                    config.haskell-language-server = { };
+
+                };
+
                 # Nix language server
                 nil = {
                     command = "nil";
@@ -220,6 +228,37 @@ in
                         command = "rustfmt";
                         args = [ ];
                     };
+                }
+
+                {
+                    name = "haskell";
+                    language-servers = [ "haskell-language-server" ];
+                    auto-format = true;
+                    indent = {
+                        tab-width = 4;
+                        unit = "    ";
+                    };
+                    roots = [
+                        "Setup.hs"
+                        "stack.yaml"
+                        "*.cabal"
+                        "*.hs"
+                        "*.lhs"
+                    ];
+                    formatter = {
+                        command = "fourmolu";
+                        args = [
+                            "--stdin-input-file=$FILENAME"
+                            "--indent-wheres=true"
+                            "--haddock-style=single-line"
+                            "--haddock-style-module=single-line"
+                            "--in-style=left-align"
+                            "--let-style=mixed"
+                            "--comma-style=trailing"
+
+                        ];
+                    };
+
                 }
 
                 {

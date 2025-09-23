@@ -7,7 +7,6 @@
         llvmPackages_20.clang
         llvmPackages_20.clang-tools
         clang-analyzer # Not in LLVM pkgs :/
-        platformio # hardware stuffs
         pkg-config
         # valgrind # Memory profiler/debugger # NOTE: Currently broken :/
     ];

@@ -94,25 +94,26 @@ def nix_gc():
     """
     Gets rid of old generations of Nix packages.
     See: https://www.reddit.com/r/NixOS/comments/1j70gew/how_to_clean_nixstore/
+         https://matthewrhone.dev/nixos-package-guide#cleanup-old-packages-user-wide
     """
 
     invoke_process_popen_poll_live(
-        ["nix", "store", "gc"],
+        ["nix-env", "--delete-generations", "old"],
+        "🗑️ Deleting old generations",
+        cwd=NIX_FLAKE_PATH,
+        ignore_errors=False,
+    )
+
+    invoke_process_popen_poll_live(
+        ["sudo", "nix-store", "--gc"],
         "🗑️ Cleaning out the Nix store",
         cwd=NIX_FLAKE_PATH,
         ignore_errors=False,
     )
 
     invoke_process_popen_poll_live(
-        ["home-manager", "expire-generations", "-d"],
-        "🗑️ Cleaning old Home Manager generations",
-        cwd=NIX_FLAKE_PATH,
-        ignore_errors=False,
-    )
-
-    invoke_process_popen_poll_live(
-        ["nix", "profile", "wipe-history"],
-        "🗑️ Wiping Nix profile history",
+        ["sudo", "nix-collect-garbage", "-d"],
+        "🗑️ Cleaning out the Nix store",
         cwd=NIX_FLAKE_PATH,
         ignore_errors=False,
     )

@@ -2,7 +2,8 @@
 {
     home.packages = with pkgs; [
         ghc
-        haskell-language-server
-        cabal-install
+        haskellPackages.cabal-install
+        haskellPackages.fourmolu
+        haskellPackages.haskell-language-server
     ];
 }

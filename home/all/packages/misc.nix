@@ -3,10 +3,10 @@
     home.packages = with pkgs; [
         discord # For some reason discord is availabe on mac via nixpkgs, but not firefox???
         obsidian
-        spotify
-        postman
+        # spotify
+        # postman
         zoom-us
-        inetutils
+        # inetutils
         # kicad-testing
     ];
 }

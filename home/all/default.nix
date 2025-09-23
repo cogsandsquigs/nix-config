@@ -34,6 +34,4 @@
         overlays = [ ]; # (import ./overlays.nix);
     };
 
-    home.packages = with pkgs; [ home-manager ];
-
 }
