@@ -45,6 +45,7 @@
             "blockblock"
             "the-unofficial-homestuck-collection" # :3
             "porting-kit" # Windows -> Mac
+            "kicad" # ::3
         ];
     };
 }

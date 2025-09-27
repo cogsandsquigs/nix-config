@@ -38,7 +38,7 @@ in
             };
 
             "gitlab.doc.ic.ac.uk" = {
-                identityFile = "~/.ssh/id_ed25519";
+                identityFile = "~/.ssh/imperial_gitlab_ed25519";
                 extraOptions = {
                     AddKeysToAgent = "yes";
                     UseKeychain = "yes";

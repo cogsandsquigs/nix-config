@@ -30,14 +30,6 @@ in
             # Keys in normal-mode (not highlighting/selecting or inserting
             # text).
             keys.normal = {
-                # Replace regular yank keybinds with clipboard ones
-                y = [ ":primary-clipboard-yank" ];
-                Y = [ ":primary-clipboard-yank" ];
-
-                # Ctrl-c Ctrl-v !
-                "C-c" = [ ":primary-clipboard-yank" ];
-                "C-v" = [ ":primary-clipboard-paste-after" ];
-
                 # Keys in space-mode (after pressing leader/space)
                 # See: https://github.com/helix-editor/helix/issues/2841
                 space = {
@@ -255,7 +247,6 @@ in
                             "--in-style=left-align"
                             "--let-style=mixed"
                             "--comma-style=trailing"
-
                         ];
                     };
 
@@ -354,7 +345,7 @@ in
                                     markdown = { };
                                     plugins = [
                                         "https://plugins.dprint.dev/markdown-0.19.0.wasm"
-                                        "https://plugins.dprint.dev/typescript-0.95.8.wasm"
+                                        "https://plugins.dprint.dev/typescript-0.95.11.wasm"
                                         "https://plugins.dprint.dev/json-0.20.0.wasm"
                                     ];
                                 }
