@@ -209,6 +209,14 @@ in
             # Language configurations for each language.
             language = [
                 {
+                    name = "c";
+                    auto-format = true;
+                }
+                {
+                    name = "cpp";
+                    auto-format = true;
+                }
+                {
                     name = "rust";
                     language-servers = [ "rust-analyzer" ];
                     auto-format = true;
