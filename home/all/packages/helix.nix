@@ -211,10 +211,18 @@ in
                 {
                     name = "c";
                     auto-format = true;
+                    indent = {
+                        tab-width = 4;
+                        unit = "    ";
+                    };
                 }
                 {
                     name = "cpp";
                     auto-format = true;
+                    indent = {
+                        tab-width = 4;
+                        unit = "    ";
+                    };
                 }
                 {
                     name = "rust";

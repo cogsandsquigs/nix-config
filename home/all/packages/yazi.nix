@@ -10,7 +10,9 @@
         enableZshIntegration = true;
 
         settings = {
-            mgr = { };
+            mgr = {
+                show_hidden = true;
+            };
         };
 
         flavors =
