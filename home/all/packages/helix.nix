@@ -66,6 +66,9 @@ in
                         in
                         make_zellij_floating_pane "bash ${yazi_picker_script} open %{buffer_name}";
                 };
+
+                "[" = "unindent";
+                "]" = "indent";
             };
 
             editor = {
