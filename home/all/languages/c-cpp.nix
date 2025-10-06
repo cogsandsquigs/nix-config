@@ -4,8 +4,8 @@
         # NOTE: Using LLVM v20 for C/C++ development
         bear
         cmake
-        llvmPackages_20.clang
-        llvmPackages_20.clang-tools
+        llvmPackages_21.clang
+        llvmPackages_21.clang-tools
         clang-analyzer # Not in LLVM pkgs :/
         pkg-config
         # valgrind # Memory profiler/debugger # NOTE: Currently broken :/
