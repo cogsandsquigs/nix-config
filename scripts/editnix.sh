@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
-cd /etc/nix
+cd /etc/nix || exit 1
 
 $EDITOR # Open da editorrrr
 
