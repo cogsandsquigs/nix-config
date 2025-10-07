@@ -19,7 +19,7 @@ def update():
     """
 
     return invoke_process_popen_poll_live(
-        ["nix", "flake", "update", "--verbose", "--flake", NIX_FLAKE_PATH],
+        ["nix", "-i", "flake", "update", "--verbose", "--flake", NIX_FLAKE_PATH],
         "🔼 Updating Flake lockfile",
     )
 
@@ -52,7 +52,7 @@ def rebuild():
     #         rebuild_cmd = "nixos-rebuild"  # Default to NixOS
 
     return invoke_process_popen_poll_live(
-        ["sudo", rebuild_cmd, "switch", "--verbose", "--flake", NIX_FLAKE_PATH],
+        ["sudo", "-i", rebuild_cmd, "switch", "--verbose", "--flake", NIX_FLAKE_PATH],
         "🔄 Rebuilding",
     )
 
@@ -105,14 +105,14 @@ def nix_gc():
     )
 
     invoke_process_popen_poll_live(
-        ["sudo", "nix-store", "--gc"],
+        ["sudo", "-i", "nix-store", "--gc"],
         "🗑️ Cleaning out the Nix store",
         cwd=NIX_FLAKE_PATH,
         ignore_errors=False,
     )
 
     invoke_process_popen_poll_live(
-        ["sudo", "nix-collect-garbage", "-d"],
+        ["sudo", "-i", "nix-collect-garbage", "-d"],
         "🗑️ Cleaning out the Nix store",
         cwd=NIX_FLAKE_PATH,
         ignore_errors=False,

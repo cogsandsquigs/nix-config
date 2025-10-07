@@ -5,7 +5,6 @@
             pkgs.zsh
             pkgs.fish
             pkgs.bash
-            pkgs.nushell
         ];
 
         systemPackages = with pkgs; [

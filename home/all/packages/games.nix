@@ -6,6 +6,6 @@
         #steam
         #steam-run
 
-        modrinth-app-unwrapped # Minecraft launcher
+        # modrinth-app-unwrapped # Minecraft launcher
     ];
 }
