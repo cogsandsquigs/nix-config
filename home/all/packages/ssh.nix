@@ -13,12 +13,6 @@ in
             (mkIf stdenv.isDarwin "~/.colima/ssh_config")
         ];
 
-        extraConfig = ''
-            IdentityFile ~/.ssh/id_ed25519
-            IdentityFile ~/.ssh/homeserver_rsa
-            IdentityFile ~/.ssh/imperial_doc_ed25519
-        '';
-
         # Per-host matching rules
         matchBlocks = {
             # Default values!
@@ -37,7 +31,12 @@ in
             };
 
             "*" = {
-                identityFile = "~/.ssh/id_ed25519";
+                identityFile = [
+                    "~/.ssh/id_ed25519"
+                    "~/.ssh/homeserver_rsa"
+                    "~/.ssh/homeserver_rsa"
+                    "~/.ssh/imperial_gitlab_ed25519"
+                ];
                 extraOptions = {
                     AddKeysToAgent = "yes";
                     UseKeychain = "yes";
