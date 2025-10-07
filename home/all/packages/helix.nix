@@ -288,7 +288,7 @@ in
                             "-o=indent_entries=true"
                             "-o=indent_tables=true"
                             "-o=indent_string=    "
-                            "-o=reorder_arrays=true"
+                            "-o=reorder_arrays=false"
                             "-o=reorder_keys=true"
                             "-"
                         ];
