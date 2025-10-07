@@ -19,7 +19,16 @@ def update():
     """
 
     return invoke_process_popen_poll_live(
-        ["nix", "-i", "flake", "update", "--verbose", "--flake", NIX_FLAKE_PATH],
+        [
+            "sudo",
+            "-i",
+            "nix",
+            "flake",
+            "update",
+            "--verbose",
+            "--flake",
+            NIX_FLAKE_PATH,
+        ],
         "🔼 Updating Flake lockfile",
     )
 
@@ -98,7 +107,7 @@ def nix_gc():
     """
 
     invoke_process_popen_poll_live(
-        ["nix-env", "--delete-generations", "old"],
+        ["sudo", "-i", "nix-env", "--delete-generations", "old"],
         "🗑️ Deleting old generations",
         cwd=NIX_FLAKE_PATH,
         ignore_errors=False,
