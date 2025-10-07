@@ -228,6 +228,24 @@ in
                     };
                 }
                 {
+                    name = "sh";
+                    auto-format = true;
+                    indent = {
+                        tab-width = 4;
+                        unit = "    ";
+                    };
+                    formatter = {
+                        command = "shfmt";
+                        args = [
+                            "--indent=4"
+                            "--binary-next-line"
+                            "--case-indent"
+                            "--space-redirects"
+                            "-"
+                        ];
+                    };
+                }
+                {
                     name = "rust";
                     language-servers = [ "rust-analyzer" ];
                     auto-format = true;
