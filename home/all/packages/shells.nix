@@ -16,10 +16,10 @@ let
         cd = "z"; # Better cd via `zoxide`
         nv = "nvim";
         neofetch = "fastfetch"; # Neofetch via fastfetch
-        editnix = "sh /etc/nix/scripts/editnix.sh";
-        upgrade = "python3 /etc/nix/scripts/sysutil/run.py upgrade";
-        rebuild = "python3 /etc/nix/scripts/sysutil/run.py rebuild";
-        cleanup = "python3 /etc/nix/scripts/sysutil/run.py cleanup";
+        editnix = "/etc/nix/scripts/editnix.sh";
+        upgrade = "/etc/nix/scripts/upgrade.sh";
+        rebuild = "/etc/nix/scripts/rebuild.sh";
+        cleanup = "/etc/nix/scripts/cleanup.sh";
     };
 
     variables = {

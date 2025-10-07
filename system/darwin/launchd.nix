@@ -33,7 +33,7 @@
         # Collect nix garbage
         /*
           nix-collect-garbage = {
-              command = "python3 /etc/nix/scripts/sysutil/run.py cleanup";
+              command = "/etc/nix/scripts/cleanup.sh";
 
               serviceConfig = {
                   KeepAlive = false; # When it stops, do *NOT* restart it
@@ -57,7 +57,7 @@
 
         # Update and upgrade the system
         upgrade-system = {
-            command = "python3 /etc/nix/scripts/sysutil/run.py cleanup";
+            command = "/etc/nix/scripts/upgrade.sh";
 
             serviceConfig = {
                 KeepAlive = false; # When it stops, do *NOT* restart it
