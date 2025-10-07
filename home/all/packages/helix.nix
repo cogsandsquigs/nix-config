@@ -228,12 +228,13 @@ in
                     };
                 }
                 {
-                    name = "sh";
+                    name = "bash";
                     auto-format = true;
                     indent = {
                         tab-width = 4;
                         unit = "    ";
                     };
+                    file-types=["bash" "sh"];
                     formatter = {
                         command = "shfmt";
                         args = [
