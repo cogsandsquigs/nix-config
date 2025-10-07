@@ -6,6 +6,7 @@ in
 {
     programs.ssh = {
         enable = true;
+        enableDefaultConfig = false;
 
         includes = [
             # Required for Colima to work properly
