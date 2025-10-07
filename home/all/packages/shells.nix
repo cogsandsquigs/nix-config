@@ -33,7 +33,7 @@ let
     binPaths = [
         "/rawr"
         "$HOME/.cargo/bin"
-        "${pkgs.llvmPackages_20.clang-tools}/bin"
+        "${pkgs.llvmPackages_21.clang-tools}/bin"
         "$HOME/.local/bin"
         "$HOME/.nix-profile/bin"
         "/nix/var/nix/profiles/default/bin"
@@ -123,8 +123,7 @@ in
         history.size = 10000;
         autocd = true;
 
-        # Enable powerlevel10k theme
-        initExtra = ''
+        initContent = ''
             source /etc/profile.d/nix.sh # Source nix environment variables
         '';
 
