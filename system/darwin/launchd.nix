@@ -56,19 +56,22 @@
         */
 
         # Update and upgrade the system
-        upgrade-system = {
-            command = "/etc/nix/scripts/upgrade.sh";
+        # TODO: Make system access `nix` and `darwin-rebuild` cmds when login?
+        /*
+          upgrade-system = {
+              command = "/etc/nix/scripts/upgrade.sh";
 
-            serviceConfig = {
-                KeepAlive = false; # When it stops, do *NOT* restart it
-                RunAtLoad = true;
+              serviceConfig = {
+                  KeepAlive = false; # When it stops, do *NOT* restart it
+                  RunAtLoad = true;
 
-                # Run every 6 hours
-                StartInterval = 21600;
+                  # Run every 6 hours
+                  StartInterval = 21600;
 
-                StandardOutPath = "/tmp/upgrade-system.out.log";
-                StandardErrorPath = "/tmp/upgrade-system.err.log";
-            };
-        };
+                  StandardOutPath = "/tmp/upgrade-system.out.log";
+                  StandardErrorPath = "/tmp/upgrade-system.err.log";
+              };
+          };
+        */
     };
 }
