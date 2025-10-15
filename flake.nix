@@ -10,8 +10,8 @@
         #  - https://github.com/NixOS/nixpkgs/issues/430307, which is a duplicate of:
         #  - https://github.com/NixOS/nixpkgs/issues/431934 (yet to be merged into master)
         # nixpkgs.url = "github:NixOS/nixpkgs/staging-next"; # UNSTABLE UNSTABLE unstable
-        nixpkgs.url = "github:NixOS/nixpkgs/master"; # UNSTABLE unstable
-        # nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable"; # Unstable
+        # nixpkgs.url = "github:NixOS/nixpkgs/master"; # UNSTABLE unstable
+        nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable"; # Unstable
         # nixpkgs.url = "github:nixos/nixpkgs/release-24.11"; # Stable
 
         # MacOS config
