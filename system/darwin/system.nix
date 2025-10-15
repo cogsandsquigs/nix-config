@@ -87,10 +87,10 @@
                     "/System/Applications/System Settings.app"
                     # "${pkgs.firefox-unwrapped}/Applications/Firefox.app" # NOTE: See homebrew.nix for why it's `firefox-unwrapped`
                     "/Applications/Firefox.app" # NOTE: See homebrew.nix for why it's `firefox-unwrapped`
-                    "/Applications/Discord.app" # NOTE: See homebrew.nix
-                    # "${pkgs.obsidian}/Applications/Obsidian.app"
+                    "${pkgs.obsidian}/Applications/Obsidian.app"
                     # "${pkgs.net-news-wire}/Applications/NetNewsWire.app"
-                    "${pkgs.discord}/Applications/Discord.app"
+                    "/Applications/Discord.app" # NOTE: See homebrew.nix
+                    # "${pkgs.discord}/Applications/Discord.app"
                     # "${pkgs.spotify}/Applications/Spotify.app"
                     "/System/Applications/Messages.app"
                     "/Applications/WhatsApp.app" # "${pkgs.whatsapp-for-mac}/Applications/WhatsApp.app"
