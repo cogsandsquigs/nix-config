@@ -36,6 +36,7 @@
             "steam"
             "olympus" # Celeste mod loader
             "roblox"
+            "discord" # Req. since nix-darwin/nixpkgs discord on macos doesn't allow for notifs/screenshare (?)
             "whatsapp" # Updated more freq. than whatsapp-for-mac nix
             # See what persistence elements are installed:
             # https://objective-see.org/products/knockknock.html

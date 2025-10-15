@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
     home.packages = with pkgs; [
-        discord # For some reason discord is availabe on mac via nixpkgs, but not firefox???
+        # discord # NOTE: See system/darwin/homebrew.nix for why we use homebrew ver
         obsidian
         # spotify
         # postman
