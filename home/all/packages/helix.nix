@@ -276,6 +276,10 @@ in
                 }
                 {
                     name = "json";
+                    file-types = [
+                        "json"
+                        "prettierrc"
+                    ];
                     auto-format = true;
                     indent = {
                         tab-width = 4;
