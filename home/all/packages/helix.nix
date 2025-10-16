@@ -234,7 +234,10 @@ in
                         tab-width = 4;
                         unit = "    ";
                     };
-                    file-types=["bash" "sh"];
+                    file-types = [
+                        "bash"
+                        "sh"
+                    ];
                     formatter = {
                         command = "shfmt";
                         args = [
@@ -244,6 +247,32 @@ in
                             "--space-redirects"
                             "-"
                         ];
+                    };
+
+                }
+                {
+                    name = "js";
+                    auto-format = true;
+                    indent = {
+                        tab-width = 4;
+                        unit = "    ";
+                    };
+                    formatter = {
+                        command = "prettierd";
+                        args = [ "%{buffer_name}" ];
+                    };
+                }
+
+                {
+                    name = "ts";
+                    auto-format = true;
+                    indent = {
+                        tab-width = 4;
+                        unit = "    ";
+                    };
+                    formatter = {
+                        command = "prettierd";
+                        args = [ "%{buffer_name}" ];
                     };
                 }
                 {
@@ -278,7 +307,7 @@ in
                     formatter = {
                         command = "fourmolu";
                         args = [
-                            "--stdin-input-file=$FILENAME"
+                            "--stdin-input-file=%{buffer_name}"
                             "--indent-wheres=true"
                             "--haddock-style=single-line"
                             "--haddock-style-module=single-line"
@@ -345,7 +374,6 @@ in
 
                     };
                 }
-
                 {
                     name = "python";
                     language-servers = [ "ruff" ];
