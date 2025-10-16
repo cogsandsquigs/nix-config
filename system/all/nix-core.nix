@@ -1,5 +1,6 @@
 # Taken from https://github.com/ryan4yin/nix-darwin-kickstarter/blob/main/minimal/modules/nix-core.nix
 {
+    inputs,
     pkgs,
     lib,
     username,
@@ -13,6 +14,8 @@ in
     nix = {
         # Auto upgrade nix package and the daemon service.
         enable = true;
+
+        registry.nixpkgs.flake = inputs.nixpkgs;
 
         settings = {
             # enable flakes globally, enable `nix` command
