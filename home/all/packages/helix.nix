@@ -251,6 +251,18 @@ in
 
                 }
                 {
+                    name = "html";
+                    auto-format = true;
+                    indent = {
+                        tab-width = 4;
+                        unit = "    ";
+                    };
+                    formatter = {
+                        command = "prettierd";
+                        args = [ "%{buffer_name}" ];
+                    };
+                }
+                {
                     name = "javascript";
                     auto-format = true;
                     indent = {
