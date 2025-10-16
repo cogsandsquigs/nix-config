@@ -251,7 +251,7 @@ in
 
                 }
                 {
-                    name = "js";
+                    name = "javascript";
                     auto-format = true;
                     indent = {
                         tab-width = 4;
@@ -262,9 +262,20 @@ in
                         args = [ "%{buffer_name}" ];
                     };
                 }
-
                 {
-                    name = "ts";
+                    name = "typescript";
+                    auto-format = true;
+                    indent = {
+                        tab-width = 4;
+                        unit = "    ";
+                    };
+                    formatter = {
+                        command = "prettierd";
+                        args = [ "%{buffer_name}" ];
+                    };
+                }
+                {
+                    name = "js";
                     auto-format = true;
                     indent = {
                         tab-width = 4;
