@@ -275,7 +275,7 @@ in
                     };
                 }
                 {
-                    name = "js";
+                    name = "json";
                     auto-format = true;
                     indent = {
                         tab-width = 4;
