@@ -8,27 +8,14 @@
 
     programs.git = {
         enable = true;
-        # Basic user settings
-        userName = "Ian Pratt";
-        userEmail = "ianjdpratt@gmail.com";
 
-        signing = {
-            key = "E0DB58169CA551AA!";
-            signByDefault = true;
-            # signer = "${pkgs.gnupg}/bin/gpg"; # NOTE: See `extraConfig.gpg.program`
-        };
-
-        # Diff highlighting
-        delta = {
-            enable = true;
-
-            options = {
-                diff-highlight = true;
+        settings = {
+            # Basic user settings
+            user = {
+                name = "Ian Pratt";
+                email = "ianjdpratt@gmail.com";
             };
-        };
 
-        # Extra configuration for sections not provided by top-level options:
-        extraConfig = {
             url = {
                 /*
                   "ssh://git@github.com/" = {
@@ -50,6 +37,23 @@
 
             # For some reason `signing.signer` doesn't set the GPG program, so I gotta do this
             gpg.program = "${pkgs.gnupg}/bin/gpg";
+        };
+
+        signing = {
+            key = "E0DB58169CA551AA!";
+            signByDefault = true;
+            # signer = "${pkgs.gnupg}/bin/gpg"; # NOTE: See `extraConfig.gpg.program`
+        };
+
+    };
+
+    # Diff highlighting
+    programs.delta = {
+        enable = true;
+        enableGitIntegration = true;
+
+        options = {
+            diff-highlight = true;
         };
     };
 }
