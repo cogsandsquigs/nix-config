@@ -14,7 +14,10 @@
     ...
 }:
 {
-    nixpkgs.hostPlatform = "aarch64-darwin";
+    nixpkgs = {
+        hostPlatform = "aarch64-darwin";
+        config.allowBroken = true;
+    };
 
     system = {
         primaryUser = username; # The primary user of the system
