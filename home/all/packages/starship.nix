@@ -104,8 +104,8 @@
                     "h"
                 ];
                 detect_files = [
-                    ".clang-format"
                     ".clang-tidy"
+                    ".clangd"
                     "compile_commands.json"
                 ];
             };
@@ -120,8 +120,8 @@
                     "hxx"
                 ];
                 detect_files = [
-                    ".clang-format"
                     ".clang-tidy"
+                    ".clangd"
                     "compile_commands.json"
                 ];
             };
