@@ -5,6 +5,7 @@
         bear
         cmake
         llvmPackages_21.clang
+        llvmPackages_21.clang-unwrapped # git-clang-format and other tools
         llvmPackages_21.clang-tools
         clang-analyzer # Not in LLVM pkgs :/
         pkg-config
