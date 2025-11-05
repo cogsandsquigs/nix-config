@@ -1,6 +1,6 @@
-{ pkgs, ... }:
-
+{ pkgs, lib, ... }:
 let
+    inherit (pkgs) stdenv;
     floating_pane_size_percent = 80;
 
     # Opens a Zellij floating pane of height and width
@@ -27,48 +27,57 @@ in
         settings = {
             theme = "catppuccin_mocha";
 
-            # Keys in normal-mode (not highlighting/selecting or inserting
-            # text).
-            keys.normal = {
-                # Keys in space-mode (after pressing leader/space)
-                # See: https://github.com/helix-editor/helix/issues/2841
-                space = {
-                    # Opens a lazygit floating pane via `space-l-g`.
-                    l.g = make_zellij_floating_pane "lazygit";
+            keys = {
+                # Keys in normal-mode (not highlighting/selecting or inserting text).
+                normal = {
+                    # Keys in space-mode (after pressing leader/space)
+                    # See: https://github.com/helix-editor/helix/issues/2841
+                    space = {
+                        # Opens a lazygit floating pane via `space-l-g`.
+                        l.g = make_zellij_floating_pane "lazygit";
 
-                    # Opens a terminal-interface floating pane via `space-t`.
-                    t = make_zellij_floating_pane "$SHELL";
+                        # Opens a terminal-interface floating pane via `space-t`.
+                        t = make_zellij_floating_pane "$SHELL";
 
-                    # Opens a file picker using `nnn` via via `space-f`.
-                    # NOTE: Overrides the default helix file picker!
-                    # See: https://yazi-rs.github.io/docs/tips/#helix-with-zellij
-                    # NOTE: When Helix allows command expansion variables (see: https://github.com/helix-editor/helix/pull/12527)
-                    # then we can pass 2nd argument as `%{buffer_name}`. For now, we pass `$(pwd)` to
-                    # not upset `yazi`.
-                    f =
-                        let
-                            # Script to use Yazi as a file picker for helix.
-                            # NOTE: Assumes that helix is the previously-selected (I think?) or only pane!
-                            yazi_picker_script = builtins.toFile "yazi-picker.sh" ''
-                                #!/usr/bin/env bash
+                        # Opens a file picker using `nnn` via via `space-f`.
+                        # NOTE: Overrides the default helix file picker!
+                        # See: https://yazi-rs.github.io/docs/tips/#helix-with-zellij
+                        # NOTE: When Helix allows command expansion variables (see: https://github.com/helix-editor/helix/pull/12527)
+                        # then we can pass 2nd argument as `%{buffer_name}`. For now, we pass `$(pwd)` to
+                        # not upset `yazi`.
+                        f =
+                            let
+                                # Script to use Yazi as a file picker for helix.
+                                # NOTE: Assumes that helix is the previously-selected (I think?) or only pane!
+                                yazi_picker_script = builtins.toFile "yazi-picker.sh" ''
+                                    #!/usr/bin/env bash
 
-                                paths=$(yazi "$2" --chooser-file=/dev/stdout | while read -r; do printf "%q " "$REPLY"; done)
+                                    paths=$(yazi "$2" --chooser-file=/dev/stdout | while read -r; do printf "%q " "$REPLY"; done)
 
-                                if [[ -n "$paths" ]]; then
-                                	zellij action toggle-floating-panes
-                                	zellij action write 27 # send <Escape> key
-                                	zellij action write-chars ":$1 $paths"
-                                	zellij action write 13 # send <Enter> key
-                                else
-                                	zellij action toggle-floating-panes
-                                fi
-                            '';
-                        in
-                        make_zellij_floating_pane "bash ${yazi_picker_script} open %{buffer_name}";
+                                    if [[ -n "$paths" ]]; then
+                                    	zellij action toggle-floating-panes
+                                    	zellij action write 27 # send <Escape> key
+                                    	zellij action write-chars ":$1 $paths"
+                                    	zellij action write 13 # send <Enter> key
+                                    else
+                                    	zellij action toggle-floating-panes
+                                    fi
+                                '';
+                            in
+                            make_zellij_floating_pane "bash ${yazi_picker_script} open %{buffer_name}";
+                    };
+
+                    "[" = "unindent";
+                    "]" = "indent";
                 };
 
-                "[" = "unindent";
-                "]" = "indent";
+                # Keys in inserting mode (adding text)
+                insert = {
+                    "C-[" = "unindent";
+                    "C-]" = "indent";
+                    "Cmd-[" = lib.mkIf stdenv.isDarwin "unindent";
+                    "Cmd-]" = lib.mkIf stdenv.isDarwin "indent";
+                };
             };
 
             editor = {
