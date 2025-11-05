@@ -75,8 +75,8 @@ in
                 insert = {
                     "C-[" = "unindent";
                     "C-]" = "indent";
-                    "Cmd-[" = "unindent"; # lib.mkIf stdenv.isDarwin "unindent";
-                    "Cmd-]" = "indent"; # lib.mkIf stdenv.isDarwin "indent";
+                    "Cmd-[" = lib.mkIf stdenv.isDarwin "unindent";
+                    "Cmd-]" = lib.mkIf stdenv.isDarwin "indent";
                 };
             };
 
