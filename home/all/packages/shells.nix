@@ -15,6 +15,7 @@ let
         cat = "bat"; # Better cat via `bat`
         cd = "z"; # Better cd via `zoxide`
         nv = "nvim";
+        lg = "lazygit";
         neofetch = "fastfetch"; # Neofetch via fastfetch
         editnix = "/etc/nix/scripts/editnix.sh";
         upgrade = "/etc/nix/scripts/upgrade.sh";
