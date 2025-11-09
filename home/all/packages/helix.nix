@@ -368,7 +368,7 @@ in
                             "--indent-wheres=true"
                             "--in-style=left-align"
                             "--let-style=mixed"
-                            "--record-style=knr"
+                            # "--record-style=knr" # Unreleased as of 2025-11-9!
                             "--single-constraint-parens=true"
                             "--single-deriving-parens=true"
                             "--sort-constraints=true"
