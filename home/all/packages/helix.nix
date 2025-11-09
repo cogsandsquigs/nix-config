@@ -369,8 +369,8 @@ in
                             "--in-style=left-align"
                             "--let-style=mixed"
                             # "--record-style=knr" # Unreleased as of 2025-11-9!
-                            "--single-constraint-parens=true"
-                            "--single-deriving-parens=true"
+                            "--single-constraint-parens=always"
+                            "--single-deriving-parens=always"
                             "--sort-constraints=true"
                             "--sort-derived-classes=true"
                             "--sort-deriving-clauses=true"
