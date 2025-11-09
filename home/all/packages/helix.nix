@@ -356,12 +356,25 @@ in
                         command = "fourmolu";
                         args = [
                             "--stdin-input-file=%{buffer_name}"
-                            "--indent-wheres=true"
+                            # Actual formatting arguments
+                            "--column-limit=80"
+                            "--comma-style=trailing"
+                            "--function-arrows=leading"
                             "--haddock-style=single-line"
                             "--haddock-style-module=single-line"
+                            "--if-style=hanging"
+                            "--import-export-style=diff-friendly"
+                            "--indentation=4"
+                            "--indent-wheres=true"
                             "--in-style=left-align"
                             "--let-style=mixed"
-                            "--comma-style=trailing"
+                            "--record-style=knr"
+                            "--single-constraint-parens=true"
+                            "--single-deriving-parens=true"
+                            "--sort-constraints=true"
+                            "--sort-derived-classes=true"
+                            "--sort-deriving-clauses=true"
+                            "--trailing-section-operators=false"
                         ];
                     };
 
