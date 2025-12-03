@@ -173,8 +173,11 @@ in
                     args = [ "--lsp" ];
                     config.haskell = {
                         formattingProvider = "fourmolu";
-                        plugin.fourmolu.config.external = true;
-                        plugin.hlint.config.external = true; # Uses nix-installed hlint, fixes https://github.com/haskell/haskell-language-server/issues/4674
+
+                        plugin = {
+                            fourmolu.config.external = true;
+                            hlint.diagnosticsOn = false; # Fixes https://github.com/haskell/haskell-language-server/issues/4674 until GHC fixed
+                        };
                     };
 
                 };
