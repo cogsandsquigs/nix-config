@@ -171,7 +171,10 @@ in
                 haskell-language-server = {
                     command = "haskell-language-server-wrapper";
                     args = [ "--lsp" ];
-                    config.haskell-language-server = { };
+                    config.haskell = {
+                        formattingProvider = "fourmolu";
+                        plugin.fourmolu.config.external = true;
+                    };
 
                 };
 
