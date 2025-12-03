@@ -5,5 +5,6 @@
         haskellPackages.cabal-install
         haskellPackages.fourmolu
         haskellPackages.haskell-language-server
+        haskellPackages.hlint
     ];
 }
