@@ -177,6 +177,7 @@ in
                         plugin = {
                             fourmolu.config.external = true;
                             hlint.diagnosticsOn = false; # Fixes https://github.com/haskell/haskell-language-server/issues/4674 until GHC fixed
+                            rename.config.crossModule = true; # Fixes https://github.com/haskell/haskell-language-server/issues/3571
                         };
                     };
 
