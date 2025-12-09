@@ -1,6 +1,5 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 let
-    inherit (pkgs) stdenv;
     floating_pane_size_percent = 80;
 
     # Opens a Zellij floating pane of height and width
