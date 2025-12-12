@@ -26,6 +26,7 @@
         # `brew install`
         brews = [
             "ca-certificates" # NOTE: For some reason this is required by `bun` and also some others
+            "valgrind" # Since it's currently broken on NixOS :///
         ];
 
         # `brew install --cask`
