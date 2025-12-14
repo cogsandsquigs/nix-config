@@ -82,6 +82,13 @@ in
             editor = {
                 # rainbow-brackets = true; # Rainbow-colored brackets NOTE: uncomment on next major (?) release, not included yet!
                 mouse = true; # Allow use of the mouse
+
+                # Vertical line columns
+                rulers = [
+                    80
+                    120
+                ];
+
                 gutters = [
                     "diagnostics"
                     "spacer"
@@ -89,17 +96,21 @@ in
                     "spacer"
                     "diff"
                 ];
+
                 auto-format = true;
+
                 statusline = {
                     left = [
                         "mode"
                         "version-control"
                     ];
+
                     center = [
                         "file-name"
                         "file-modification-indicator"
                         "diagnostics"
                     ];
+
                     right = [
                         "file-type"
                         "file-encoding"
