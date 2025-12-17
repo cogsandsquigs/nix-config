@@ -481,9 +481,11 @@ in
                             # NOTE: Schema for configuration is here: https://dprint.dev/config/
                             dprint-config = builtins.toFile "dprint.json" (
                                 builtins.toJSON {
-                                    lineWidth = 80;
+                                    lineWidth = 100;
                                     # markdown config goes here
-                                    markdown = { };
+                                    markdown = {
+                                        lineWidth = 100;
+                                    };
                                     plugins = [
                                         "https://plugins.dprint.dev/markdown-0.19.0.wasm"
                                         "https://plugins.dprint.dev/typescript-0.95.11.wasm"
