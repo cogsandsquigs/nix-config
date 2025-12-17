@@ -83,11 +83,7 @@ in
                 # rainbow-brackets = true; # Rainbow-colored brackets NOTE: uncomment on next major (?) release, not included yet!
                 mouse = true; # Allow use of the mouse
 
-                # Vertical line columns
-                rulers = [
-                    80
-                    120
-                ];
+                rulers = [ 100 ]; # Vertical line columns
 
                 gutters = [
                     "diagnostics"
