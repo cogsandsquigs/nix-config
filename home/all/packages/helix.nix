@@ -526,8 +526,9 @@ in
                     formatter = {
                         command = "scalafmt";
                         args = [
-                            "--stdin"
-                            "--assume-filename=%{buffer_name}"
+                            "--stdin" # Necessary for it to read stdin
+                            "--stdout" # Necessary for it to output to stdout
+                            "--assume-filename=%{buffer_name}" # Sometimes needed, why not have it
                         ];
                     };
                 }
