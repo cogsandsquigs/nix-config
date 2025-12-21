@@ -519,6 +519,18 @@ in
                         args = [ "-" ];
                     };
                 }
+
+                {
+                    name = "scala";
+                    auto-format = true;
+                    formatter = {
+                        command = "scalafmt";
+                        args = [
+                            "--stdin"
+                            "--assume-filename %{buffer_name}"
+                        ];
+                    };
+                }
             ];
         };
     };
