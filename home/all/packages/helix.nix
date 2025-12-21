@@ -527,7 +527,7 @@ in
                         command = "scalafmt";
                         args = [
                             "--stdin"
-                            "--assume-filename %{buffer_name}"
+                            "--assume-filename=%{buffer_name}"
                         ];
                     };
                 }
