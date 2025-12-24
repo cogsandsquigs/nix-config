@@ -6,7 +6,6 @@
         #steam
         #steam-run
 
-        modrinth-app-unwrapped # Minecraft launcher
-        prismlauncher-unwrapped
+        prismlauncher-unwrapped # Minecraft launcher
     ];
 }
