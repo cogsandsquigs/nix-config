@@ -6,6 +6,6 @@
         #steam
         #steam-run
 
-        prismlauncher-unwrapped # Minecraft launcher
+        prismlauncher # Minecraft launcher
     ];
 }
