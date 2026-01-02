@@ -56,18 +56,13 @@ in
 
                                     path=$(yazi "$1" --chooser-file=/dev/stdout)
 
-                                    # If `paths` is not empty, and is a directory, search inside it.
-                                    if [ -n "$path" ] || [ -d "$path" ]; then
-                                    	zellij action toggle-floating-panes
-                                    	zellij action write 27 # send <Escape> key
-                                    	zellij action write-chars "${make_zellij_floating_pane "bash ${yazi_picker_script} $path"}"
-                                    	zellij action write 13 # send <Enter> key
-                                    # If `paths` is not empty, and is a file, open it
-                                    elif [[ -n "$path" ]]; then
+                                    # If `paths` is not empty, open it.
+                                    if [[ -n "$path" ]]; then
                                     	zellij action toggle-floating-panes
                                     	zellij action write 27 # send <Escape> key
                                     	zellij action write-chars ":open $paths"
                                     	zellij action write 13 # send <Enter> key
+                                    # Otherwise, just close the pane
                                     else
                                     	zellij action toggle-floating-panes
                                     fi
