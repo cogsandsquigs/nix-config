@@ -20,7 +20,7 @@
                 yazi-flavors = pkgs.fetchFromGitHub {
                     owner = "yazi-rs";
                     repo = "flavors";
-                    rev = "d3fd3a5d774b48b3f88845f4f0ae1b82f106d331";
+                    rev = "ffe6e3a16c5c51d7e2dedacf8de662fe2413f73a";
                     hash = "sha256-RtunaCs1RUfzjefFLFu5qLRASbyk5RUILWTdavThRkc=";
                 };
             in
@@ -31,6 +31,7 @@
         theme = {
             flavor = {
                 dark = "catppuccin-mocha";
+                light = "catppuccin-mocha";
             };
         };
     };

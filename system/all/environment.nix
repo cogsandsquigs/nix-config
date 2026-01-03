@@ -8,6 +8,7 @@
         ];
 
         systemPackages = with pkgs; [
+            nh # Nix helper. See: https://github.com/nix-community/nh
             util-linux # System utils for Linux and MacOS (?)
         ];
 
