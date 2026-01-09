@@ -6,18 +6,11 @@
 
     inputs = {
         # Main packages repo
-        # NOTE: Until these (see below) issues are fixed, must use staging-next instead of master:
-        #  - https://github.com/NixOS/nixpkgs/issues/430307, which is a duplicate of:
-        #  - https://github.com/NixOS/nixpkgs/issues/431934 (yet to be merged into master)
-        # nixpkgs.url = "github:NixOS/nixpkgs/staging-next"; # UNSTABLE UNSTABLE unstable
-        # nixpkgs.url = "github:NixOS/nixpkgs/master"; # UNSTABLE unstable
         nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable"; # Unstable
-        # nixpkgs.url = "github:nixos/nixpkgs/release-24.11"; # Stable
 
         # MacOS config
         nix-darwin = {
-            url = "github:LnL7/nix-darwin/master"; # Unstable
-            # url = "github:LnL7/nix-darwin/nix-darwin-24.11"; # Stable
+            url = "github:nix-darwin/nix-darwin/master"; # Unstable
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
