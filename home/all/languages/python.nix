@@ -2,9 +2,10 @@
 {
     home.packages = with pkgs; [
         python3
-        ruff # Formatter, linter, typechecker, etc...
-        # black # Formatter
-        # pyright # Typechecker
-        # pylint # Linter
+
+        # Python tooling, courtesy of Astral.sh
+        uv # Project manager
+        ty # LSP, typechecker
+        ruff # Formatter, linter
     ];
 }
