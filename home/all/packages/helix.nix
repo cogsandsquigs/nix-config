@@ -210,10 +210,21 @@ in
                     };
                 };
 
-                # Python language server
+                # Python language server(s):
+
+                # Linter and formatter, from Astral.sh
                 ruff = {
                     command = "ruff";
                     args = [ "server" ];
+                };
+
+                # More advanced server, from Astral.sh (makers of Ruff)
+                ty = {
+                    command = "ty";
+                    args = [ "server" ];
+                    config.ty = {
+                        # Settings...
+                    };
                 };
 
                 # LaTeX language server
@@ -456,7 +467,10 @@ in
                 }
                 {
                     name = "python";
-                    language-servers = [ "ruff" ];
+                    language-servers = [
+                        "ty"
+                        "ruff"
+                    ];
                     auto-format = true;
                     indent = {
                         tab-width = 4;
