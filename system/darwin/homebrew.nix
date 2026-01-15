@@ -25,7 +25,7 @@
 
         # `brew install`
         brews = [
-            "ca-certificates" # NOTE: For some reason this is required by `bun` and also some others
+            # "ca-certificates" # NOTE: For some reason this is required by `bun` and also some others
         ];
 
         # `brew install --cask`
@@ -37,14 +37,7 @@
             "olympus" # Celeste mod loader
             "roblox"
             "discord" # Req. since nix-darwin/nixpkgs discord on macos doesn't allow for notifs/screenshare (?)
-            "whatsapp" # Updated more freq. than whatsapp-for-mac nix
-            # See what persistence elements are installed:
-            # https://objective-see.org/products/knockknock.html
-            "knockknock"
-            # Notify on persistence elements installed:
-            # https://objective-see.org/products/blockblock.html
-            "blockblock"
-            "the-unofficial-homestuck-collection" # :3
+            # "whatsapp" # Updated more freq. than whatsapp-for-mac nix
             "porting-kit" # Windows -> Mac
             "kicad" # ::3
         ];
