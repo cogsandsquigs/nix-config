@@ -9,6 +9,7 @@ My nix configuration!
 - `system`: System configuration, including applications and such
   - `system/all`: configuration for all systems.
   - `system/darwin`: MacOS configuration
+  - `system/linux`: NixOS/Linux configuration
 - `home`: Home-Manager configuration, used to configure dotfiles and such. This is where things like the shell, programs
   with configuration in `~/.config`, etc. are configured. Each separate program should have it's own
   `home/config/<program-name>.nix` file (see `home/git.nix`, etc.). Some things package-only may be in `home/config/packages/<file>.nix`
