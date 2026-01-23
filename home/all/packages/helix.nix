@@ -542,14 +542,17 @@ in
                 {
                     name = "scala";
                     auto-format = true;
-                    formatter = {
-                        command = "scalafmt";
-                        args = [
-                            "--stdin" # Necessary for it to read stdin
-                            "--stdout" # Necessary for it to output to stdout
-                            "--assume-filename=%{buffer_name}" # Sometimes needed, why not have it
-                        ];
-                    };
+                    /*
+                      # NOTE: `metals` formats!
+                      formatter = {
+                          command = "scalafmt";
+                          args = [
+                              "--stdin" # Necessary for it to read stdin
+                              "--stdout" # Necessary for it to output to stdout
+                              "--assume-filename=%{buffer_name}" # Sometimes needed, why not have it
+                          ];
+                      };
+                    */
                 }
             ];
         };
