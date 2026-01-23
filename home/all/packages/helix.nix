@@ -542,17 +542,11 @@ in
                 {
                     name = "scala";
                     auto-format = true;
-                    /*
-                      # NOTE: `metals` formats!
-                      formatter = {
-                          command = "scalafmt";
-                          args = [
-                              "--stdin" # Necessary for it to read stdin
-                              "--stdout" # Necessary for it to output to stdout
-                              "--assume-filename=%{buffer_name}" # Sometimes needed, why not have it
-                          ];
-                      };
-                    */
+                    # NOTE: The default language server is `metals`, which automatically formats
+                    # code as well --- no need to specify a formatter. It is faster than calling
+                    # `scalafmt` from the command-line as well. Any formatting options are specified
+                    # in a `.scalafmt.conf` file (HOCOL syntax) --- so no need to pass cmd-line
+                    # options for it unless wanting to configure LSP itself.
                 }
             ];
         };
