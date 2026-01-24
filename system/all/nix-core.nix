@@ -29,26 +29,14 @@ in
                 "https://cache.nixos.org"
                 "https://nix-darwin.cachix.org"
                 "https://nix-community.cachix.org"
-                "https://cachix.cachix.org"
-                "https://nixpkgs.cachix.org"
-                "https://nyx.chaotic.cx"
-                "https://yazi.cachix.org"
-                "https://zellij.cachix.org"
-                "https://helix.cachix.org"
-                "https://devenv.cachix.org"
             ];
 
             # Public keys for the substituters above.
+            # NOTE: The public key for `https://cache.nixos.org` is included by default. No need
+            # to include it here!
             trusted-public-keys = [
                 "nix-darwin.cachix.org-1:LxMyKzQk7Uqkc1Pfq5uhm9GSn07xkERpy+7cpwc006A="
                 "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-                "cachix.cachix.org-1:eWNHQldwUO7G2VkjpnjDbWwy4KQ/HNxht7H4SSoMckM="
-                "nixpkgs.cachix.org-1:q91R6hxbwFvDqTSDKwDAV4T5PxqXGxswD8vhONFMeOE="
-                "chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8="
-                "yazi.cachix.org-1:Dcdz63NZKfvUCbDGngQDAZq6kOroIrFoyO064uvLh8k="
-                "zellij.cachix.org-1:6W2+Lx/QQ7MQh397mNaPZ+u7HujWDP5VqnwEQVdX1QI="
-                "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
-                "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
             ];
 
             trusted-users = [ username ];
