@@ -7,5 +7,7 @@
         metals # LSP
         scalafix # Linter
         scalafmt # Formatter
+        metac
+        metap
     ];
 }
