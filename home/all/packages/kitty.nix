@@ -39,6 +39,10 @@
             # Font fixes
             "modify_font cell_width" = "+0px";
             "modify_font cell_height" = "+0px";
+
+            # MacOS tweaks
+            macos_quit_when_last_window_closed = true; # See: https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.macos_quit_when_last_window_closed
+            macos_colorspace = "displayp3"; # See: https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.macos_colorspace
         };
     };
 }
