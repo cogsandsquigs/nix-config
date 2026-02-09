@@ -11,5 +11,6 @@
         fastfetch # System info
         magic-wormhole
         fontconfig
+        inetutils
     ];
 }

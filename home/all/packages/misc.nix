@@ -6,7 +6,6 @@
         # spotify
         # postman
         zoom-us
-        # inetutils
         # kicad-testing
     ];
 }
