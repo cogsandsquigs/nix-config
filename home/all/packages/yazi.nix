@@ -9,6 +9,9 @@
         enableFishIntegration = true;
         enableZshIntegration = true;
 
+        # Legacy was `yy`, new default will be `y`. Setting as this to adopt the new default sooner.
+        shellWrapperName = "y";
+
         settings = {
             mgr = {
                 show_hidden = true;
