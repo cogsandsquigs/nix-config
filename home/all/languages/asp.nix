@@ -1,7 +1,4 @@
 { pkgs, ... }:
 {
-    home.packages = with pkgs; [
-        clingo
-        clingraph
-    ];
+    home.packages = with pkgs; [ clingo ];
 }
