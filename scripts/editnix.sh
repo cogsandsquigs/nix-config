@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e # exit if any command errors
+
 export NIX_CONF_DIR=/etc/nix
 export SCRIPTS_PATH=$NIX_CONF_DIR/scripts
 
