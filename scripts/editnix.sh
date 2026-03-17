@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 export NIX_CONF_DIR=/etc/nix
 export SCRIPTS_PATH=$NIX_CONF_DIR/scripts
