@@ -1,0 +1,80 @@
+{ self, nix-darwin, ... }:
+{
+    # Build darwin flake using:
+    # $ darwin-rebuild build --flake .#${hostname}
+    flake.darwinConfigurations.macbook = nix-darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        modules = [ self.darwinModules.macbookConfiguration ];
+    };
+
+    #mkDarwinConfiguration "Ians-GlorpBook-Pro" "cogs";
+}
+
+/*
+  outputs =
+      inputs@{ flake-parts, import-tree, ... }:
+      flake-parts.lib.mkFlake { inherit inputs; } (import-tree ./modules);
+
+      outputs =
+          inputs@{
+              self,
+              nix-darwin,
+              nixpkgs,
+              home-manager,
+          }:
+          let
+              inherit (self) outputs;
+
+              mkDarwinConfiguration =
+                  hostname: username:
+                  nix-darwin.lib.darwinSystem {
+                      system = "aarch64-darwin";
+
+                      # NOTE: Doing this allows us to import `specialArgs` in
+                      # `{specialArgs, ...}: <...>`, which lets us get certain information we need
+                      specialArgs = {
+                          inherit
+                              inputs
+                              outputs
+                              hostname
+                              username
+                              ;
+                      };
+
+                      modules = [
+                          ./system/all # Global config
+                          ./system/darwin # MacOS-specific config
+
+                          home-manager.darwinModules.home-manager
+                          {
+                              home-manager.useUserPackages = true;
+                              home-manager.backupFileExtension = "backup"; # Backup files when moving to home-manager config
+                              home-manager.extraSpecialArgs = {
+                                  inherit
+                                      inputs
+                                      outputs
+                                      hostname
+                                      username
+                                      ;
+                              };
+                              home-manager.users.${username} =
+                                  { ... }:
+                                  {
+                                      # Essentially, we create a module here that just imports the
+                                      # home-manager configuration for the user.
+                                      imports = [
+                                          ./home/all
+                                          ./home/darwin
+                                      ];
+                                  };
+                          }
+                      ];
+                  };
+          in
+          {
+              # Build darwin flake using:
+              # $ darwin-rebuild build --flake .#${hostname}
+              darwinConfigurations."Ians-GlorpBook-Pro" =
+                  mkDarwinConfiguration "Ians-GlorpBook-Pro" "cogs";
+          };
+*/
