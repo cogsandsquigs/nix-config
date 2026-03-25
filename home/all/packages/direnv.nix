@@ -1,9 +1,9 @@
 { pkgs, ... }:
 {
-    home.packages = with pkgs; [ direnv ];
+    #home.packages = with pkgs; [ direnv ];
 
     programs.direnv = {
-        enable = true;
+        #enable = true;
 
         # Enable nix-direnv integration. See:
         # https://github.com/nix-community/nix-direnv

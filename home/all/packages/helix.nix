@@ -194,7 +194,12 @@ in
 
                 };
 
-                # Nix language server
+                # Nix language server(s):
+                # NOTE: First one is preferred!
+                nixd = {
+                    command = "nixd";
+                };
+
                 nil = {
                     command = "nil";
                     args = [ "--stdio" ];
@@ -448,7 +453,10 @@ in
 
                 {
                     name = "nix";
-                    language-servers = [ "nil" ];
+                    language-servers = [
+                        "nixd"
+                        "nil"
+                    ];
                     auto-format = true;
                     indent = {
                         tab-width = 4;
@@ -457,7 +465,7 @@ in
                     formatter = {
                         command = "nixfmt";
                         args = [
-                            "--width=80"
+                            "--width=100"
                             "--indent=4"
                             "--quiet"
                             "--strict"
