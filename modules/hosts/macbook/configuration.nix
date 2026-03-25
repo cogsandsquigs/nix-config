@@ -8,6 +8,7 @@ in
         # Specify dependencies
         imports = with inputs.self.modules.darwin; [
             desktop
+            home-manager
 
             #########
             # USERS #
@@ -19,7 +20,17 @@ in
         networking.hostName = hostname;
         networking.computerName = hostname;
 
+        # Add ability to used TouchID for sudo authentication
+        security = {
+            pam.services.sudo_local = {
+                enable = true;
+                touchIdAuth = true;
+            };
+        };
+
         system = {
+            primaryUser = primaryUser;
+
             # activationScripts are executed every time you boot the system or run `darwin-rebuild`.
             activationScripts = {
                 postActivation.text = ''
@@ -31,21 +42,12 @@ in
                 '';
             };
 
-            # Add ability to used TouchID for sudo authentication
-            security = {
-                pam.services.sudo_local = {
-                    enable = true;
-                    touchIdAuth = true;
-                };
-            };
-
             defaults = {
                 menuExtraClock.Show24Hour = false; # show 24 hour clock
                 SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
                 loginwindow.GuestEnabled = false;
                 NSGlobalDomain.AppleInterfaceStyle = "Dark";
                 smb.NetBIOSName = hostname;
-                primaryUser = primaryUser;
 
                 dock = {
                     autohide = true;
@@ -89,8 +91,8 @@ in
 
             taps = [ "homebrew/services" ];
 
-            masApps = [ ];
-            brews = [ ];
+            #masApps = [ ];
+            #brews = [ ];
             casks = [
                 "firefox"
                 "tailscale-app"

@@ -1,15 +1,10 @@
-{
-    inputs,
-    lib,
-    self,
-    ...
-}:
+{ inputs, ... }:
 let
     username = "cogs";
 in
 {
     flake.modules.nixos.${username} = {
-        imports = with self.modules.nixos; [
+        imports = with inputs.self.modules.nixos; [
             # developmentEnvironment
         ];
 
@@ -19,7 +14,7 @@ in
     };
 
     flake.modules.darwin.${username} = {
-        imports = with self.modules.darwin; [
+        imports = with inputs.self.modules.darwin; [
             # drawingApps
             # developmentEnvironment
         ];
@@ -28,12 +23,7 @@ in
     flake.modules.homeManager.${username} =
         { pkgs, ... }:
         {
-            imports = with self.modules.homeManager; [
-                desktop
-                # adminTools
-                # vscode
-                # passwordManager
-            ];
+            imports = with inputs.self.modules.homeManager; [ desktop ];
             home.packages = with pkgs; [
                 # mediainfo
             ];

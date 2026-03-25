@@ -60,8 +60,13 @@ in
 {
 
     flake.modules.homeManager.shell =
-        { config, ... }:
+        { pkgs, config, ... }:
         {
+            home.packages = with pkgs; [
+                fish
+                zsh
+            ];
+
             programs.fish = {
                 enable = true;
                 generateCompletions = true;

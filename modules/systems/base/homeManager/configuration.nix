@@ -32,5 +32,7 @@
                 nixd # Official (community) Nix LSP
                 nil # Unofficial Nix LSP
             ];
+
+            programs.home-manager.enable = true;
         };
 }

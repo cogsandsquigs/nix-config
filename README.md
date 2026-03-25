@@ -20,6 +20,7 @@ Each `.nix` file in `modules` defines an _aspect_ that is used within this flake
 specific directories within `modules` that are special:
 
 - **`modules/lib`**: Defines common libraries used across flakes.
+- **`modules/tools`**: Defines tools/"add-ons" to base nixos/nix-darwin (i.e. home-manager).
 - **`modules/hosts`**: Defines machine specifications and operating systems, and produces the
   end-point `flake.nixosConfigurations`/`flake.darwinConfigurations` for each host in `hosts`.
 - **`modules/users`**: Defines specific users for my machines. Currently, only has `cogs`.
