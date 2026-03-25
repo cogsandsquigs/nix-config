@@ -1,5 +1,12 @@
 { ... }:
 {
+
+  flake.darwinConfigurations = {
+    yavanna = :darwin-intel "yavanna";
+    varda = darwin "varda";
+    bert = darwin "bert";
+  };
+
     flake.darwinModules.macbookConfiguration =
         { pkgs, lib, ... }:
         {
