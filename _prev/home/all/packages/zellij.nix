@@ -25,7 +25,6 @@
                 # if they are (i.e. floating pane) then we have them rounded
                 pane_frames.rounded_corners = true;
             };
-
         };
 
         ###############################################################
