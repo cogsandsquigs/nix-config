@@ -35,7 +35,6 @@
             "tailscale-app"
             "steam"
             "olympus" # Celeste mod loader
-            "roblox"
             "discord" # Req. since nix-darwin/nixpkgs discord on macos doesn't allow for notifs/screenshare (?)
             "whatsapp" # Updated more freq. than whatsapp-for-mac nix
             "porting-kit" # Windows -> Mac
