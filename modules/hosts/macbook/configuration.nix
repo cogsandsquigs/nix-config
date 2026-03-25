@@ -8,12 +8,8 @@ in
         # Specify dependencies
         imports = with inputs.self.modules.darwin; [
             desktop
-            home-manager
 
-            #########
-            # USERS #
-            #########
-
+            # Users
             cogs
         ];
 

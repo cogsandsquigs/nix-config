@@ -1,11 +1,6 @@
 # The shell configuration I use!
 
-{
-    pkgs,
-    lib,
-    username,
-    ...
-}:
+{ lib, username, ... }:
 let
     inherit (lib.strings) concatMapStrings;
     inherit (lib.attrsets) mapAttrsToList;
@@ -24,7 +19,7 @@ let
         cleanup = "/etc/nix/scripts/cleanup.sh";
     };
 
-    variables = {
+    variables = pkgs: {
         EDITOR = editor;
         JAVA_HOME = "$(dirname $(dirname $(readlink -f $(which java))))"; # Add java home
 
@@ -32,22 +27,24 @@ let
         LIBRARY_PATH = pkgs.lib.makeLibraryPath [ pkgs.libiconvReal ];
     };
 
-    binPaths = [
-        "$HOME/.cargo/bin"
-        "${pkgs.llvmPackages_21.clang-tools}/bin"
-        "$HOME/.local/bin"
-        "$HOME/.nix-profile/bin"
-        "/nix/var/nix/profiles/default/bin"
-        "/etc/profiles/per-user/${username}/bin"
-        "/run/current-system/sw/bin"
-    ];
+    binPaths =
+        { pkgs, config }:
+        [
+            "$HOME/.cargo/bin"
+            "${pkgs.llvmPackages_21.clang-tools}/bin"
+            "$HOME/.local/bin"
+            "$HOME/.nix-profile/bin"
+            "/nix/var/nix/profiles/default/bin"
+            "/etc/profiles/per-user/${config.home.username}/bin"
+            "/run/current-system/sw/bin"
+        ];
 
     # Maps every variable in `variables` to a string for a specific shell.
     # @param `f`: A function `f :: String -> Any -> String` that takes the variable name,
     # then value, then returns a string that loads the variable in a specific shell the
     # user wants.
     # @returns the string of all variables to be loaded in a shell.
-    variablesToString = f: (concatMapStrings (s: s + "\n") (mapAttrsToList f variables));
+    variablesToString = f: variables: (concatMapStrings (s: s + "\n") (mapAttrsToList f variables));
 
     # Maps every path entry in `path` to a string for a specific shell
     # @param `f`: A function `f :: String -> String` that takes the path entry, then returns
@@ -82,8 +79,11 @@ in
                 '';
 
                 shellInit = ''
-                    ${variablesToString (name: val: "set -gx ${name} ${val}")}
-                    ${pathsToString (path: "fish_add_path ${path}") binPaths}
+                    ${variablesToString (name: val: "set -gx ${name} ${val}") (variables pkgs)}
+                    ${pathsToString (path: "fish_add_path ${path}") (binPaths {
+                        pkgs = pkgs;
+                        config = config;
+                    })}
                 '';
 
                 # NOTE: Since Fisher isn't really supported thru Home-manager, we use
@@ -117,8 +117,11 @@ in
                 '';
 
                 envExtra = ''
-                    ${variablesToString (name: val: "export ${name}=\"${val}\"")}
-                    ${pathsToString (path: "export PATH=${path}:$PATH") binPaths}
+                    ${variablesToString (name: val: "export ${name}=\"${val}\"") (variables pkgs)}
+                    ${pathsToString (path: "export PATH=${path}:$PATH") (binPaths {
+                        pkgs = pkgs;
+                        config = config;
+                    })}
                 '';
 
                 shellAliases = aliases;

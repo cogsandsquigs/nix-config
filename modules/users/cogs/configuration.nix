@@ -14,17 +14,16 @@ in
     };
 
     flake.modules.darwin.${username} = {
-        imports = with inputs.self.modules.darwin; [
-            # drawingApps
-            # developmentEnvironment
-        ];
+        imports = with inputs.self.modules.darwin; [ home-manager ];
     };
 
     flake.modules.homeManager.${username} =
         { pkgs, ... }:
         {
             imports = with inputs.self.modules.homeManager; [ desktop ];
+
             home.packages = with pkgs; [
+                cowsay
                 # mediainfo
             ];
         };

@@ -15,7 +15,7 @@
                 eza
                 dust
                 bat
-                z
+                zoxide
                 lazygit
                 fastfetch
             ];

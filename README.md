@@ -8,6 +8,7 @@ are 3 main _classes_ within this configuration:
 - **`flake.modules.nixos`**: The configuration for a nixos setup.
 - **`flake.modules.darwin`**: The configuration for a darwin setup.
 - **`flake.modules.homeManager`**: The configuration home-manager, to manage all of my dotfiles.
+  These are _per-user_, and so are expected to be imported under `home-manager.users.${username}`.
 
 > [!info]
 >
@@ -24,7 +25,7 @@ specific directories within `modules` that are special:
 - **`modules/hosts`**: Defines machine specifications and operating systems, and produces the
   end-point `flake.nixosConfigurations`/`flake.darwinConfigurations` for each host in `hosts`.
 - **`modules/users`**: Defines specific users for my machines. Currently, only has `cogs`.
-- **`modules/systems`**: Defines systems that configure machines (i.e., `base`, `desktop`)
+- **`modules/blueprints`**: Defines systems that configure machines (i.e., `base`, `desktop`)
 - **`modules/programs`**: Defines programs used across machines.
 
 ## Aspects

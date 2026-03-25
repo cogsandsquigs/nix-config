@@ -5,9 +5,7 @@
     flake.modules.darwin.base =
         { pkgs, ... }:
         {
-            system = {
-                stateVersion = 6;
-            };
+            system.stateVersion = 6;
 
             environment.systemPackages = with inputs.nix-darwin.packages.${pkgs.stdenv.hostPlatform.system}; [
                 darwin-option

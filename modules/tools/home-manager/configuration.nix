@@ -7,8 +7,6 @@ let
                 verbose = true;
                 useUserPackages = true;
                 useGlobalPkgs = true;
-                backupFileExtension = "backup";
-                backupCommand = "rm";
                 overwriteBackup = true;
             };
         };
