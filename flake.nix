@@ -36,8 +36,8 @@
                 nix-darwin.lib.darwinSystem {
                     system = "aarch64-darwin";
 
-                    # NOTE: Doing this allows us to import `specialArgs` in `{specialArgs, ...}: <...>`, which lets us
-                    # get certain information we need
+                    # NOTE: Doing this allows us to import `specialArgs` in
+                    # `{specialArgs, ...}: <...>`, which lets us get certain information we need
                     specialArgs = {
                         inherit
                             inputs
@@ -66,9 +66,8 @@
                             home-manager.users.${username} =
                                 { ... }:
                                 {
-                                    # Essentially, we create a module here that just
-                                    # imports the home-manager configuration for the
-                                    # user.
+                                    # Essentially, we create a module here that just imports the
+                                    # home-manager configuration for the user.
                                     imports = [
                                         ./home/all
                                         ./home/darwin

@@ -19,7 +19,8 @@ else
     exit 1
 fi
 
-sudo -i $NIX_REBUILD_CMD switch --flake $NIX_CONF_DIR
+# NOTE: --print-build-logs prints build-logs in case of failure.
+sudo -i $NIX_REBUILD_CMD switch --flake $NIX_CONF_DIR --print-build-logs
 
 # If all goes well, commit and push!
 git commit -m "Nix rebuild"
