@@ -21,14 +21,18 @@ in
             imports = with inputs.self.modules.homeManager; [
                 desktop
 
+                # CLI utilities
                 shell
                 terminal
-                editor
                 utilities
                 git-cogs
 
+                # Desktop apps
                 desktop-apps
                 games
+
+                # Development
+                develop
             ];
         };
 }
