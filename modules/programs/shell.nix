@@ -1,6 +1,6 @@
 # The shell configuration I use!
 
-{ lib, username, ... }:
+{ inputs, lib, ... }:
 let
     inherit (lib.strings) concatMapStrings;
     inherit (lib.attrsets) mapAttrsToList;
@@ -59,6 +59,8 @@ in
     flake.modules.homeManager.shell =
         { pkgs, config, ... }:
         {
+            imports = with inputs.self.modules.homeManager; [ starship ];
+
             home.packages = with pkgs; [
                 fish
                 zsh

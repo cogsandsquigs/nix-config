@@ -4,9 +4,7 @@ let
 in
 {
     flake.modules.nixos.${username} = {
-        imports = with inputs.self.modules.nixos; [
-            # developmentEnvironment
-        ];
+        imports = with inputs.self.modules.nixos; [ home-manager ];
 
         users.users.${username} = {
             group = "wheel";
@@ -18,13 +16,19 @@ in
     };
 
     flake.modules.homeManager.${username} =
-        { pkgs, ... }:
+        { ... }:
         {
-            imports = with inputs.self.modules.homeManager; [ desktop ];
+            imports = with inputs.self.modules.homeManager; [
+                desktop
 
-            home.packages = with pkgs; [
-                cowsay
-                # mediainfo
+                shell
+                terminal
+                editor
+                utilities
+                git-cogs
+
+                desktop-apps
+                games
             ];
         };
 }

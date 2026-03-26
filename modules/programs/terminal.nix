@@ -1,8 +1,10 @@
-{ ... }:
+{ inputs, ... }:
 {
     flake.modules.homeManager.terminal =
         { pkgs, ... }:
         {
+            imports = with inputs.self.modules.homeManager; [ zellij ];
+
             home.packages = with pkgs; [ kitty ];
 
             programs.kitty = {

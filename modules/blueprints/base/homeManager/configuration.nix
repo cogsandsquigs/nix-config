@@ -9,15 +9,7 @@
             ...
         }:
         {
-            imports = with inputs.self.modules.homeManager; [
-                shell
-                starship
-                editor
-                zellij
-                utilities
-                direnv
-                gpg
-            ];
+            # imports = with inputs.self.modules.homeManager; [ ];
 
             home.stateVersion = "25.05";
             home.homeDirectory =

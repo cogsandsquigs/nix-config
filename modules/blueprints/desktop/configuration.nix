@@ -12,11 +12,6 @@
     };
 
     flake.modules.homeManager.desktop = {
-        imports = with inputs.self.modules.homeManager; [
-            base
-
-            desktop-apps
-            games
-        ];
+        imports = with inputs.self.modules.homeManager; [ base ];
     };
 }
