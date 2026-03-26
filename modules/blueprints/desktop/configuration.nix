@@ -1,0 +1,24 @@
+# Expands the `base` system to desktop configurations
+
+{ inputs, ... }:
+{
+
+    flake.modules.nixos.desktop = {
+        imports = with inputs.self.modules.nixos; [ base ];
+    };
+
+    flake.modules.darwin.desktop =
+        { pkgs, ... }:
+        {
+            imports = with inputs.self.modules.darwin; [ base ];
+
+            environment.systemPackages = with pkgs; [
+                pinentry_mac # EZ pinentry for GPG
+                appcleaner # For cleaning up rogue `.app`s
+            ];
+        };
+
+    flake.modules.homeManager.desktop = {
+        imports = with inputs.self.modules.homeManager; [ base ];
+    };
+}
