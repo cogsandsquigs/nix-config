@@ -1,9 +1,9 @@
 { pkgs, ... }:
 {
-    #home.packages = with pkgs; [ direnv ];
+    # home.packages = with pkgs; [ direnv ];
 
     programs.direnv = {
-        #enable = true;
+        # enable = true;
 
         # Enable nix-direnv integration. See:
         # https://github.com/nix-community/nix-direnv
@@ -12,6 +12,6 @@
         # Integrate with shells
         enableBashIntegration = true;
         enableZshIntegration = true;
-        # enableFishIntegration = true; # TODO: Why is this read-only?
+        enableFishIntegration = true; # TODO: Why is this read-only?
     };
 }
