@@ -93,19 +93,18 @@
                                 updates_disabled = true;
                             };
 
-                            "{f3b4b962-34b4-4935-9eee-45b0bce58279}" = {
-                                install_url = moz "animated-purple-moon-lake";
+                            "multi-account-containers@mozilla.org" = {
+                                install_url = moz "multi-account-containers";
                                 installation_mode = "force_installed";
                                 updates_disabled = true;
                             };
 
-                            "{73a6fe31-595d-460b-a920-fcc0f8843232}" = {
-                                install_url = moz "noscript";
+                            "bitwarden-password-manager@bitwarden.com" = {
+                                install_url = moz "bitwarden-password-manager";
                                 installation_mode = "force_installed";
                                 updates_disabled = true;
                             };
                         };
-
                     # Extension configuration
                     "3rdparty".Extensions = {
                         "uBlock0@raymondhill.net".adminSettings = {
