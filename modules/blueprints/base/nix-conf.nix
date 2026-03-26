@@ -12,6 +12,7 @@ let
     # NOTE: The public key for `https://cache.nixos.org` is included by default. No need
     # to include it here!
     trusted-public-keys = [
+        "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
         "nix-darwin.cachix.org-1:LxMyKzQk7Uqkc1Pfq5uhm9GSn07xkERpy+7cpwc006A="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM"
@@ -33,30 +34,34 @@ in
             };
         };
 
-        determinateNix.customSettings = {
-            # Enables parallel evaluation (remove this setting or set the value to 1 to disable)
-            eval-cores = 0;
+        determinateNix = {
+            enable = true;
 
-            # Disable global registry
-            flake-registry = "";
+            customSettings = {
+                # Enables parallel evaluation (remove this setting or set the value to 1 to disable)
+                eval-cores = 0;
 
-            lazy-trees = true;
-            warn-dirty = false;
+                # Disable global registry
+                flake-registry = "";
 
-            experimental-features = [
-                "nix-command"
-                "flakes"
-            ];
+                lazy-trees = true;
+                warn-dirty = false;
 
-            extra-experimental-features = [
-                "build-time-fetch-tree" # Enables build-time flake inputs
-                "parallel-eval" # Enables parallel evaluation
-            ];
+                experimental-features = [
+                    "nix-command"
+                    "flakes"
+                ];
 
-            substituters = substituters;
-            trusted-public-keys = trusted-public-keys;
-            trusted-users = trusted-users;
-            builders-use-substitutes = true;
+                extra-experimental-features = [
+                    "build-time-fetch-tree" # Enables build-time flake inputs
+                    "parallel-eval" # Enables parallel evaluation
+                ];
+
+                substituters = substituters;
+                trusted-public-keys = trusted-public-keys;
+                trusted-users = trusted-users;
+                builders-use-substitutes = true;
+            };
         };
 
         # nix = {

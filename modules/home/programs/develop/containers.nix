@@ -14,9 +14,9 @@
                     if pkgs.stdenv.isDarwin then
                         with pkgs;
                         [
-                            colima
-                            lima
-                            lima-additional-guestagents
+                            #colima
+                            #lima
+                            #lima-additional-guestagents
                         ]
                     else
                         [ ]

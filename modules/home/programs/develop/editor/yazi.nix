@@ -3,11 +3,8 @@
     flake.modules.homeManager.yazi =
         { pkgs, ... }:
         {
-
-            home.packages = with pkgs; [ yazi ];
-
             programs.yazi = {
-                enable = true;
+                # enable = true; # NOTE: For some reason this causes a mismatched hash. when fix?
                 enableBashIntegration = true;
                 enableFishIntegration = true;
                 enableZshIntegration = true;

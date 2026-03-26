@@ -15,7 +15,7 @@
                 # Integrate with shells
                 enableBashIntegration = true;
                 enableZshIntegration = true;
-                enableFishIntegration = true;
+                #enableFishIntegration = true; # ? Read-only?
             };
         };
 }

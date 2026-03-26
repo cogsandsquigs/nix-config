@@ -6,7 +6,7 @@
     inputs = {
         # Main packages repo
         # nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable"; # Unstable
-        nixpkgs.url = "github:NixOS/nixpkgs/staging-next"; # VERY Unstable, use until direnv fix
+        nixpkgs.url = "github:NixOS/nixpkgs/master"; # use until direnv fix
 
         # MacOS config
         nix-darwin = {
