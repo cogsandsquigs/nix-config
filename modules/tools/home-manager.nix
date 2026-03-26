@@ -1,3 +1,5 @@
+# NOTE: This is imported only in `modules/users/*` configurations, as home-manager is a per-user
+# thing.
 { inputs, ... }:
 let
     home-manager-config =

@@ -30,8 +30,6 @@ in
         { ... }:
         {
             imports = with inputs.self.modules.homeManager; [
-                desktop
-
                 # CLI utilities
                 shell
                 terminal

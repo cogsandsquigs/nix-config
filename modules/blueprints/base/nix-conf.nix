@@ -33,92 +33,92 @@ in
             };
         };
 
-        nix = {
-            enable = true;
-            registry.nixpkgs.flake = inputs.nixpkgs;
-            settings = {
-                # enable flakes globally, enable `nix` command
-                experimental-features = [
-                    "nix-command"
-                    "flakes"
-                ];
+        determinateNix.customSettings = {
+            # Enables parallel evaluation (remove this setting or set the value to 1 to disable)
+            eval-cores = 0;
 
-                substituters = substituters;
-                trusted-public-keys = trusted-public-keys;
-                trusted-users = trusted-users;
-                builders-use-substitutes = true;
+            # Disable global registry
+            flake-registry = "";
 
-            };
+            lazy-trees = true;
+            warn-dirty = false;
 
-            # Collect garbage.
-            # See: https://wiki.nixos.org/wiki/Storage_optimization#Garbage_collection
-            gc = {
-                automatic = true;
-                options = "--delete-older-than 30d";
+            experimental-features = [
+                "nix-command"
+                "flakes"
+            ];
 
-                # See: https://wiki.nixos.org/wiki/Storage_optimization#Automation
+            extra-experimental-features = [
+                "build-time-fetch-tree" # Enables build-time flake inputs
+                "parallel-eval" # Enables parallel evaluation
+            ];
 
-                # See: https://wiki.nixos.org/wiki/Storage_optimization#Automation
-                # MacOS: The calendar interval at which the optimiser will run.
-                # See the serviceConfig.StartCalendarInterval option of
-                # the launchd (nix-darwin) module for more info.
-                interval = {
-                    Weekday = 0;
-                    Hour = 0;
-                    Minute = 0;
-                };
-            };
-
-            # See: https://wiki.nixos.org/wiki/Storage_optimization#Optimising_the_store and
-            # see: https://www.reddit.com/r/NixOS/comments/1cunvdw/friendly_reminder_optimizestore_is_not_on_by/
-            # Optimization settings for the nix store.
-            # Will optimize the nix-store on a schedule.
-            optimise = {
-                automatic = true;
-
-                # See: https://wiki.nixos.org/wiki/Storage_optimization#Automation
-                # MacOS: The calendar interval at which the optimiser will run.
-                # See the serviceConfig.StartCalendarInterval option of
-                # the launchd (nix-darwin) module for more info.
-                interval = {
-                    Weekday = 0;
-                    Hour = 0;
-                    Minute = 0;
-                };
-
-            };
-
-            extraOptions = ''
-                warn-dirty = false
-                keep-outputs = true
-            '';
+            substituters = substituters;
+            trusted-public-keys = trusted-public-keys;
+            trusted-users = trusted-users;
+            builders-use-substitutes = true;
         };
 
-        /*
-          determinateNix.customSettings = {
-              # Enables parallel evaluation (remove this setting or set the value to 1 to disable)
-              eval-cores = 0;
+        # nix = {
+        #     enable = true;
+        #     registry.nixpkgs.flake = inputs.nixpkgs;
+        #     settings = {
+        #         # enable flakes globally, enable `nix` command
+        #         experimental-features = [
+        #             "nix-command"
+        #             "flakes"
+        #         ];
 
-              # Disable global registry
-              flake-registry = "";
+        #         substituters = substituters;
+        #         trusted-public-keys = trusted-public-keys;
+        #         trusted-users = trusted-users;
+        #         builders-use-substitutes = true;
 
-              lazy-trees = true;
-              warn-dirty = false;
+        #     };
 
-              experimental-features = [
-                  "nix-command"
-                  "flakes"
-              ];
+        #     # Collect garbage.
+        #     # See: https://wiki.nixos.org/wiki/Storage_optimization#Garbage_collection
+        #     gc = {
+        #         automatic = true;
+        #         options = "--delete-older-than 30d";
 
-              extra-experimental-features = [
-                  "build-time-fetch-tree" # Enables build-time flake inputs
-                  "parallel-eval" # Enables parallel evaluation
-              ];
+        #         # See: https://wiki.nixos.org/wiki/Storage_optimization#Automation
 
-              substituters = substituters;
-              trusted-public-keys = trusted-public-keys;
-          };
-        */
+        #         # See: https://wiki.nixos.org/wiki/Storage_optimization#Automation
+        #         # MacOS: The calendar interval at which the optimiser will run.
+        #         # See the serviceConfig.StartCalendarInterval option of
+        #         # the launchd (nix-darwin) module for more info.
+        #         interval = {
+        #             Weekday = 0;
+        #             Hour = 0;
+        #             Minute = 0;
+        #         };
+        #     };
+
+        #     # See: https://wiki.nixos.org/wiki/Storage_optimization#Optimising_the_store and
+        #     # see: https://www.reddit.com/r/NixOS/comments/1cunvdw/friendly_reminder_optimizestore_is_not_on_by/
+        #     # Optimization settings for the nix store.
+        #     # Will optimize the nix-store on a schedule.
+        #     optimise = {
+        #         automatic = true;
+
+        #         # See: https://wiki.nixos.org/wiki/Storage_optimization#Automation
+        #         # MacOS: The calendar interval at which the optimiser will run.
+        #         # See the serviceConfig.StartCalendarInterval option of
+        #         # the launchd (nix-darwin) module for more info.
+        #         interval = {
+        #             Weekday = 0;
+        #             Hour = 0;
+        #             Minute = 0;
+        #         };
+
+        #     };
+
+        #     extraOptions = ''
+        #         warn-dirty = false
+        #         keep-outputs = true
+        #     '';
+        # };
 
     };
 

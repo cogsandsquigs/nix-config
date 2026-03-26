@@ -4,7 +4,10 @@
         home-manager = {
             backupCommand = "rm";
             backupFileExtension = "bak";
-            users.cogs.imports = with inputs.self.modules.homeManager; [ cogs ];
+            users.cogs.imports = with inputs.self.modules.homeManager; [
+                desktop
+                cogs
+            ];
         };
     };
 }

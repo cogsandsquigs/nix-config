@@ -5,6 +5,11 @@
     flake.modules.darwin.base =
         { pkgs, ... }:
         {
+            imports = with inputs.self.modules.darwin; [
+                determinate
+                overlays
+            ];
+
             system.stateVersion = 6;
 
             environment.systemPackages =
