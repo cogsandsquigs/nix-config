@@ -39,7 +39,8 @@
 
                 profiles.default = {
                     settings = {
-                        "browser.startup.homepage" = "about:blank";
+                        # "browser.startup.homepage" = "about:blank";
+                        "browser.startup.homepage" = "https://searxng.cogsandsquigs.dev";
 
                         "browser.ai.control.default" = "blocked";
                         "browser.ai.control.linkPreviewKeyPoints" = "blocked";
@@ -48,7 +49,8 @@
                         "browser.ai.control.smartTabGroups" = "blocked";
                         "browser.ai.control.translations" = "available";
 
-                        "privacy.resistFingerprinting" = true;
+                        # "privacy.resistFingerprinting" = true;
+                        "privacy.resistFingerprinting" = false;
                     };
 
                     search = {
