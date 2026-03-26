@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ ... }:
 {
     # default settings needed for all homeManagerConfigurations
     flake.modules.homeManager.base =
@@ -9,8 +9,10 @@
             ...
         }:
         {
-            # imports = with inputs.self.modules.homeManager; [ ];
-
+            # NOTE: Must be 25.05 for now, not 25.11 (latest). Otherwise, home-manager activation
+            # fails at checkAppManagementPermission.
+            #
+            # See: https://github.com/nix-community/home-manager/issues/8336
             home.stateVersion = "25.05";
             home.homeDirectory =
                 if pkgs.stdenv.isDarwin then

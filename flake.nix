@@ -5,7 +5,8 @@
 
     inputs = {
         # Main packages repo
-        nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable"; # Unstable
+        # nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable"; # Unstable
+        nixpkgs.url = "github:NixOS/nixpkgs"; # VERY Unstable, use until direnv fix
 
         # These two force structure, reducing refactoring friction
         flake-parts.url = "github:hercules-ci/flake-parts"; # Extensible flake API
