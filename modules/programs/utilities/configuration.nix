@@ -3,10 +3,7 @@
     flake.modules.homeManager.utilities =
         { pkgs, ... }:
         {
-            imports = with inputs.self.modules.homeManager; [
-                gpg
-                direnv
-            ];
+            imports = with inputs.self.modules.homeManager; [ gpg ];
 
             home.packages = with pkgs; [
                 fzf

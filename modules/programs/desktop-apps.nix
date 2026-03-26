@@ -8,9 +8,6 @@
                 # Productivity
                 obsidian
                 zoom-us
-
-                # Benchmarking
-                hyperfine
             ];
         };
 }

@@ -1,7 +1,4 @@
-# The shell configuration I use!
-
 { inputs, ... }:
-
 {
 
     flake.modules.homeManager.editor =
@@ -165,39 +162,6 @@
                             other-lines = "hint";
                         };
                     };
-                };
-
-                # Language configurations for each language.
-                # NOTE: This is the Nix equivalent to helix's `languages.toml` file
-                # TODO: use imports from language spec to be editor-independent
-                languages = {
-                    language = [
-                        {
-                            name = "nix";
-
-                            language-servers = [
-                                "nixd"
-                                "nil"
-                            ];
-
-                            auto-format = true;
-
-                            indent = {
-                                tab-width = 4;
-                                unit = "    ";
-                            };
-
-                            formatter = {
-                                command = "nixfmt";
-                                args = [
-                                    "--width=100"
-                                    "--indent=4"
-                                    "--quiet"
-                                    "--strict"
-                                ];
-                            };
-                        }
-                    ];
                 };
             };
         };

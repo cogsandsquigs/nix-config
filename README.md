@@ -9,6 +9,8 @@ are 3 main _classes_ within this configuration:
 - **`flake.modules.darwin`**: The configuration for a darwin setup.
 - **`flake.modules.homeManager`**: The configuration home-manager, to manage all of my dotfiles.
   These are _per-user_, and so are expected to be imported under `home-manager.users.${username}`.
+- **`flake.modules.meta`**: Meta-configuration for systems across other classes. For example,
+  package lists for programming languages, LSP setup, etc.
 
 > [!info]
 >
