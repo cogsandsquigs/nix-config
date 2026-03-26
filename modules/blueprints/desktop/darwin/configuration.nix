@@ -2,11 +2,6 @@
 
 { inputs, ... }:
 {
-
-    flake.modules.nixos.desktop = {
-        imports = with inputs.self.modules.nixos; [ base ];
-    };
-
     flake.modules.darwin.desktop =
         { pkgs, ... }:
         {
@@ -17,8 +12,4 @@
                 appcleaner # For cleaning up rogue `.app`s
             ];
         };
-
-    flake.modules.homeManager.desktop = {
-        imports = with inputs.self.modules.homeManager; [ base ];
-    };
 }
