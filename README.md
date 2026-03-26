@@ -2,15 +2,18 @@
 
 My nix configuration! This setup is primarily used for myself and my own (single-user) devices.
 
-This follows the [Dendritic Nix Pattern], to allow clean organization of my files and such. There
-are 3 main _classes_ within this configuration:
+## Setup
+
+This follows the [Dendritic Nix Pattern], to allow clean organization of my files and such.
+
+### Modules
+
+There are 3 main _classes_ within this configuration:
 
 - **`flake.modules.nixos`**: The configuration for a nixos setup.
 - **`flake.modules.darwin`**: The configuration for a darwin setup.
 - **`flake.modules.homeManager`**: The configuration home-manager, to manage all of my dotfiles.
   These are _per-user_, and so are expected to be imported under `home-manager.users.${username}`.
-- **`flake.modules.meta`**: Meta-configuration for systems across other classes. For example,
-  package lists for programming languages, LSP setup, etc.
 
 > [!info]
 >
@@ -26,9 +29,11 @@ specific directories within `modules` that are special:
 - **`modules/tools`**: Defines tools/"add-ons" to base nixos/nix-darwin (i.e. home-manager).
 - **`modules/hosts`**: Defines machine specifications and operating systems, and produces the
   end-point `flake.nixosConfigurations`/`flake.darwinConfigurations` for each host in `hosts`.
-- **`modules/users`**: Defines specific users for my machines. Currently, only has `cogs`.
 - **`modules/blueprints`**: Defines systems that configure machines (i.e., `base`, `desktop`)
-- **`modules/programs`**: Defines programs used across machines.
+- **`modules/users`**: Defines specific users for my machines. Currently, only has `cogs`.
+- **`modules/home/programs`**: Defines (home) programs used across machines. These each will expose
+  a `modules.homeManager.<...>` aspect, allowing for including said program in a home-manager
+  configuration.
 
 ## Aspects
 

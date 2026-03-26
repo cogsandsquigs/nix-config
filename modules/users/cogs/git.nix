@@ -1,9 +1,8 @@
 { ... }:
 {
-    flake.modules.homeManager.git-cogs =
+    flake.modules.homeManager.cogs =
         { pkgs, ... }:
         {
-
             home.packages = with pkgs; [
                 git # <3
                 delta # Git diff highlighting

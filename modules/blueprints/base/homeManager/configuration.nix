@@ -20,13 +20,6 @@
                 else
                     "/home/${config.home.username}";
 
-            # TODO: Get rid of once actual prog. lang. pkg/conf setup has been achieved.
-            home.packages = with pkgs; [
-                nixfmt # Official/default formatter
-                nixd # Official (community) Nix LSP
-                nil # Unofficial Nix LSP
-            ];
-
             programs.home-manager.enable = true;
         };
 }

@@ -36,7 +36,6 @@ in
                 shell
                 terminal
                 utilities
-                git-cogs
 
                 # Desktop apps
                 desktop-apps

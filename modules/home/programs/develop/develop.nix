@@ -2,7 +2,7 @@
 
 { inputs, ... }:
 {
-    flake.modules.homeManager.develop =
+    flake.modules.homeManager.desktop =
         { pkgs, ... }:
         {
             imports = with inputs.self.modules.homeManager; [
