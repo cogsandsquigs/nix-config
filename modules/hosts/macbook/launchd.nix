@@ -6,7 +6,7 @@
     #   - https://daiderd.com/nix-darwin/manual/index.html#opt-launchd.user.agents._name_.serviceConfig
     #   - https://daiderd.com/nix-darwin/manual/index.html#opt-launchd.user.agents._name_.serviceConfig.StartCalendarInterval
     #   - https://daiderd.com/nix-darwin/manual/index.html#opt-launchd.user.agents._name_.serviceConfig.StartInterval
-    flake.modules.darwin.macbook = {
+    flake.modules.darwin."Ians-GlorpBook-Pro" = {
         launchd.user.agents = {
             # Open tailscale on startup
             tailscale = {

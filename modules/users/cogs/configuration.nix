@@ -3,17 +3,28 @@ let
     username = "cogs";
 in
 {
-    flake.modules.nixos.${username} = {
-        imports = with inputs.self.modules.nixos; [ home-manager ];
+    flake.modules.nixos.${username} =
+        { pkgs, ... }:
+        {
+            imports = with inputs.self.modules.nixos; [ home-manager ];
 
-        users.users.${username} = {
-            group = "wheel";
+            users.users.${username} = {
+                description = username;
+                group = "wheel";
+                shell = pkgs.fish;
+            };
         };
-    };
 
-    flake.modules.darwin.${username} = {
-        imports = with inputs.self.modules.darwin; [ home-manager ];
-    };
+    flake.modules.darwin.${username} =
+        { pkgs, ... }:
+        {
+            imports = with inputs.self.modules.darwin; [ home-manager ];
+
+            users.users.${username} = {
+                description = username;
+                shell = pkgs.fish;
+            };
+        };
 
     flake.modules.homeManager.${username} =
         { ... }:

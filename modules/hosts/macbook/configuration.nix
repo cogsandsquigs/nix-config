@@ -4,7 +4,7 @@ let
     primaryUser = "cogs";
 in
 {
-    flake.modules.darwin.macbook = {
+    flake.modules.darwin.${hostname} = {
         # Specify dependencies
         imports = with inputs.self.modules.darwin; [
             desktop

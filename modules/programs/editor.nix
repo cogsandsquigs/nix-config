@@ -19,12 +19,12 @@
                 }%% -y ${toString ((100 - floating_pane_size_percent) / 2)}%% -- ${cmd}";
         in
         {
-            imports = with inputs.self.modules.homeManager; [ zellij ];
-
-            home.packages = with pkgs; [
-                helix
+            imports = with inputs.self.modules.homeManager; [
+                zellij
                 yazi
             ];
+
+            home.packages = with pkgs; [ helix ];
 
             programs.helix = {
                 enable = true;

@@ -7,11 +7,19 @@
         {
             system.stateVersion = 6;
 
-            environment.systemPackages = with inputs.nix-darwin.packages.${pkgs.stdenv.hostPlatform.system}; [
-                darwin-option
-                darwin-rebuild
-                darwin-version
-                darwin-uninstaller
-            ];
+            environment.systemPackages =
+                with inputs.nix-darwin.packages.${pkgs.stdenv.hostPlatform.system};
+                with pkgs;
+                [
+                    # Nix-darwin pkgs
+                    darwin-option
+                    darwin-rebuild
+                    darwin-version
+                    darwin-uninstaller
+
+                    # Regular, base pkgs
+                    mkalias # TODO: Why?
+                    openssl # TODO: Why?
+                ];
         };
 }

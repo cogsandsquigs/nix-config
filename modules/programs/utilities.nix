@@ -24,5 +24,17 @@
                 lazygit
                 fastfetch
             ];
+
+            programs.eza = {
+                colors = "auto";
+                git = true;
+                icons = true;
+            };
+
+            programs.zoxide = {
+                enable = true;
+                enableZshIntegration = true;
+                enableFishIntegration = true;
+            };
         };
 }
