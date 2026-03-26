@@ -39,8 +39,7 @@
 
                 profiles.default = {
                     settings = {
-                        # "browser.startup.homepage" = "about:blank";
-                        "browser.startup.homepage" = "https://searxng.cogsandsquigs.dev";
+                        "browser.startup.homepage" = "about:blank";
 
                         "browser.ai.control.default" = "blocked";
                         "browser.ai.control.linkPreviewKeyPoints" = "blocked";
@@ -54,6 +53,7 @@
 
                     search = {
                         force = true;
+
                         default = "SearXNG";
                         privateDefault = "SearXNG";
 
