@@ -231,7 +231,7 @@
                                 args = [
                                     "--stdin-input-file=%{buffer_name}"
                                     # Actual formatting arguments
-                                    "--column-limit=80"
+                                    "--column-limit=100"
                                     "--comma-style=trailing"
                                     "--function-arrows=leading"
                                     "--haddock-style=single-line"
