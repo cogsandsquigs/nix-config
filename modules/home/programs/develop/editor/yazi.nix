@@ -4,7 +4,7 @@
         { pkgs, ... }:
         {
             programs.yazi = {
-                # enable = true; # NOTE: For some reason this causes a mismatched hash. when fix?
+                enable = true; # NOTE: For some reason this causes a mismatched hash. when fix?
                 enableBashIntegration = true;
                 enableFishIntegration = true;
                 enableZshIntegration = true;
@@ -24,8 +24,8 @@
                         yazi-flavors = pkgs.fetchFromGitHub {
                             owner = "yazi-rs";
                             repo = "flavors";
-                            rev = "ffe6e3a16c5c51d7e2dedacf8de662fe2413f73a";
-                            hash = "sha256-RtunaCs1RUfzjefFLFu5qLRASbyk5RUILWTdavThRkc=";
+                            rev = "9511cb09cadcbf57e39a46b06a52d00957177175";
+                            hash = "sha256-hEnrvfJwCAgM12QwPmjHEwF5xNrwqZH1fTIb/QG0NFI=";
                         };
                     in
                     {
