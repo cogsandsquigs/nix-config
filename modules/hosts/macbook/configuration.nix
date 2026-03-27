@@ -41,12 +41,7 @@ in
                 };
 
                 defaults = {
-                    menuExtraClock.Show24Hour = false; # show 24 hour clock
-                    SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
-                    loginwindow.GuestEnabled = false;
-                    NSGlobalDomain.AppleInterfaceStyle = "Dark";
                     smb.NetBIOSName = hostname;
-
                     dock = {
                         autohide = true;
                         autohide-delay = 0.0;
@@ -95,11 +90,11 @@ in
                     "firefox"
                     "tailscale-app"
                     "steam"
-                    "olympus" # Celeste mod loader
-                    "discord" # Req. since nix-darwin/nixpkgs discord on macos doesn't allow for notifs/screenshare (?)
+                    "olympus" # Celeste mod loader # NOTE: for some reason not supported on nix aarch-64
+                    # "discord" # Req. since nix-darwin/nixpkgs discord on macos doesn't allow for notifs/screenshare (?)
                     "whatsapp" # Updated more freq. than whatsapp-for-mac nix
                     "porting-kit" # Windows -> Mac
-                    "tor-browser" # :3
+                    # "tor-browser" # :3 # NOTE: commented out not b/c replaced with nix pkgs, but bc just dont want.
                 ];
                 # TODO: Get rid of the above one-by-one, turning into nix pkgs.
             };
