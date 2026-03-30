@@ -21,7 +21,10 @@ in
     flake.modules.darwin.${username} =
         { pkgs, ... }:
         {
-            imports = with inputs.self.modules.darwin; [ home-manager ];
+            imports = with inputs.self.modules.darwin; [
+                home-manager
+                games # For steam + system-req. game pkgs.
+            ];
 
             users.users.${username} = {
                 description = username;
