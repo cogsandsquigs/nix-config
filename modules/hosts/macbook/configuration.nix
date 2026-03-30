@@ -63,7 +63,6 @@ in
                             "/System/Applications/Messages.app"
                             "/Applications/WhatsApp.app" # "${pkgs.whatsapp-for-mac}/Applications/WhatsApp.app"
                             "/System/Applications/Calendar.app"
-
                             "/System/Applications/Reminders.app"
                             "/System/Applications/Photos.app"
                         ];
@@ -92,10 +91,8 @@ in
                     "tailscale-app"
                     # "steam"
                     "olympus" # Celeste mod loader # NOTE: for some reason not supported on nix aarch-64
-                    # "discord" # Req. since nix-darwin/nixpkgs discord on macos doesn't allow for notifs/screenshare (?)
                     "whatsapp" # Updated more freq. than whatsapp-for-mac nix
                     "porting-kit" # Windows -> Mac
-                    # "tor-browser" # :3 # NOTE: commented out not b/c replaced with nix pkgs, but bc just dont want.
                 ];
                 # TODO: Get rid of the above one-by-one, turning into nix pkgs.
             };

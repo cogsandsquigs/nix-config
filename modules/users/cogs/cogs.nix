@@ -6,7 +6,10 @@ in
     flake.modules.nixos.${username} =
         { pkgs, ... }:
         {
-            imports = with inputs.self.modules.nixos; [ home-manager ];
+            imports = with inputs.self.modules.nixos; [
+                home-manager
+                games # For steam + system-req. game pkgs.
+            ];
 
             users.users.${username} = {
                 description = username;

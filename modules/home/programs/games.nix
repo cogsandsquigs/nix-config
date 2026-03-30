@@ -1,11 +1,5 @@
 # Games commonly used.
 { ... }:
-let
-    # Fills in `programs.steam`
-    steamConf = {
-        enable = true;
-    };
-in
 {
     flake.modules.homeManager.games =
         { pkgs, ... }:
@@ -16,22 +10,23 @@ in
 
                 # Celeste mod loader
                 # olympus # NOTE: for some reason not supported on nix aarch64-darwin (?)
-
-                # NOTE: See: https://nixos.wiki/wiki/Steam
-                #steam
-                #steam-run
             ];
         };
 
+    # NOTE: currently nix-darwin can't manage steam, so we just use homebrew to install it for now.
     flake.modules.darwin.games =
         { ... }:
         {
-            programs.steam = steamConf;
+            homebrew = {
+                casks = [ "steam" ];
+            };
         };
 
     flake.modules.nixos.games =
         { ... }:
         {
-            programs.steam = steamConf;
+            programs.steam = {
+                enable = true;
+            };
         };
 }
