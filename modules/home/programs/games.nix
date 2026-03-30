@@ -1,5 +1,11 @@
 # Games commonly used.
 { ... }:
+let
+    # Fills in `programs.steam`
+    steamConf = {
+        enable = true;
+    };
+in
 {
     flake.modules.homeManager.games =
         { pkgs, ... }:
@@ -15,5 +21,17 @@
                 #steam
                 #steam-run
             ];
+        };
+
+    flake.modules.darwin.games =
+        { ... }:
+        {
+            programs.steam = steamConf;
+        };
+
+    flake.modules.nixos.games =
+        { ... }:
+        {
+            programs.steam = steamConf;
         };
 }
