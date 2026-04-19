@@ -11,6 +11,9 @@
                 discord
                 obsidian
                 zoom-us
+
+                # Fun
+                spotify
             ];
         };
 }
