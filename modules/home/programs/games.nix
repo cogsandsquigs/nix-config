@@ -8,6 +8,9 @@
                 # Minecraft
                 prismlauncher
 
+                # Mod manager/launcher for KSP
+                ckan
+
                 # Celeste mod loader
                 # olympus # NOTE: for some reason not supported on nix aarch64-darwin (?)
             ];
