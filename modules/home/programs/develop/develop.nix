@@ -9,7 +9,7 @@
                 ide
                 editor
                 containers
-                # direnv # NOTE: currently has weird issue get stuck during build?
+                direnv # NOTE: currently has weird issue get stuck during build?
             ];
 
             home.packages = with pkgs; [
