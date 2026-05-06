@@ -8,8 +8,9 @@
 
             home.packages = with pkgs; [
                 # Productivity
-                discord # see below: currently, gets stuck on launch, keeps trying 2 upd (???)
-                discord-canary # Wait for discord to upd. proper?
+                # discord # see below: currently, gets stuck on launch, keeps trying 2 upd (???)
+                # discord-canary # Wait for discord to upd. proper?
+                discord-ptb
                 obsidian
                 zoom-us
 
