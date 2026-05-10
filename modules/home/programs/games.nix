@@ -6,7 +6,7 @@
         {
             home.packages = with pkgs; [
                 # Minecraft
-                prismlauncher
+                #prismlauncher # NOTE: wrapped ver. has issue w/ extra-cmake-modules not supporting macos
 
                 # Mod manager/launcher for KSP
                 ckan
