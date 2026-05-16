@@ -4,7 +4,10 @@
     flake.modules.homeManager.desktop-apps =
         { pkgs, ... }:
         {
-            imports = with inputs.self.modules.homeManager; [ browser ];
+            imports = with inputs.self.modules.homeManager; [
+                browser
+                torrenting
+            ];
 
             home.packages = with pkgs; [
                 # Productivity
@@ -13,7 +16,7 @@
                 zoom-us
 
                 # Fun
-                spotify
+                #spotify
             ];
         };
 }
