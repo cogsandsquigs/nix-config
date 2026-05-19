@@ -146,6 +146,30 @@
                             };
                         }
                         {
+                            name = "css";
+                            auto-format = true;
+                            indent = {
+                                tab-width = 4;
+                                unit = "    ";
+                            };
+                            formatter = {
+                                command = "prettierd";
+                                args = [ "%{buffer_name}" ];
+                            };
+                        }
+                        {
+                            name = "scss";
+                            auto-format = true;
+                            indent = {
+                                tab-width = 4;
+                                unit = "    ";
+                            };
+                            formatter = {
+                                command = "prettierd";
+                                args = [ "%{buffer_name}" ];
+                            };
+                        }
+                        {
                             name = "svelte";
                             auto-format = true;
                             indent = {
