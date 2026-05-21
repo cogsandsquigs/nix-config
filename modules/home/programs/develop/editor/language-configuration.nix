@@ -363,33 +363,51 @@
                                 tab-width = 4;
                                 unit = "    ";
                             };
+                            # formatter =
+                            #     let
+                            #         # NOTE: Schema for configuration is here: https://dprint.dev/config/
+                            #         dprint-config = builtins.toFile "dprint.json" (
+                            #             builtins.toJSON {
+                            #                 lineWidth = 100;
+                            #                 # markdown config goes here
+                            #                 markdown = {
+                            #                     lineWidth = 100;
+                            #                 };
+                            #                 plugins = [
+                            #                     "https://plugins.dprint.dev/markdown-0.19.0.wasm"
+                            #                     "https://plugins.dprint.dev/typescript-0.95.11.wasm"
+                            #                     "https://plugins.dprint.dev/json-0.20.0.wasm"
+                            #                 ];
+                            #             }
+                            #         );
+                            #     in
+                            #     {
+                            #         command = "dprint";
+                            #         args = [
+                            #             "fmt"
+                            #             "--config=${dprint-config}"
+                            #             "--stdin"
+                            #             "%{buffer_name}"
+                            #         ];
+
+                            #     };
                             formatter =
                                 let
-                                    # NOTE: Schema for configuration is here: https://dprint.dev/config/
-                                    dprint-config = builtins.toFile "dprint.json" (
+                                    prettier-config = builtins.toFile ".prettierrc" (
                                         builtins.toJSON {
-                                            lineWidth = 100;
-                                            # markdown config goes here
-                                            markdown = {
-                                                lineWidth = 100;
-                                            };
-                                            plugins = [
-                                                "https://plugins.dprint.dev/markdown-0.19.0.wasm"
-                                                "https://plugins.dprint.dev/typescript-0.95.11.wasm"
-                                                "https://plugins.dprint.dev/json-0.20.0.wasm"
-                                            ];
+                                            tabWidth = 4;
+                                            useTabds = false;
+                                            semi = true;
+                                            singleAttributePerLine = true;
+                                            singleQuote = false;
+                                            bracketSpacing = true;
+                                            printWidth = 100;
                                         }
                                     );
                                 in
                                 {
-                                    command = "dprint";
-                                    args = [
-                                        "fmt"
-                                        "--config=${dprint-config}"
-                                        "--stdin"
-                                        "%{buffer_name}"
-                                    ];
-
+                                    command = "PRETTIERD_DEFAULT_CONFIG=${prettier-config} prettierd";
+                                    args = [ "%{buffer_name}" ];
                                 };
                         }
 
