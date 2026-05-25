@@ -206,6 +206,18 @@
                             };
                         }
                         {
+                            name = "jsonc";
+                            auto-format = true;
+                            indent = {
+                                tab-width = 4;
+                                unit = "    ";
+                            };
+                            formatter = {
+                                command = "prettierd";
+                                args = [ "%{buffer_name}" ];
+                            };
+                        }
+                        {
                             name = "json";
                             file-types = [
                                 "json"
