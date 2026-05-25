@@ -222,6 +222,18 @@
                             };
                         }
                         {
+                            name = "yaml";
+                            auto-format = true;
+                            indent = {
+                                tab-width = 4;
+                                unit = "    ";
+                            };
+                            formatter = {
+                                command = "prettierd";
+                                args = [ "%{buffer_name}" ];
+                            };
+                        }
+                        {
                             name = "rust";
                             language-servers = [ "rust-analyzer" ];
                             auto-format = true;
