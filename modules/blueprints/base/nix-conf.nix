@@ -26,106 +26,54 @@ let
     ];
 in
 {
-    flake.modules.darwin.base = {
-        nixpkgs = {
-            config = {
-                allowUnfree = true;
-                qt.enable = true;
+    flake.modules.darwin.base =
+        { pkgs, ... }:
+        {
+            nixpkgs = {
+                config = {
+                    allowUnfree = true;
+                    qt.enable = true;
+                };
+            };
+
+            nix.enable = false; # Let determinate nix (see below) handle nix for us
+
+            determinateNix = {
+                enable = true;
+
+                customSettings = {
+                    # Enables parallel evaluation (remove this setting or set the value to 1 to disable)
+                    eval-cores = 0;
+
+                    # Disable global registry
+                    flake-registry = "";
+
+                    # Allow us to use x86_64-darwin macos binaries on aarch64-darwin systems
+                    extra-platforms = lib.mkIf (pkgs.system == "aarch64-darwin") ([
+                        "x86_64-darwin"
+                        "aarch64-darwin"
+                    ]);
+
+                    lazy-trees = true;
+                    warn-dirty = false;
+
+                    experimental-features = [
+                        "nix-command"
+                        "flakes"
+                    ];
+
+                    extra-experimental-features = [
+                        "build-time-fetch-tree" # Enables build-time flake inputs
+                        "parallel-eval" # Enables parallel evaluation
+                    ];
+
+                    substituters = substituters;
+                    trusted-public-keys = trusted-public-keys;
+                    trusted-users = trusted-users;
+                    builders-use-substitutes = true;
+                };
             };
         };
-
-        determinateNix = {
-            enable = true;
-
-            customSettings = {
-                # Enables parallel evaluation (remove this setting or set the value to 1 to disable)
-                eval-cores = 0;
-
-                # Disable global registry
-                flake-registry = "";
-
-                lazy-trees = true;
-                warn-dirty = false;
-
-                experimental-features = [
-                    "nix-command"
-                    "flakes"
-                ];
-
-                extra-experimental-features = [
-                    "build-time-fetch-tree" # Enables build-time flake inputs
-                    "parallel-eval" # Enables parallel evaluation
-                ];
-
-                substituters = substituters;
-                trusted-public-keys = trusted-public-keys;
-                trusted-users = trusted-users;
-                builders-use-substitutes = true;
-            };
-        };
-
-        # nix = {
-        #     enable = true;
-        #     registry.nixpkgs.flake = inputs.nixpkgs;
-        #     settings = {
-        #         # enable flakes globally, enable `nix` command
-        #         experimental-features = [
-        #             "nix-command"
-        #             "flakes"
-        #         ];
-
-        #         substituters = substituters;
-        #         trusted-public-keys = trusted-public-keys;
-        #         trusted-users = trusted-users;
-        #         builders-use-substitutes = true;
-
-        #     };
-
-        #     # Collect garbage.
-        #     # See: https://wiki.nixos.org/wiki/Storage_optimization#Garbage_collection
-        #     gc = {
-        #         automatic = true;
-        #         options = "--delete-older-than 30d";
-
-        #         # See: https://wiki.nixos.org/wiki/Storage_optimization#Automation
-
-        #         # See: https://wiki.nixos.org/wiki/Storage_optimization#Automation
-        #         # MacOS: The calendar interval at which the optimiser will run.
-        #         # See the serviceConfig.StartCalendarInterval option of
-        #         # the launchd (nix-darwin) module for more info.
-        #         interval = {
-        #             Weekday = 0;
-        #             Hour = 0;
-        #             Minute = 0;
-        #         };
-        #     };
-
-        #     # See: https://wiki.nixos.org/wiki/Storage_optimization#Optimising_the_store and
-        #     # see: https://www.reddit.com/r/NixOS/comments/1cunvdw/friendly_reminder_optimizestore_is_not_on_by/
-        #     # Optimization settings for the nix store.
-        #     # Will optimize the nix-store on a schedule.
-        #     optimise = {
-        #         automatic = true;
-
-        #         # See: https://wiki.nixos.org/wiki/Storage_optimization#Automation
-        #         # MacOS: The calendar interval at which the optimiser will run.
-        #         # See the serviceConfig.StartCalendarInterval option of
-        #         # the launchd (nix-darwin) module for more info.
-        #         interval = {
-        #             Weekday = 0;
-        #             Hour = 0;
-        #             Minute = 0;
-        #         };
-
-        #     };
-
-        #     extraOptions = ''
-        #         warn-dirty = false
-        #         keep-outputs = true
-        #     '';
-        # };
-
-    };
 
     flake.modules.nixos.base = {
         nixpkgs = {
