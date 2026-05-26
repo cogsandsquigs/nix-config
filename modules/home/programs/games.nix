@@ -12,7 +12,7 @@
                 ckan
 
                 # Celeste mod loader
-                # olympus # NOTE: for some reason not supported on nix aarch64-darwin (?)
+                #olympus # NOTE: for some reason not supported on nix aarch64-darwin (?)
             ];
         };
 

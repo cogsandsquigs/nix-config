@@ -49,10 +49,12 @@ in
                     flake-registry = "";
 
                     # Allow us to use x86_64-darwin macos binaries on aarch64-darwin systems
-                    extra-platforms = lib.mkIf (pkgs.system == "aarch64-darwin") ([
-                        "x86_64-darwin"
-                        "aarch64-darwin"
-                    ]);
+                    extra-platforms =
+                        lib.mkIf (pkgs.stdenv.hostPlatform.system == "aarch64-darwin")
+                            [
+                                "x86_64-darwin"
+                                "aarch64-darwin"
+                            ];
 
                     lazy-trees = true;
                     warn-dirty = false;
