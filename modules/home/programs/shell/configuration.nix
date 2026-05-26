@@ -19,13 +19,24 @@ let
         cleanup = "/etc/nix/scripts/cleanup.sh";
     };
 
-    variables = pkgs: {
-        EDITOR = editor;
-        JAVA_HOME = "$(dirname $(dirname $(readlink -f $(which java))))"; # Add java home
+    variables =
+        pkgs:
+        {
+            EDITOR = editor;
+            JAVA_HOME = "$(dirname $(dirname $(readlink -f $(which java))))"; # Add java home
 
-        # NOTE: Necessary for (some) rust compilation things/libs
-        LIBRARY_PATH = pkgs.lib.makeLibraryPath [ pkgs.libiconvReal ];
-    };
+            # NOTE: Necessary for (some) rust compilation things/libs
+            LIBRARY_PATH = pkgs.lib.makeLibraryPath [ pkgs.libiconvReal ];
+        }
+        // (
+            if pkgs.stdenv.isDarwin then
+                {
+                    ANDROID_HOME = "$HOME/Library/Android/sdk";
+                    NDK_HOME = "$HOME/Library/Android/sdk/ndk/29.0.13846066";
+                }
+            else
+                { }
+        );
 
     binPaths =
         { pkgs, config }:
@@ -44,7 +55,8 @@ let
     # then value, then returns a string that loads the variable in a specific shell the
     # user wants.
     # @returns the string of all variables to be loaded in a shell.
-    variablesToString = f: variables: (concatMapStrings (s: s + "\n") (mapAttrsToList f variables));
+    variablesToString =
+        f: variables: (concatMapStrings (s: s + "\n") (mapAttrsToList f variables));
 
     # Maps every path entry in `path` to a string for a specific shell
     # @param `f`: A function `f :: String -> String` that takes the path entry, then returns
@@ -103,7 +115,8 @@ in
                     };
                 in
                 {
-                    "fish/themes/Catppuccin Mocha.theme".source = "${catppuccin-fish}/themes/Catppuccin Mocha.theme";
+                    "fish/themes/Catppuccin Mocha.theme".source =
+                        "${catppuccin-fish}/themes/Catppuccin Mocha.theme";
                 };
 
             programs.zsh = {

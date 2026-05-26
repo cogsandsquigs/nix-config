@@ -4,6 +4,12 @@
     flake.modules.homeManager.ide =
         { pkgs, ... }:
         {
-            home.packages = with pkgs; [ jetbrains.idea ];
+            home.packages = with pkgs; [
+                jetbrains.idea
+
+                # Android
+                #android-studio
+                android-studio-tools
+            ];
         };
 }
