@@ -1,35 +1,28 @@
 # Games commonly used.
-{ ... }:
-{
-    flake.modules.homeManager.games =
-        { pkgs, ... }:
-        {
-            home.packages = with pkgs; [
-                # Minecraft
-                #prismlauncher # NOTE: wrapped ver. has issue w/ extra-cmake-modules not supporting macos
+{ ... }: {
+    flake.modules.homeManager.games = { pkgs, ... }: {
+        home.packages = with pkgs; [
+            # Minecraft
+            prismlauncher # NOTE: wrapped ver. has issue w/ extra-cmake-modules not supporting macos
 
-                # Mod manager/launcher for KSP
-                ckan
+            # Mod manager/launcher for KSP
+            ckan
 
-                # Celeste mod loader
-                #olympus # NOTE: for some reason not supported on nix aarch64-darwin (?)
-            ];
-        };
+            # Celeste mod loader
+            #olympus # NOTE: for some reason not supported on nix aarch64-darwin (?)
+        ];
+    };
 
     # NOTE: currently nix-darwin can't manage steam, so we just use homebrew to install it for now.
-    flake.modules.darwin.games =
-        { ... }:
-        {
-            homebrew = {
-                casks = [ "steam" ];
-            };
+    flake.modules.darwin.games = { ... }: {
+        homebrew = {
+            casks = [ "steam" ];
         };
+    };
 
-    flake.modules.nixos.games =
-        { ... }:
-        {
-            programs.steam = {
-                enable = true;
-            };
+    flake.modules.nixos.games = { ... }: {
+        programs.steam = {
+            enable = true;
         };
+    };
 }
