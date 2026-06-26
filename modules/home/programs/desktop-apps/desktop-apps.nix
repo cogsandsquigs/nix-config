@@ -20,5 +20,12 @@
 
     flake.modules.darwin.desktop-apps = {
         imports = with inputs.self.modules.darwin; [ browser ];
+
+        # Packages that for some reason won't install via nix on macos (???)
+        homebrew = {
+            casks = [
+                "whatsapp" # Updated more freq. than whatsapp-for-mac nix
+            ];
+        };
     };
 }

@@ -79,12 +79,7 @@ in
 
             #masApps = [ ];
             #brews = [ ];
-            casks = [
-                "tailscale-app"
-                "olympus" # Celeste mod loader # NOTE: for some reason not supported on nix aarch-64
-                "whatsapp" # Updated more freq. than whatsapp-for-mac nix
-                "porting-kit" # Windows -> Mac
-            ];
+            casks = [ "tailscale-app" ];
             # TODO: Get rid of the above one-by-one, turning into nix pkgs.
         };
     };
