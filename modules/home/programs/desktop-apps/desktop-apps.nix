@@ -8,7 +8,6 @@
 
         home.packages = with pkgs; [
             # Productivity
-            discord # currently on macos gets stuck on launch, keeps trying 2 upd (???) ptb and canary don't fix issue
             obsidian
             zoom-us
             notion-app
@@ -18,8 +17,12 @@
         ];
     };
 
-    flake.modules.darwin.desktop-apps = {
+    flake.modules.darwin.desktop-apps = { pkgs, ... }: {
         imports = with inputs.self.modules.darwin; [ browser ];
+
+        environment.systemPackages = with pkgs; [
+            discord # currently on macos gets stuck on launch, keeps trying 2 upd (???) ptb and canary don't fix issue
+        ];
 
         # Packages that for some reason won't install via nix on macos (???)
         homebrew = {
