@@ -73,14 +73,6 @@ in
                 autoUpdate = true; # Auto-update
                 upgrade = true; # upgrade all packages on activation / switch
                 cleanup = "zap"; # 'zap': uninstalls all formulae (and related files) not listed here.
-
-                # # NOTE: The option `onActivation.cleanup = "zap"` doesn't work since the `--cleanup`
-                # # flag has changed w/ new homebrew.
-                # #
-                # # See: https://github.com/nix-darwin/nix-darwin/issues/1787
-                # #
-                # # Until that issue is resolved, this should "fix" it:
-                # extraFlags = [ "--force-cleanup" ];
             };
 
             taps = [ "homebrew/services" ];
@@ -88,9 +80,7 @@ in
             #masApps = [ ];
             #brews = [ ];
             casks = [
-                "firefox"
                 "tailscale-app"
-                # "steam"
                 "olympus" # Celeste mod loader # NOTE: for some reason not supported on nix aarch-64
                 "whatsapp" # Updated more freq. than whatsapp-for-mac nix
                 "porting-kit" # Windows -> Mac
