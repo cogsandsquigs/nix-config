@@ -79,7 +79,7 @@ in
 
             #masApps = [ ];
             #brews = [ ];
-            casks = [ "tailscale-app" ];
+            #casks = [ "tailscale-app" ];
             # TODO: Get rid of the above one-by-one, turning into nix pkgs.
         };
     };
