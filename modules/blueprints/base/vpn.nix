@@ -1,9 +1,9 @@
 {
-    flake.modules.homeManager.vpn = { pkgs, ... }: {
+    flake.modules.homeManager.base = { pkgs, ... }: {
         home.packages = with pkgs; [ openvpn ];
     };
 
-    flake.modules.darwin.vpn = {
+    flake.modules.darwin.base = {
         homebrew = {
             casks = [
                 "tailscale-app"
@@ -12,5 +12,5 @@
         };
     };
 
-    flake.modules.nixos.vpn = { };
+    flake.modules.nixos.base = { };
 }

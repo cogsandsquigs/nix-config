@@ -8,7 +8,6 @@ in
             home-manager
 
             games # For steam + system-req. game pkgs.
-            vpn
         ];
 
         users.users.${username} = {
@@ -25,7 +24,6 @@ in
             # Desktop apps
             desktop-apps
             games # For steam + system-req. game pkgs.
-            vpn
         ];
 
         users.users.${username} = {
@@ -47,7 +45,6 @@ in
 
             # Development
             develop
-            vpn
         ];
     };
 }
