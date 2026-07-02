@@ -24,7 +24,7 @@
         homebrew = {
             casks = [
                 "whatsapp" # Updated more freq. than whatsapp-for-mac nix
-                "google-drive" # Google drive GUI client
+                #"google-drive" # Google drive GUI client
             ];
         };
     };
