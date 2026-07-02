@@ -7,6 +7,7 @@
             editor
             containers
             direnv # NOTE: currently has weird issue get stuck during build?
+
         ];
 
         home.packages = with pkgs; [
@@ -15,6 +16,10 @@
 
             # API querying/development
             postman
+
+            # AI stuffs (work *blech*)
+            claude-code
+            claude-monitor
         ];
     };
 }
