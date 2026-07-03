@@ -1,16 +1,14 @@
 {
-  flake.modules.homeManager.base = { pkgs, ... }: {
-    home.packages = with pkgs; [ openvpn ];
-  };
+    flake.modules.homeManager.base = { pkgs, ... }: { home.packages = with pkgs; [ openvpn ]; };
 
-  flake.modules.darwin.base = {
-    homebrew = {
-      casks = [
-        "tailscale-app"
-        "openvpn-connect"
-      ];
+    flake.modules.darwin.base = {
+        homebrew = {
+            casks = [
+                "tailscale-app"
+                "openvpn-connect"
+            ];
+        };
     };
-  };
 
-  flake.modules.nixos.base = { };
+    flake.modules.nixos.base = { };
 }
