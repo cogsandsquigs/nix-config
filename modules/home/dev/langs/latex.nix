@@ -5,6 +5,10 @@
                 latex
                 latexmk
                 pdftex
+
+                # Diagramming
+                tikz-cd
+                tikz-ext
             ]
         ))
     ];
