@@ -5,6 +5,7 @@
         imports = with inputs.self.modules.homeManager.dev; [
             ide
             editor
+            langs
             containers
             direnv # NOTE: currently has weird issue get stuck during build?
         ];

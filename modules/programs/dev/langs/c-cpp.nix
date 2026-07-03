@@ -1,5 +1,5 @@
 { ... }: {
-    flake.modules.homeManager.dev.lang = { pkgs, ... }: {
+    flake.modules.homeManager.dev.langs = { pkgs, ... }: {
         home.packages = with pkgs; [
             # NOTE: Using LLVM v20 for C/C++ development
             bear

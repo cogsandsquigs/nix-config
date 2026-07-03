@@ -1,5 +1,5 @@
 { ... }: {
-    flake.modules.homeManager.dev.lang = { pkgs, lib, ... }: {
+    flake.modules.homeManager.dev.langs = { pkgs, lib, ... }: {
         home.packages = with pkgs; [
             ghc
             haskellPackages.haskell-language-server

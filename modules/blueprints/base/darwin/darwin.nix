@@ -9,11 +9,10 @@ let
     appleLanguage = builtins.replaceStrings [ "_" ] [ "-" ] appleLocale;
 in
 {
-
     # default settings needed for all darwinConfigurations
     flake.modules.darwin.base = { pkgs, ... }: {
         imports = with inputs.self.modules.darwin; [
-            tools.determinate
+            determinate
             overlays
         ];
 

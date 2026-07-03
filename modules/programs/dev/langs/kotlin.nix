@@ -1,5 +1,5 @@
 { ... }: {
-    flake.modules.homeManager.dev.lang = { pkgs, ... }: {
+    flake.modules.homeManager.dev.langs = { pkgs, ... }: {
         home.packages = with pkgs; [
             kotlin
             # kotlin-native # Native runtime for Kotlin (since its JVM) NOTE; Fails on MacOS?

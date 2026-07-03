@@ -6,7 +6,7 @@ in
     flake.modules.nixos.${username} = { pkgs, ... }: {
         imports = with inputs.self.modules.nixos; [
             home-manager
-
+            desktop-apps # Desktop apps
             games # For steam + system-req. game pkgs.
         ];
 
@@ -20,9 +20,7 @@ in
     flake.modules.darwin.${username} = { pkgs, ... }: {
         imports = with inputs.self.modules.darwin; [
             home-manager
-
-            # Desktop apps
-            desktop-apps
+            desktop-apps # Desktop apps
             games # For steam + system-req. game pkgs.
         ];
 

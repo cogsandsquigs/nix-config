@@ -26,4 +26,6 @@
             ];
         };
     };
+
+    flake.modules.nixos.desktop-apps = { };
 }

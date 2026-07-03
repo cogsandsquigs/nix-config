@@ -1,5 +1,5 @@
 { ... }: {
-    flake.modules.homeManager.dev.lang = { pkgs, ... }: {
+    flake.modules.homeManager.dev.langs = { pkgs, ... }: {
         home.packages = with pkgs; [
             scala-next # Latest (stable!) version, `scala` is the LTS version
             bloop # Buildserver
