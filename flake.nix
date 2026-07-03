@@ -31,12 +31,6 @@
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
-        ## Utilities ##
-
-        # These two force structure, reducing refactoring friction
-        flake-parts.url = "github:hercules-ci/flake-parts"; # Extensible flake API
-        import-tree.url = "github:vic/import-tree"; # Import modules recursively from file-tree
-
         ## Secrets and such ##
 
         agenix = {
@@ -51,7 +45,21 @@
         };
     };
 
+    # Plain-flake composition: every file under ./modules is an ordinary NixOS / nix-darwin /
+    # home-manager module, and the directory tree *is* the import graph. `./lib` exposes the
+    # `mkDarwin` / `mkNixos` builders that wire a host together.
     outputs =
-        inputs@{ flake-parts, import-tree, ... }:
-        flake-parts.lib.mkFlake { inherit inputs; } (import-tree ./modules);
+        { nixpkgs, ... }@inputs:
+        let
+            lib = import ./lib { inherit inputs; };
+        in
+        {
+            inherit lib;
+
+            darwinConfigurations."Ians-GlorpBook-Pro" = lib.mkDarwin ./hosts/macbook;
+
+            nixosConfigurations.desktop = lib.mkNixos ./hosts/desktop;
+
+            formatter = lib.forAllSystems (pkgs: pkgs.nixfmt-rfc-style);
+        };
 }

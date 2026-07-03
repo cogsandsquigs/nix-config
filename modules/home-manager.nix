@@ -1,28 +1,18 @@
-# NOTE: This is imported only in `modules/users/*` configurations, as home-manager is a per-user
-# thing.
+# Home-manager integration, shared by both the darwin and nixos hosts.
+#
+# The class-specific integration module (`home-manager.{darwin,nixos}Modules.home-manager`) is
+# imported by each `system/<class>/default.nix`; everything here is class-agnostic and simply
+# points the `cogs` user at the shared home configuration under `./home`.
 { inputs, ... }:
-let
-    home-manager-config = { ... }: {
-        home-manager = {
-            verbose = true;
-            useUserPackages = true;
-            useGlobalPkgs = true;
-            overwriteBackup = true;
-        };
-    };
-in
 {
-    flake.modules.nixos.home-manager = {
-        imports = [
-            inputs.home-manager.nixosModules.home-manager
-            home-manager-config
-        ];
-    };
+    home-manager = {
+        verbose = true;
+        useGlobalPkgs = true; # home-manager uses the system's `pkgs` (so nixpkgs config is shared)
+        useUserPackages = true;
+        backupFileExtension = "bak";
 
-    flake.modules.darwin.home-manager = {
-        imports = [
-            inputs.home-manager.darwinModules.home-manager
-            home-manager-config
-        ];
+        extraSpecialArgs = { inherit inputs; };
+
+        users.cogs.imports = [ ./home ];
     };
 }
