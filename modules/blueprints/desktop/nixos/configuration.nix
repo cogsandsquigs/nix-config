@@ -2,7 +2,7 @@
 
 { inputs, ... }:
 {
-    flake.modules.nixos.desktop = {
-        imports = with inputs.self.modules.nixos; [ base ];
-    };
+  flake.modules.nixos.desktop = {
+    imports = with inputs.self.modules.nixos; [ base ];
+  };
 }
