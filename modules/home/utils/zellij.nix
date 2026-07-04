@@ -22,10 +22,7 @@
             ui = {
                 # NOTE: Even though we set top-level pane-frames `false` (not displayed),
                 # if they are (i.e. floating pane) then we have them rounded
-                # pane_frames = {
-                #     rounded_corners = true;
-                # };
-                pane_frames = false;
+                pane_frames.rounded_corners = true;
             };
         };
 

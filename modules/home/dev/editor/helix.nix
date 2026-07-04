@@ -5,14 +5,36 @@ let
     # Opens a Zellij floating pane of height and width
     # `floating_pane_size_percent` percent of the screen.
     # NOTE: Requires Zellij to be installed and configured.
-    make_zellij_floating_pane =
-        cmd:
-        ":sh zellij run --close-on-exit --height ${toString floating_pane_size_percent}%% --width ${toString floating_pane_size_percent}%% --floating -x ${
-            toString ((100 - floating_pane_size_percent) / 2)
-        }%% -y ${toString ((100 - floating_pane_size_percent) / 2)}%% -- ${cmd}";
+    make_zellij_floating_pane = cmd: ''
+        :sh zellij run --close-on-exit
+                       --height ${toString floating_pane_size_percent}%%
+                       --width ${toString floating_pane_size_percent}%%
+                       --floating
+                       -x ${toString ((100 - floating_pane_size_percent) / 2)}%%
+                       -y ${toString ((100 - floating_pane_size_percent) / 2)}%%
+                       -- ${cmd}
+                       > /dev/null
+    '';
+
+    # NOTE: About the piping to /dev/null...
+    #
+    # If you use `zellij run`, it returns the name of the pane's ID. This is something like
+    # `terminal_<#>`. Now, on helix, this results in the cursor displaying hover-text with that ID.
+    # This is annoying, and requires an `<ESC>` key-hit to go away. So, by piping the output to
+    # `/dev/null`, we get rid of that hover-text.
+    #
+    # This didn't use to be the case, and at some point along the way zellij made `zellij run`
+    # return IDs. This confused me for the longest time.
+    #
+    # Now you know, future me! So, uh, don't delete that `> /dev/null`, unless you want hover-text
+    # of the new pane's ID.
 in
 {
-    home.packages = with pkgs; [ helix ];
+    home.packages = with pkgs; [
+        helix
+        zellij # Requirement for the editor functionality...
+        yazi # Requirement for the editor functionality...
+    ];
 
     programs.helix = {
         enable = true;
