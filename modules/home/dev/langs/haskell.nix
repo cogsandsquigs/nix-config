@@ -1,5 +1,4 @@
-{ pkgs, lib, ... }:
-{
+{ pkgs, lib, ... }: {
     home.packages = with pkgs; [
         ghc
         haskellPackages.haskell-language-server

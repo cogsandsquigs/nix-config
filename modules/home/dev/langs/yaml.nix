@@ -1,4 +1,1 @@
-{ pkgs, ... }:
-{
-    home.packages = with pkgs; [ yaml-language-server ];
-}
+{ pkgs, ... }: { home.packages = with pkgs; [ yaml-language-server ]; }

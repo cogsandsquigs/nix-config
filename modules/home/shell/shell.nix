@@ -25,23 +25,22 @@ let
 
     editor = "hx";
 
-    variables =
-        {
-            EDITOR = editor;
-            JAVA_HOME = "$(dirname $(dirname $(readlink -f $(which java))))"; # Add java home
+    variables = {
+        EDITOR = editor;
+        JAVA_HOME = "$(dirname $(dirname $(readlink -f $(which java))))"; # Add java home
 
-            # NOTE: Necessary for (some) rust compilation things/libs
-            LIBRARY_PATH = pkgs.lib.makeLibraryPath [ pkgs.libiconvReal ];
-        }
-        // (
-            if pkgs.stdenv.isDarwin then
-                {
-                    ANDROID_HOME = "$HOME/Library/Android/sdk";
-                    NDK_HOME = "$HOME/Library/Android/sdk/ndk/29.0.13846066";
-                }
-            else
-                { }
-        );
+        # NOTE: Necessary for (some) rust compilation things/libs
+        LIBRARY_PATH = pkgs.lib.makeLibraryPath [ pkgs.libiconvReal ];
+    }
+    // (
+        if pkgs.stdenv.isDarwin then
+            {
+                ANDROID_HOME = "$HOME/Library/Android/sdk";
+                NDK_HOME = "$HOME/Library/Android/sdk/ndk/29.0.13846066";
+            }
+        else
+            { }
+    );
 
     binPaths = [
         "$HOME/.cargo/bin"
@@ -106,8 +105,7 @@ in
             };
         in
         {
-            "fish/themes/Catppuccin Mocha.theme".source =
-                "${catppuccin-fish}/themes/Catppuccin Mocha.theme";
+            "fish/themes/Catppuccin Mocha.theme".source = "${catppuccin-fish}/themes/Catppuccin Mocha.theme";
         };
 
     programs.zsh = {

@@ -1,5 +1,4 @@
-{ ... }:
-{
+{ ... }: {
     # NOTE: Add when ladybird browser becomes stable!!
     # home.packages = with pkgs; [ ladybird ];
 

@@ -1,6 +1,5 @@
 # Development environments and languages tools (formatters, LSPs, etc.)
-{ pkgs, ... }:
-{
+{ pkgs, ... }: {
     imports = [
         ./ide.nix
         ./direnv.nix

@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{ pkgs, ... }: {
     programs.yazi = {
         enable = true; # NOTE: For some reason this causes a mismatched hash. when fix?
         enableBashIntegration = true;

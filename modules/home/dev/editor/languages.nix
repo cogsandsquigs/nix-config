@@ -1,6 +1,5 @@
 # Language configurations for the editor.
-{ ... }:
-{
+{ ... }: {
     programs.helix = {
         # Language configurations for each language.
         # NOTE: This is the Nix equivalent to helix's `languages.toml` file

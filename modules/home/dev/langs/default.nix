@@ -4,7 +4,8 @@
 let
     dir = ./.;
     entries = builtins.readDir dir;
-    isLangModule = name: type: (type == "regular") && (name != "default.nix") && (lib.hasSuffix ".nix" name);
+    isLangModule =
+        name: type: (type == "regular") && (name != "default.nix") && (lib.hasSuffix ".nix" name);
     langFiles = lib.filterAttrs isLangModule entries;
 in
 {

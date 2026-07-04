@@ -1,6 +1,5 @@
 # Base shells + a couple of system-wide packages needed on every machine.
-{ pkgs, ... }:
-{
+{ pkgs, ... }: {
     environment = {
         shells = [
             pkgs.zsh

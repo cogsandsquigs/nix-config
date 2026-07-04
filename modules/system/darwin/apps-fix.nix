@@ -2,8 +2,7 @@
 # otherwise spotlight does not find them.
 #
 # See: https://gist.github.com/Jabb0/1b7ad92e8ab3065ac999c21edc23311f
-{ inputs, ... }:
-{
+{ inputs, ... }: {
     home-manager.sharedModules = [
         {
             home.activation = {

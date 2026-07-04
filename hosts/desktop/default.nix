@@ -3,8 +3,7 @@
 # STUB: this machine doesn't exist yet. It already inherits everything under
 # modules/system/nixos + modules/home, so filling it in mostly means adding the real hardware
 # details below. The placeholder root filesystem / bootloader keep the config evaluable.
-{ ... }:
-{
+{ ... }: {
     nixpkgs.hostPlatform = "x86_64-linux";
 
     networking.hostName = "desktop";

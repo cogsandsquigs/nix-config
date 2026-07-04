@@ -1,6 +1,5 @@
 # Desktop apps commonly used.
-{ pkgs, ... }:
-{
+{ pkgs, ... }: {
     imports = [ ./browser.nix ];
 
     home.packages = with pkgs; [

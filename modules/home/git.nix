@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{ pkgs, ... }: {
     home.packages = with pkgs; [
         git # <3
         delta # Git diff highlighting

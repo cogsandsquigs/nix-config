@@ -1,6 +1,5 @@
 # Antivirus (Linux only).
-{ pkgs, ... }:
-{
+{ pkgs, ... }: {
     environment.systemPackages = with pkgs; [ clamav ];
 
     services = {

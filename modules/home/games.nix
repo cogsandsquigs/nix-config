@@ -1,6 +1,5 @@
 # Games commonly used.
-{ pkgs, ... }:
-{
+{ pkgs, ... }: {
     home.packages = with pkgs; [
         # Minecraft
         prismlauncher # NOTE: wrapped ver. has issue w/ extra-cmake-modules not supporting macos

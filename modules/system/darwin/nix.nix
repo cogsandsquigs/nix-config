@@ -1,5 +1,10 @@
 # Nix itself on darwin is managed by Determinate Nix, not nix-darwin.
-{ inputs, lib, pkgs, ... }:
+{
+    inputs,
+    lib,
+    pkgs,
+    ...
+}:
 let
     # Substituters allow us to skip building configuration by downloading prebuilt outputs.
     substituters = [

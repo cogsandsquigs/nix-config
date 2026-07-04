@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{ pkgs, ... }: {
     home.packages = with pkgs; [
         nixfmt # Official/default formatter
         nixd # Unofficial-official community Nix LSP

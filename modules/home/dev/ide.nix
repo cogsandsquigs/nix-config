@@ -1,4 +1,1 @@
-{ pkgs, ... }:
-{
-    home.packages = with pkgs; [ jetbrains.idea ];
-}
+{ pkgs, ... }: { home.packages = with pkgs; [ jetbrains.idea ]; }

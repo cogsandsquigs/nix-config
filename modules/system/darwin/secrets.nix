@@ -1,8 +1,5 @@
 # agenix secret management (darwin).
-{ inputs, pkgs, ... }:
-{
+{ inputs, pkgs, ... }: {
     imports = [ inputs.agenix.darwinModules.default ];
-    environment.systemPackages = [
-        inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
-    ];
+    environment.systemPackages = [ inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default ];
 }

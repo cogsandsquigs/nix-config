@@ -1,6 +1,5 @@
 # Kitty terminal. (zellij lives in ./utils, which is imported alongside this module.)
-{ pkgs, ... }:
-{
+{ pkgs, ... }: {
     home.packages = with pkgs; [ kitty ];
 
     programs.kitty = {

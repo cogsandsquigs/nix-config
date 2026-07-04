@@ -1,6 +1,5 @@
 # General CLI utilities.
-{ pkgs, ... }:
-{
+{ pkgs, ... }: {
     imports = [
         ./gpg.nix
         ./yazi.nix

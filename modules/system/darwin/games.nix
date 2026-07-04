@@ -1,6 +1,5 @@
 # NOTE: currently nix-darwin can't manage steam, so we just use homebrew to install it for now.
-{ ... }:
-{
+{ ... }: {
     homebrew = {
         casks = [
             "steam"

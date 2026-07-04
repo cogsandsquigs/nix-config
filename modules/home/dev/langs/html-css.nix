@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{ pkgs, ... }: {
     home.packages = with pkgs; [
         zola
         vscode-langservers-extracted # HTML/CSS langserv

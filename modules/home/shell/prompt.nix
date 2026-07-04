@@ -1,5 +1,4 @@
-{ ... }:
-{
+{ ... }: {
     # Like shellInit, but runs last.
     # NOTE: This enables the starship prompt character for transient prompts on fish.
     # See: https://starship.rs/advanced-config/#transientprompt-and-transientrightprompt-in-fish

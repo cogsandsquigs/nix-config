@@ -11,11 +11,9 @@ in
     # `formatter`). Replaces flake-parts' `perSystem`.
     forAllSystems =
         f:
-        nixpkgs.lib.genAttrs [
-            "aarch64-darwin"
-            "x86_64-darwin"
-            "x86_64-linux"
-        ] (system: f nixpkgs.legacyPackages.${system});
+        nixpkgs.lib.genAttrs [ "aarch64-darwin" "x86_64-darwin" "x86_64-linux" ] (
+            system: f nixpkgs.legacyPackages.${system}
+        );
 
     # Build a nix-darwin system. `host` is a path to the host module (e.g. ./hosts/macbook),
     # which owns the machine's identity (hostPlatform, hostname, host-only tweaks).

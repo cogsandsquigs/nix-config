@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{ pkgs, ... }: {
     home.packages = with pkgs; [
         # NOTE: Using LLVM v20 for C/C++ development
         bear
