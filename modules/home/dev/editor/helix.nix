@@ -5,14 +5,15 @@ let
     # Opens a Zellij floating pane of height and width
     # `floating_pane_size_percent` percent of the screen.
     # NOTE: Requires Zellij to be installed and configured.
+    # NOTE: The `\` is required at the end of each line because `:sh` is fundamentally a shell run.
     make_zellij_floating_pane = cmd: ''
-        :sh zellij run --close-on-exit
-                       --height ${toString floating_pane_size_percent}%%
-                       --width ${toString floating_pane_size_percent}%%
-                       --floating
-                       -x ${toString ((100 - floating_pane_size_percent) / 2)}%%
-                       -y ${toString ((100 - floating_pane_size_percent) / 2)}%%
-                       -- ${cmd}
+        :sh zellij run --close-on-exit \
+                       --height ${toString floating_pane_size_percent}%% \
+                       --width ${toString floating_pane_size_percent}%% \
+                       --floating \
+                       -x ${toString ((100 - floating_pane_size_percent) / 2)}%% \
+                       -y ${toString ((100 - floating_pane_size_percent) / 2)}%% \
+                       -- ${cmd} \
                        > /dev/null
     '';
 
