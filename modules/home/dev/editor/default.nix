@@ -1,6 +1,6 @@
 { ... }: {
     imports = [
-        ./editor.nix
-        ./languages.nix
+        ./helix.nix
+        ./helix-languages.nix
     ];
 }
