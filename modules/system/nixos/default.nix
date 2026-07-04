@@ -1,7 +1,6 @@
 # Everything a NixOS machine gets. Currently only the `desktop` host uses this; fill in more
 # as that machine takes shape.
-{ inputs, ... }:
-{
+{ inputs, ... }: {
     imports = [
         ../common
         inputs.home-manager.nixosModules.home-manager
