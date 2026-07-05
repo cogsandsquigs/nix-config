@@ -27,28 +27,34 @@
 
         themeFile = "Catppuccin-Mocha";
 
-        settings = {
+        settings =
+            let
+                font-features = "+ss02 +ss09 +ss07";
+            in
+            {
 
-            cursor_shape = "beam"; # Make cursor look like |
-            enabled_layouts = "tall:bias=50;full_size=1;mirrored=false"; # Enable tall layout priority w/ multiple terminals
+                cursor_shape = "beam"; # Make cursor look like |
+                enabled_layouts = "tall:bias=50;full_size=1;mirrored=false"; # Enable tall layout priority w/ multiple terminals
 
-            # Make windows close when OS asks them to close, even if running a process.
-            # NOTE: We do this because we use zellij (terminal multiplexer) and so it's
-            # kinda pointless to ask anyways.
-            confirm_os_window_close = 0;
+                # Make windows close when OS asks them to close, even if running a process.
+                # NOTE: We do this because we use zellij (terminal multiplexer) and so it's
+                # kinda pointless to ask anyways.
+                confirm_os_window_close = 0;
 
-            # Font features/ligatures
-            "font_features FiraCodeNerdFontMono-Regular" = "+ss02 +ss09 +ss07";
-            "font_features FiraCodeNerdFontMono-Retina" = "+ss02 +ss09 +ss07";
-            "font_features FiraCodeNerdFontMono" = "+ss02 +ss09 +ss07";
+                # Font features/ligatures
+                # NOTE: run `kitty --debug-font-fallback` to get the PostScript name of the font you
+                # are using...
+                "font_features FiraCodeNFM-Regular" = font-features;
+                "font_features FiraCodeNFM-Bold" = font-features;
+                "font_features FiraCodeNFM-Retina" = font-features;
 
-            # Font fixes
-            "modify_font cell_width" = "+0px";
-            "modify_font cell_height" = "+0px";
+                # Font fixes
+                "modify_font cell_width" = "+0px";
+                "modify_font cell_height" = "+0px";
 
-            # MacOS tweaks
-            macos_quit_when_last_window_closed = true; # See: https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.macos_quit_when_last_window_closed
-            macos_colorspace = "displayp3"; # See: https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.macos_colorspace
-        };
+                # MacOS tweaks
+                macos_quit_when_last_window_closed = true; # See: https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.macos_quit_when_last_window_closed
+                macos_colorspace = "displayp3"; # See: https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.macos_colorspace
+            };
     };
 }
