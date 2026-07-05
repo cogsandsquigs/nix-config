@@ -44,9 +44,10 @@
                 # Font features/ligatures
                 # NOTE: run `kitty --debug-font-fallback` to get the PostScript name of the font you
                 # are using...
-                "font_features FiraCodeNFM-Regular" = font-features;
-                "font_features FiraCodeNFM-Bold" = font-features;
-                "font_features FiraCodeNFM-Retina" = font-features;
+                "font_features FiraCodeNFM-Reg" = font-features;
+                "font_features FiraCodeNFM-Bd" = font-features;
+                "font_features FiraCodeNFM-SemBd" = font-features;
+                "font_features FiraCodeNFM-Ret" = font-features;
 
                 # Font fixes
                 "modify_font cell_width" = "+0px";
