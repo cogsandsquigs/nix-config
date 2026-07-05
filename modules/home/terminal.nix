@@ -38,9 +38,8 @@
             confirm_os_window_close = 0;
 
             # Font features/ligatures
-            "font_features FiraCode Nerd Font Mono" = "+ss02 +ss09 +ss07";
-            "font_features Fira Code Mono" = "+ss02 +ss09 +ss07";
-            "font_features Fira Code" = "+ss02 +ss09 +ss07";
+            "font_features FiraCodeNerdFontMono-Regular" = "+ss02 +ss09 +ss07";
+            "font_features FiraCodeNerdFontMono-Retina" = "+ss02 +ss09 +ss07";
 
             # Font fixes
             "modify_font cell_width" = "+0px";
