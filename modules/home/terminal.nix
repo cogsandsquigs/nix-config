@@ -28,6 +28,7 @@
         themeFile = "Catppuccin-Mocha";
 
         settings = {
+
             cursor_shape = "beam"; # Make cursor look like |
             enabled_layouts = "tall:bias=50;full_size=1;mirrored=false"; # Enable tall layout priority w/ multiple terminals
 
@@ -35,6 +36,9 @@
             # NOTE: We do this because we use zellij (terminal multiplexer) and so it's
             # kinda pointless to ask anyways.
             confirm_os_window_close = 0;
+
+            # Font features/ligatures
+            font_features = "FiraCode-Nerd-Font-Mono +ss02";
 
             # Font fixes
             "modify_font cell_width" = "+0px";
