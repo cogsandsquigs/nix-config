@@ -46,7 +46,7 @@ elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     if [[ -z "$TARGET" ]]; then
         TARGET="$(nix eval --raw "$FLAKE_DIR#homeConfigurations" \
             --apply 'c: let n = builtins.attrNames c; in if builtins.length n == 1 then builtins.head n else ""' \
-            2>/dev/null || true)"
+            2> /dev/null || true)"
     fi
     if [[ -z "$TARGET" ]]; then
         TARGET="$(whoami)@$(hostname)"

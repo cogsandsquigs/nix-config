@@ -71,6 +71,11 @@ Key inputs (see `flake.nix`): [nixpkgs] (stable), [nix-darwin], [home-manager],
   use `darwin-rebuild` / `nixos-rebuild` / standalone `home-manager switch`.
 - **`secrets/`** — agenix-encrypted secrets (consumed as a flake input).
 - **`nix.conf`** — Nix daemon settings.
+- **`treefmt.toml`** — one-command repo formatting (`treefmt`); also the home of nixfmt's
+  `--width`/`--indent` options, since nixfmt has no native config file. Mirrors the per-language
+  formatter settings in the helix config (4-space, 100 cols).
+- **`.prettierrc.json`** — prettier options (4-space, 100 cols) for JSON/YAML/JS/CSS/…, picked up
+  automatically by prettier / prettierd (editor and `treefmt` alike).
 
 ### How a host is assembled
 

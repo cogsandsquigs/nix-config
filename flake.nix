@@ -53,7 +53,7 @@
     # home-manager module, and the directory tree *is* the import graph. `./lib` exposes the
     # `mkDarwin` / `mkNixos` builders that wire a host together.
     outputs =
-        { nixpkgs, ... }@inputs:
+        { self, nixpkgs, ... }@inputs:
         let
             lib = import ./lib { inherit inputs; };
 
@@ -82,6 +82,21 @@
             # Apply with: home-manager switch --flake ~/.config/nix#<userName>@<hostName>
             homeConfigurations."${workId.userName}@${workId.hostName}" = lib.mkHome { host = workDesktop; };
 
-            formatter = lib.forAllSystems (pkgs: pkgs.nixfmt-rfc-style);
+            # `nix fmt` → treefmt, driven by ./treefmt.toml (4-space, 100 cols — the repo's real
+            # style). Wrapped with the formatters treefmt invokes (nixfmt/shfmt/prettier) on PATH
+            # so `nix fmt` is self-contained and matches editor + `treefmt` output.
+            formatter = lib.forAllSystems (
+                pkgs:
+                pkgs.writeShellApplication {
+                    name = "treefmt";
+                    runtimeInputs = [
+                        pkgs.treefmt
+                        pkgs.nixfmt
+                        pkgs.shfmt
+                        pkgs.prettier
+                    ];
+                    text = ''exec treefmt "$@"'';
+                }
+            );
         };
 }

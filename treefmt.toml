@@ -1,0 +1,28 @@
+# treefmt — one-command, repo-wide formatting. Run `treefmt` from the repo root (the binary is in
+# nixpkgs: `nix run nixpkgs#treefmt`, or `nix shell nixpkgs#treefmt`).
+#
+# This file is ALSO where nixfmt's options live: nixfmt has no native config file of its own
+# (see https://github.com/NixOS/nixfmt/issues/77), so pinning its --width/--indent for agents and
+# tooling is done here via treefmt. The values mirror the per-language formatter settings in
+# modules/home/dev/editor/helix-languages.nix (4-space indent, 100-column width), so formatting
+# from the editor and from the CLI agree.
+#
+# NOTE: the flake's `nix fmt` output (see flake.nix `formatter`) is a *separate*, bare
+# nixfmt-rfc-style (2-space default) — prefer `treefmt` for the repo's real 4-space style.
+
+[formatter.nixfmt]
+command = "nixfmt"
+options = ["--width=100", "--indent=4", "--strict"]
+includes = ["*.nix"]
+
+[formatter.shfmt]
+command = "shfmt"
+options = ["--indent=4", "--binary-next-line", "--case-indent", "--space-redirects", "--write"]
+includes = ["*.sh"]
+
+# prettier reads .prettierrc.json in this repo for its options (tabWidth 4, printWidth 100).
+[formatter.prettier]
+command = "prettier"
+options = ["--write"]
+includes = ["*.json", "*.jsonc", "*.yaml", "*.yml", "*.css", "*.scss", "*.html", "*.js", "*.ts"]
+excludes = ["flake.lock"]
