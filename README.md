@@ -41,11 +41,13 @@ Key inputs (see `flake.nix`): [nixpkgs] (stable), [nix-darwin], [home-manager],
   - `mkHome` — build a **standalone home-manager** host from `./hosts/<name>` + `modules/home` (the
     core profile). Owns its own `pkgs` (allowUnfree/qt) since there's no system layer.
   - `forAllSystems` — map over systems for per-system outputs (e.g. the formatter).
-- **`hosts/`** — Per-machine identity: hostname, `hostPlatform`/`home.username`, host-only tweaks.
+- **`hosts/`** — Per-machine config. Each host has an **`id.nix`** (`{ userName; hostName; }` —
+  the single source of truth for its identity; see the [`id.nix` / `hostId`
+  convention](#the-idnix--hostid-convention)) plus a `default.nix` for host-only tweaks.
   - **`macbook/`** — darwin host (dock, TouchID sudo, homebrew, launchd).
   - **`home-desktop/`** — personal NixOS host.
-  - **`work-desktop/`** — standalone home-manager host (Ubuntu). Sets `home.username`, points
-    `my.flakeDir` at `~/.config/nix`, and overrides `my.git` for the work identity.
+  - **`work-desktop/`** — standalone home-manager host (Ubuntu). Points `my.flakeDir` at
+    `~/.config/nix` and overrides `my.git` for the work identity.
 - **`modules/`**
   - **`home-manager.nix`** — Wires the `cogs` user to `./home/personal.nix`; used by the two system
     classes.
@@ -87,6 +89,47 @@ For the **standalone home-manager** host, `flake.nix` calls
 Home config lives once under `modules/home`; the core is shared by every machine, and `personal.nix`
 layers the personal-only extras on top for the personal machines.
 
+### The `id.nix` / `hostId` convention
+
+Every host directory carries an **`id.nix`** — a plain attrset that is the single source of truth
+for that machine's identity:
+
+```nix
+# hosts/<name>/id.nix
+{
+    userName = "cogs";          # the machine's primary user account
+    hostName = "home-desktop";  # the machine's hostname
+}
+```
+
+It flows through the config in exactly two ways, so the name is never repeated:
+
+1. **Into the modules as `hostId`.** The builders in `lib/default.nix` (`mkDarwin` / `mkNixos` /
+   `mkHome`) `import` the host's `id.nix` and pass it via `specialArgs`/`extraSpecialArgs` as the
+   `hostId` argument. Any module can then take `{ hostId, ... }` and read `hostId.userName` /
+   `hostId.hostName`. This is why the shared modules never hardcode a user:
+   - `modules/system/{darwin,nixos}/users.nix` → `users.users.${hostId.userName}`
+   - `modules/home-manager.nix` → `home-manager.users.${hostId.userName}`
+   - the host file itself → e.g. `networking.hostName = hostId.hostName` (system hosts),
+     `home.username = hostId.userName` (standalone home-manager host).
+2. **Into `flake.nix` for the output attribute names.** `flake.nix` reads each `id.nix` to form
+   `darwinConfigurations.<hostName>`, `nixosConfigurations.<hostName>`, and
+   `homeConfigurations."<userName>@<hostName>"`. `scripts/rebuild.sh` then *discovers* the
+   standalone name from the flake rather than hardcoding it.
+
+**Naming:** fields are camelCase (`userName`, `hostName`) — matching `my.git.userName` and
+`networking.hostName`. Keep both fields in that one style.
+
+**To add a new host:**
+
+1. `mkdir hosts/<name>` and write `hosts/<name>/id.nix` (`{ userName; hostName; }`).
+2. Write `hosts/<name>/default.nix` — the machine-specific module. Pull identity from the
+   `hostId` argument (don't re-`import ./id.nix`); set the platform (`nixpkgs.hostPlatform`) for a
+   system host, and any `my.*` overrides.
+3. Wire it up in `flake.nix`: read its id (`idOf ./hosts/<name>`) and add the matching
+   `darwinConfigurations` / `nixosConfigurations` / `homeConfigurations` entry via the right
+   `lib.mk*` builder.
+
 ## Common tasks
 
 ```sh
@@ -110,27 +153,62 @@ cleanup # Alias of ./scripts/cleanup.sh
 
 ## Work desktop — standalone home-manager on Ubuntu
 
-The work box is **not** NixOS, and Nix is installed as a **single-user** install (the store is owned
-by your user, there is no `nix-daemon`, and nothing under `/etc` is touched). Only the home-manager
-layer is applied. First-time setup:
+The work box runs Ubuntu 24 and is **not** NixOS: only the home-manager layer from this flake is
+applied (`homeConfigurations."ipratt@work-desktop"`), so nothing here manages the OS itself.
+Ubuntu stays exactly as-is; Nix simply lives alongside it under `/nix`.
+
+### Which Nix install: multi-user (recommended) vs single-user
+
+**Recommended: multi-user (daemon), installed via Determinate Nix.** On a dev machine you
+administer with `sudo`, multi-user is the modern default and the better choice:
+
+- Builds run as unprivileged `nixbld` users, isolated from your home directory — safer, and the
+  upstream norm. Single-user (`--no-daemon`) is legacy (and unsupported on macOS).
+- **Determinate Nix** — Determinate Systems' downstream Nix distribution, the same one the
+  MacBook in this repo uses — adds, over vanilla Nix: flakes + `nix-command` enabled out of the
+  box (no `nix.conf` editing), faster flake evaluation (`lazy-trees` + parallel eval), the
+  FlakeHub binary cache, a robust installer **and uninstaller**, and a managed `/etc/nix/nix.conf`
+  (`determinate-nixd`). It is multi-user only, which lines up with the recommendation above.
+- Keeping the work box on Determinate matches the rest of this config.
+
+Use single-user **only** if you do not have root on the machine.
+
+Either way the flake is **install-method-agnostic**: `hosts/work-desktop` and the shared home
+modules make no assumption about single vs multi-user. The `shell.nix` nix-env sourcing and the
+`rebuild`/`cleanup` scripts handle both, and none of the aliases use `sudo` on this box.
+
+#### Recommended — multi-user + Determinate Nix
 
 ```sh
-# 1. Install Nix, SINGLE-USER (--no-daemon). Store is owned by you; no root daemon.
-sh <(curl -L https://nixos.org/nix/install) --no-daemon
+# 1. Install Determinate Nix (multi-user; needs sudo). Flakes are on by default. As of early
+#    2026 this installer always installs Determinate Nix — no flag needed.
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 
 # 2. Clone this flake to ~/.config/nix (the path hosts/work-desktop expects).
 git clone <this-repo> ~/.config/nix
 
-# 3. Enable flakes for your user. ~/.config/nix/nix.conf is the per-user Nix config file — it
-#    lives inside the repo dir, but `nix.conf*` is gitignored so it is never committed.
-echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
-
-# 4. Apply it. The attribute is username@hostname.
+# 3. Apply it. The attribute is <userName>@<hostName>, from hosts/work-desktop/id.nix.
 nix run home-manager/release-26.05 -- switch -b bak --flake ~/.config/nix#ipratt@work-desktop
 ```
 
-After that first switch, `home-manager` is on `PATH`, so the usual aliases just work — and none of
-them use `sudo` on this box, matching the single-user install:
+#### Alternative — single-user (no root)
+
+```sh
+# 1. Install Nix single-user (--no-daemon): the store is owned by you, no daemon, nothing in /etc.
+sh <(curl -L https://nixos.org/nix/install) --no-daemon
+
+# 2. Clone the flake.
+git clone <this-repo> ~/.config/nix
+
+# 3. Enable flakes for your user. ~/.config/nix/nix.conf is the per-user config file — it sits
+#    inside the repo dir, but `nix.conf*` is gitignored so it is never committed.
+echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+
+# 4. Apply it.
+nix run home-manager/release-26.05 -- switch -b bak --flake ~/.config/nix#ipratt@work-desktop
+```
+
+After the first switch, `home-manager` is on `PATH`, so the usual aliases work:
 
 ```sh
 rebuild   # ./scripts/rebuild.sh — detects standalone HM and runs `home-manager switch` (no sudo)
@@ -138,15 +216,14 @@ upgrade   # bump flake.lock + rebuild
 cleanup   # expire old home-manager generations + gc
 ```
 
-The flake itself is **install-method-agnostic**: nothing in `hosts/work-desktop` or the shared home
-modules assumes single- vs multi-user, so moving between them (below) needs no config changes. The
-nix-env sourcing in `shell.nix` and the rebuild/cleanup scripts already handle both layouts.
-
 > [!note]
 >
-> The flake attribute is `ipratt@work-desktop`. `rebuild` derives the target from
-> `$(whoami)@$(hostname)`, so either set the machine's hostname to `work-desktop`, or export
-> `HM_TARGET=ipratt@work-desktop`.
+> **The work-box name is a single source of truth** — `hosts/work-desktop/id.nix` (`userName` +
+> `hostName`); see [the `id.nix` / `hostId` convention](#the-idnix--hostid-convention). The
+> `homeConfigurations` attribute name and `home.username` both derive from it, so renaming the box
+> is a one-file edit. `rebuild` doesn't hardcode or guess it either — it auto-discovers the flake's
+> sole `homeConfigurations` entry (falling back to `$(whoami)@$(hostname)`, or an explicit
+> `HM_TARGET` override).
 
 > [!note]
 >
@@ -165,25 +242,87 @@ nix-env sourcing in `shell.nix` and the rebuild/cleanup scripts already handle b
 > Secret Service (gnome-keyring / KWallet), which Ubuntu's GNOME session provides out of the box.
 > (git's old `git-credential-gnome-keyring` helper is deprecated in favour of libsecret.)
 
+### Installing Nix on a non-NixOS machine (reference)
+
+Kept here for future reference. On any non-NixOS host (Ubuntu, other distros, WSL, macOS) Nix
+installs into `/nix` and leaves the OS's own package manager untouched — there are two installers:
+
+|                | **Determinate Nix**                     | **Regular (upstream) Nix**                       |
+| -------------- | --------------------------------------- | ------------------------------------------------ |
+| Installer host | `install.determinate.systems/nix`       | `nixos.org/nix/install`                          |
+| Mode           | multi-user only                         | `--daemon` (multi) **or** `--no-daemon` (single) |
+| Flakes         | on by default                           | opt-in (via `nix.conf`)                          |
+| Extras         | `lazy-trees`, FlakeHub cache, managed `/etc/nix/nix.conf` | —                              |
+| Uninstall      | one command                             | manual                                           |
+
+**Determinate Nix** — Determinate Systems' distribution (recommended; what this repo targets).
+As of early 2026 the installer always installs Determinate Nix (the old `--prefer-upstream-nix`
+opt-out was removed), so no flag is needed.
+
+```sh
+# Install (multi-user; needs sudo)
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+
+# Uninstall (single command — also removes the installer itself)
+/nix/nix-installer uninstall
+```
+
+**Regular (upstream) Nix** — the official installer from nixos.org. Pick the mode explicitly;
+flakes are opt-in.
+
+```sh
+# Install, multi-user (daemon; recommended, needs sudo)
+sh <(curl -L https://nixos.org/nix/install) --daemon
+
+# Install, single-user (no daemon, no root — store owned by you)
+sh <(curl -L https://nixos.org/nix/install) --no-daemon
+
+# Enable flakes (upstream does not by default)
+mkdir -p ~/.config/nix && echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+```
+
+Uninstalling upstream Nix is manual:
+
+```sh
+# single-user: just remove the store (plus the Nix line the installer added to your shell profile)
+rm -rf /nix
+
+# multi-user (Linux + systemd):
+sudo systemctl stop nix-daemon.service
+sudo systemctl disable nix-daemon.socket nix-daemon.service
+sudo systemctl daemon-reload
+sudo rm -rf /nix /etc/nix /etc/profile.d/nix.sh /etc/tmpfiles.d/nix-daemon.conf \
+    ~root/.nix-channels ~root/.nix-defexpr ~root/.nix-profile
+for i in $(seq 1 32); do sudo userdel "nixbld$i"; done
+sudo groupdel nixbld
+# then remove any Nix lines from /etc/bash.bashrc, /etc/bashrc, /etc/profile, /etc/zshrc
+# (the installer leaves *.backup-before-nix copies you can restore).
+```
+
+That fiddly upstream uninstall vs Determinate's one-liner is a large part of why Determinate is
+recommended here. See the [Determinate uninstall docs][det-uninstall] and the
+[upstream uninstall docs][nix-uninstall].
+
 ### Migrating the work box from single-user to multi-user
 
-If you later want the multi-user (daemon) install on this machine, the supported route is to
-reinstall Nix in multi-user mode — an in-place single→multi conversion is not supported. Nothing of
-value is lost: your environment is declarative and rebuilt from this flake.
+If you installed single-user and later want multi-user (daemon), the supported route is to
+reinstall Nix — an in-place single→multi conversion is not supported. Nothing of value is lost:
+your environment is declarative and rebuilt from this flake.
 
 1. (Optional) note your current generation: `home-manager generations | head -1`.
 2. Uninstall the single-user Nix: remove `/nix`, `~/.nix-profile`, `~/.nix-defexpr`,
    `~/.nix-channels`, and the Nix lines the installer appended to your shell profile (`~/.profile` /
    `~/.bash_profile`).
-3. Reinstall multi-user: `sh <(curl -L https://nixos.org/nix/install) --daemon`.
-4. Re-enable flakes for your user if the line was removed:
-   `echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf`.
-5. Re-apply the config: `home-manager switch -b bak --flake ~/.config/nix#ipratt@work-desktop` (or
+3. Reinstall multi-user — see the [install reference](#installing-nix-on-a-non-nixos-machine-reference)
+   above. Prefer Determinate (flakes on by default, matches the rest of this config):
+   `curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install`.
+4. Re-apply the config: `home-manager switch -b bak --flake ~/.config/nix#ipratt@work-desktop` (or
    just `rebuild`).
 
 No changes to this repo are required. `rebuild` / `upgrade` / `cleanup` keep working on your user's
 home-manager profile without `sudo` after the switch; `cleanup` deliberately never escalates on a
-standalone box, so it only ever collects your own generations.
+standalone box, so it only ever collects your own generations. If you moved to Determinate, its
+daemon manages `/etc/nix/nix.conf` for you.
 
 ### `/etc/nix` vs `/etc/nixos` vs `~/.config/nix`
 
@@ -222,3 +361,5 @@ config into the user-config path.
 [determinate]: https://determinate.systems/nix/
 [determinate-darwin]: https://docs.determinate.systems/guides/nix-darwin/
 [agenix]: https://github.com/ryantm/agenix
+[det-uninstall]: https://manual.determinate.systems/installation/uninstall.html
+[nix-uninstall]: https://nix.dev/manual/nix/latest/installation/uninstall

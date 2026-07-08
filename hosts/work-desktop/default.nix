@@ -11,14 +11,11 @@
 #
 # Everything machine-specific is a small `my.*` override or a `home.*` setting below, so pointing
 # this at a different user/host later is a one- or two-line change.
-{ config, ... }:
-let
-    username = "ipratt";
-in
-{
+{ config, hostId, ... }: {
     # Standalone home-manager must be told who it is (there's no system user account to inherit
-    # from). base.nix derives home.homeDirectory = /home/${username} on Linux from this.
-    home.username = username;
+    # from). Identity comes from ./id.nix via the hostId specialArg (README `id.nix` convention);
+    # base.nix derives home.homeDirectory = /home/${hostId.userName} on Linux from this.
+    home.username = hostId.userName;
 
     # This flake is checked out at ~/.config/nix on the work box (a per-user Nix install), rather
     # than /etc/nix as on the system hosts. Drives the rebuild/upgrade/… shell aliases.

@@ -56,19 +56,31 @@
         { nixpkgs, ... }@inputs:
         let
             lib = import ./lib { inherit inputs; };
+
+            # Each host's identity is the single source of truth in hosts/<name>/id.nix (see the
+            # README `id.nix` convention). We read it here purely to form the output attribute
+            # names; the builders re-import it and hand it to the modules as `hostId`.
+            macbook = ./hosts/macbook;
+            homeDesktop = ./hosts/home-desktop;
+            workDesktop = ./hosts/work-desktop;
+
+            idOf = host: import (host + "/id.nix");
+            macbookId = idOf macbook;
+            homeDesktopId = idOf homeDesktop;
+            workId = idOf workDesktop;
         in
         {
             inherit lib;
 
             # Personal MacBook (nix-darwin).
-            darwinConfigurations."Ians-GlorpBook-Pro" = lib.mkDarwin ./hosts/macbook;
+            darwinConfigurations.${macbookId.hostName} = lib.mkDarwin macbook;
 
             # Personal desktop tower (NixOS).
-            nixosConfigurations.home-desktop = lib.mkNixos ./hosts/home-desktop;
+            nixosConfigurations.${homeDesktopId.hostName} = lib.mkNixos homeDesktop;
 
             # Work desktop (standalone home-manager on Ubuntu 24, Nix installed per-user).
-            # Apply with: home-manager switch --flake ~/.config/nix#ipratt@work-desktop
-            homeConfigurations."ipratt@work-desktop" = lib.mkHome { host = ./hosts/work-desktop; };
+            # Apply with: home-manager switch --flake ~/.config/nix#<userName>@<hostName>
+            homeConfigurations."${workId.userName}@${workId.hostName}" = lib.mkHome { host = workDesktop; };
 
             formatter = lib.forAllSystems (pkgs: pkgs.nixfmt-rfc-style);
         };

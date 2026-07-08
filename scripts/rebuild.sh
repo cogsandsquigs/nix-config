@@ -35,9 +35,22 @@ elif [[ "$OSTYPE" == "linux-gnu"* ]] && [[ -e /etc/NIXOS ]]; then
     sudo -i nixos-rebuild switch --flake "$FLAKE_DIR" --print-build-logs
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     # Standalone home-manager (non-NixOS Linux, e.g. the Ubuntu work desktop). No sudo: this is
-    # a per-user install. The flake attribute defaults to "$(whoami)@$(hostname)"; override with
-    # HM_TARGET (e.g. HM_TARGET=ipratt@work-desktop) if the machine's hostname differs.
-    TARGET="${HM_TARGET:-$(whoami)@$(hostname)}"
+    # a per-user install.
+    #
+    # Resolve the flake attribute modularly, so renaming the box (hosts/work-desktop/id.nix)
+    # needs no change here, and it does not depend on the machine's actual hostname:
+    #   1. $HM_TARGET, if set — explicit override.
+    #   2. else the flake's sole homeConfigurations entry (the normal single-work-box case).
+    #   3. else fall back to "$(whoami)@$(hostname)".
+    TARGET="${HM_TARGET:-}"
+    if [[ -z "$TARGET" ]]; then
+        TARGET="$(nix eval --raw "$FLAKE_DIR#homeConfigurations" \
+            --apply 'c: let n = builtins.attrNames c; in if builtins.length n == 1 then builtins.head n else ""' \
+            2>/dev/null || true)"
+    fi
+    if [[ -z "$TARGET" ]]; then
+        TARGET="$(whoami)@$(hostname)"
+    fi
     echo ">> home-manager switch (standalone) -> $TARGET"
     home-manager switch -b bak --flake "$FLAKE_DIR#$TARGET" --print-build-logs
 else

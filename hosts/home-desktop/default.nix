@@ -7,10 +7,11 @@
 #
 # NOTE: this is the *personal* Linux box. The work machine is a separate, leaner standalone
 # home-manager config — see hosts/work-desktop.
-{ ... }: {
+{ hostId, ... }: {
     nixpkgs.hostPlatform = "x86_64-linux";
 
-    networking.hostName = "home-desktop";
+    # Hostname from ./id.nix via the hostId specialArg (README `id.nix` convention).
+    networking.hostName = hostId.hostName;
 
     # TODO: replace with the generated ./hardware-configuration.nix once the machine is installed.
     boot.loader.systemd-boot.enable = true;

@@ -5,6 +5,12 @@
 { inputs }:
 let
     inherit (inputs) nixpkgs nix-darwin home-manager;
+
+    # Every host directory contains an `id.nix` (a plain `{ userName; hostName; }` attrset) that
+    # is the single source of truth for the machine's identity. The builders import it and hand
+    # it to every module as the `hostId` argument, so shared modules (users.nix, home-manager.nix,
+    # …) never hardcode a username, and flake.nix forms the output attribute names from it.
+    idOf = host: import (host + "/id.nix");
 in
 {
     # Map a function over every system we care about (used for per-system outputs such as
@@ -16,11 +22,14 @@ in
         );
 
     # Build a nix-darwin system. `host` is a path to the host module (e.g. ./hosts/macbook),
-    # which owns the machine's identity (hostPlatform, hostname, host-only tweaks).
+    # which owns the machine's identity (hostPlatform, host-only tweaks) via its id.nix.
     mkDarwin =
         host:
         nix-darwin.lib.darwinSystem {
-            specialArgs = { inherit inputs; };
+            specialArgs = {
+                inherit inputs;
+                hostId = idOf host;
+            };
             modules = [
                 ../modules/system/darwin
                 host
@@ -31,7 +40,10 @@ in
     mkNixos =
         host:
         nixpkgs.lib.nixosSystem {
-            specialArgs = { inherit inputs; };
+            specialArgs = {
+                inherit inputs;
+                hostId = idOf host;
+            };
             modules = [
                 ../modules/system/nixos
                 host
@@ -40,8 +52,8 @@ in
 
     # Build a STANDALONE home-manager configuration — for a machine where Nix is installed
     # per-user and there is no NixOS/nix-darwin system layer (e.g. the work desktop on Ubuntu).
-    # `host` is a path to the host module (e.g. ./hosts/work-desktop), which sets home.username
-    # and any `my.*` overrides. `system` defaults to x86_64-linux.
+    # `host` is a path to the host module (e.g. ./hosts/work-desktop), which sets any `my.*`
+    # overrides; `hostId` supplies the username. `system` defaults to x86_64-linux.
     #
     # Unlike the system hosts (which get nixpkgs config via useGlobalPkgs), a standalone config
     # owns its own `pkgs`, so allowUnfree/qt are set here to match modules/system/common/nixpkgs.
@@ -58,7 +70,10 @@ in
                     qt.enable = true;
                 };
             };
-            extraSpecialArgs = { inherit inputs; };
+            extraSpecialArgs = {
+                inherit inputs;
+                hostId = idOf host;
+            };
             modules = [
                 ../modules/home
                 host

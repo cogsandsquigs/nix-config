@@ -1,18 +1,19 @@
 # Ians-GlorpBook-Pro — aarch64-darwin MacBook.
 # This file owns the machine's identity and host-only tweaks; everything shared lives under
 # modules/system/darwin and modules/home.
-{ pkgs, ... }:
+{ pkgs, hostId, ... }:
 let
-    hostname = "Ians-GlorpBook-Pro";
-    primaryUser = "cogs";
+    # Identity (hostname + primary user) comes from ./id.nix via the hostId specialArg — see the
+    # README `id.nix` convention.
+    inherit (hostId) hostName userName;
 in
 {
     imports = [ ./launchd.nix ];
 
     nixpkgs.hostPlatform = "aarch64-darwin";
 
-    networking.hostName = hostname;
-    networking.computerName = hostname;
+    networking.hostName = hostName;
+    networking.computerName = hostName;
 
     # Add ability to used TouchID for sudo authentication
     security = {
@@ -24,21 +25,21 @@ in
     };
 
     system = {
-        primaryUser = primaryUser;
+        primaryUser = userName;
 
         # activationScripts are executed every time you boot the system or run `darwin-rebuild`.
         activationScripts = {
             postActivation.text = ''
                 # activateSettings -u will reload the settings from the database and apply them
                 # to the current session, so we do not need to logout and login again to make
-                # the changes take effect. We do `sudo -u ${primaryUser}` to run the command as the
+                # the changes take effect. We do `sudo -u ${userName}` to run the command as the
                 # user.
-                sudo -u ${primaryUser} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+                sudo -u ${userName} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
             '';
         };
 
         defaults = {
-            smb.NetBIOSName = hostname;
+            smb.NetBIOSName = hostName;
             dock = {
                 autohide = true;
                 autohide-delay = 0.0;
@@ -65,7 +66,7 @@ in
 
     homebrew = {
         enable = true;
-        user = primaryUser; # User owning the Homebrew prefix
+        user = userName; # User owning the Homebrew prefix
 
         onActivation = {
             autoUpdate = true; # Auto-update
