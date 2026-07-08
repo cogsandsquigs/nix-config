@@ -15,5 +15,6 @@
         ./desktop-apps.nix
         ./secrets.nix
         ./users.nix
+        ./fuse.nix
     ];
 }
