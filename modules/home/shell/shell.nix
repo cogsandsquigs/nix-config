@@ -9,6 +9,10 @@ let
     inherit (lib.strings) concatMapStrings;
     inherit (lib.attrsets) mapAttrsToList;
 
+    # Where this flake lives on the host (default /etc/nix; the standalone work box overrides
+    # this to ~/.config/nix). See modules/home/options.nix.
+    flakeDir = config.my.flakeDir;
+
     aliases = {
         ls = "eza --icons";
         du = "dust";
@@ -17,10 +21,10 @@ let
         nv = "nvim";
         lg = "lazygit";
         neofetch = "fastfetch"; # Neofetch via fastfetch
-        editnix = "/etc/nix/scripts/editnix.sh";
-        upgrade = "/etc/nix/scripts/upgrade.sh";
-        rebuild = "/etc/nix/scripts/rebuild.sh";
-        cleanup = "/etc/nix/scripts/cleanup.sh";
+        editnix = "${flakeDir}/scripts/editnix.sh";
+        upgrade = "${flakeDir}/scripts/upgrade.sh";
+        rebuild = "${flakeDir}/scripts/rebuild.sh";
+        cleanup = "${flakeDir}/scripts/cleanup.sh";
     };
 
     editor = "hx";
@@ -117,7 +121,12 @@ in
         autocd = true;
 
         initContent = ''
-            source /etc/profile.d/nix.sh # Source nix environment variables
+            # Source the nix environment. A multi-user (daemon) install exposes this at
+            # /etc/profile.d/nix.sh; a single-user install exposes it under the user profile.
+            # Guarded so a missing file never errors on shell startup, and works for both.
+            for __nix_sh in /etc/profile.d/nix.sh "$HOME/.nix-profile/etc/profile.d/nix.sh"; do
+                [ -e "$__nix_sh" ] && source "$__nix_sh" && break
+            done
         '';
 
         envExtra = ''

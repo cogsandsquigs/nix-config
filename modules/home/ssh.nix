@@ -1,7 +1,12 @@
 { pkgs, lib, ... }:
 let
     inherit (pkgs) stdenv;
-    inherit (lib) mkIf;
+    inherit (lib) mkIf optionalAttrs;
+
+    # `UseKeychain` is an Apple-only addition to OpenSSH. Stock OpenSSH (i.e. Ubuntu, NixOS)
+    # rejects it as an unknown keyword and refuses to parse the whole config, so it must only
+    # ever be emitted on Darwin.
+    keychain = optionalAttrs stdenv.isDarwin { UseKeychain = "yes"; };
 in
 {
     programs.ssh = {
@@ -35,27 +40,27 @@ in
                     "~/.ssh/imperial_gitlab_ed25519"
                 ];
                 AddKeysToAgent = "yes";
-                UseKeychain = "yes";
-            };
+            }
+            // keychain;
 
             "*.doc.ic.ac.uk" = {
                 User = "ip124";
                 IdentityFile = "~/.ssh/imperial_doc_ed25519";
                 AddKeysToAgent = "yes";
-                UseKeychain = "yes";
-            };
+            }
+            // keychain;
 
             "gitlab.doc.ic.ac.uk" = {
                 IdentityFile = "~/.ssh/imperial_gitlab_ed25519";
                 AddKeysToAgent = "yes";
-                UseKeychain = "yes";
-            };
+            }
+            // keychain;
 
             "github.com" = {
                 IdentityFile = "~/.ssh/id_ed25519";
                 AddKeysToAgent = "yes";
-                UseKeychain = "yes";
-            };
+            }
+            // keychain;
         };
     };
 }

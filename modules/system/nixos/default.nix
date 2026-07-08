@@ -1,5 +1,5 @@
-# Everything a NixOS machine gets. Currently only the `desktop` host uses this; fill in more
-# as that machine takes shape.
+# Everything a NixOS machine gets. Currently only the `home-desktop` host uses this; fill in
+# more as that machine takes shape.
 { inputs, ... }: {
     imports = [
         ../common

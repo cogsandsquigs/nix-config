@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
+#
+# Bump flake.lock (update all inputs) and rebuild. Location-independent, and picks the right
+# rebuild path (system vs standalone home-manager) via rebuild.sh.
 
 set -e # exit if any command errors
 
-export NIX_CONF_DIR=/etc/nix
-export SCRIPTS_PATH=$NIX_CONF_DIR/scripts
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+FLAKE_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-sudo -i nix flake update --flake $NIX_CONF_DIR
+# Update inputs. No sudo here: `nix flake update` only rewrites flake.lock in the repo. (System
+# rebuilds still escalate inside rebuild.sh where they actually need to.)
+nix flake update --flake "$FLAKE_DIR"
 
-# rebuild system
-$SCRIPTS_PATH/rebuild.sh
+# Rebuild system
+"$SCRIPT_DIR/rebuild.sh"

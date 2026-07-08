@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, config, ... }: {
     home.packages = with pkgs; [
         git # <3
         delta # Git diff highlighting
@@ -9,10 +9,12 @@
         enable = true;
 
         settings = {
-            # Basic user settings
+            # Basic user settings. Values come from `my.git.*` (see modules/home/options.nix) so
+            # a host can override the identity without editing this file — e.g. the work box uses
+            # a work email.
             user = {
-                name = "Ian Pratt";
-                email = "ianjdpratt@gmail.com";
+                name = config.my.git.userName;
+                email = config.my.git.email;
             };
 
             url = {
@@ -25,17 +27,20 @@
             init.defaultBranch = "main"; # Default new branch is `main`
             pull.rebase = false; # Pull behavior: setting rebase to false
 
-            # Credential helper
-            # credential.credentialStore = "osxkeychain";
-            credential.helper = if pkgs.stdenv.isDarwin then "osxkeychain" else "store";
+            # Credential helper. On macOS use the native keychain. On Linux use libsecret
+            # (talks to the running Secret Service — gnome-keyring / KWallet), NOT the plaintext
+            # `store` helper. The libsecret helper ships inside the git package on Linux;
+            # git's old `gnome-keyring` helper is deprecated in favour of it.
+            credential.helper =
+                if pkgs.stdenv.isDarwin then "osxkeychain" else "${pkgs.git}/bin/git-credential-libsecret";
 
             # For some reason `signing.signer` doesn't set the GPG program, so I gotta do this
             gpg.program = "${pkgs.gnupg}/bin/gpg";
         };
 
         signing = {
-            key = "E0DB58169CA551AA!";
-            signByDefault = true;
+            key = config.my.git.signingKey;
+            signByDefault = config.my.git.signByDefault;
             # signer = "${pkgs.gnupg}/bin/gpg"; # NOTE: See `extraConfig.gpg.program`
         };
     };

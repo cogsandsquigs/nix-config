@@ -1,16 +1,19 @@
-# The complete home-manager configuration for cogs, shared across every host. OS-specific
-# differences are handled inline with `lib.optionals pkgs.stdenv.isDarwin` etc.
+# The shared home-manager CORE, imported by every machine — personal or work. This is the
+# "develop + as-needed" baseline: shell, terminal, CLI utils, and the full dev toolchain, but
+# NO games or personal GUI apps. Those live in ./personal.nix, which layers on top of this.
+#
+# OS-specific differences are handled inline with `lib.optionals pkgs.stdenv.isDarwin` etc.
 { ... }: {
     imports = [
+        ./options.nix
+
         ./base.nix
         ./git.nix
         ./ssh.nix
-        ./games.nix
         ./terminal.nix
 
         ./shell
         ./utils
-        ./desktop-apps
         ./dev
     ];
 }

@@ -1,6 +1,7 @@
 {
     description = ''
-        My personal NixOS/Nix-Darwin configuration for my daily driver devices.
+        My NixOS / nix-darwin / home-manager configuration for my daily-driver devices
+        (personal MacBook + desktop, and a standalone home-manager work desktop).
     '';
 
     inputs = {
@@ -59,9 +60,15 @@
         {
             inherit lib;
 
+            # Personal MacBook (nix-darwin).
             darwinConfigurations."Ians-GlorpBook-Pro" = lib.mkDarwin ./hosts/macbook;
 
-            nixosConfigurations.desktop = lib.mkNixos ./hosts/desktop;
+            # Personal desktop tower (NixOS).
+            nixosConfigurations.home-desktop = lib.mkNixos ./hosts/home-desktop;
+
+            # Work desktop (standalone home-manager on Ubuntu 24, Nix installed per-user).
+            # Apply with: home-manager switch --flake ~/.config/nix#ipratt@work-desktop
+            homeConfigurations."ipratt@work-desktop" = lib.mkHome { host = ./hosts/work-desktop; };
 
             formatter = lib.forAllSystems (pkgs: pkgs.nixfmt-rfc-style);
         };
