@@ -75,6 +75,12 @@ in
             openssl # TODO: Why?
         ];
 
+    homebrew = {
+        brews = [
+            "ca-certificates" # TODO: Why? Needed when bun runs `bun install`... (???)
+        ];
+    };
+
     services = {
         # openssh = {
         #     # Let Nix (nix-darwin) manage the default MacOS OpenSSH server. Set this to
