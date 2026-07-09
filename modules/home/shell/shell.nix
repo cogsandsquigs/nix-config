@@ -112,6 +112,17 @@ in
             "fish/themes/Catppuccin Mocha.theme".source = "${catppuccin-fish}/themes/Catppuccin Mocha.theme";
         };
 
+    programs.bash = {
+        enable = true;
+
+        shellAliases = aliases;
+
+        initExtra = ''
+            ${variablesToString (name: val: "export ${name}=\"${val}\"")}
+            ${pathsToString (path: "export PATH=${path}:$PATH")}
+        '';
+    };
+
     programs.zsh = {
         enable = true;
         enableCompletion = true;

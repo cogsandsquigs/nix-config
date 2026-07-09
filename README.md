@@ -47,7 +47,8 @@ Key inputs (see `flake.nix`): [nixpkgs] (stable), [nix-darwin], [home-manager],
   - **`macbook/`** — darwin host (dock, TouchID sudo, homebrew, launchd).
   - **`home-desktop/`** — personal NixOS host.
   - **`work-desktop/`** — standalone home-manager host (Ubuntu). Points `my.flakeDir` at
-    `~/.config/nix` and overrides `my.git` for the work identity.
+    `/etc/nix` (owned by the user, not root, since Nix is a per-user install there) and overrides
+    `my.git` for the work identity.
 - **`modules/`**
   - **`home-manager.nix`** — Wires the `cogs` user to `./home/personal.nix`; used by the two system
     classes.
@@ -189,11 +190,15 @@ modules make no assumption about single vs multi-user. The `shell.nix` nix-env s
 #    2026 this installer always installs Determinate Nix — no flag needed.
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 
-# 2. Clone this flake to ~/.config/nix (the path hosts/work-desktop expects).
-git clone <this-repo> ~/.config/nix
+# 2. Clone this flake to /etc/nix (the path hosts/work-desktop expects — same location as the
+#    system hosts, but owned by you rather than root since Nix here is a per-user install).
+sudo mkdir -p /etc/nix && sudo chown "$(id -u):$(id -g)" /etc/nix
+git clone <this-repo> /etc/nix
 
-# 3. Apply it. The attribute is <userName>@<hostName>, from hosts/work-desktop/id.nix.
-nix run home-manager/release-26.05 -- switch -b bak --flake ~/.config/nix#ipratt@work-desktop
+# 3. Apply it. The attribute is <userName>@<hostName>, from hosts/work-desktop/id.nix. On a
+#    fresh box `home-manager` isn't on PATH yet, so bootstrap the first switch via `nix run`:
+nix run home-manager/release-26.05 -- switch -b bak --flake /etc/nix#ipratt@work-desktop \
+    --print-build-logs
 ```
 
 #### Alternative — single-user (no root)
@@ -321,10 +326,13 @@ your environment is declarative and rebuilt from this flake.
 3. Reinstall multi-user — see the [install reference](#installing-nix-on-a-non-nixos-machine-reference)
    above. Prefer Determinate (flakes on by default, matches the rest of this config):
    `curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install`.
-4. Re-apply the config: `home-manager switch -b bak --flake ~/.config/nix#ipratt@work-desktop` (or
+4. Move the repo from `~/.config/nix` to `/etc/nix` (the path the multi-user setup — and
+   `hosts/work-desktop/my.flakeDir` — expects): `sudo mkdir -p /etc/nix && sudo chown
+   "$(id -u):$(id -g)" /etc/nix && mv ~/.config/nix/* ~/.config/nix/.git /etc/nix/`.
+5. Re-apply the config: `home-manager switch -b bak --flake /etc/nix#ipratt@work-desktop` (or
    just `rebuild`).
 
-No changes to this repo are required. `rebuild` / `upgrade` / `cleanup` keep working on your user's
+No changes to this repo are required beyond moving it. `rebuild` / `upgrade` / `cleanup` keep working on your user's
 home-manager profile without `sudo` after the switch; `cleanup` deliberately never escalates on a
 standalone box, so it only ever collects your own generations. If you moved to Determinate, its
 daemon manages `/etc/nix/nix.conf` for you.
@@ -339,10 +347,13 @@ These are three different things that are easy to conflate (and the old scripts 
 | `/etc/nixos/`    | Where **NixOS** looks for `configuration.nix` / its flake (`nixos-rebuild`). NixOS-only. |
 | `~/.config/nix/` | The **per-user** Nix config dir (a user-level `nix.conf`, XDG).                          |
 
-None of these means "where my flake repo lives" — that's incidental. On the Mac this repo happens to
-sit at `/etc/nix`, so repo-root and the nix.conf dir coincide; on the work box the repo sits at
-`~/.config/nix`. Because of that, the scripts **derive the flake dir from their own location** and
-never set `NIX_CONF_DIR` (doing so would tell Nix to read `nix.conf` from the repo — wrong on
+None of these means "where my flake repo lives" — that's incidental. On the Mac and the work box
+this repo happens to sit at `/etc/nix`, so repo-root and the nix.conf dir coincide there; on the
+work box specifically `/etc/nix` is owned by the user (not root), since Nix is a per-user install.
+The single-user alternative install path above still uses `~/.config/nix`, since a rootless
+machine has no write access to `/etc` at all. Because of that, the scripts **derive the flake dir
+from their own location** and never set `NIX_CONF_DIR` (doing so would tell Nix to read `nix.conf`
+from the repo — wrong on
 Ubuntu). Note `nix.conf`/`*.crt` are gitignored, so cloning to `~/.config/nix` carries no stray Nix
 config into the user-config path.
 
