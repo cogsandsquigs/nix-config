@@ -6,11 +6,36 @@
 let
     inherit (inputs) nixpkgs nix-darwin home-manager;
 
-    # Every host directory contains an `id.nix` (a plain `{ userName; hostName; }` attrset) that
-    # is the single source of truth for the machine's identity. The builders import it and hand
-    # it to every module as the `hostId` argument, so shared modules (users.nix, home-manager.nix,
-    # …) never hardcode a username, and flake.nix forms the output attribute names from it.
+    # Our own option/safety helpers (see lib/opts.nix), passed to every module as the `tools`
+    # specialArg — on all three host classes, system and home alike.
+    #
+    # Why a dedicated `tools` arg and NOT `lib.my.*`: home-manager owns its modules' `lib` and pins
+    # it via specialArgs, rebuilding it as `pkgs.lib` + its own `lib.hm.*`. Injecting our helpers by
+    # overriding `lib` either clobbers `lib.hm` (home-manager breaks) or is silently ignored (HM's
+    # `lib` outranks a `_module.args.lib` override). A separate arg sidesteps that entirely and reads
+    # uniformly in both system and home modules: `tools.mkEnabled`.
+    #
+    # The one route that *could* yield `lib.my.*` is a nixpkgs lib-overlay (make `pkgs.lib` carry
+    # `.my` so home-manager extends THAT with hm → my + hm both present). We did NOT take it: overlaying
+    # `lib` is discouraged upstream (nixpkgs internals capture the pre-overlay lib, so you get two lib
+    # instances) and it needs asymmetric wiring — an overlay for the home side plus `specialArgs.lib`
+    # for the system side. `tools` is one mechanism, robust and uniform. (The overlay is worth a spike
+    # someday just to gauge its fragility — see the migration plan.)
+    tools = import ./opts.nix { lib = nixpkgs.lib; };
+
+    # Every host directory contains an `id.nix` (a plain `{ hostName; system; users; primaryUser; }`
+    # attrset) that is the single source of truth for the machine's identity. The builders import it
+    # and hand it to every module as the `hostId` argument, so shared modules (users.nix,
+    # home-manager.nix, …) never hardcode a username, and flake.nix forms the output attribute names
+    # from it.
     idOf = host: import (host + "/id.nix");
+
+    # The specialArgs every host shares. Defined once here (rather than repeated per builder) so the
+    # set of globally-available module args has a single source of truth. `hostId` is per-host.
+    specialArgsFor = host: {
+        inherit inputs tools;
+        hostId = idOf host;
+    };
 in
 {
     # Map a function over every system we care about (used for per-system outputs such as
@@ -26,10 +51,7 @@ in
     mkDarwin =
         host:
         nix-darwin.lib.darwinSystem {
-            specialArgs = {
-                inherit inputs;
-                hostId = idOf host;
-            };
+            specialArgs = specialArgsFor host;
             modules = [
                 ../modules/system/darwin
                 host
@@ -40,10 +62,7 @@ in
     mkNixos =
         host:
         nixpkgs.lib.nixosSystem {
-            specialArgs = {
-                inherit inputs;
-                hostId = idOf host;
-            };
+            specialArgs = specialArgsFor host;
             modules = [
                 ../modules/system/nixos
                 host
@@ -72,10 +91,7 @@ in
                     qt.enable = true;
                 };
             };
-            extraSpecialArgs = {
-                inherit inputs;
-                hostId = id;
-            };
+            extraSpecialArgs = specialArgsFor host;
             modules = [
                 (../users + "/${user}/home.nix")
                 { home.username = user; }
