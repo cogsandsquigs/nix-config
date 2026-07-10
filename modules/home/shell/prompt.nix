@@ -68,14 +68,14 @@
             cmd_duration = {
                 disabled = false;
                 min_time = 500; # in millis
-                format = "took [ $duration](bold yellow) ";
+                format = "took [$duration](bold yellow) ";
                 style = "bold yellow";
             };
 
             # Time/terminal clock
             time = {
                 disabled = false;
-                format = "at [ $time]($style) ";
+                format = "at [$time]($style) ";
                 time_format = "%I:%M:%S %P";
                 style = "bold purple";
             };
