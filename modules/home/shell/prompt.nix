@@ -27,7 +27,7 @@
             # NOTE: We need to use `''` in front of any `${<...snip...>}` since that's how nix string interpolation is
             # escaped. See: https://nix.dev/manual/nix/2.25/language/string-interpolation
             format = ''
-                [╭─](bright-black) $os$directory$git_branch$git_commit$git_state$git_metrics$git_status$c$cpp$rust$nodejs$bun$python$go$java$kotlin$scala$package$direnv$fill $cmd_duration$time''${custom.zellij}
+                [╭─](bright-black) $os$hostname$directory$git_branch$git_commit$git_state$git_metrics$git_status$c$cpp$rust$nodejs$bun$python$go$java$kotlin$scala$package$direnv$fill $cmd_duration$time''${custom.zellij}
                 [╰─](bright-black) $character
             '';
 
@@ -96,6 +96,16 @@
                 symbols = {
                     Macos = " ";
                 };
+            };
+
+            # Hostname detection and symbols
+            hostname = {
+                format = "[$ssh_symbol$hostname]($style) in ";
+                style = "bold dimmed green";
+                ssh_only = false;
+                ssh_symbol = "🌐 ";
+                disabled = false;
+                aliases = { }; # TODO: make module accessing all info (?) of all machines, put aliases for certain machines here.
             };
 
             ##########################
