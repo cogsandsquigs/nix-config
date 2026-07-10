@@ -27,7 +27,7 @@
             # NOTE: We need to use `''` in front of any `${<...snip...>}` since that's how nix string interpolation is
             # escaped. See: https://nix.dev/manual/nix/2.25/language/string-interpolation
             format = ''
-                [╭─](bright-black) $os$username$hostname$directory$git_branch$git_commit$git_state$git_metrics$git_status$c$cpp$rust$nodejs$bun$python$go$java$kotlin$scala$package$direnv$fill $cmd_duration$time''${custom.zellij}
+                [╭─](bright-black) ''${custom.ssh}$username$hostname$os$directory$git_branch$git_commit$git_state$git_metrics$git_status$c$cpp$rust$nodejs$bun$python$go$java$kotlin$scala$package$direnv$fill $cmd_duration$time''${custom.zellij}
                 [╰─](bright-black) $character
             '';
 
@@ -88,22 +88,26 @@
 
             # OS detection and symbols
             os = {
-                format = "[$symbol]($style)";
+                format = "[$symbol]($style) in "; # See `settings.hostname`
                 style = "bold white";
                 disabled = false;
 
-                # The symbols corresponding to each OS. If the OS is not in this list, it will use the default symbol.
+                # The symbols corresponding to each OS. If the OS is not in this list, it will use
+                # the default symbol.
+                #
+                # NOTE: These require nerd fonts to use!
                 symbols = {
-                    Macos = " ";
+                    Macos = " ";
+                    Ubuntu = " ";
                 };
             };
 
             # Hostname detection and symbols
             hostname = {
                 # NOTE: Disabling the ssh symbol since I have my own command to do so because I want
-                # SSH to display before the user. See `custom.ssh`.
-                # format = "[$ssh_symbol$hostname]($style) in ";
-                format = "[$hostname]($style) in ";
+                # SSH to display before the user. See `settings.custom.ssh`.
+                #format = "[$ssh_symbol$hostname]($style) in ";
+                format = "[$hostname]($style) "; # NOTE: No "in" since $os comes after, see `settings.os`
                 style = "bold green";
                 ssh_only = false;
                 ssh_symbol = "🌐 ";
