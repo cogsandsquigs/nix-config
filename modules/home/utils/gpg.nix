@@ -26,8 +26,8 @@
             enableZshIntegration = true;
             enableFishIntegration = true;
 
-            # pinentry.package & OS-specific gpg-agent config is set per-OS in
-            # ../../system/{darwin,nixos}/gpg-agent.nix.
+            # pinentry.package & the macOS wake-time restart are set per-OS in ./gpg-agent.nix
+            # (imported alongside this file).
         };
     };
 }

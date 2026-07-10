@@ -9,6 +9,7 @@
 {
     imports = [
         ./gpg.nix
+        ./gpg-agent.nix
         ./yazi.nix
         ./zellij.nix
     ];
