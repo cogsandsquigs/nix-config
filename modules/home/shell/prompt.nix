@@ -101,7 +101,7 @@
             # Hostname detection and symbols
             hostname = {
                 format = "[$ssh_symbol$hostname]($style) in ";
-                style = "bold dimmed green";
+                style = "bold green";
                 ssh_only = false;
                 ssh_symbol = "🌐 ";
                 disabled = false;
