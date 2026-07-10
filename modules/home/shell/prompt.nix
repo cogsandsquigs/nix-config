@@ -27,7 +27,7 @@
             # NOTE: We need to use `''` in front of any `${<...snip...>}` since that's how nix string interpolation is
             # escaped. See: https://nix.dev/manual/nix/2.25/language/string-interpolation
             format = ''
-                [╭─](bright-black) ''${custom.ssh}$username$hostname$os$directory$git_branch$git_commit$git_state$git_metrics$git_status$c$cpp$rust$nodejs$bun$python$go$java$kotlin$scala$package$direnv$fill $cmd_duration$time''${custom.zellij}
+                [╭─](bright-black) $os$username$hostname$directory$git_branch$git_commit$git_state$git_metrics$git_status$c$cpp$rust$nodejs$bun$python$go$java$kotlin$scala$package$direnv$fill $cmd_duration$time''${custom.zellij}
                 [╰─](bright-black) $character
             '';
 
@@ -104,13 +104,16 @@
 
             # Hostname detection and symbols
             hostname = {
-                # NOTE: Disabling the ssh symbol since I have my own command to do so because I want
-                # SSH to display before the user. See `settings.custom.ssh`.
-                #format = "[$ssh_symbol$hostname]($style) in ";
-                format = "[$hostname]($style) "; # NOTE: No "in" since $os comes after, see `settings.os`
+                # # NOTE: Disabling the ssh symbol since I have my own command to do so because I want
+                # # SSH to display before the user. See `settings.custom.ssh`.
+                # #format = "[$ssh_symbol$hostname]($style) in ";
+                # format = "[$hostname]($style) "; # NOTE: No "in" since $os comes after, see `settings.os`
+
+                # Nope, new better idea. ssh after hostname, os first... ...
+                format = "[$hostname$ssh_symbol]($style) "; # NOTE: No "in" since $os comes after, see `settings.os`
                 style = "bold green";
                 ssh_only = false;
-                ssh_symbol = "🌐 ";
+                ssh_symbol = " 🌐"; # NOTE: space in front to make room btwn it and hostname...
                 disabled = false;
                 aliases = { }; # TODO: make module accessing all info (?) of all machines, put aliases for certain machines here.
             };
@@ -180,6 +183,7 @@
                     description = "Shows the current Zellij monitor you are in";
                     when = "test $ZELLIJ && test ! $__ZELLIJ_DONT_SHOW_STATUS"; # NOTE: `$__ZELLIJ_DONT_SHOW_STATUS` set by layout(s) that show zellij status
                     command = "echo $ZELLIJ_SESSION_NAME";
+                    disabled = false;
                 };
             };
         };
