@@ -27,7 +27,7 @@
             # NOTE: We need to use `''` in front of any `${<...snip...>}` since that's how nix string interpolation is
             # escaped. See: https://nix.dev/manual/nix/2.25/language/string-interpolation
             format = ''
-                [╭─](bright-black) $os$username@$hostname$directory$git_branch$git_commit$git_state$git_metrics$git_status$c$cpp$rust$nodejs$bun$python$go$java$kotlin$scala$package$direnv$fill $cmd_duration$time''${custom.zellij}
+                [╭─](bright-black) $os$username$hostname$directory$git_branch$git_commit$git_state$git_metrics$git_status$c$cpp$rust$nodejs$bun$python$go$java$kotlin$scala$package$direnv$fill $cmd_duration$time''${custom.zellij}
                 [╰─](bright-black) $character
             '';
 
@@ -100,7 +100,10 @@
 
             # Hostname detection and symbols
             hostname = {
-                format = "[$ssh_symbol$hostname]($style) in ";
+                # NOTE: Disabling the ssh symbol since I have my own command to do so because I want
+                # SSH to display before the user. See `custom.ssh`.
+                # format = "[$ssh_symbol$hostname]($style) in ";
+                format = "[$hostname]($style) in ";
                 style = "bold green";
                 ssh_only = false;
                 ssh_symbol = "🌐 ";
@@ -108,6 +111,15 @@
                 aliases = { }; # TODO: make module accessing all info (?) of all machines, put aliases for certain machines here.
             };
 
+            # Username detection and symbols
+            username = {
+                style_root = "bold red";
+                style_user = "bold yellow";
+                detect_env_vars = [ ];
+                format = "[$user]($style)@";
+                show_always = true;
+                disabled = false;
+            };
             ##########################
             # LANGUAGES AND PACKAGES #
             ##########################
@@ -147,11 +159,21 @@
             ###################
 
             custom = {
+                # SSH checking, apart from hostname since we want ssh visibility BEFORE username AND
+                # hostname
+                ssh = {
+                    when = "test $SSH_TTY || test $SSH_CONNECTION || test $SSH_CLIENT";
+                    format = "🌐 ";
+                    description = "Displays if you're currently in an SSH session.";
+                    disabled = false;
+                };
+
                 # Zellij integration
                 zellij = {
                     # NOTE: We need to do `\\` so it outputs the string `\(...\)` which then gets interpolated via Starship
                     format = "in [Zellij \\($output\\)]($style) ";
                     style = "green bold";
+                    description = "Shows the current Zellij monitor you are in";
                     when = "test $ZELLIJ && test ! $__ZELLIJ_DONT_SHOW_STATUS"; # NOTE: `$__ZELLIJ_DONT_SHOW_STATUS` set by layout(s) that show zellij status
                     command = "echo $ZELLIJ_SESSION_NAME";
                 };
