@@ -1,4 +1,10 @@
-{ pkgs, lib, ... }:
+{
+    pkgs,
+    lib,
+    config,
+    tools,
+    ...
+}:
 let
     inherit (pkgs) stdenv;
     inherit (lib) mkIf optionalAttrs;
@@ -9,58 +15,62 @@ let
     keychain = optionalAttrs stdenv.isDarwin { UseKeychain = "yes"; };
 in
 {
-    programs.ssh = {
-        enable = true;
-        enableDefaultConfig = false;
+    options.my.user.ssh.enable = tools.mkEnabled "ssh client config";
 
-        includes = [
-            # Required for Colima to work properly
-            (mkIf stdenv.isDarwin "~/.colima/ssh_config")
-        ];
+    config = mkIf config.my.user.ssh.enable {
+        programs.ssh = {
+            enable = true;
+            enableDefaultConfig = false;
 
-        # Per-host settings rules
-        settings = {
-            # Default values!
-            # See: https://home-manager-options.extranix.com/?query=programs.ssh&release=master
-            "*" = {
-                ForwardAgent = false;
-                Compression = false;
-                ServerAliveInterval = 0;
-                ServerAliveCountMax = 3;
-                HashKnownHosts = false;
-                UserKnownHostsFile = "~/.ssh/known_hosts";
-                ControlMaster = "no";
-                ControlPath = "~/.ssh/master-%r@%n:%p";
-                ControlPersist = "no";
+            includes = [
+                # Required for Colima to work properly
+                (mkIf stdenv.isDarwin "~/.colima/ssh_config")
+            ];
 
-                IdentityFile = [
-                    "~/.ssh/id_ed25519"
-                    "~/.ssh/homeserver_rsa"
-                    "~/.ssh/homeserver_rsa"
-                    "~/.ssh/imperial_gitlab_ed25519"
-                ];
-                AddKeysToAgent = "yes";
-            }
-            // keychain;
+            # Per-host settings rules
+            settings = {
+                # Default values!
+                # See: https://home-manager-options.extranix.com/?query=programs.ssh&release=master
+                "*" = {
+                    ForwardAgent = false;
+                    Compression = false;
+                    ServerAliveInterval = 0;
+                    ServerAliveCountMax = 3;
+                    HashKnownHosts = false;
+                    UserKnownHostsFile = "~/.ssh/known_hosts";
+                    ControlMaster = "no";
+                    ControlPath = "~/.ssh/master-%r@%n:%p";
+                    ControlPersist = "no";
 
-            "*.doc.ic.ac.uk" = {
-                User = "ip124";
-                IdentityFile = "~/.ssh/imperial_doc_ed25519";
-                AddKeysToAgent = "yes";
-            }
-            // keychain;
+                    IdentityFile = [
+                        "~/.ssh/id_ed25519"
+                        "~/.ssh/homeserver_rsa"
+                        "~/.ssh/homeserver_rsa"
+                        "~/.ssh/imperial_gitlab_ed25519"
+                    ];
+                    AddKeysToAgent = "yes";
+                }
+                // keychain;
 
-            "gitlab.doc.ic.ac.uk" = {
-                IdentityFile = "~/.ssh/imperial_gitlab_ed25519";
-                AddKeysToAgent = "yes";
-            }
-            // keychain;
+                "*.doc.ic.ac.uk" = {
+                    User = "ip124";
+                    IdentityFile = "~/.ssh/imperial_doc_ed25519";
+                    AddKeysToAgent = "yes";
+                }
+                // keychain;
 
-            "github.com" = {
-                IdentityFile = "~/.ssh/id_ed25519";
-                AddKeysToAgent = "yes";
-            }
-            // keychain;
+                "gitlab.doc.ic.ac.uk" = {
+                    IdentityFile = "~/.ssh/imperial_gitlab_ed25519";
+                    AddKeysToAgent = "yes";
+                }
+                // keychain;
+
+                "github.com" = {
+                    IdentityFile = "~/.ssh/id_ed25519";
+                    AddKeysToAgent = "yes";
+                }
+                // keychain;
+            };
         };
     };
 }

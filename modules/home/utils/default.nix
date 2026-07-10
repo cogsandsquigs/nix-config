@@ -1,37 +1,49 @@
 # General CLI utilities.
-{ pkgs, ... }: {
+{
+    pkgs,
+    lib,
+    config,
+    tools,
+    ...
+}:
+{
     imports = [
         ./gpg.nix
         ./yazi.nix
         ./zellij.nix
     ];
 
-    home.packages = with pkgs; [
-        fzf
-        ripgrep
-        jq
-        just
-        tree
-        magic-wormhole
-        fontconfig
-        inetutils
-        eza
-        dust
-        bat
-        zoxide
-        lazygit
-        fastfetch
-    ];
+    options.my.user.utils.enable =
+        tools.mkEnabled "CLI utilities (gpg, yazi, zellij, fzf, ripgrep, eza, …)";
 
-    programs.eza = {
-        colors = "auto";
-        git = true;
-        icons = true;
-    };
+    config = lib.mkIf config.my.user.utils.enable {
+        home.packages = with pkgs; [
+            fzf
+            ripgrep
+            jq
+            just
+            tree
+            magic-wormhole
+            fontconfig
+            inetutils
+            eza
+            dust
+            bat
+            zoxide
+            lazygit
+            fastfetch
+        ];
 
-    programs.zoxide = {
-        enable = true;
-        enableZshIntegration = true;
-        enableFishIntegration = true;
+        programs.eza = {
+            colors = "auto";
+            git = true;
+            icons = true;
+        };
+
+        programs.zoxide = {
+            enable = true;
+            enableZshIntegration = true;
+            enableFishIntegration = true;
+        };
     };
 }

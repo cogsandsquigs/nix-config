@@ -70,81 +70,83 @@ let
     pathsToString = f: (concatMapStrings (s: (f s) + "\n") binPaths);
 in
 {
-    home.packages = with pkgs; [
-        fish
-        zsh
-    ];
+    config = lib.mkIf config.my.user.shell.enable {
+        home.packages = with pkgs; [
+            fish
+            zsh
+        ];
 
-    programs.fish = {
-        enable = true;
-        generateCompletions = true;
+        programs.fish = {
+            enable = true;
+            generateCompletions = true;
 
-        shellAliases = aliases;
+            shellAliases = aliases;
 
-        interactiveShellInit = ''
-            set fish_greeting # Disable fish greeting
-            fish_config theme choose "Catppuccin Mocha" # Set theme. We use `choose` since using
-                                                        # `save` forces a prompt, which is annoying,
-                                                        # even though `choose` doesn't make it
-                                                        # "permanent".
-        '';
+            interactiveShellInit = ''
+                set fish_greeting # Disable fish greeting
+                fish_config theme choose "Catppuccin Mocha" # Set theme. We use `choose` since using
+                                                            # `save` forces a prompt, which is annoying,
+                                                            # even though `choose` doesn't make it
+                                                            # "permanent".
+            '';
 
-        shellInit = ''
-            ${variablesToString (name: val: "set -gx ${name} ${val}")}
-            ${pathsToString (path: "fish_add_path ${path}")}
-        '';
+            shellInit = ''
+                ${variablesToString (name: val: "set -gx ${name} ${val}")}
+                ${pathsToString (path: "fish_add_path ${path}")}
+            '';
 
-        # NOTE: Since Fisher isn't really supported thru Home-manager, we use
-        # xdg to link the theme. See below
-    };
-
-    # NOTE: Still part of fish config!
-    xdg.configFile =
-        let
-            catppuccin-fish = pkgs.fetchFromGitHub {
-                owner = "catppuccin";
-                repo = "fish";
-                rev = "a3b9eb5eaf2171ba1359fe98f20d226c016568cf";
-                hash = "sha256-shQxlyoauXJACoZWtRUbRMxmm10R8vOigXwjxBhG8ng=";
-            };
-        in
-        {
-            "fish/themes/Catppuccin Mocha.theme".source = "${catppuccin-fish}/themes/Catppuccin Mocha.theme";
+            # NOTE: Since Fisher isn't really supported thru Home-manager, we use
+            # xdg to link the theme. See below
         };
 
-    programs.bash = {
-        enable = true;
+        # NOTE: Still part of fish config!
+        xdg.configFile =
+            let
+                catppuccin-fish = pkgs.fetchFromGitHub {
+                    owner = "catppuccin";
+                    repo = "fish";
+                    rev = "a3b9eb5eaf2171ba1359fe98f20d226c016568cf";
+                    hash = "sha256-shQxlyoauXJACoZWtRUbRMxmm10R8vOigXwjxBhG8ng=";
+                };
+            in
+            {
+                "fish/themes/Catppuccin Mocha.theme".source = "${catppuccin-fish}/themes/Catppuccin Mocha.theme";
+            };
 
-        shellAliases = aliases;
+        programs.bash = {
+            enable = true;
 
-        initExtra = ''
-            ${variablesToString (name: val: "export ${name}=\"${val}\"")}
-            ${pathsToString (path: "export PATH=${path}:$PATH")}
-        '';
-    };
+            shellAliases = aliases;
 
-    programs.zsh = {
-        enable = true;
-        enableCompletion = true;
-        autosuggestion.enable = true;
-        syntaxHighlighting.enable = true;
-        history.size = 10000;
-        autocd = true;
+            initExtra = ''
+                ${variablesToString (name: val: "export ${name}=\"${val}\"")}
+                ${pathsToString (path: "export PATH=${path}:$PATH")}
+            '';
+        };
 
-        initContent = ''
-            # Source the nix environment. A multi-user (daemon) install exposes this at
-            # /etc/profile.d/nix.sh; a single-user install exposes it under the user profile.
-            # Guarded so a missing file never errors on shell startup, and works for both.
-            for __nix_sh in /etc/profile.d/nix.sh "$HOME/.nix-profile/etc/profile.d/nix.sh"; do
-                [ -e "$__nix_sh" ] && source "$__nix_sh" && break
-            done
-        '';
+        programs.zsh = {
+            enable = true;
+            enableCompletion = true;
+            autosuggestion.enable = true;
+            syntaxHighlighting.enable = true;
+            history.size = 10000;
+            autocd = true;
 
-        envExtra = ''
-            ${variablesToString (name: val: "export ${name}=\"${val}\"")}
-            ${pathsToString (path: "export PATH=${path}:$PATH")}
-        '';
+            initContent = ''
+                # Source the nix environment. A multi-user (daemon) install exposes this at
+                # /etc/profile.d/nix.sh; a single-user install exposes it under the user profile.
+                # Guarded so a missing file never errors on shell startup, and works for both.
+                for __nix_sh in /etc/profile.d/nix.sh "$HOME/.nix-profile/etc/profile.d/nix.sh"; do
+                    [ -e "$__nix_sh" ] && source "$__nix_sh" && break
+                done
+            '';
 
-        shellAliases = aliases;
+            envExtra = ''
+                ${variablesToString (name: val: "export ${name}=\"${val}\"")}
+                ${pathsToString (path: "export PATH=${path}:$PATH")}
+            '';
+
+            shellAliases = aliases;
+        };
     };
 }
