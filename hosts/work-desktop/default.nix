@@ -20,12 +20,12 @@
     # This flake is checked out at /etc/nix on the work box, same as the system hosts (owned by
     # ipratt, not root, since it's a per-user Nix install). Drives the rebuild/upgrade/… shell
     # aliases.
-    my.flakeDir = "/etc/nix";
+    my.user.flakeDir = "/etc/nix";
 
     # Work git identity. Signing is off so commits work out of the box on a machine that doesn't
     # have the personal GPG key. To sign with a work key later: import the key, then set
-    #   my.git.signingKey = "<key-id>"; my.git.signByDefault = true;
-    my.git = {
+    #   my.user.git.signingKey = "<key-id>"; my.user.git.signByDefault = true;
+    my.user.git = {
         email = "ian.pratt@arcticlake.com";
         signingKey = null;
         signByDefault = false;

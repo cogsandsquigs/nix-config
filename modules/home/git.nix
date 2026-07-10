@@ -9,12 +9,12 @@
         enable = true;
 
         settings = {
-            # Basic user settings. Values come from `my.git.*` (see modules/home/options.nix) so
-            # a host can override the identity without editing this file — e.g. the work box uses
-            # a work email.
+            # Basic user settings. Values come from `my.user.git.*` (see modules/home/options.nix)
+            # so a user unit can override the identity without editing this file — e.g. the work
+            # user uses a work email.
             user = {
-                name = config.my.git.userName;
-                email = config.my.git.email;
+                name = config.my.user.git.userName;
+                email = config.my.user.git.email;
             };
 
             url = {
@@ -39,8 +39,8 @@
         };
 
         signing = {
-            key = config.my.git.signingKey;
-            signByDefault = config.my.git.signByDefault;
+            key = config.my.user.git.signingKey;
+            signByDefault = config.my.user.git.signByDefault;
             # signer = "${pkgs.gnupg}/bin/gpg"; # NOTE: See `extraConfig.gpg.program`
         };
     };

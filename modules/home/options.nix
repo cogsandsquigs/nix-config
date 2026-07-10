@@ -6,7 +6,9 @@ let
     inherit (lib) mkOption types;
 in
 {
-    options.my = {
+    # `my.user.*` — user-scope knobs (identity, per-user paths). A user unit or host flips these
+    # without editing the shared feature modules. (System-scope knobs will live under `my.sys.*`.)
+    options.my.user = {
         # Absolute path to this flake's working tree on the host. The shell aliases
         # (rebuild/upgrade/…) point here. Personal system hosts keep the repo at /etc/nix;
         # the standalone work box keeps it at ~/.config/nix.

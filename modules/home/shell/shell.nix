@@ -11,7 +11,7 @@ let
 
     # Where this flake lives on the host (default /etc/nix; the standalone work box overrides
     # this to ~/.config/nix). See modules/home/options.nix.
-    flakeDir = config.my.flakeDir;
+    flakeDir = config.my.user.flakeDir;
 
     aliases = {
         ls = "eza --icons";
