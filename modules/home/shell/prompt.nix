@@ -97,8 +97,8 @@
                 #
                 # NOTE: These require nerd fonts to use!
                 symbols = {
-                    Macos = " ";
-                    Ubuntu = " ";
+                    Macos = ""; # No space since MacOS symbol works... # TODO: Replace w/ nerd fonts one when supported...
+                    Ubuntu = "";
                 };
             };
 
