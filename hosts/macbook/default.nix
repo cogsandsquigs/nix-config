@@ -3,14 +3,15 @@
 # modules/system/darwin and modules/home.
 { pkgs, hostId, ... }:
 let
-    # Identity (hostname + primary user) comes from ./id.nix via the hostId specialArg — see the
-    # README `id.nix` convention.
-    inherit (hostId) hostName userName;
+    # Host identity (hostname, platform, primary user) comes from ./id.nix via the hostId
+    # specialArg — see the README `id.nix` convention. `primaryUser` owns host-level singletons
+    # (system.primaryUser, the Homebrew prefix).
+    inherit (hostId) hostName primaryUser;
 in
 {
     imports = [ ./launchd.nix ];
 
-    nixpkgs.hostPlatform = "aarch64-darwin";
+    nixpkgs.hostPlatform = hostId.system;
 
     networking.hostName = hostName;
     networking.computerName = hostName;
@@ -25,16 +26,16 @@ in
     };
 
     system = {
-        primaryUser = userName;
+        primaryUser = primaryUser;
 
         # activationScripts are executed every time you boot the system or run `darwin-rebuild`.
         activationScripts = {
             postActivation.text = ''
                 # activateSettings -u will reload the settings from the database and apply them
                 # to the current session, so we do not need to logout and login again to make
-                # the changes take effect. We do `sudo -u ${userName}` to run the command as the
-                # user.
-                sudo -u ${userName} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+                # the changes take effect. We do `sudo -u ${primaryUser}` to run the command as
+                # the user.
+                sudo -u ${primaryUser} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
             '';
         };
 
@@ -66,7 +67,7 @@ in
 
     homebrew = {
         enable = true;
-        user = userName; # User owning the Homebrew prefix
+        user = primaryUser; # User owning the Homebrew prefix
 
         onActivation = {
             autoUpdate = true; # Auto-update

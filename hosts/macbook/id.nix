@@ -1,8 +1,10 @@
-# Identity of the macbook host — see the `id.nix` convention in the README. A plain attrset
-# (userName + hostName) that is the single source of truth for who/what this machine is. The
-# builder (lib.mkDarwin) imports it and passes it to every module as the `hostId` argument, and
-# flake.nix reads it to form the darwinConfigurations attribute name.
+# Host identity for the macbook — HOST-ONLY (no user identity; that lives in users/<name>/). A
+# plain attrset read by lib.mkDarwin (as the `hostId` specialArg) and by flake.nix (for the
+# darwinConfigurations attr name). `users` lists the user units placed on this host; `primaryUser`
+# is the one that owns host-level singletons (system.primaryUser, the Homebrew prefix).
 {
-    userName = "cogs";
     hostName = "Ians-GlorpBook-Pro";
+    system = "aarch64-darwin";
+    users = [ "cogs" ];
+    primaryUser = "cogs";
 }

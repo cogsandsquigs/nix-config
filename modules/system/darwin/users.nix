@@ -1,8 +1,5 @@
-# System-level user account for the host's primary user (home-manager config lives under
-# modules/home). The username comes from the host's id.nix via the `hostId` specialArg.
-{ pkgs, hostId, ... }: {
-    users.users.${hostId.userName} = {
-        description = hostId.userName;
-        shell = pkgs.fish;
-    };
+# System accounts for the users this host declares — see modules/system/nixos/users.nix for the
+# convention. Each user's account attrs live in users/<name>/system.nix (class-portable).
+{ hostId, ... }: {
+    imports = map (name: ../../../users + "/${name}/system.nix") hostId.users;
 }

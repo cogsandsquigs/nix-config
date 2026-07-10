@@ -80,7 +80,7 @@
 
             # Work desktop (standalone home-manager on Ubuntu 24, Nix installed per-user).
             # Apply with: home-manager switch --flake ~/.config/nix#<userName>@<hostName>
-            homeConfigurations."${workId.userName}@${workId.hostName}" = lib.mkHome { host = workDesktop; };
+            homeConfigurations."${workId.primaryUser}@${workId.hostName}" = lib.mkHome { host = workDesktop; };
 
             # `nix fmt` → treefmt, driven by ./treefmt.toml (4-space, 100 cols — the repo's real
             # style). Wrapped with the formatters treefmt invokes (nixfmt/shfmt/prettier) on PATH

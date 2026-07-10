@@ -1,8 +1,8 @@
-# Identity of the home-desktop host — see the `id.nix` convention in the README. A plain attrset
-# (userName + hostName) that is the single source of truth for who/what this machine is. The
-# builder (lib.mkNixos) imports it and passes it to every module as the `hostId` argument, and
-# flake.nix reads it to form the nixosConfigurations attribute name.
+# Host identity for home-desktop — HOST-ONLY (see hosts/macbook/id.nix for the convention). Read
+# by lib.mkNixos (as `hostId`) and flake.nix (for the nixosConfigurations attr name).
 {
-    userName = "cogs";
     hostName = "home-desktop";
+    system = "x86_64-linux";
+    users = [ "cogs" ];
+    primaryUser = "cogs";
 }

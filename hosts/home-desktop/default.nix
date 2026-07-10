@@ -8,7 +8,7 @@
 # NOTE: this is the *personal* Linux box. The work machine is a separate, leaner standalone
 # home-manager config — see hosts/work-desktop.
 { hostId, ... }: {
-    nixpkgs.hostPlatform = "x86_64-linux";
+    nixpkgs.hostPlatform = hostId.system;
 
     # Hostname from ./id.nix via the hostId specialArg (README `id.nix` convention).
     networking.hostName = hostId.hostName;

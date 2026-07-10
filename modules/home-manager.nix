@@ -1,14 +1,14 @@
 # Home-manager integration, shared by both the darwin and nixos hosts.
 #
 # The class-specific integration module (`home-manager.{darwin,nixos}Modules.home-manager`) is
-# imported by each `system/<class>/default.nix`; everything here is class-agnostic and simply
-# points the host's primary user (from its id.nix, via the `hostId` specialArg) at the full
-# personal home profile under `./home/personal.nix`.
+# imported by each `system/<class>/default.nix`; everything here is class-agnostic and points each
+# user the host declares (hostId.users, from its id.nix) at that user's home unit under
+# `../users/<name>/home.nix`. The user unit — not this module — decides the feature set (personal
+# vs work, …), keeping users isolated and portable across hosts.
 #
-# NOTE: both system hosts (MacBook, home-desktop) are personal machines, so they get the full
-# profile. The work machine is a *standalone* home-manager config that does not go through this
-# module at all — see lib.mkHome and hosts/work-desktop.
-{ inputs, hostId, ... }: {
+# NOTE: the work machine is a *standalone* home-manager config that does not go through this module
+# at all — see lib.mkHome and hosts/work-desktop.
+{ inputs, hostId, lib, ... }: {
     home-manager = {
         verbose = true;
         useGlobalPkgs = true; # home-manager uses the system's `pkgs` (so nixpkgs config is shared)
@@ -17,6 +17,8 @@
 
         extraSpecialArgs = { inherit inputs hostId; };
 
-        users.${hostId.userName}.imports = [ ./home/personal.nix ];
+        users = lib.genAttrs hostId.users (name: {
+            imports = [ (../users + "/${name}/home.nix") ];
+        });
     };
 }

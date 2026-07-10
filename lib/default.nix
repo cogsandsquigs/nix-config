@@ -52,19 +52,21 @@ in
 
     # Build a STANDALONE home-manager configuration — for a machine where Nix is installed
     # per-user and there is no NixOS/nix-darwin system layer (e.g. the work desktop on Ubuntu).
-    # `host` is a path to the host module (e.g. ./hosts/work-desktop), which sets any `my.*`
-    # overrides; `hostId` supplies the username. `system` defaults to x86_64-linux.
+    # `host` is a path to the host module (e.g. ./hosts/work-desktop); its id.nix supplies the
+    # platform (`system`) and the single user unit to apply. The user's home.nix — not this
+    # builder — owns the feature set, so a standalone box is just "this user, no system layer".
     #
     # Unlike the system hosts (which get nixpkgs config via useGlobalPkgs), a standalone config
     # owns its own `pkgs`, so allowUnfree/qt are set here to match modules/system/common/nixpkgs.
     mkHome =
-        {
-            host,
-            system ? "x86_64-linux",
-        }:
+        { host }:
+        let
+            id = idOf host;
+            user = builtins.head id.users;
+        in
         home-manager.lib.homeManagerConfiguration {
             pkgs = import nixpkgs {
-                inherit system;
+                inherit (id) system;
                 config = {
                     allowUnfree = true;
                     qt.enable = true;
@@ -72,10 +74,11 @@ in
             };
             extraSpecialArgs = {
                 inherit inputs;
-                hostId = idOf host;
+                hostId = id;
             };
             modules = [
-                ../modules/home
+                (../users + "/${user}/home.nix")
+                { home.username = user; }
                 host
             ];
         };

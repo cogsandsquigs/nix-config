@@ -1,10 +1,10 @@
-# Identity of the work-desktop host — see the `id.nix` convention in the README. A plain attrset
-# (userName + hostName) that is the single source of truth for who/what this machine is. The
-# builder (lib.mkHome) imports it and passes it to every module as the `hostId` argument;
-# flake.nix reads it to form the homeConfigurations attribute name ("<userName>@<hostName>"); and
-# scripts/rebuild.sh auto-discovers that name from the flake, so renaming the box is a one-file
-# change here — nothing downstream hardcodes it.
+# Host identity for work-desktop — HOST-ONLY (see hosts/macbook/id.nix for the convention). Read
+# by lib.mkHome (as `hostId`) and flake.nix (for the homeConfigurations attr name,
+# "<primaryUser>@<hostName>"). This box is standalone home-manager (per-user Nix, no system
+# layer), so only its single user's home config applies; no system account is declared.
 {
-    userName = "ipratt";
     hostName = "work-desktop";
+    system = "x86_64-linux";
+    users = [ "ipratt" ];
+    primaryUser = "ipratt";
 }
