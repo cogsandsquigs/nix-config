@@ -88,7 +88,7 @@
 
             # OS detection and symbols
             os = {
-                format = "[$symbol]($style) in "; # See `settings.hostname`
+                format = "[$symbol]($style)";
                 style = "bold white";
                 disabled = false;
 
@@ -96,21 +96,17 @@
                 # the default symbol.
                 #
                 # NOTE: These require nerd fonts to use!
+                # NOTE: Need spaces since format doesn't have spaces, and spacing might be different
+                # per-symbol (unicode weirdness).
                 symbols = {
-                    Macos = ""; # No space since MacOS symbol works... # TODO: Replace w/ nerd fonts one when supported...
-                    Ubuntu = "";
+                    Macos = " ";
+                    Ubuntu = " ";
                 };
             };
 
             # Hostname detection and symbols
             hostname = {
-                # # NOTE: Disabling the ssh symbol since I have my own command to do so because I want
-                # # SSH to display before the user. See `settings.custom.ssh`.
-                # #format = "[$ssh_symbol$hostname]($style) in ";
-                # format = "[$hostname]($style) "; # NOTE: No "in" since $os comes after, see `settings.os`
-
-                # Nope, new better idea. ssh after hostname, os first... ...
-                format = "[$hostname$ssh_symbol]($style) "; # NOTE: No "in" since $os comes after, see `settings.os`
+                format = "[$hostname$ssh_symbol]($style) in ";
                 style = "bold green";
                 ssh_only = false;
                 ssh_symbol = " 🌐"; # NOTE: space in front to make room btwn it and hostname...
