@@ -11,57 +11,71 @@ its siblings and children, so you can read a folder top-down to see exactly what
 
 Three hosts are built:
 
-| Host                 | Class        | Platform         | Attribute                                   | Profile             |
-| -------------------- | ------------ | ---------------- | ------------------------------------------- | ------------------- |
-| `Ians-GlorpBook-Pro` | nix-darwin   | `aarch64-darwin` | `darwinConfigurations."Ians-GlorpBook-Pro"` | personal (full)     |
-| `home-desktop`       | NixOS        | `x86_64-linux`   | `nixosConfigurations.home-desktop`          | personal (full)     |
-| `work-desktop`       | home-manager | `x86_64-linux`   | `homeConfigurations."ipratt@work-desktop"`  | core (develop-only) |
+| Host                 | Class        | Platform         | Attribute                                   | User(s)            |
+| -------------------- | ------------ | ---------------- | ------------------------------------------- | ------------------ |
+| `Ians-GlorpBook-Pro` | nix-darwin   | `aarch64-darwin` | `darwinConfigurations."Ians-GlorpBook-Pro"` | `cogs` (personal)  |
+| `home-desktop`       | NixOS        | `x86_64-linux`   | `nixosConfigurations.home-desktop`          | `cogs` (personal)  |
+| `work-desktop`       | home-manager | `x86_64-linux`   | `homeConfigurations."ipratt@work-desktop"`  | `ipratt` (work)    |
 
 The first two are **system** configs (nix-darwin / NixOS) applied with `*-rebuild`. The third is a
 **standalone home-manager** config for a work machine (Ubuntu 24) where Nix is installed per-user —
 there is no system layer, and it's applied with `home-manager switch`.
 
-**Profiles.** The home config is split so a machine picks how much of it to take:
+**Two layers of selection.** A host picks _which users_ live on it; a user picks _which home
+features_ it wants. Neither touches feature-module code — that's the whole design (see
+[the `users/` layer](#the-users-layer)):
 
-- `modules/home` (core) — the "develop + as-needed" baseline: shell, terminal, CLI utils, and the
-  full dev toolchain. This is all the **work** box gets.
-- `modules/home/personal.nix` — core **plus** games and personal GUI apps (Discord, Obsidian, …).
-  The **personal** machines (MacBook, home-desktop) get this.
+- **`hosts/<host>/`** — pure host selection: platform, host-only tweaks, and the list of user units
+  placed on the machine (`id.nix`'s `users`).
+- **`users/<user>/`** — an **isolated, portable unit**: one human's identity, home feature set, and
+  (on full-OS hosts) system account. The same user can be dropped onto any host by name. `cogs` pulls
+  the full personal profile (core + games + GUI apps); `ipratt` pulls the lean core profile
+  (shell, terminal, CLI utils, dev toolchain) with a work git identity.
+
+The underlying home bundles still live under `modules/home`: `modules/home/default.nix` is the
+**core** baseline and `modules/home/personal.nix` layers games + GUI apps on top — but _which bundle
+a machine gets_ is now decided by the user unit, not by the host or the builder.
 
 Key inputs (see `flake.nix`): [nixpkgs] (stable), [nix-darwin], [home-manager],
 [Determinate Nix][determinate], and [agenix] for secrets.
 
 ## Structure
 
-- **`flake.nix`** — Inputs + outputs. Declares the two host configurations and the formatter.
+- **`flake.nix`** — Inputs + outputs. Declares the three host configurations and the formatter.
 - **`flake.lock`** — Pinned input revisions.
 - **`lib/default.nix`** — The _only_ place that knows how a host is assembled:
   - `mkDarwin` / `mkNixos` — build a **system** host from `./hosts/<name>` +
     `modules/system/<class>`.
-  - `mkHome` — build a **standalone home-manager** host from `./hosts/<name>` + `modules/home` (the
-    core profile). Owns its own `pkgs` (allowUnfree/qt) since there's no system layer.
+  - `mkHome` — build a **standalone home-manager** host from `./hosts/<name>` + the host's single
+    user unit (`users/<user>/home.nix`). Owns its own `pkgs` (allowUnfree/qt) since there's no
+    system layer.
   - `forAllSystems` — map over systems for per-system outputs (e.g. the formatter).
-- **`hosts/`** — Per-machine config. Each host has an **`id.nix`** (`{ userName; hostName; }` —
-  the single source of truth for its identity; see the [`id.nix` / `hostId`
-  convention](#the-idnix--hostid-convention)) plus a `default.nix` for host-only tweaks.
+- **`hosts/`** — Per-machine **selection**. Each host has an **`id.nix`**
+  (`{ hostName; system; users; primaryUser; }` — host identity + which user units live here; see the
+  [`id.nix` / `hostId` convention](#the-idnix--hostid-convention)) plus a `default.nix` for host-only
+  tweaks. No user identity or feature logic lives here.
   - **`macbook/`** — darwin host (dock, TouchID sudo, homebrew, launchd).
   - **`home-desktop/`** — personal NixOS host.
-  - **`work-desktop/`** — standalone home-manager host (Ubuntu). Points `my.flakeDir` at
-    `/etc/nix` (owned by the user, not root, since Nix is a per-user install there) and overrides
-    `my.git` for the work identity.
+  - **`work-desktop/`** — standalone home-manager host (Ubuntu). Nothing host-specific beyond its
+    `id.nix`; identity, git, and `my.user.flakeDir` all live in the `ipratt` user unit.
+- **`users/`** — Per-user **isolated, portable units** (see [the `users/` layer](#the-users-layer)).
+  Each `users/<name>/` has `identity.nix` (plain data), `home.nix` (home-manager feature set + git
+  identity), and `system.nix` (system account, used only on full-OS hosts).
+  - **`cogs/`** — the personal user (full profile).
+  - **`ipratt/`** — the work user (lean core profile, work git identity, signing off).
 - **`modules/`**
-  - **`home-manager.nix`** — Wires the `cogs` user to `./home/personal.nix`; used by the two system
-    classes.
+  - **`home-manager.nix`** — Wires each user the host declares (`hostId.users`) to its
+    `users/<name>/home.nix`; used by the two system classes.
   - **`system/`** — System-level config (only the system hosts use this).
     - **`common/`** — Valid on BOTH classes (nixpkgs settings, shells).
     - **`darwin/`** — macOS-only (`default.nix` imports `common` + everything here).
     - **`nixos/`** — Linux-only.
   - **`home/`** — home-manager config, class-agnostic. OS differences handled inline
     (`lib.optionals pkgs.stdenv.isDarwin ...`).
-    - **`default.nix`** — the **core** profile (imported by every machine).
-    - **`personal.nix`** — core + `games.nix` + `desktop-apps/` (the personal machines).
-    - **`options.nix`** — custom `my.*` options (`my.flakeDir`, `my.git.*`) hosts flip to differ
-      from the shared defaults.
+    - **`default.nix`** — the **core** bundle (imported by every user unit).
+    - **`personal.nix`** — core + `games.nix` + `desktop-apps/` (imported by personal user units).
+    - **`options.nix`** — custom `my.user.*` options (`my.user.flakeDir`, `my.user.git.*`) a user
+      unit sets to give the shared feature modules its identity, without editing them.
     - **`base.nix`, `git.nix`, `ssh.nix`, `terminal.nix`, …** — top-level aspects.
     - **`shell/`** — Shell + prompt.
     - **`utils/`** — gpg, yazi, zellij, …
@@ -84,27 +98,58 @@ For a **system** host, `flake.nix` calls e.g. `lib.mkDarwin ./hosts/macbook`, wh
 system from two module lists:
 
 1. `modules/system/<class>` — the shared system config for that OS. Its `default.nix` also imports
-   `modules/system/common` and pulls in home-manager via `modules/home-manager.nix` (which loads the
-   full personal profile, `modules/home/personal.nix`).
+   `modules/system/common`, pulls in home-manager via `modules/home-manager.nix`, and declares
+   system accounts via `system/<class>/users.nix`. Both of those iterate the host's `id.nix`
+   `users` list: each user's `users/<name>/home.nix` becomes a `home-manager.users.<name>` entry,
+   and each `users/<name>/system.nix` becomes a system account.
 2. `./hosts/<name>` — the machine-specific bits.
 
 For the **standalone home-manager** host, `flake.nix` calls
-`lib.mkHome { host = ./hosts/work-desktop; }`. There is no system layer: `mkHome` builds a
-`homeConfigurations` entry directly from `modules/home` (the **core** profile) + the host file.
+`lib.mkHome { host = ./hosts/work-desktop; }`. There is no system layer: `mkHome` reads the host's
+single user from `id.nix` and builds a `homeConfigurations` entry directly from
+`users/<user>/home.nix` + the host file (setting `home.username` to that user).
 
-Home config lives once under `modules/home`; the core is shared by every machine, and `personal.nix`
-layers the personal-only extras on top for the personal machines.
+So **hosts pick users, users pick features.** A host never names a home feature; a user never names a
+host. That two-layer split is what lets a user be moved to another machine (or a second user added to
+a machine) by editing only `id.nix`.
+
+### The `users/` layer
+
+Each `users/<name>/` is an **isolated, portable unit** — everything about one human account, with no
+reference to any hostname or other user, so it can be placed on any host by name (a host lists it in
+`id.nix`'s `users`). Three files:
+
+```
+users/<name>/
+  identity.nix   # plain-data attrset: { username = "cogs"; }. No module args — importable anywhere
+                 # (flake output naming, standalone home.username) without the module system.
+  home.nix       # home-manager module: imports the feature bundle (core, or personal.nix) and sets
+                 # this user's my.user.* values (git identity, flakeDir).
+  system.nix     # NixOS/darwin module: users.users.<name> account attrs. Imported only on full-OS
+                 # hosts; class-portable (NixOS-only attrs guarded behind pkgs.stdenv.isLinux).
+```
+
+The feature set is a property of the **user**, not the host: `users/cogs/home.nix` imports
+`modules/home/personal.nix` (full), `users/ipratt/home.nix` imports `modules/home/default.nix` (core
+only). Putting the work user on a personal machine means adding `"ipratt"` to that host's `users` —
+it arrives as a distinct account with its own feature set, not a "work profile" of `cogs`.
+
+**To add a new user:** create `users/<name>/{identity.nix,home.nix,system.nix}` (copy an existing
+unit), point `home.nix` at the bundle you want and set `my.user.git.*`, then add `"<name>"` to the
+`users` list of whichever host(s) should have it.
 
 ### The `id.nix` / `hostId` convention
 
-Every host directory carries an **`id.nix`** — a plain attrset that is the single source of truth
-for that machine's identity:
+Every host directory carries an **`id.nix`** — a plain attrset that is the single source of truth for
+that machine's **host** identity (no user identity — that lives in `users/`):
 
 ```nix
 # hosts/<name>/id.nix
 {
-    userName = "cogs";          # the machine's primary user account
-    hostName = "home-desktop";  # the machine's hostname
+    hostName    = "home-desktop";  # the machine's hostname
+    system      = "x86_64-linux";  # the machine's platform (nixpkgs.hostPlatform)
+    users       = [ "cogs" ];      # which user units live on this machine
+    primaryUser = "cogs";          # the user owning host-level singletons (below)
 }
 ```
 
@@ -112,26 +157,29 @@ It flows through the config in exactly two ways, so the name is never repeated:
 
 1. **Into the modules as `hostId`.** The builders in `lib/default.nix` (`mkDarwin` / `mkNixos` /
    `mkHome`) `import` the host's `id.nix` and pass it via `specialArgs`/`extraSpecialArgs` as the
-   `hostId` argument. Any module can then take `{ hostId, ... }` and read `hostId.userName` /
-   `hostId.hostName`. This is why the shared modules never hardcode a user:
-   - `modules/system/{darwin,nixos}/users.nix` → `users.users.${hostId.userName}`
-   - `modules/home-manager.nix` → `home-manager.users.${hostId.userName}`
-   - the host file itself → e.g. `networking.hostName = hostId.hostName` (system hosts),
-     `home.username = hostId.userName` (standalone home-manager host).
+   `hostId` argument. Modules read it to drive per-host wiring without hardcoding names:
+   - `modules/home-manager.nix` → one `home-manager.users.<name>` per `hostId.users`.
+   - `modules/system/{darwin,nixos}/users.nix` → imports `users/<name>/system.nix` per `hostId.users`.
+   - the host file itself → `networking.hostName = hostId.hostName`, `nixpkgs.hostPlatform =
+     hostId.system`, and (macbook) `system.primaryUser` / homebrew owner from `hostId.primaryUser`.
 2. **Into `flake.nix` for the output attribute names.** `flake.nix` reads each `id.nix` to form
    `darwinConfigurations.<hostName>`, `nixosConfigurations.<hostName>`, and
-   `homeConfigurations."<userName>@<hostName>"`. `scripts/rebuild.sh` then *discovers* the
+   `homeConfigurations."<primaryUser>@<hostName>"`. `scripts/rebuild.sh` then *discovers* the
    standalone name from the flake rather than hardcoding it.
 
-**Naming:** fields are camelCase (`userName`, `hostName`) — matching `my.git.userName` and
-`networking.hostName`. Keep both fields in that one style.
+**`primaryUser`** exists because some host-level singletons take exactly one user (nix-darwin's
+`system.primaryUser`, the Homebrew prefix owner). On a single-user host it's just that user; on a
+multi-user host it's whichever account owns those singletons.
+
+**Naming:** fields are camelCase (`hostName`, `system`, `users`, `primaryUser`). Keep them in that
+style.
 
 **To add a new host:**
 
-1. `mkdir hosts/<name>` and write `hosts/<name>/id.nix` (`{ userName; hostName; }`).
-2. Write `hosts/<name>/default.nix` — the machine-specific module. Pull identity from the
-   `hostId` argument (don't re-`import ./id.nix`); set the platform (`nixpkgs.hostPlatform`) for a
-   system host, and any `my.*` overrides.
+1. `mkdir hosts/<name>` and write `hosts/<name>/id.nix` (`{ hostName; system; users; primaryUser; }`),
+   listing existing (or new — see [the `users/` layer](#the-users-layer)) user units in `users`.
+2. Write `hosts/<name>/default.nix` — the machine-specific module. Pull host identity from the
+   `hostId` argument (don't re-`import ./id.nix`); no user or feature logic belongs here.
 3. Wire it up in `flake.nix`: read its id (`idOf ./hosts/<name>`) and add the matching
    `darwinConfigurations` / `nixosConfigurations` / `homeConfigurations` entry via the right
    `lib.mk*` builder.
@@ -195,7 +243,7 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
 sudo mkdir -p /etc/nix && sudo chown "$(id -u):$(id -g)" /etc/nix
 git clone <this-repo> /etc/nix
 
-# 3. Apply it. The attribute is <userName>@<hostName>, from hosts/work-desktop/id.nix. On a
+# 3. Apply it. The attribute is <primaryUser>@<hostName>, from hosts/work-desktop/id.nix. On a
 #    fresh box `home-manager` isn't on PATH yet, so bootstrap the first switch via `nix run`:
 nix run home-manager/release-26.05 -- switch -b bak --flake /etc/nix#ipratt@work-desktop \
     --print-build-logs
@@ -228,8 +276,8 @@ cleanup   # expire old home-manager generations + gc
 
 > [!note]
 >
-> **The work-box name is a single source of truth** — `hosts/work-desktop/id.nix` (`userName` +
-> `hostName`); see [the `id.nix` / `hostId` convention](#the-idnix--hostid-convention). The
+> **The work-box name is a single source of truth** — `hosts/work-desktop/id.nix` (`hostName` +
+> `primaryUser`); see [the `id.nix` / `hostId` convention](#the-idnix--hostid-convention). The
 > `homeConfigurations` attribute name and `home.username` both derive from it, so renaming the box
 > is a one-file edit. `rebuild` doesn't hardcode or guess it either — it auto-discovers the flake's
 > sole `homeConfigurations` entry (falling back to `$(whoami)@$(hostname)`, or an explicit
@@ -327,7 +375,7 @@ your environment is declarative and rebuilt from this flake.
    above. Prefer Determinate (flakes on by default, matches the rest of this config):
    `curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install`.
 4. Move the repo from `~/.config/nix` to `/etc/nix` (the path the multi-user setup — and
-   `hosts/work-desktop/my.flakeDir` — expects): `sudo mkdir -p /etc/nix && sudo chown
+   `users/ipratt`'s `my.user.flakeDir` — expects): `sudo mkdir -p /etc/nix && sudo chown
    "$(id -u):$(id -g)" /etc/nix && mv ~/.config/nix/* ~/.config/nix/.git /etc/nix/`.
 5. Re-apply the config: `home-manager switch -b bak --flake /etc/nix#ipratt@work-desktop` (or
    just `rebuild`).
