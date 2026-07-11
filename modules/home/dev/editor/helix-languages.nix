@@ -54,7 +54,7 @@
 
                     nixd = {
                         command = "nixd";
-                        args = [ ];
+
                     };
 
                     # Python language server(s):
