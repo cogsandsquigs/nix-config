@@ -22,14 +22,19 @@ let
 
     # A secret is addressed by (location, name): `location` is its audience folder under `secrets/`
     # (an identity "<user>@<host>", or a bare "<user>" for that user on all machines); `name` is the
-    # leaf. Together they form the file `secrets/<location>/<name>.age` and the `age.secrets` key
-    # "<location>/<name>". `../secrets` resolves relative to THIS file (lib/) — the repo-root
-    # `secrets/` — regardless of caller.
+    # leaf. The encrypted file is `secrets/<location>/<name>.age`. `../secrets` resolves relative to
+    # THIS file (lib/) — the repo-root `secrets/` — regardless of caller.
     secretFile = location: name: ../secrets + "/${location}/${name}.age";
+
+    # The `age.secrets` identifier (and the decrypted runtime filename). FLATTENED — `/` → `-` — so a
+    # nested location like "cogs@glorpbook" doesn't make agenix write into a subdir of its per-user
+    # secretsDir that it never creates (the file just wouldn't appear). The `.age` file path above
+    # stays nested; only this runtime key is flat.
+    keyOf = location: name: builtins.replaceStrings [ "/" ] [ "-" ] "${location}/${name}";
 
     # Build an `age.secrets` fragment. In `let` so the `secrets.*` set below can reuse it.
     mkSecret = location: name: attrs: {
-        "${location}/${name}" = {
+        "${keyOf location name}" = {
             file = secretFile location name;
         }
         // attrs;
@@ -113,6 +118,6 @@ in
         # read the decrypted runtime path:  tools.secrets.path config "cogs@glorpbook" "gpg"
         path =
             config: location: name:
-            config.age.secrets."${location}/${name}".path;
+            config.age.secrets.${keyOf location name}.path;
     };
 }
