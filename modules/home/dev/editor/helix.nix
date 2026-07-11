@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{
+    pkgs,
+    lib,
+    config,
+    ...
+}:
 let
     floating_pane_size_percent = 80;
 
@@ -31,13 +36,14 @@ let
     # of the new pane's ID.
 in
 {
-    home.packages = with pkgs; [
-        helix
-        zellij # Requirement for the editor functionality...
-        yazi # Requirement for the editor functionality...
-    ];
+    config = lib.mkIf config.my.user.dev.editors.helix.enable {
+        home.packages = with pkgs; [
+            helix
+            zellij # Requirement for the editor functionality...
+            yazi # Requirement for the editor functionality...
+        ];
 
-    programs.helix = {
+        programs.helix = {
         enable = true;
         defaultEditor = true;
 
@@ -177,5 +183,6 @@ in
                 };
             };
         };
+    };
     };
 }

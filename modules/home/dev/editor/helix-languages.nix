@@ -1,5 +1,6 @@
 # Language configurations for the editor.
-{ ... }: {
+{ lib, config, ... }: {
+    config = lib.mkIf config.my.user.dev.editors.helix.enable {
     programs.helix = {
         # Language configurations for each language.
         # NOTE: This is the Nix equivalent to helix's `languages.toml` file
@@ -449,5 +450,6 @@
                 }
             ];
         };
+    };
     };
 }

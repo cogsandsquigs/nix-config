@@ -1,16 +1,27 @@
-{ pkgs, ... }: {
-    home.packages = with pkgs; [ direnv ];
+{
+    pkgs,
+    lib,
+    config,
+    tools,
+    ...
+}:
+{
+    options.my.user.dev.direnv.enable = tools.mkRiding config.my.user.dev.enable "direnv + nix-direnv";
 
-    programs.direnv = {
-        enable = true;
+    config = lib.mkIf config.my.user.dev.direnv.enable {
+        home.packages = with pkgs; [ direnv ];
 
-        # Enable nix-direnv integration. See:
-        # https://github.com/nix-community/nix-direnv
-        nix-direnv.enable = true;
+        programs.direnv = {
+            enable = true;
 
-        # Integrate with shells
-        enableBashIntegration = true;
-        enableZshIntegration = true;
-        #enableFishIntegration = true; # ? Read-only?
+            # Enable nix-direnv integration. See:
+            # https://github.com/nix-community/nix-direnv
+            nix-direnv.enable = true;
+
+            # Integrate with shells
+            enableBashIntegration = true;
+            enableZshIntegration = true;
+            #enableFishIntegration = true; # ? Read-only?
+        };
     };
 }
