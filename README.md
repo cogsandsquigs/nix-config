@@ -23,18 +23,19 @@ there is no system layer, and it's applied with `home-manager switch`.
 
 **Two layers of selection.** A host picks _which users_ live on it; a user picks _which home
 features_ it wants. Neither touches feature-module code — that's the whole design (see
-[the `users/` layer](#the-users-layer)):
+[the `users/` layer](#the-users-layer) and [feature toggles](#feature-toggles)):
 
-- **`hosts/<host>/`** — pure host selection: platform, host-only tweaks, and the list of user units
-  placed on the machine (`id.nix`'s `users`).
-- **`users/<user>/`** — an **isolated, portable unit**: one human's identity, home feature set, and
-  (on full-OS hosts) system account. The same user can be dropped onto any host by name. `cogs` pulls
-  the full personal profile (core + games + GUI apps); `ipratt` pulls the lean core profile
-  (shell, terminal, CLI utils, dev toolchain) with a work git identity.
+- **`hosts/<host>/`** — pure host selection: platform, host-only tweaks, the list of user units
+  placed on the machine (`id.nix`'s `users`), and which _system_ features it opts into
+  (`my.sys.<feature>.enable`).
+- **`users/<user>/`** — an **isolated, portable unit**: one human's identity, home feature set
+  (`my.user.<feature>.enable`), and (on full-OS hosts) system account. The same user can be dropped
+  onto any host by name. `cogs` turns on the personal extras (games + GUI apps); `ipratt` leaves them
+  off for a lean work profile, with a work git identity.
 
-The underlying home bundles still live under `modules/home`: `modules/home/default.nix` is the
-**core** baseline and `modules/home/personal.nix` layers games + GUI apps on top — but _which bundle
-a machine gets_ is now decided by the user unit, not by the host or the builder.
+Every user imports the **same full home library** (`modules/home`); the difference between `cogs`
+and `ipratt` is purely which `my.user.*` flags each flips. There is no import-bundle split — see
+[feature toggles](#feature-toggles).
 
 Key inputs (see `flake.nix`): [nixpkgs] (stable), [nix-darwin], [home-manager],
 [Determinate Nix][determinate], and [agenix] for secrets.
@@ -50,6 +51,13 @@ Key inputs (see `flake.nix`): [nixpkgs] (stable), [nix-darwin], [home-manager],
     user unit (`users/<user>/home.nix`). Owns its own `pkgs` (allowUnfree/qt) since there's no
     system layer.
   - `forAllSystems` — map over systems for per-system outputs (e.g. the formatter).
+  - `specialArgsFor` — the `specialArgs`/`extraSpecialArgs` every builder shares: `inputs`,
+    `hostId`, and `tools` (the option-constructor helpers, below).
+- **`lib/opts.nix`** — our small helper library, passed to every module as the `tools` argument
+  (system and home alike). Option constructors (`mkEnabled`, `mkDisabled`, `mkRiding`, `mkStr`,
+  `mkEnum`, …) + safety helpers (`requires`) used by the [feature-toggle](#feature-toggles) modules.
+  It's a dedicated arg rather than folded into `lib` on purpose — extending the home `lib` clobbers
+  home-manager's own `lib.hm.*` (see the note in the file).
 - **`hosts/`** — Per-machine **selection**. Each host has an **`id.nix`**
   (`{ hostName; system; users; primaryUser; }` — host identity + which user units live here; see the
   [`id.nix` / `hostId` convention](#the-idnix--hostid-convention)) plus a `default.nix` for host-only
@@ -71,16 +79,18 @@ Key inputs (see `flake.nix`): [nixpkgs] (stable), [nix-darwin], [home-manager],
     - **`darwin/`** — macOS-only (`default.nix` imports `common` + everything here).
     - **`nixos/`** — Linux-only.
   - **`home/`** — home-manager config, class-agnostic. OS differences handled inline
-    (`lib.optionals pkgs.stdenv.isDarwin ...`).
-    - **`default.nix`** — the **core** bundle (imported by every user unit).
-    - **`personal.nix`** — core + `games.nix` + `desktop-apps/` (imported by personal user units).
-    - **`options.nix`** — custom `my.user.*` options (`my.user.flakeDir`, `my.user.git.*`) a user
-      unit sets to give the shared feature modules its identity, without editing them.
-    - **`base.nix`, `git.nix`, `ssh.nix`, `terminal.nix`, …** — top-level aspects.
-    - **`shell/`** — Shell + prompt.
-    - **`utils/`** — gpg, yazi, zellij, …
-    - **`desktop-apps/`** — Browser, GUI apps (personal only).
-    - **`dev/`** — Editor, direnv, containers, and `langs/` (per-language tooling).
+    (`lib.optionals pkgs.stdenv.isDarwin ...`). `default.nix` imports the **full feature library**;
+    every module owns its own `my.user.<feature>.enable` flag ([feature toggles](#feature-toggles)),
+    so nothing is a separate import-bundle.
+    - **`base.nix`** — plumbing (stateVersion, home dir); no flag.
+    - **`git.nix`, `ssh.nix`, `terminal.nix`** — core features (on by default). `git.nix` also holds
+      the identity/signing value options (`my.user.git.userName/email/signingKey/…`) — the only
+      per-user-varying bits.
+    - **`shell/`** — Shell + prompt (core). Holds `my.user.flakeDir` (per-host repo path).
+    - **`utils/`** — gpg, yazi, zellij, … (core group).
+    - **`dev/`** — dev toolchain **group**: master `my.user.dev.enable` with ride-along sub-features
+      (`ide`, `direnv`, `containers`, `langs/`, and editors — `helix` on, `vscode` opt-in install-only).
+    - **`games.nix`, `desktop-apps/`** — optional features (off by default); `cogs` opts in.
 - **`scripts/`** — Convenience wrappers: `rebuild.sh`, `upgrade.sh`, `cleanup.sh`, `editnix.sh`.
   Location-independent (they derive the flake dir from their own path) and auto-detect whether to
   use `darwin-rebuild` / `nixos-rebuild` / standalone `home-manager switch`.
@@ -123,20 +133,22 @@ reference to any hostname or other user, so it can be placed on any host by name
 users/<name>/
   identity.nix   # plain-data attrset: { username = "cogs"; }. No module args — importable anywhere
                  # (flake output naming, standalone home.username) without the module system.
-  home.nix       # home-manager module: imports the feature bundle (core, or personal.nix) and sets
-                 # this user's my.user.* values (git identity, flakeDir).
+  home.nix       # home-manager module: imports the full home library (modules/home) and sets this
+                 # user's my.user.* flags + values (which features are on, git identity, flakeDir).
   system.nix     # NixOS/darwin module: users.users.<name> account attrs. Imported only on full-OS
                  # hosts; class-portable (NixOS-only attrs guarded behind pkgs.stdenv.isLinux).
 ```
 
-The feature set is a property of the **user**, not the host: `users/cogs/home.nix` imports
-`modules/home/personal.nix` (full), `users/ipratt/home.nix` imports `modules/home/default.nix` (core
-only). Putting the work user on a personal machine means adding `"ipratt"` to that host's `users` —
-it arrives as a distinct account with its own feature set, not a "work profile" of `cogs`.
+The feature set is a property of the **user**, not the host: both `users/cogs/home.nix` and
+`users/ipratt/home.nix` import the same `modules/home`, and differ only in the `my.user.*` flags they
+set — `cogs` turns on `games`/`desktopApps`, `ipratt` leaves them off (see
+[feature toggles](#feature-toggles)). Putting the work user on a personal machine means adding
+`"ipratt"` to that host's `users` — it arrives as a distinct account with its own feature selection,
+not a "work profile" of `cogs`.
 
 **To add a new user:** create `users/<name>/{identity.nix,home.nix,system.nix}` (copy an existing
-unit), point `home.nix` at the bundle you want and set `my.user.git.*`, then add `"<name>"` to the
-`users` list of whichever host(s) should have it.
+unit), import `modules/home` in `home.nix`, flip the `my.user.*` flags you want and set
+`my.user.git.*`, then add `"<name>"` to the `users` list of whichever host(s) should have it.
 
 ### The `id.nix` / `hostId` convention
 
@@ -183,6 +195,60 @@ style.
 3. Wire it up in `flake.nix`: read its id (`idOf ./hosts/<name>`) and add the matching
    `darwinConfigurations` / `nixosConfigurations` / `homeConfigurations` entry via the right
    `lib.mk*` builder.
+
+## Feature toggles
+
+Every feature is an independent module that **owns its own `enable` flag**. Turning a feature on or
+off for a host or a user is one line in one file — you never touch the feature's module. This is the
+core design goal.
+
+**Two scopes:**
+
+- **`my.sys.<feature>.enable`** — a **system** feature (per host). Set it in `hosts/<host>/default.nix`.
+- **`my.user.<feature>.enable`** — a **home** feature (per user). Set it in `users/<user>/home.nix`.
+  Because each user gets its own home-manager evaluation, two users on the same machine can differ.
+
+**Every feature has a flag** (`enable`); only the _default_ differs. Four classes:
+
+| class        | default                        | helper                | example                                  |
+| ------------ | ------------------------------ | --------------------- | ---------------------------------------- |
+| **plumbing** | — (no flag; unconditional)     | —                     | `base.nix`, `nixpkgs.nix`, `users.nix`   |
+| **core**     | `true` (on unless disabled)    | `tools.mkEnabled`     | `git`, `shell`, `fonts`, `secrets`       |
+| **optional** | `false` (opt-in)               | `tools.mkDisabled`    | `games`, `desktopApps`, `vpn`, `fuse`    |
+| **ride**     | = parent group's value         | `tools.mkRiding p`    | `dev.direnv`, `dev.editors.helix`        |
+
+**Groups.** A group (e.g. `dev`) is a namespace: a master `my.user.dev.enable` plus sub-features
+whose default _rides_ the master (`tools.mkRiding config.my.user.dev.enable`). Flip the master and
+the whole group follows; override any sub to carve it out. Mutually-optional members (e.g. the
+`vscode` editor) are independent opt-ins, not ride-alongs.
+
+**Flip a feature:**
+
+```nix
+# users/ipratt/home.nix — give the work user VS Code, drop the CLI utils group
+my.user.dev.editors.vscode.enable = true;
+my.user.utils.enable = false;
+
+# hosts/macbook/default.nix — this host wants the VPN clients + games casks
+my.sys.vpn.enable = true;
+my.sys.games.enable = true;
+```
+
+**Value options: only what varies.** A module gets _value_ options (not just `enable`) only for
+settings that differ per host/user — e.g. `my.user.git.{userName,email,signingKey,signByDefault}`
+and `my.user.flakeDir`. Everything identical everywhere stays inline; modules with no per-machine
+customization get just `.enable`.
+
+**Where the helpers come from.** The `tools` argument (from `lib/opts.nix`) is passed to every
+module and provides the constructors above plus `mkStr`/`mkNullStr`/`mkEnum` for value options and
+`requires` for cross-feature assertions. Uniform helpers mean every flag has the same shape.
+
+**Safety.** Because every `my.*` leaf is _declared_ (never a freeform `attrsOf`), a typo like
+`my.user.gmes.enable` fails evaluation with "option does not exist" — in any file. That strict
+schema is the real guard; `tools.requires` covers genuine cross-feature invariants ("A needs B").
+
+The module tree under `modules/` is the source of truth for which features exist: each module's
+`options.my.<scope>.<feature>` declaration (near its top) names its flag and class.
 
 ## Common tasks
 
