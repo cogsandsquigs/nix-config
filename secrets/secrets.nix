@@ -1,19 +1,6 @@
-# agenix rules. `agenix` reads this to learn who each secret is encrypted to; every secret you want
-# to create/edit MUST have an entry here first (agenix errors on an unknown file). We keep the
-# bookkeeping to a minimum: you DECLARE a secret by adding its "location/name" to `declared` below,
-# and its recipients are worked out automatically from the AUDIENCE (the location's first path
-# segment) against ./recipients.nix by one rule:
-#
-#   audience contains "@"  → an exact identity ("<user>@<host>")  → that one key
-#   audience has no "@"    → a bare user ("<user>")               → all keys "<user>@*"
-#
-# So `cogs@home-desktop/gpg` goes to just that machine; `cogs/vpn` goes to every cogs machine.
-# Adding a secret = one line here (+ a new key in recipients.nix if it's a new identity).
-#
-# Attr names are the paths relative to secrets/ WITH `.age` (what agenix matches on disk);
-# `age.secrets.<name>` in the config uses the same path WITHOUT `.age` (see lib/opts.nix).
-#
-# Pure `builtins` only (no lib / no <nixpkgs>): agenix evaluates this with no guaranteed NIX_PATH.
+# agenix rules — who each secret is encrypted to. Add "location/name" to `declared`; recipients
+# are auto-computed: contains "@" → exact identity ("<user>@<host>"); no "@" → all "<user>@*" keys.
+# Pure builtins only — agenix evaluates this without a guaranteed NIX_PATH.
 let
     keys = import ./recipients.nix;
 

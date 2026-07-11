@@ -44,20 +44,16 @@ Key inputs (see `flake.nix`): [nixpkgs] (stable), [nix-darwin], [home-manager],
 
 - **`flake.nix`** — Inputs + outputs. Declares the three host configurations and the formatter.
 - **`flake.lock`** — Pinned input revisions.
-- **`lib/default.nix`** — The _only_ place that knows how a host is assembled:
-  - `mkDarwin` / `mkNixos` — build a **system** host from `./hosts/<name>` +
-    `modules/system/<class>`.
-  - `mkHome` — build a **standalone home-manager** host from `./hosts/<name>` + the host's single
-    user unit (`users/<user>/home.nix`). Owns its own `pkgs` (allowUnfree/qt) since there's no
-    system layer.
+- **`tools/default.nix`** — The _only_ place that knows how a host is assembled:
+  - `mkDarwin` / `mkNixos` / `mkHome` — build system or standalone home-manager hosts.
   - `forAllSystems` — map over systems for per-system outputs (e.g. the formatter).
   - `specialArgsFor` — the `specialArgs`/`extraSpecialArgs` every builder shares: `inputs`,
-    `hostId`, and `tools` (the option-constructor helpers, below).
-- **`lib/opts.nix`** — our small helper library, passed to every module as the `tools` argument
-  (system and home alike). Option constructors (`mkEnabled`, `mkDisabled`, `mkRiding`, `mkStr`,
-  `mkEnum`, …) + safety helpers (`requires`) used by the [feature-toggle](#feature-toggles) modules.
-  It's a dedicated arg rather than folded into `lib` on purpose — extending the home `lib` clobbers
-  home-manager's own `lib.hm.*` (see the note in the file).
+    `hostId`, and a per-host `tools` (below).
+- **`tools/opt.nix`** — option constructors + safety helpers, passed to every module as `tools.opt`.
+- **`tools/secrets.nix`** — agenix wiring helpers, passed as `tools.secrets`.
+- **`tools/conf.nix`** — config utilities, passed as `tools.conf` (e.g. `eachOs` for per-OS branches).
+  `tools` is a dedicated `specialArg` rather than folded into `lib` — extending HM's `lib` clobbers
+  `lib.hm.*` (see `tools/default.nix`).
 - **`hosts/`** — Per-machine **selection**. Each host has an **`id.nix`**
   (`{ hostName; system; users; primaryUser; }` — host identity + which user units live here; see the
   [`id.nix` / `hostId` convention](#the-idnix--hostid-convention)) plus a `default.nix` for host-only
@@ -168,7 +164,7 @@ that machine's **host** identity (no user identity — that lives in `users/`):
 
 It flows through the config in exactly two ways, so the name is never repeated:
 
-1. **Into the modules as `hostId`.** The builders in `lib/default.nix` (`mkDarwin` / `mkNixos` /
+1. **Into the modules as `hostId`.** The builders in `tools/default.nix` (`mkDarwin` / `mkNixos` /
    `mkHome`) `import` the host's `id.nix` and pass it via `specialArgs`/`extraSpecialArgs` as the
    `hostId` argument. Modules read it to drive per-host wiring without hardcoding names:
    - `modules/home-manager.nix` → one `home-manager.users.<name>` per `hostId.users`.
@@ -240,11 +236,7 @@ settings that differ per host/user — e.g. `my.user.git.{userName,email,signing
 and `my.user.flakeDir`. Everything identical everywhere stays inline; modules with no per-machine
 customization get just `.enable`.
 
-**Where the helpers come from.** The `tools` argument (from `lib/opts.nix`) is passed to every module,
-grouped by what it does: **`tools.opt.*`** — option constructors (`mkEnabled`/`mkDisabled`/`mkRiding`
-plus `mkStr`/`mkNullStr`/`mkEnum` for value options, `mkSecretPath` for a secret hole, and `requires`
-for cross-feature assertions); **`tools.secrets.*`** — agenix wiring (see [Secrets](#secrets)).
-Uniform helpers mean every flag has the same shape.
+**Where the helpers come from.** `tools` is a per-host `specialArg` (from `tools/`): **`tools.opt.*`** — option constructors (`mkEnabled`/`mkDisabled`/`mkRiding`, `mkStr`/`mkEnum`, `mkSecretPath`, `requires`); **`tools.secrets.*`** — agenix wiring; **`tools.conf.*`** — config utilities (`eachOs` for per-OS branches). Uniform helpers mean every flag has the same shape.
 
 **Safety.** Because every `my.*` leaf is _declared_ (never a freeform `attrsOf`), a typo like
 `my.user.gmes.enable` fails evaluation with "option does not exist" — in any file. That strict

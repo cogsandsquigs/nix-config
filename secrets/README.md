@@ -89,18 +89,18 @@ rm -P /tmp/sub.asc                                             # wipe the temp c
 git add cogs@home-desktop/gpg.age secrets.nix
 ```
 
-Wire it per-machine in `users/cogs/home.nix`, gated so only boxes provisioned this way import it (the
-machine you made the key on already has it in its keyring):
+Wire it per-machine in `users/cogs/home.nix` — gated on whether the `.age` file exists (so only
+provisioned machines import; the machine where the key was created already has it in its keyring):
 
 ```nix
 { config, lib, tools, hostId, ... }:
 let
   me = "cogs@${hostId.hostName}";
-  syncGpg = builtins.elem hostId.hostName [ "home-desktop" ];   # boxes that import via agenix
+  haveGpg = builtins.pathExists (../secrets + "/${me}/gpg.age");
 in
 {
-  age.secrets                = lib.mkIf syncGpg (tools.secrets.declare me "gpg");
-  my.user.git.signingKeyFile = lib.mkIf syncGpg (tools.secrets.path config me "gpg");
+  age.secrets                = lib.mkIf haveGpg (tools.secrets.declare me "gpg");
+  my.user.git.signingKeyFile = lib.mkIf haveGpg (tools.secrets.path config me "gpg");
 }
 ```
 
