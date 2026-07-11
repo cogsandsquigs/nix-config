@@ -37,7 +37,7 @@ in
         # gpg --import is idempotent; kill the agent after so it picks up the new keygrip immediately
         # (gpg-agent caches state and won't reflect the import until restarted).
         home.activation.importGpgSigningKey = lib.mkIf (cfg.signingKeyFile != null) (
-            lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+            lib.hm.dag.entryAfter [ "writeBoundary" "agenixInstall" ] ''
                 if [ -r "${cfg.signingKeyFile}" ]; then
                     $DRY_RUN_CMD ${pkgs.gnupg}/bin/gpg --batch --import "${cfg.signingKeyFile}" || true
                     $DRY_RUN_CMD ${pkgs.gnupg}/bin/gpgconf --kill gpg-agent || true

@@ -18,6 +18,7 @@ A secret is addressed by its folder + leaf: `cogs@home-desktop/gpg` is the file
 `cogs@home-desktop/gpg.age`.
 
 > Two things to remember when running the CLI:
+>
 > - Run `agenix` from **inside this folder** (`/etc/nix/secrets`), so it finds the rules.
 > - Your identity is an age key at `/etc/nix/age/<you>` (not in `~/.ssh`), so **decrypt/edit/re-key
 >   need `-i /etc/nix/age/<you>`**. Creating a brand-new secret doesn't (it only encrypts).
@@ -38,7 +39,7 @@ Use it from your config (`users/cogs/home.nix`):
 ```nix
 { config, tools, ... }:
 {
-  age.secrets              = tools.secrets.declare "cogs" "api-token";
+ age.secrets              = tools.secrets.declare "cogs" "api-token";
   my.user.<feature>.<hole> = tools.secrets.path config "cogs" "api-token";
 }
 ```
@@ -107,10 +108,10 @@ in
 `rebuild`. Set git `signingKey` to your **primary key fingerprint** (constant on every machine) so
 each box automatically uses whichever signing subkey it has locally.
 
-### Minting a *fresh* subkey per machine (stronger isolation)
+### Minting a _fresh_ subkey per machine (stronger isolation)
 
-The steps above copy your existing subkeys to a new box. If you'd rather each machine have its **own**
-signing (+ encryption) subkey — so you can revoke one box without touching the others — use
+The steps above copy your existing subkeys to a new box. If you'd rather each machine have its
+**own** signing (+ encryption) subkey — so you can revoke one box without touching the others — use
 [`./mint-subkeys.sh`](./mint-subkeys.sh). It mints them from your master and stashes them as the
 machine's secret in one go.
 

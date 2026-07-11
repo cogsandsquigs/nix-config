@@ -22,6 +22,7 @@ in
 
     my.user.games.enable = true;
     my.user.desktopApps.enable = true;
+    my.user.vpn.enable = true;
 
     my.user.git = {
         userName = "Ian Pratt";
@@ -31,5 +32,13 @@ in
         signingKeyFile = lib.mkIf haveGpg (tools.secrets.path config me "gpg");
     };
 
-    age.secrets = lib.mkIf haveGpg (tools.secrets.declare me "gpg");
+    my.user.vpn.profiles.work-alt-ipratt = {
+        name = "Work Alt (ipratt)";
+        path = tools.secrets.path config "cogs" "work-alt-ipratt-ovpn";
+    };
+
+    age.secrets = lib.mkMerge [
+        (lib.mkIf haveGpg (tools.secrets.declare me "gpg"))
+        (tools.secrets.declare "cogs" "work-alt-ipratt-ovpn")
+    ];
 }

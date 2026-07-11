@@ -11,26 +11,36 @@ let
         isString
         split
         attrNames
-        map
         listToAttrs
         ;
 
     # First path segment = the audience folder.
+    #
+    # i.e., each sub-folder in this dir specifies either a user or a host or both. The audience is
+    # that exact specification, either `<user>`, `<host>`, or `<user>@<host>` (both).
     audience = f: elemAt (filter isString (split "/" f)) 0;
 
     recipientsFor =
-        a:
-        if match ".*@.*" a != null then
-            [ keys.${a} ] # "<user>@<host>" — one identity
+        audience:
+        # If this matches, then `audience` is of a format `<user>@<host>` -- only that specific key
+        # is used for this secret.
+        if match ".*@.*" audience != null then
+            [ keys.${audience} ] # "<user>@<host>" — one identity
+
+        # Otherwise, we assume the shape is `<user>`. Then we just get all keys in `recipients.nix`
+        # of the form `<user>@*`, and those are the keys that are applicable.
+        #
+        # WARN: When we have host-specific secrets, this will need to be extended to match the
+        # audience string against `".*@${host}"`.
         else
-            map (n: keys.${n}) (filter (n: match "${a}@.*" n != null) (attrNames keys)); # "<user>" — all machines
+            map (identity: keys.${identity}) (filter (n: match "${audience}@.*" n != null) (attrNames keys));
 
     # ── Declared secrets: "location/name" (no `.age`). Recipients are computed; this list is the
     #    only thing you touch to add a secret. ─────────────────────────────────────────────────────
     declared = [
         "cogs@glorpbook/gpg" # this Mac's signing subkey (backup + pipeline test)
         # "cogs@home-desktop/gpg"   # the NixOS box's signing subkey (imported at activation)
-        # "cogs/vpn"                # a profile for every cogs machine
+        "cogs/work-alt-ipratt-ovpn" # work OpenVPN profile (all cogs machines)
     ];
 in
 listToAttrs (

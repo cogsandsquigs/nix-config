@@ -7,3 +7,6 @@ registry.json
 # Private agenix age identities (/etc/nix/age/<owner>) — secret keys, NEVER commit. Only the
 # public keys (secrets/recipients.nix) are tracked.
 /age/
+
+# Plaintext VPN profiles — encrypt with age-stash before staging, never commit raw.
+*.ovpn

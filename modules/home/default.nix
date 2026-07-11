@@ -17,5 +17,6 @@
 
         ./games.nix
         ./desktop-apps
+        ./vpn.nix
     ];
 }

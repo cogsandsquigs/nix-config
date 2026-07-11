@@ -35,6 +35,4 @@
     # We want the manpages, so we accept the warning.
     manual.manpages.enable = true;
 
-    # VPN client
-    home.packages = with pkgs; [ openvpn ];
 }
