@@ -3,6 +3,7 @@
     pkgs,
     config,
     lib,
+    tools,
     ...
 }:
 let
@@ -10,7 +11,8 @@ let
     inherit (lib.attrsets) mapAttrsToList;
 
     # Where this flake lives on the host (default /etc/nix; the standalone work box overrides
-    # this to ~/.config/nix). See modules/home/options.nix.
+    # this to ~/.config/nix). The shell aliases (rebuild/upgrade/…) point here — the only reader
+    # of flakeDir, so its option is declared below rather than in a central options file.
     flakeDir = config.my.user.flakeDir;
 
     aliases = {
@@ -70,6 +72,8 @@ let
     pathsToString = f: (concatMapStrings (s: (f s) + "\n") binPaths);
 in
 {
+    options.my.user.flakeDir = tools.mkStr "/etc/nix" "Absolute path to this flake's checkout on the host.";
+
     config = lib.mkIf config.my.user.shell.enable {
         home.packages = with pkgs; [
             fish

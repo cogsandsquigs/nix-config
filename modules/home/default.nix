@@ -5,8 +5,6 @@
 # OS-specific differences are handled inline with `lib.optionals pkgs.stdenv.isDarwin` etc.
 { ... }: {
     imports = [
-        ./options.nix
-
         ./base.nix
         ./git.nix
         ./ssh.nix

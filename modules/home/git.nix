@@ -9,8 +9,24 @@ let
     cfg = config.my.user.git;
 in
 {
-    options.my.user.git.enable =
-        tools.mkEnabled "git + delta + lazygit (identity/signing via my.user.git.*)";
+    # Identity/signing are the only per-user-varying bits, so they get value options (a user unit
+    # overrides just these — e.g. a work email, signing off until a work key is imported). The rest
+    # of the git config below is identical everywhere, so it stays inline.
+    options.my.user.git = {
+        enable = tools.mkEnabled "git + delta + lazygit (identity/signing via my.user.git.*)";
+        userName = tools.mkStr "Ian Pratt" "Value for git user.name.";
+        email = tools.mkStr "ianjdpratt@gmail.com" "Value for git user.email.";
+        signingKey = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = "E0DB58169CA551AA!";
+            description = "GPG signing key id (null to leave unset).";
+        };
+        signByDefault = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description = "Whether to GPG-sign every commit by default.";
+        };
+    };
 
     config = lib.mkIf cfg.enable {
         home.packages = with pkgs; [
@@ -23,12 +39,11 @@ in
             enable = true;
 
             settings = {
-                # Basic user settings. Values come from `my.user.git.*` (see modules/home/options.nix)
-                # so a user unit can override the identity without editing this file — e.g. the work
-                # user uses a work email.
+                # Basic user settings. Values come from the `my.user.git.*` options declared above, so
+                # a user unit can override the identity without editing this file — e.g. a work email.
                 user = {
-                    name = config.my.user.git.userName;
-                    email = config.my.user.git.email;
+                    name = cfg.userName;
+                    email = cfg.email;
                 };
 
                 url = {
@@ -53,8 +68,8 @@ in
             };
 
             signing = {
-                key = config.my.user.git.signingKey;
-                signByDefault = config.my.user.git.signByDefault;
+                key = cfg.signingKey;
+                signByDefault = cfg.signByDefault;
                 # signer = "${pkgs.gnupg}/bin/gpg"; # NOTE: See `extraConfig.gpg.program`
             };
         };
