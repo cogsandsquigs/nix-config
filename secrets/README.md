@@ -107,6 +107,20 @@ in
 `rebuild`. Set git `signingKey` to your **primary key fingerprint** (constant on every machine) so
 each box automatically uses whichever signing subkey it has locally.
 
+### Minting a *fresh* subkey per machine (stronger isolation)
+
+The steps above copy your existing subkeys to a new box. If you'd rather each machine have its **own**
+signing (+ encryption) subkey — so you can revoke one box without touching the others — use
+[`./mint-subkeys.sh`](./mint-subkeys.sh). It mints them from your master and stashes them as the
+machine's secret in one go.
+
+> ⚠️ It needs the master **secret**, so run it on your **air-gapped** box (where the master lives),
+> not a daily machine. See the header comment for the full flow and caveats.
+
+```sh
+./mint-subkeys.sh <master-secret.asc> <host>   # → secrets/cogs@<host>/gpg.age
+```
+
 ## OpenVPN
 
 Same as any secret: `agenix -e cogs/ovpn.age` with your profile (a `cogs` all-machines secret), then
