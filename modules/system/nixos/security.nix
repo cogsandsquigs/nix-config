@@ -7,7 +7,8 @@
     ...
 }:
 {
-    options.my.sys.security.enable = tools.mkEnabled "ClamAV antivirus (daemon + scanner + updater)";
+    options.my.sys.security.enable =
+        tools.opt.mkEnabled "ClamAV antivirus (daemon + scanner + updater)";
 
     config = lib.mkIf config.my.sys.security.enable {
         environment.systemPackages = with pkgs; [ clamav ];

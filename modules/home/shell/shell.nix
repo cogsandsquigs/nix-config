@@ -72,7 +72,7 @@ let
     pathsToString = f: (concatMapStrings (s: (f s) + "\n") binPaths);
 in
 {
-    options.my.user.flakeDir = tools.mkStr "/etc/nix" "Absolute path to this flake's checkout on the host.";
+    options.my.user.flakeDir = tools.opt.mkStr "/etc/nix" "Absolute path to this flake's checkout on the host.";
 
     config = lib.mkIf config.my.user.shell.enable {
         home.packages = with pkgs; [

@@ -19,11 +19,13 @@ let
     isLangModule =
         name: type: (type == "regular") && (name != "default.nix") && (lib.hasSuffix ".nix" name);
     langFiles = lib.filterAttrs isLangModule entries;
-    langModules = lib.mapAttrsToList (name: _type: import (dir + "/${name}") { inherit pkgs lib config; }) langFiles;
+    langModules = lib.mapAttrsToList (
+        name: _type: import (dir + "/${name}") { inherit pkgs lib config; }
+    ) langFiles;
 in
 {
     options.my.user.dev.langs.enable =
-        tools.mkRiding config.my.user.dev.enable "language toolchains (LSPs, formatters, compilers)";
+        tools.opt.mkRiding config.my.user.dev.enable "language toolchains (LSPs, formatters, compilers)";
 
     config = lib.mkIf config.my.user.dev.langs.enable (lib.mkMerge langModules);
 }

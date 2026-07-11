@@ -6,7 +6,8 @@
     ...
 }:
 {
-    options.my.sys.games.enable = tools.mkDisabled "games (Steam, Olympus, Porting Kit via Homebrew)";
+    options.my.sys.games.enable =
+        tools.opt.mkDisabled "games (Steam, Olympus, Porting Kit via Homebrew)";
 
     config = lib.mkIf config.my.sys.games.enable {
         homebrew = {

@@ -7,7 +7,7 @@
 }:
 {
     options.my.user.dev.containers.enable =
-        tools.mkRiding config.my.user.dev.enable "docker + compose (colima/lima on macOS)";
+        tools.opt.mkRiding config.my.user.dev.enable "docker + compose (colima/lima on macOS)";
 
     config = lib.mkIf config.my.user.dev.containers.enable {
         home.packages =

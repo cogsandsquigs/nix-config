@@ -13,9 +13,9 @@ in
     # overrides just these — e.g. a work email, signing off until a work key is imported). The rest
     # of the git config below is identical everywhere, so it stays inline.
     options.my.user.git = {
-        enable = tools.mkEnabled "git + delta + lazygit (identity/signing via my.user.git.*)";
-        userName = tools.mkStr "Ian Pratt" "Value for git user.name.";
-        email = tools.mkStr "ianjdpratt@gmail.com" "Value for git user.email.";
+        enable = tools.opt.mkEnabled "git + delta + lazygit (identity/signing via my.user.git.*)";
+        userName = tools.opt.mkStr "Ian Pratt" "Value for git user.name.";
+        email = tools.opt.mkStr "ianjdpratt@gmail.com" "Value for git user.email.";
         signingKey = lib.mkOption {
             type = lib.types.nullOr lib.types.str;
             default = "E0DB58169CA551AA!";
@@ -29,7 +29,7 @@ in
         # Secret path-hole (agnostic — see lib/opts.nix). When a unit wires a decrypted GPG secret
         # key here, it's imported into the keyring at activation. null = don't import (the key is
         # already present, e.g. on the machine where it was created). Wiring: see secrets/README.md.
-        signingKeyFile = tools.mkSecretPath "Path to a decrypted exported GPG secret key to import at activation.";
+        signingKeyFile = tools.opt.mkSecretPath "Path to a decrypted exported GPG secret key to import at activation.";
     };
 
     config = lib.mkIf cfg.enable {

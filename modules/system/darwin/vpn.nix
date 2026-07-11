@@ -6,7 +6,7 @@
     ...
 }:
 {
-    options.my.sys.vpn.enable = tools.mkDisabled "VPN clients (Tailscale, OpenVPN Connect)";
+    options.my.sys.vpn.enable = tools.opt.mkDisabled "VPN clients (Tailscale, OpenVPN Connect)";
 
     config = lib.mkIf config.my.sys.vpn.enable {
         homebrew = {

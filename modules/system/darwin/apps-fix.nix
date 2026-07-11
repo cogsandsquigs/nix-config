@@ -10,7 +10,7 @@
     ...
 }:
 {
-    options.my.sys.appsFix.enable = tools.mkEnabled "copy Nix .app bundles so Spotlight finds them";
+    options.my.sys.appsFix.enable = tools.opt.mkEnabled "copy Nix .app bundles so Spotlight finds them";
 
     config = lib.mkIf config.my.sys.appsFix.enable {
         home-manager.sharedModules = [

@@ -7,7 +7,7 @@
     ...
 }:
 {
-    options.my.user.games.enable = tools.mkDisabled "games (Minecraft via Prism, KSP via CKAN, …)";
+    options.my.user.games.enable = tools.opt.mkDisabled "games (Minecraft via Prism, KSP via CKAN, …)";
 
     config = lib.mkIf config.my.user.games.enable {
         home.packages = with pkgs; [

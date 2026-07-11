@@ -8,7 +8,7 @@
 }:
 {
     options.my.sys.fonts.enable =
-        tools.mkEnabled "system-wide fonts (Fira Code, Atkinson Hyperlegible)";
+        tools.opt.mkEnabled "system-wide fonts (Fira Code, Atkinson Hyperlegible)";
 
     config = lib.mkIf config.my.sys.fonts.enable {
         fonts = {

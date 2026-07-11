@@ -8,7 +8,7 @@
 }:
 {
     options.my.sys.packages.enable =
-        tools.mkEnabled "extra darwin system packages (pinentry_mac, appcleaner)";
+        tools.opt.mkEnabled "extra darwin system packages (pinentry_mac, appcleaner)";
 
     config = lib.mkIf config.my.sys.packages.enable {
         environment.systemPackages = with pkgs; [

@@ -15,7 +15,7 @@
     ];
 
     options.my.user.utils.enable =
-        tools.mkEnabled "CLI utilities (gpg, yazi, zellij, fzf, ripgrep, eza, …)";
+        tools.opt.mkEnabled "CLI utilities (gpg, yazi, zellij, fzf, ripgrep, eza, …)";
 
     config = lib.mkIf config.my.user.utils.enable {
         home.packages = with pkgs; [

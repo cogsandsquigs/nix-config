@@ -4,5 +4,5 @@
         ./prompt.nix
     ];
 
-    options.my.user.shell.enable = tools.mkEnabled "shell (fish/bash/zsh) + prompt + aliases";
+    options.my.user.shell.enable = tools.opt.mkEnabled "shell (fish/bash/zsh) + prompt + aliases";
 }

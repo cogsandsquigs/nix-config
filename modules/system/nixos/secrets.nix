@@ -14,7 +14,7 @@
     imports = [ inputs.agenix.nixosModules.default ];
 
     options.my.sys.secrets.enable =
-        tools.mkEnabled "agenix secret management (installs the agenix CLI)";
+        tools.opt.mkEnabled "agenix secret management (installs the agenix CLI)";
 
     config = lib.mkIf config.my.sys.secrets.enable {
         environment.systemPackages = [ inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default ];

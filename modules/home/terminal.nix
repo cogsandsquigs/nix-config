@@ -7,7 +7,7 @@
     ...
 }:
 {
-    options.my.user.terminal.enable = tools.mkEnabled "kitty terminal";
+    options.my.user.terminal.enable = tools.opt.mkEnabled "kitty terminal";
 
     config = lib.mkIf config.my.user.terminal.enable {
         home.packages = with pkgs; [ kitty ];
