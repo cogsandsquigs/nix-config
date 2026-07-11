@@ -26,6 +26,10 @@ in
             default = true;
             description = "Whether to GPG-sign every commit by default.";
         };
+        # Secret path-hole (agnostic — see lib/opts.nix). When a unit wires a decrypted GPG secret
+        # key here, it's imported into the keyring at activation. null = don't import (the key is
+        # already present, e.g. on the machine where it was created). Wiring: see secrets/README.md.
+        signingKeyFile = tools.mkSecretPath "Path to a decrypted exported GPG secret key to import at activation.";
     };
 
     config = lib.mkIf cfg.enable {
@@ -34,6 +38,18 @@ in
             delta # Git diff highlighting
             lazygit # Awesome git TUI
         ];
+
+        # Import the signing key into the user's GnuPG keyring at activation, if a unit wired one
+        # via `signingKeyFile` (e.g. an agenix-decrypted secret). Idempotent — `gpg --import` skips
+        # keys already present, so it's a no-op on the machine that already has the key. mkIf keeps
+        # this absent (no activation entry) when no key is wired.
+        home.activation.importGpgSigningKey = lib.mkIf (cfg.signingKeyFile != null) (
+            lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+                if [ -r "${cfg.signingKeyFile}" ]; then
+                    $DRY_RUN_CMD ${pkgs.gnupg}/bin/gpg --batch --import "${cfg.signingKeyFile}" || true
+                fi
+            ''
+        );
 
         programs.git = {
             enable = true;
