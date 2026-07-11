@@ -36,20 +36,26 @@
 
                     };
 
-                    # Nix language server
-                    nil = {
-                        command = "nil";
-                        args = [ "--stdio" ];
-                        config.nil = {
-                            # // Auto-archiving behavior which may use network.
-                            # //
-                            # // - null: Ask every time.
-                            # // - true: Automatically run `nix flake archive` when necessary.
-                            # // - false: Do not archive. Only load inputs that are already on disk.
-                            # // Type: null | boolean
-                            # // Example: true
-                            flake.autoArchive = true;
-                        };
+                    # # Nix language server # NOTE: OUTDATED -- use nixd!
+                    # nil = {
+                    #     command = "nil";
+                    #     args = [ "--stdio" ];
+                    #     config.nil = {
+                    #         # // Auto-archiving behavior which may use network.
+                    #         # //
+                    #         # // - null: Ask every time.
+                    #         # // - true: Automatically run `nix flake archive` when necessary.
+                    #         # // - false: Do not archive. Only load inputs that are already on disk.
+                    #         # // Type: null | boolean
+                    #         # // Example: true
+                    #         flake.autoArchive = true;
+                    #     };
+                    # };
+
+                    nixd = {
+                        command = "nixd";
+                        args = [ ];
+                        config.nixd = { };
                     };
 
                     # Python language server(s):
@@ -349,7 +355,7 @@
 
                     {
                         name = "nix";
-                        language-servers = [ "nil" ];
+                        language-servers = [ "nixd" ];
                         auto-format = true;
                         indent = {
                             tab-width = 4;

@@ -55,7 +55,7 @@
     outputs =
         { self, nixpkgs, ... }@inputs:
         let
-            lib = import ./lib { inherit inputs; };
+            tools = import ./tools { inherit inputs; };
 
             # Each host's identity is the single source of truth in hosts/<name>/id.nix (see the
             # README `id.nix` convention). We read it here purely to form the output attribute
@@ -70,22 +70,24 @@
             workId = idOf workDesktop;
         in
         {
-            inherit lib;
+            inherit tools;
 
             # Personal MacBook — "glorpbook" (nix-darwin).
-            darwinConfigurations.${glorpbookId.hostName} = lib.mkDarwin glorpbook;
+            darwinConfigurations.${glorpbookId.hostName} = tools.mkDarwin glorpbook;
 
             # Personal desktop tower (NixOS).
-            nixosConfigurations.${homeDesktopId.hostName} = lib.mkNixos homeDesktop;
+            nixosConfigurations.${homeDesktopId.hostName} = tools.mkNixos homeDesktop;
 
             # Work desktop (standalone home-manager on Ubuntu 24, Nix installed per-user).
             # Apply with: home-manager switch --flake ~/.config/nix#<userName>@<hostName>
-            homeConfigurations."${workId.primaryUser}@${workId.hostName}" = lib.mkHome { host = workDesktop; };
+            homeConfigurations."${workId.primaryUser}@${workId.hostName}" = tools.mkHome {
+                host = workDesktop;
+            };
 
             # `nix fmt` → treefmt, driven by ./treefmt.toml (4-space, 100 cols — the repo's real
             # style). Wrapped with the formatters treefmt invokes (nixfmt/shfmt/prettier) on PATH
             # so `nix fmt` is self-contained and matches editor + `treefmt` output.
-            formatter = lib.forAllSystems (
+            formatter = tools.forAllSystems (
                 pkgs:
                 pkgs.writeShellApplication {
                     name = "treefmt";

@@ -10,7 +10,6 @@
         ./apps-fix.nix
         ./fonts.nix
         ./packages.nix
-        ./vpn.nix
         ./games.nix
         ./desktop-apps.nix
         ./secrets.nix

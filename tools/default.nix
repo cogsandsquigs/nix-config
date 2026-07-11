@@ -21,21 +21,22 @@ let
     # instances) and it needs asymmetric wiring — an overlay for the home side plus `specialArgs.lib`
     # for the system side. `tools` is one mechanism, robust and uniform. (The overlay is worth a spike
     # someday just to gauge its fragility — see the migration plan.)
-    tools = import ./opts.nix { lib = nixpkgs.lib; };
+    # Per-host tools: opt/secrets are system-agnostic; conf is baked with the host's system so
+    # `tools.conf.eachOs` needs no system argument at the call site.
+    mkTools = system: {
+        opt = import ./opt.nix { lib = nixpkgs.lib; };
+        secrets = import ./secrets.nix;
+        conf = import ./conf.nix { lib = nixpkgs.lib; inherit system; };
+    };
 
-    # Every host directory contains an `id.nix` (a plain `{ hostName; system; users; primaryUser; }`
-    # attrset) that is the single source of truth for the machine's identity. The builders import it
-    # and hand it to every module as the `hostId` argument, so shared modules (users.nix,
-    # home-manager.nix, …) never hardcode a username, and flake.nix forms the output attribute names
-    # from it.
     idOf = host: import (host + "/id.nix");
 
-    # The specialArgs every host shares. Defined once here (rather than repeated per builder) so the
-    # set of globally-available module args has a single source of truth. `hostId` is per-host.
-    specialArgsFor = host: {
-        inherit inputs tools;
-        hostId = idOf host;
-    };
+    specialArgsFor = host:
+        let id = idOf host; in {
+            inherit inputs;
+            tools = mkTools id.system;
+            hostId = id;
+        };
 in
 {
     # Map a function over every system we care about (used for per-system outputs such as
@@ -83,19 +84,24 @@ in
             id = idOf host;
             user = builtins.head id.users;
         in
-        home-manager.lib.homeManagerConfiguration {
-            pkgs = import nixpkgs {
-                inherit (id) system;
-                config = {
-                    allowUnfree = true;
-                    qt.enable = true;
+        home-manager.lib.homeManagerConfiguration (
+            let
+                pkgs = import nixpkgs {
+                    inherit (id) system;
+                    config = {
+                        allowUnfree = true;
+                        qt.enable = true;
+                    };
                 };
-            };
-            extraSpecialArgs = specialArgsFor host;
-            modules = [
-                (../users + "/${user}/home.nix")
-                { home.username = user; }
-                host
-            ];
-        };
+            in
+            {
+                pkgs = pkgs;
+                extraSpecialArgs = specialArgsFor host;
+                modules = [
+                    (../users + "/${user}/home.nix")
+                    { home.username = user; }
+                    host
+                ];
+            }
+        );
 }

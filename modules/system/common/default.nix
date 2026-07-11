@@ -3,5 +3,6 @@
     imports = [
         ./nixpkgs.nix
         ./shells.nix
+        ./vpn.nix
     ];
 }
