@@ -1,14 +1,18 @@
-# agenix rules — COMPUTED, not hand-maintained. `agenix` reads this file to learn which recipients
-# each secret is encrypted to. We walk the secrets/ tree and assign every `*.age` file the public
-# key of its owning scope (its first two path components, e.g. "users/cogs" or "hosts/home-desktop")
-# from ./recipients.nix. So adding a secret = drop the `.age` file in the right dir + (if a new
-# scope) add its key to recipients.nix — no per-secret rule edits here.
+# agenix rules — COMPUTED, not hand-maintained. `agenix` reads this to learn who each secret is
+# encrypted to. We walk the tree and assign every `*.age` file the recipients named by its AUDIENCE
+# folder — its first path segment — resolved against ./recipients.nix by one rule:
 #
-# Attr names are the file paths relative to secrets/ WITH `.age` (what agenix matches on disk);
-# `age.secrets.<name>` in the config uses the same path WITHOUT `.age` (see lib/opts.nix secretFile).
+#   audience contains "@"  → an exact identity ("<user>@<host>")  → that one key
+#   audience has no "@"    → a bare user ("<user>")               → all keys "<user>@*"
 #
-# Pure `builtins` only (no lib / no <nixpkgs>): this file is evaluated by the agenix CLI, which has
-# no guaranteed NIX_PATH, so we avoid `import <nixpkgs>`.
+# So `secrets/cogs@home-desktop/gpg.age` goes to just that machine, while `secrets/cogs/vpn.age`
+# goes to every cogs machine. Adding a secret = drop the `.age` in the right folder (+ a new key in
+# recipients.nix if it's a new identity). No per-secret rule edits here.
+#
+# Attr names are the paths relative to secrets/ WITH `.age` (what agenix matches on disk);
+# `age.secrets.<name>` in the config uses the same path WITHOUT `.age` (see lib/opts.nix).
+#
+# Pure `builtins` only (no lib / no <nixpkgs>): agenix evaluates this with no guaranteed NIX_PATH.
 let
     keys = import ./recipients.nix;
 
@@ -40,19 +44,19 @@ let
                 [ ]
         ) (attrNames (readDir dir));
 
-    ageFiles = collect "" ./.;
+    # First path segment = the audience folder.
+    audience = f: elemAt (filter isString (split "/" f)) 0;
 
-    # Owning scope = first two path components joined, e.g. "users/cogs/gpg.age" -> "users/cogs".
-    ownerOf =
-        f:
-        let
-            parts = filter isString (split "/" f);
-        in
-        (elemAt parts 0) + "/" + (elemAt parts 1);
+    recipients =
+        a:
+        if match ".*@.*" a != null then
+            [ keys.${a} ] # "<user>@<host>" — one identity
+        else
+            map (n: keys.${n}) (filter (n: match "${a}@.*" n != null) (attrNames keys)); # "<user>" — all machines
 in
 listToAttrs (
     map (f: {
         name = f;
-        value.publicKeys = [ keys.${ownerOf f} ];
-    }) ageFiles
+        value.publicKeys = recipients (audience f);
+    }) (collect "" ./.)
 )

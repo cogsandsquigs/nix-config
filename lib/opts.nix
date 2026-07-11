@@ -5,8 +5,7 @@
 #
 # Grouped by what a helper DOES:
 #   tools.opt.*      — option & module-authoring helpers (constructors + assertions).
-#   (top-level)      — agenix secret wiring. NOTE: this group's shape is still being finalized;
-#                      it will move under `tools.secrets.*` in a follow-up commit.
+#   tools.secrets.*  — agenix secret wiring (register a secret + read its decrypted path).
 { lib }:
 let
     t = lib.types;
@@ -21,16 +20,17 @@ let
             example = !default;
         };
 
-    # Path to an encrypted secret, from its name. A secret's name is its path under `secrets/`
-    # WITHOUT the `.age` suffix (e.g. "users/cogs/gpg" → secrets/users/cogs/gpg.age). `../secrets`
-    # resolves relative to THIS file (lib/), i.e. the repo-root `secrets/` dir, regardless of caller.
-    secretFile = name: ../secrets + "/${name}.age";
+    # A secret is addressed by (location, name): `location` is its audience folder under `secrets/`
+    # (an identity "<user>@<host>", or a bare "<user>" for that user on all machines); `name` is the
+    # leaf. Together they form the file `secrets/<location>/<name>.age` and the `age.secrets` key
+    # "<location>/<name>". `../secrets` resolves relative to THIS file (lib/) — the repo-root
+    # `secrets/` — regardless of caller.
+    secretFile = location: name: ../secrets + "/${location}/${name}.age";
 
-    # Build an `age.secrets` fragment: { "<name>" = { file = <name>.age; } // attrs; }. In `let` so
-    # userSecret/sysSecret below can build on it (sibling attrs can't reference each other).
-    mkSecret = name: attrs: {
-        ${name} = {
-            file = secretFile name;
+    # Build an `age.secrets` fragment. In `let` so the `secrets.*` set below can reuse it.
+    mkSecret = location: name: attrs: {
+        "${location}/${name}" = {
+            file = secretFile location name;
         }
         // attrs;
     };
@@ -98,14 +98,21 @@ in
             };
     };
 
-    # ── secret wiring (agenix) ────────────────────────────────────────────────────────────────────
-    # NOTE: shape still being finalized — these move under `tools.secrets.*` (with a location/name
-    # model) in the next commit. Left top-level and unchanged for now; nothing in-config uses them
-    # yet. A feature stays secret-AGNOSTIC (it only exposes `opt.mkSecretPath`); the user/host unit
-    # declares the real secret here and feeds its decrypted `.path` into that hole.
-    inherit mkSecret;
-    userSecret = owner: name: mkSecret "users/${owner}/${name}" { };
-    sysSecret =
-        host: name: opts:
-        mkSecret "hosts/${host}/${name}" ({ mode = "0400"; } // opts);
+    # ── tools.secrets — agenix wiring (register + consume) ───────────────────────────────────────
+    # A feature stays secret-AGNOSTIC: it only exposes an `opt.mkSecretPath` hole. The user/host unit
+    # does the two agenix steps: `declare` registers the secret (so agenix decrypts it at activation),
+    # `path` reads back where the plaintext lands — which it feeds into the feature's hole. Scope is
+    # carried by `location`, not by a function name: an identity "<user>@<host>" is that machine only;
+    # a bare "<user>" is that user on all their machines (see secrets/secrets.nix for how each folder
+    # resolves to recipients).
+    secrets = {
+        # register with agenix:  age.secrets = tools.secrets.declare "cogs@macbook" "gpg";
+        declare = location: name: mkSecret location name { };
+        # same, with extra agenix attrs (owner/mode) for system secrets in /run/agenix
+        inherit mkSecret;
+        # read the decrypted runtime path:  tools.secrets.path config "cogs@macbook" "gpg"
+        path =
+            config: location: name:
+            config.age.secrets."${location}/${name}".path;
+    };
 }
