@@ -1,6 +1,6 @@
-# The shared home-manager CORE, imported by every machine — personal or work. This is the
-# "develop + as-needed" baseline: shell, terminal, CLI utils, and the full dev toolchain, but
-# NO games or personal GUI apps. Those live in ./personal.nix, which layers on top of this.
+# The shared home-manager library — the FULL feature set, imported by every user unit. Selection
+# is purely via `my.user.<feature>.enable` flags: core features default on, optional ones
+# (games, desktop-apps) default off and are inert until a unit opts in. No import-bundle split.
 #
 # OS-specific differences are handled inline with `lib.optionals pkgs.stdenv.isDarwin` etc.
 { ... }: {
@@ -13,5 +13,8 @@
         ./shell
         ./utils
         ./dev
+
+        ./games.nix
+        ./desktop-apps
     ];
 }

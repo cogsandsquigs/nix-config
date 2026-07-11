@@ -1,15 +1,26 @@
 # Desktop apps commonly used.
-{ pkgs, ... }: {
+{
+    pkgs,
+    lib,
+    config,
+    tools,
+    ...
+}:
+{
     imports = [ ./browser.nix ];
 
-    home.packages = with pkgs; [
-        # Productivity
-        discord # currently on macos gets stuck on launch, keeps trying 2 upd (???) ptb and canary don't fix issue
-        obsidian
-        zoom-us
-        qbittorrent
+    options.my.user.desktopApps.enable = tools.mkDisabled "personal GUI apps (Discord, Obsidian, Zoom, …)";
 
-        # Fun
-        #spotify
-    ];
+    config = lib.mkIf config.my.user.desktopApps.enable {
+        home.packages = with pkgs; [
+            # Productivity
+            discord # currently on macos gets stuck on launch, keeps trying 2 upd (???) ptb and canary don't fix issue
+            obsidian
+            zoom-us
+            qbittorrent
+
+            # Fun
+            #spotify
+        ];
+    };
 }
