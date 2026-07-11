@@ -55,7 +55,25 @@
                     nixd = {
                         command = "nixd";
                         args = [ ];
-                        config.nixd = { };
+                        config.nixd = {
+                            nixpkgs = {
+                                expr = "import <nixpkgs> { }";
+                            };
+
+                            formatting = {
+                                command = [ "nixfmt" ];
+                            };
+
+                            options = {
+                                nixos = {
+                                    expr = "(builtins.getFlake (toString ./.)).nixosConfigurations.<hostname>.options";
+                                };
+
+                                home_manager = {
+                                    expr = "(builtins.getFlake (toString ./.)).homeConfigurations.\"<username>@<hostname>\".options";
+                                };
+                            };
+                        };
                     };
 
                     # Python language server(s):

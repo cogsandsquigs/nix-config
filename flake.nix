@@ -53,7 +53,7 @@
     # home-manager module, and the directory tree *is* the import graph. `./lib` exposes the
     # `mkDarwin` / `mkNixos` builders that wire a host together.
     outputs =
-        { self, nixpkgs, ... }@inputs:
+        { ... }@inputs:
         let
             tools = import ./tools { inherit inputs; };
 

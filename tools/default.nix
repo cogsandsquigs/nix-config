@@ -26,13 +26,20 @@ let
     mkTools = system: {
         opt = import ./opt.nix { lib = nixpkgs.lib; };
         secrets = import ./secrets.nix;
-        conf = import ./conf.nix { lib = nixpkgs.lib; inherit system; };
+        conf = import ./conf.nix {
+            lib = nixpkgs.lib;
+            inherit system;
+        };
     };
 
     idOf = host: import (host + "/id.nix");
 
-    specialArgsFor = host:
-        let id = idOf host; in {
+    specialArgsFor =
+        host:
+        let
+            id = idOf host;
+        in
+        {
             inherit inputs;
             tools = mkTools id.system;
             hostId = id;
