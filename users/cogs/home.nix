@@ -4,8 +4,7 @@
 # it's placed.
 #
 # Imported per-user by the wiring (home-manager.users.cogs on full-OS hosts; mkHome on standalone).
-{ ... }:
-{
+{ ... }: {
     imports = [ ../../modules/home ];
 
     # Personal-only features (optional, off by default in the library).

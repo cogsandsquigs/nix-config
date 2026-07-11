@@ -11,18 +11,34 @@
 # nixfmt-rfc-style (2-space default) — prefer `treefmt` for the repo's real 4-space style.
 
 [formatter.nixfmt]
-command = "nixfmt"
-options = ["--width=100", "--indent=4", "--strict"]
-includes = ["*.nix"]
+    command  = "nixfmt"
+    includes = ["*.nix"]
+    options  = ["--width=100", "--indent=4", "--strict"]
 
 [formatter.shfmt]
-command = "shfmt"
-options = ["--indent=4", "--binary-next-line", "--case-indent", "--space-redirects", "--write"]
-includes = ["*.sh"]
+    command = "shfmt"
+    includes = ["*.sh"]
+    options = [
+        "--indent=4",
+        "--binary-next-line",
+        "--case-indent",
+        "--space-redirects",
+        "--write",
+    ]
 
 # prettier reads .prettierrc.json in this repo for its options (tabWidth 4, printWidth 100).
 [formatter.prettier]
-command = "prettier"
-options = ["--write"]
-includes = ["*.json", "*.jsonc", "*.yaml", "*.yml", "*.css", "*.scss", "*.html", "*.js", "*.ts"]
-excludes = ["flake.lock"]
+    command = "prettier"
+    excludes = ["flake.lock"]
+    includes = [
+        "*.json",
+        "*.jsonc",
+        "*.yaml",
+        "*.yml",
+        "*.css",
+        "*.scss",
+        "*.html",
+        "*.js",
+        "*.ts",
+    ]
+    options = ["--write"]
