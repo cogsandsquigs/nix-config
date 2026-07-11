@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SUPERSEDED by scripts/nxm — use `nxm rebuild` instead.
 #
 # Rebuild / switch the current machine from this flake.
 #

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SUPERSEDED by scripts/nxm — use `nxm upgrade` instead.
 #
 # Bump flake.lock (update all inputs) and rebuild. Location-independent, and picks the right
 # rebuild path (system vs standalone home-manager) via rebuild.sh.

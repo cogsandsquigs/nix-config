@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SUPERSEDED by scripts/nxm — use `nxm edit` instead.
 #
 # Open the flake in $EDITOR, then rebuild. Location-independent: the repo dir is derived from
 # this script's location, so it works at /etc/nix or ~/.config/nix alike.

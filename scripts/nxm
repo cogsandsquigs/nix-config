@@ -18,10 +18,10 @@ import sys
 _TTY = sys.stdout.isatty()
 _G = "\033[32m"  # green
 _R = "\033[31m"  # red
-_D = "\033[2m"   # dim
+_D = "\033[2m"  # dim
 _W = "\033[37m"  # light grey
-_B = "\033[1m"   # bold
-_X = "\033[0m"   # reset
+_B = "\033[1m"  # bold
+_X = "\033[0m"  # reset
 _ANSI = re.compile(r"\033\[[0-9;]*[A-Za-z]")
 
 _buf = collections.deque(maxlen=5)
@@ -109,10 +109,13 @@ def _hm_target():
         try:
             target = subprocess.check_output(
                 [
-                    "nix", "eval", "--raw", f"{REPO}#homeConfigurations",
+                    "nix",
+                    "eval",
+                    "--raw",
+                    f"{REPO}#homeConfigurations",
                     "--apply",
                     "c: let n = builtins.attrNames c; "
-                    "in if builtins.length n == 1 then builtins.head n else \"\"",
+                    'in if builtins.length n == 1 then builtins.head n else ""',
                 ],
                 stderr=subprocess.DEVNULL,
                 text=True,
@@ -129,17 +132,44 @@ def _rebuild():
 
     if sys.platform == "darwin":
         with step("darwin-rebuild switch"):
-            run(["sudo", "-i", "darwin-rebuild", "switch",
-                 "--flake", str(REPO), "--print-build-logs"])
+            run(
+                [
+                    "sudo",
+                    "-i",
+                    "darwin-rebuild",
+                    "switch",
+                    "--flake",
+                    str(REPO),
+                    "--print-build-logs",
+                ]
+            )
     elif os.path.exists("/etc/NIXOS"):
         with step("nixos-rebuild switch"):
-            run(["sudo", "-i", "nixos-rebuild", "switch",
-                 "--flake", str(REPO), "--print-build-logs"])
+            run(
+                [
+                    "sudo",
+                    "-i",
+                    "nixos-rebuild",
+                    "switch",
+                    "--flake",
+                    str(REPO),
+                    "--print-build-logs",
+                ]
+            )
     else:
         target = _hm_target()
         with step(f"home-manager switch → {target}"):
-            run(["home-manager", "switch", "-b", "bak",
-                 "--flake", f"{REPO}#{target}", "--print-build-logs"])
+            run(
+                [
+                    "home-manager",
+                    "switch",
+                    "-b",
+                    "bak",
+                    "--flake",
+                    f"{REPO}#{target}",
+                    "--print-build-logs",
+                ]
+            )
 
     if subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=REPO).returncode != 0:
         with step("commit & push"):
@@ -148,6 +178,7 @@ def _rebuild():
 
 
 # ── Subcommands ───────────────────────────────────────────────────────────────
+
 
 def cmd_rebuild(_args):
     os.chdir(REPO)
@@ -190,20 +221,21 @@ def cmd_edit(_args):
 
 # ── Entry point ───────────────────────────────────────────────────────────────
 
+
 def main():
     p = argparse.ArgumentParser(prog="nxm", description=__doc__)
     sub = p.add_subparsers(dest="cmd", required=True, metavar="COMMAND")
     sub.add_parser("rebuild", help="stage all changes, rebuild, commit")
     sub.add_parser("upgrade", help="update flake inputs then rebuild")
-    sub.add_parser("clean",   help="GC old nix generations")
-    sub.add_parser("edit",    help="open $EDITOR then rebuild")
+    sub.add_parser("clean", help="GC old nix generations")
+    sub.add_parser("edit", help="open $EDITOR then rebuild")
 
     args = p.parse_args()
     dispatch = {
         "rebuild": cmd_rebuild,
         "upgrade": cmd_upgrade,
-        "clean":   cmd_clean,
-        "edit":    cmd_edit,
+        "clean": cmd_clean,
+        "edit": cmd_edit,
     }
     try:
         dispatch[args.cmd](args)

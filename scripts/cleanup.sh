@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SUPERSEDED by scripts/nxm — use `nxm clean` instead.
 #
 # Garbage-collect old generations and free store space.
 #
