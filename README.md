@@ -94,7 +94,8 @@ Key inputs (see `flake.nix`): [nixpkgs] (stable), [nix-darwin], [home-manager],
 - **`scripts/`** — Convenience wrappers: `rebuild.sh`, `upgrade.sh`, `cleanup.sh`, `editnix.sh`.
   Location-independent (they derive the flake dir from their own path) and auto-detect whether to
   use `darwin-rebuild` / `nixos-rebuild` / standalone `home-manager switch`.
-- **`secrets/`** — agenix-encrypted secrets (consumed as a flake input).
+- **`secrets/`** — agenix-encrypted secrets + their rules (`recipients.nix`, computed `secrets.nix`),
+  plus `mint-subkeys.sh` and a how-to `README.md`. See [Secrets](#secrets).
 - **`nix.conf`** — Nix daemon settings.
 - **`treefmt.toml`** — one-command repo formatting (`treefmt`); also the home of nixfmt's
   `--width`/`--indent` options, since nixfmt has no native config file. Mirrors the per-language
@@ -213,12 +214,12 @@ core design goal.
 | class        | default                        | helper                | example                                  |
 | ------------ | ------------------------------ | --------------------- | ---------------------------------------- |
 | **plumbing** | — (no flag; unconditional)     | —                     | `base.nix`, `nixpkgs.nix`, `users.nix`   |
-| **core**     | `true` (on unless disabled)    | `tools.mkEnabled`     | `git`, `shell`, `fonts`, `secrets`       |
-| **optional** | `false` (opt-in)               | `tools.mkDisabled`    | `games`, `desktopApps`, `vpn`, `fuse`    |
-| **ride**     | = parent group's value         | `tools.mkRiding p`    | `dev.direnv`, `dev.editors.helix`        |
+| **core**     | `true` (on unless disabled)    | `tools.opt.mkEnabled`  | `git`, `shell`, `fonts`, `secrets`      |
+| **optional** | `false` (opt-in)               | `tools.opt.mkDisabled` | `games`, `desktopApps`, `vpn`, `fuse`   |
+| **ride**     | = parent group's value         | `tools.opt.mkRiding p` | `dev.direnv`, `dev.editors.helix`       |
 
 **Groups.** A group (e.g. `dev`) is a namespace: a master `my.user.dev.enable` plus sub-features
-whose default _rides_ the master (`tools.mkRiding config.my.user.dev.enable`). Flip the master and
+whose default _rides_ the master (`tools.opt.mkRiding config.my.user.dev.enable`). Flip the master and
 the whole group follows; override any sub to carve it out. Mutually-optional members (e.g. the
 `vscode` editor) are independent opt-ins, not ride-alongs.
 
@@ -239,16 +240,44 @@ settings that differ per host/user — e.g. `my.user.git.{userName,email,signing
 and `my.user.flakeDir`. Everything identical everywhere stays inline; modules with no per-machine
 customization get just `.enable`.
 
-**Where the helpers come from.** The `tools` argument (from `lib/opts.nix`) is passed to every
-module and provides the constructors above plus `mkStr`/`mkNullStr`/`mkEnum` for value options and
-`requires` for cross-feature assertions. Uniform helpers mean every flag has the same shape.
+**Where the helpers come from.** The `tools` argument (from `lib/opts.nix`) is passed to every module,
+grouped by what it does: **`tools.opt.*`** — option constructors (`mkEnabled`/`mkDisabled`/`mkRiding`
+plus `mkStr`/`mkNullStr`/`mkEnum` for value options, `mkSecretPath` for a secret hole, and `requires`
+for cross-feature assertions); **`tools.secrets.*`** — agenix wiring (see [Secrets](#secrets)).
+Uniform helpers mean every flag has the same shape.
 
 **Safety.** Because every `my.*` leaf is _declared_ (never a freeform `attrsOf`), a typo like
 `my.user.gmes.enable` fails evaluation with "option does not exist" — in any file. That strict
-schema is the real guard; `tools.requires` covers genuine cross-feature invariants ("A needs B").
+schema is the real guard; `tools.opt.requires` covers genuine cross-feature invariants ("A needs B").
 
 The module tree under `modules/` is the source of truth for which features exist: each module's
 `options.my.<scope>.<feature>` declaration (near its top) names its flag and class.
+
+## Secrets
+
+Sensitive material (a GPG key, a VPN profile, a token) is encrypted with [agenix] and committed under
+`secrets/` — the `*.age` blobs are safe to push; only the matching **private age key** decrypts them.
+Full workflow (create/edit/rotate, bootstrapping a machine, the GPG ceremony) lives in
+**[`secrets/README.md`](secrets/README.md)**; the model in brief:
+
+- **Identities are per-(user, machine).** Each machine generates its own age key at
+  `/etc/nix/age/<user>` (never copied), registered in `secrets/recipients.nix` as `"<user>@<host>"`.
+  A leaked key exposes only that one machine's secrets.
+- **A secret's folder picks its audience** (resolved by `secrets/secrets.nix`): `cogs@glorpbook/…`
+  → that machine only; `cogs/…` → every one of that user's machines. So "on all my boxes" is done by
+  encrypting to multiple recipients, never by sharing a private key.
+- **Features stay secret-agnostic.** A feature exposes a `tools.opt.mkSecretPath` hole; the user/host
+  unit does the wiring — `age.secrets = tools.secrets.declare "<id>" "<name>"` to register it, and
+  `tools.secrets.path config "<id>" "<name>"` to feed the decrypted path into the hole. So "which
+  secret feeds which feature" lives in one file, the unit.
+
+Example (git's signing key on a box provisioned via agenix):
+
+```nix
+# users/cogs/home.nix
+age.secrets                = tools.secrets.declare "cogs@home-desktop" "gpg";
+my.user.git.signingKeyFile = tools.secrets.path config "cogs@home-desktop" "gpg";
+```
 
 ## Common tasks
 
