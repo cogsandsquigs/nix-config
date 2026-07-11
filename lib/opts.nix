@@ -16,6 +16,20 @@ let
             type = t.bool;
             example = !default;
         };
+
+    # Path to an encrypted secret, from its name. A secret's name is its path under `secrets/`
+    # WITHOUT the `.age` suffix (e.g. "users/cogs/gpg" → secrets/users/cogs/gpg.age). `../secrets`
+    # resolves relative to THIS file (lib/), i.e. the repo-root `secrets/` dir, regardless of caller.
+    secretFile = name: ../secrets + "/${name}.age";
+
+    # Build an `age.secrets` fragment: { "<name>" = { file = <name>.age; } // attrs; }. In `let` so
+    # userSecret/sysSecret below can build on it (sibling attrs can't reference each other).
+    mkSecret = name: attrs: {
+        ${name} = {
+            file = secretFile name;
+        }
+        // attrs;
+    };
 in
 {
     ## enable-style toggles ------------------------------------------------------------------------
@@ -66,4 +80,30 @@ in
             assertion = (!when) || needs;
             inherit message;
         };
+
+    ## secrets (agenix) ----------------------------------------------------------------------------
+    # A feature stays secret-AGNOSTIC: it exposes a nullOr-str *path hole* (mkSecretPath) and never
+    # mentions agenix/kind/location. The user/host unit declares the actual agenix secret
+    # (userSecret/sysSecret) and feeds the decrypted `.path` into that hole. So "which secret feeds
+    # which feature" lives in ONE file — the unit — not scattered through feature modules.
+
+    # The agnostic hole a feature declares (e.g. `git.signingKeyFile = tools.mkSecretPath "…"`).
+    mkSecretPath =
+        description:
+        lib.mkOption {
+            inherit description;
+            type = t.nullOr t.str;
+            default = null;
+        };
+
+    # `mkSecret` (in `let` above) is re-exposed too: names carry their scope prefix and omit `.age`
+    # (see secretFile); usage is always `age.secrets = tools.…`.
+    inherit mkSecret;
+
+    # Owner-scoped constructors mirroring the secrets/ layout. `userSecret` → home/HM (user-owned);
+    # `sysSecret` → system (/run/agenix, ownership/mode set by the host).
+    userSecret = owner: name: mkSecret "users/${owner}/${name}" { };
+    sysSecret =
+        host: name: opts:
+        mkSecret "hosts/${host}/${name}" ({ mode = "0400"; } // opts);
 }

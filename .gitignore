@@ -4,3 +4,6 @@ nix.custom.conf*
 registry.json
 *.log
 
+# Private agenix age identities (/etc/nix/age/<owner>) — secret keys, NEVER commit. Only the
+# public keys (secrets/recipients.nix) are tracked.
+/age/
