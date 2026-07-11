@@ -1,24 +1,35 @@
 # Antivirus (Linux only).
-{ pkgs, ... }: {
-    environment.systemPackages = with pkgs; [ clamav ];
+{
+    pkgs,
+    lib,
+    config,
+    tools,
+    ...
+}:
+{
+    options.my.sys.security.enable = tools.mkEnabled "ClamAV antivirus (daemon + scanner + updater)";
 
-    services = {
-        clamav = {
-            daemon = {
-                enable = true;
-                settings = {
-                    "LogSyslog" = true;
+    config = lib.mkIf config.my.sys.security.enable {
+        environment.systemPackages = with pkgs; [ clamav ];
+
+        services = {
+            clamav = {
+                daemon = {
+                    enable = true;
+                    settings = {
+                        "LogSyslog" = true;
+                    };
                 };
-            };
 
-            scanner = {
-                enable = true;
-                interval = "4h";
-            };
+                scanner = {
+                    enable = true;
+                    interval = "4h";
+                };
 
-            updater = {
-                enable = true;
-                frequency = 4;
+                updater = {
+                    enable = true;
+                    frequency = 4;
+                };
             };
         };
     };
