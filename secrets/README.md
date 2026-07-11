@@ -1,95 +1,105 @@
 # secrets
 
-Encrypted with [agenix](https://github.com/ryantm/agenix). The `*.age` blobs are safe to commit —
-only the matching **private** age key (`/etc/nix/age/<owner>`, gitignored) can decrypt them.
+Anything sensitive — a private key, a VPN profile, a token — gets encrypted here with
+[agenix](https://github.com/ryantm/agenix) so it can live in the repo safely. The encrypted `*.age`
+files are fine to commit and push; the only thing that can decrypt them is your private age key at
+`/etc/nix/age/<you>`, which never leaves the machine (it's gitignored).
 
-- **`recipients.nix`** — public keys per scope (`users/<name>`, `hosts/<name>`). Committed.
-- **`secrets.nix`** — auto-computed rules; each `*.age` is encrypted to the key of its owning scope
-  (first two path components). Never edit by hand.
-- **`<scope>/<name>.age`** — a secret. Its _name_ is the path minus `.age` (e.g. `users/cogs/gpg`).
+Three things live in this folder:
 
-> Run every `agenix` command from **this dir** (`/etc/nix/secrets`) — that's where the rules live.
+- **`recipients.nix`** — the public age keys, one per person/machine. This is the "who's allowed to
+  read what" list.
+- **`secrets.nix`** — worked out automatically from the folder layout; you never touch it.
+- **the `*.age` files** — the secrets themselves, filed under `users/<you>/…` or `hosts/<box>/…`.
 
-## 1 · Bootstrap an owner — once per user/host, on that machine
+A secret's _name_ is just its path here without the `.age` — so `users/cogs/gpg.age` is called
+`users/cogs/gpg`.
 
-```sh
-age-keygen -o /etc/nix/age/<owner>    # writes the PRIVATE key (keep secret), prints: Public key: age1…
-age-keygen -y /etc/nix/age/<owner>    # reprint the public key anytime
-```
+> Run `agenix` from inside this folder (`/etc/nix/secrets`), so it finds the rules.
 
-Paste the `age1…` into `recipients.nix` under its scope, then commit `recipients.nix`.
-
-## 2 · Add a secret
+## Stash a new secret
 
 ```sh
 cd /etc/nix/secrets
-agenix -e users/<owner>/<name>.age    # opens $EDITOR on the decrypted content: type, save, quit
-git add users/<owner>/<name>.age      # commit the encrypted blob
+agenix -e users/cogs/api-token.age    # opens your editor on the (empty) secret — type it in, save, quit
+git add users/cogs/api-token.age      # the encrypted file is safe to commit
 ```
 
-Feed it to a feature in the owner's unit (`users/<owner>/home.nix`):
+That's it — it's stored. To actually _use_ it, hand its decrypted path to a feature from your own
+config (`users/cogs/home.nix`):
 
 ```nix
-{ config, tools, ... }:               # add config + tools to the args
+{ config, tools, ... }:               # make sure config + tools are in the args
 {
-  age.secrets = tools.userSecret "<owner>" "<name>";
-  my.user.<feature>.<pathOpt> = config.age.secrets."users/<owner>/<name>".path;
+  age.secrets = tools.userSecret "cogs" "api-token";
+  my.user.<feature>.<somePath> = config.age.secrets."users/cogs/api-token".path;
 }
 ```
 
-Then `rebuild`. _System_-scope instead? Use
-`tools.sysSecret "<host>" "<name>" { owner = "<user>"; }` in the host file; its decrypted path lands
-in `/run/agenix`.
+`rebuild`, and the feature reads it from a decrypted file that only exists at runtime. (If it's a
+whole-machine thing rather than yours specifically, use
+`tools.sysSecret "<box>" "<name>" { owner = "cogs"; }` in the host file instead — it shows up under
+`/run/agenix`.)
 
-## 3 · Edit / re-key
+## Change one later
 
 ```sh
 cd /etc/nix/secrets
-agenix -e users/<owner>/<name>.age    # edit an existing secret
-agenix -r                             # re-encrypt ALL secrets to current recipients (after key changes)
+agenix -e users/cogs/api-token.age    # re-opens it decrypted; edit and save
 ```
 
----
+If you ever add or replace a key in `recipients.nix`, re-encrypt everything to match with
+`agenix -r`.
 
-## Worked example — the GPG signing key (cogs)
+## New machine or new person
 
-⚠️ **Never move, replace, or delete your real key. You export a _copy_ only.**
+Each person/machine needs its own key before it can read anything. On that machine:
 
 ```sh
-# 0 · Safety backup of your whole GnuPG home first:
-cp -a ~/.gnupg ~/.gnupg.bak.$(date +%Y%m%d)
+age-keygen -o /etc/nix/age/cogs       # makes the private key (keep it!), prints a "Public key: age1…"
+```
 
-# 1 · Find the signing key id (the `sec` line, e.g. rsa4096/E0DB58169CA551AA):
-gpg --list-secret-keys --keyid-format=long
+Copy that `age1…` line into `recipients.nix` under the right name (`users/cogs`, `hosts/desk`, …)
+and commit it. Lost track of the public key later? `age-keygen -y /etc/nix/age/cogs` prints it
+again.
 
-# 2 · Export a COPY of the secret key straight into a new agenix secret:
+## Keep your GPG signing key across machines
+
+Right now your commit-signing key only exists on the machine you made it on. Stash a copy here and
+every machine picks it up automatically.
+
+> You're only exporting a **copy**. Your real key is never touched — but back it up first anyway.
+
+```sh
+cp -a ~/.gnupg ~/.gnupg.backup             # just in case
+
+gpg --list-secret-keys --keyid-format=long # find the key id (the `sec` line, e.g. …/E0DB58169CA551AA)
+
 cd /etc/nix/secrets
-gpg --export-secret-keys --armor <KEYID> > /tmp/gpg-cogs.asc
-EDITOR="cp /tmp/gpg-cogs.asc" agenix -e users/cogs/gpg.age   # injects the file as the secret content
-rm -P /tmp/gpg-cogs.asc                                      # secure-delete the temp copy (Linux: shred -u)
+gpg --export-secret-keys --armor <KEYID> > /tmp/key.asc
+EDITOR="cp /tmp/key.asc" agenix -e users/cogs/gpg.age   # drops the exported key into the secret
+rm -P /tmp/key.asc                                      # wipe the temp copy (on Linux: shred -u)
 
-# 3 · Commit the encrypted blob:
 git add users/cogs/gpg.age
 ```
 
-Wire it in `users/cogs/home.nix` — this imports the key into the keyring at activation on any
-machine that receives the secret (idempotent; a no-op where the key already exists):
+Then tell git about it in `users/cogs/home.nix`:
 
 ```nix
 { config, tools, ... }:               # add config + tools to the args
 {
-  # …existing config…
+  # …the rest of your config…
   age.secrets = tools.userSecret "cogs" "gpg";
   my.user.git.signingKeyFile = config.age.secrets."users/cogs/gpg".path;
 }
 ```
 
-`rebuild`. The existing `signingKey` _id_ is unchanged; `signingKeyFile` only ensures the key is
-present in the keyring elsewhere.
+`rebuild`. From now on any machine that gets this config imports the key into its keyring on
+activation (it's a harmless no-op on the machine that already has it). Your `signingKey` id doesn't
+change — this just makes sure the key is actually _there_ to sign with.
 
-## OVPN — scaffolding ready, not created
+## OpenVPN
 
-Nothing to build: the helpers + rules already cover it. When you want it, follow **§2** — e.g. a
-user secret `users/cogs/ovpn.age` (portable to any machine, no system layer needed), consumed
-through a `tools.mkSecretPath` hole on the VPN feature. A system-scope variant via `tools.sysSecret`
-is equally ready if you'd rather tie it to a NixOS host.
+Not set up yet, but it works exactly like anything else above: `agenix -e users/cogs/ovpn.age` with
+your profile, then point the VPN feature at its path. Do it as a user secret and it follows you to
+any machine; use `tools.sysSecret` instead if you'd rather pin it to one box.
