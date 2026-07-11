@@ -60,20 +60,20 @@
             # Each host's identity is the single source of truth in hosts/<name>/id.nix (see the
             # README `id.nix` convention). We read it here purely to form the output attribute
             # names; the builders re-import it and hand it to the modules as `hostId`.
-            macbook = ./hosts/macbook;
+            glorpbook = ./hosts/glorpbook;
             homeDesktop = ./hosts/home-desktop;
             workDesktop = ./hosts/work-desktop;
 
             idOf = host: import (host + "/id.nix");
-            macbookId = idOf macbook;
+            glorpbookId = idOf glorpbook;
             homeDesktopId = idOf homeDesktop;
             workId = idOf workDesktop;
         in
         {
             inherit lib;
 
-            # Personal MacBook (nix-darwin).
-            darwinConfigurations.${macbookId.hostName} = lib.mkDarwin macbook;
+            # Personal MacBook — "glorpbook" (nix-darwin).
+            darwinConfigurations.${glorpbookId.hostName} = lib.mkDarwin glorpbook;
 
             # Personal desktop tower (NixOS).
             nixosConfigurations.${homeDesktopId.hostName} = lib.mkNixos homeDesktop;

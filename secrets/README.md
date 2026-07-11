@@ -8,7 +8,7 @@ files are fine to commit and push; the only thing that decrypts them is your pri
 Three things live in this folder:
 
 - **`recipients.nix`** — public age keys, one per **identity** = you on a specific machine, like
-  `cogs@macbook`. The "who's allowed to read what" list.
+  `cogs@glorpbook`. The "who's allowed to read what" list.
 - **`secrets.nix`** — the list of secrets you've **declared** (one `"location/name"` line each);
   recipients are auto-computed from each one's folder, so that's all you maintain.
 - **the `*.age` files** — each under an **audience folder**: an identity (`cogs@home-desktop/…` →

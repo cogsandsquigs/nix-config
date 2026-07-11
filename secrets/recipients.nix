@@ -9,7 +9,7 @@
 #   age-keygen -y /etc/nix/age/<user>     # reprint the public key any time
 # then add the printed `age1…` here as "<user>@<host>" and `agenix -r` to re-key user-wide secrets.
 {
-    "cogs@macbook" = "age10s8vwdz6da00g7l2vgepz5wmxh47aznwudj5vyja6xnd7qtlc45qws5sm5";
+    "cogs@glorpbook" = "age10s8vwdz6da00g7l2vgepz5wmxh47aznwudj5vyja6xnd7qtlc45qws5sm5";
 
     # Not yet bootstrapped — generate on the owning machine and uncomment (see BOOTSTRAP above).
     # A secret placed for one of these identities fails eval until its key is filled in — the

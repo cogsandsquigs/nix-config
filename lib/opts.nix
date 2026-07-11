@@ -106,11 +106,11 @@ in
     # a bare "<user>" is that user on all their machines (see secrets/secrets.nix for how each folder
     # resolves to recipients).
     secrets = {
-        # register with agenix:  age.secrets = tools.secrets.declare "cogs@macbook" "gpg";
+        # register with agenix:  age.secrets = tools.secrets.declare "cogs@glorpbook" "gpg";
         declare = location: name: mkSecret location name { };
         # same, with extra agenix attrs (owner/mode) for system secrets in /run/agenix
         inherit mkSecret;
-        # read the decrypted runtime path:  tools.secrets.path config "cogs@macbook" "gpg"
+        # read the decrypted runtime path:  tools.secrets.path config "cogs@glorpbook" "gpg"
         path =
             config: location: name:
             config.age.secrets."${location}/${name}".path;

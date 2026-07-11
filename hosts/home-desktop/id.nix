@@ -1,4 +1,4 @@
-# Host identity for home-desktop — HOST-ONLY (see hosts/macbook/id.nix for the convention). Read
+# Host identity for home-desktop — HOST-ONLY (see hosts/glorpbook/id.nix for the convention). Read
 # by lib.mkNixos (as `hostId`) and flake.nix (for the nixosConfigurations attr name).
 {
     hostName = "home-desktop";

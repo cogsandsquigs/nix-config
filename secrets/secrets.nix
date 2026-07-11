@@ -41,7 +41,7 @@ let
     # ── Declared secrets: "location/name" (no `.age`). Recipients are computed; this list is the
     #    only thing you touch to add a secret. ─────────────────────────────────────────────────────
     declared = [
-        # "cogs@macbook/gpg"        # example: this Mac's signing subkey (backup)
+        # "cogs@glorpbook/gpg"        # example: this Mac's signing subkey (backup)
         # "cogs@home-desktop/gpg"   # the NixOS box's signing subkey (imported at activation)
         # "cogs/vpn"                # a profile for every cogs machine
     ];

@@ -1,4 +1,4 @@
-# Ians-GlorpBook-Pro — aarch64-darwin MacBook.
+# glorpbook — aarch64-darwin MacBook.
 # This file owns the machine's identity and host-only tweaks; everything shared lives under
 # modules/system/darwin and modules/home.
 { pkgs, hostId, ... }:

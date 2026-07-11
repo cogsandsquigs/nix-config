@@ -13,7 +13,7 @@ Three hosts are built:
 
 | Host                 | Class        | Platform         | Attribute                                   | User(s)            |
 | -------------------- | ------------ | ---------------- | ------------------------------------------- | ------------------ |
-| `Ians-GlorpBook-Pro` | nix-darwin   | `aarch64-darwin` | `darwinConfigurations."Ians-GlorpBook-Pro"` | `cogs` (personal)  |
+| `glorpbook` | nix-darwin   | `aarch64-darwin` | `darwinConfigurations."glorpbook"` | `cogs` (personal)  |
 | `home-desktop`       | NixOS        | `x86_64-linux`   | `nixosConfigurations.home-desktop`          | `cogs` (personal)  |
 | `work-desktop`       | home-manager | `x86_64-linux`   | `homeConfigurations."ipratt@work-desktop"`  | `ipratt` (work)    |
 
@@ -62,7 +62,7 @@ Key inputs (see `flake.nix`): [nixpkgs] (stable), [nix-darwin], [home-manager],
   (`{ hostName; system; users; primaryUser; }` — host identity + which user units live here; see the
   [`id.nix` / `hostId` convention](#the-idnix--hostid-convention)) plus a `default.nix` for host-only
   tweaks. No user identity or feature logic lives here.
-  - **`macbook/`** — darwin host (dock, TouchID sudo, homebrew, launchd).
+  - **`glorpbook/`** — darwin host (dock, TouchID sudo, homebrew, launchd).
   - **`home-desktop/`** — personal NixOS host.
   - **`work-desktop/`** — standalone home-manager host (Ubuntu). Nothing host-specific beyond its
     `id.nix`; identity, git, and `my.user.flakeDir` all live in the `ipratt` user unit.
@@ -104,7 +104,7 @@ Key inputs (see `flake.nix`): [nixpkgs] (stable), [nix-darwin], [home-manager],
 
 ### How a host is assembled
 
-For a **system** host, `flake.nix` calls e.g. `lib.mkDarwin ./hosts/macbook`, which produces a
+For a **system** host, `flake.nix` calls e.g. `lib.mkDarwin ./hosts/glorpbook`, which produces a
 system from two module lists:
 
 1. `modules/system/<class>` — the shared system config for that OS. Its `default.nix` also imports
@@ -173,7 +173,7 @@ It flows through the config in exactly two ways, so the name is never repeated:
    - `modules/home-manager.nix` → one `home-manager.users.<name>` per `hostId.users`.
    - `modules/system/{darwin,nixos}/users.nix` → imports `users/<name>/system.nix` per `hostId.users`.
    - the host file itself → `networking.hostName = hostId.hostName`, `nixpkgs.hostPlatform =
-     hostId.system`, and (macbook) `system.primaryUser` / homebrew owner from `hostId.primaryUser`.
+     hostId.system`, and (glorpbook) `system.primaryUser` / homebrew owner from `hostId.primaryUser`.
 2. **Into `flake.nix` for the output attribute names.** `flake.nix` reads each `id.nix` to form
    `darwinConfigurations.<hostName>`, `nixosConfigurations.<hostName>`, and
    `homeConfigurations."<primaryUser>@<hostName>"`. `scripts/rebuild.sh` then *discovers* the
@@ -229,7 +229,7 @@ the whole group follows; override any sub to carve it out. Mutually-optional mem
 my.user.dev.editors.vscode.enable = true;
 my.user.utils.enable = false;
 
-# hosts/macbook/default.nix — this host wants the VPN clients + games casks
+# hosts/glorpbook/default.nix — this host wants the VPN clients + games casks
 my.sys.vpn.enable = true;
 my.sys.games.enable = true;
 ```

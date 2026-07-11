@@ -46,7 +46,7 @@ in
             system: f nixpkgs.legacyPackages.${system}
         );
 
-    # Build a nix-darwin system. `host` is a path to the host module (e.g. ./hosts/macbook),
+    # Build a nix-darwin system. `host` is a path to the host module (e.g. ./hosts/glorpbook),
     # which owns the machine's identity (hostPlatform, host-only tweaks) via its id.nix.
     mkDarwin =
         host:
