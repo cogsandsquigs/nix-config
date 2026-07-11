@@ -3,3 +3,4 @@ nix.conf*
 nix.custom.conf*
 registry.json
 *.log
+
