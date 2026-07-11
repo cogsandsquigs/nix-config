@@ -1,6 +1,16 @@
 # Steam (native on NixOS).
-{ ... }: {
-    programs.steam = {
-        enable = true;
+{
+    lib,
+    config,
+    tools,
+    ...
+}:
+{
+    options.my.sys.games.enable = tools.mkDisabled "Steam (native on NixOS)";
+
+    config = lib.mkIf config.my.sys.games.enable {
+        programs.steam = {
+            enable = true;
+        };
     };
 }

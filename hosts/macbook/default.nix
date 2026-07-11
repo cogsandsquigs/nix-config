@@ -13,6 +13,14 @@ in
 
     nixpkgs.hostPlatform = hostId.system;
 
+    # Optional system features this host opts into (all default off in the modules).
+    my.sys = {
+        vpn.enable = true;
+        games.enable = true;
+        desktopApps.enable = true;
+        fuse.enable = true;
+    };
+
     networking.hostName = hostName;
     networking.computerName = hostName;
 

@@ -10,6 +10,9 @@
 { hostId, ... }: {
     nixpkgs.hostPlatform = hostId.system;
 
+    # Optional system features this host opts into (all default off in the modules).
+    my.sys.games.enable = true;
+
     # Hostname from ./id.nix via the hostId specialArg (README `id.nix` convention).
     networking.hostName = hostId.hostName;
 
