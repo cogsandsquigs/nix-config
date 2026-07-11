@@ -45,15 +45,13 @@ in
             message = "my.user.vpn.profiles.${key}.path must not be empty";
         }) cfg.profiles;
 
-        # On Darwin: copy each profile into OpenVPN Connect's watched dir; the app picks them up
-        # on next launch. Fails loudly if the decrypted file isn't readable (agenix didn't run,
-        # secret missing, etc.). On NixOS: no-op until NetworkManager wiring is added.
-        # agenix is async on macOS (LaunchAgent) and sync on Linux (agenixInstall dag step).
-        # The two platforms therefore need different dag deps and different profile destinations.
+        # Linux: copy each profile into ~/.config/openvpn (plain openvpn reads from there).
+        # macOS: OpenVPN Connect has no programmatic import interface — profiles must be imported
+        # once by hand through the app UI. The agenix secret is still decrypted and available at
+        # its runtime path (tools.secrets.path); nothing to do here.
         home.activation.installOvpnProfiles = lib.mkIf (cfg.profiles != { }) (
             tools.conf.eachOs
-                # Linux: agenixInstall is a synchronous dag step — file is ready when we run.
-                (lib.hm.dag.entryAfter [ "writeBoundary" "agenixInstall" ] (
+                (lib.hm.dag.entryAfter [ "writeBoundary" "setupLaunchAgents" "agenixInstall" ] (
                     lib.concatStringsSep "\n" (lib.mapAttrsToList (profileKey: profileCfg: ''
                         _ovpn_path="${profileCfg.path}"
                         if [ ! -r "$_ovpn_path" ]; then
@@ -66,26 +64,7 @@ in
                         $DRY_RUN_CMD chmod 600 "$_dest/${profileKey}.ovpn"
                     '') cfg.profiles)
                 ))
-                # macOS: agenix decrypts via LaunchAgent (async) — setupLaunchAgents loads the
-                # new script, then we poll up to 15 s for the file to appear before failing.
-                (lib.hm.dag.entryAfter [ "writeBoundary" "setupLaunchAgents" ] (
-                    lib.concatStringsSep "\n" (lib.mapAttrsToList (profileKey: profileCfg: ''
-                        profiles="$HOME/Library/Application Support/OpenVPN Connect/profiles"
-                        mkdir -p "$profiles"
-                        _ovpn_path="${profileCfg.path}"
-                        _wait=15
-                        while [ "$_wait" -gt 0 ] && [ ! -r "$_ovpn_path" ]; do
-                            sleep 1
-                            _wait=$(( _wait - 1 ))
-                        done
-                        if [ ! -r "$_ovpn_path" ]; then
-                            echo "vpn: profile '${profileKey}' not readable at $_ovpn_path after 15s" >&2
-                            exit 1
-                        fi
-                        $DRY_RUN_CMD cp "$_ovpn_path" "$profiles/${profileKey}.ovpn"
-                        $DRY_RUN_CMD chmod 600 "$profiles/${profileKey}.ovpn"
-                    '') cfg.profiles)
-                ))
+                ""
         );
     };
 }
