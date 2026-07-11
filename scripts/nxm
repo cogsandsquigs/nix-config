@@ -1,0 +1,219 @@
+#!/usr/bin/env python3
+"""nxm — nix manage.  Rebuild, upgrade, clean, or edit this flake."""
+
+import argparse
+import collections
+import contextlib
+import getpass
+import os
+import pathlib
+import re
+import shutil
+import socket
+import subprocess
+import sys
+
+# ── TUI ──────────────────────────────────────────────────────────────────────
+
+_TTY = sys.stdout.isatty()
+_G = "\033[32m"  # green
+_R = "\033[31m"  # red
+_D = "\033[2m"   # dim
+_W = "\033[37m"  # light grey
+_B = "\033[1m"   # bold
+_X = "\033[0m"   # reset
+_ANSI = re.compile(r"\033\[[0-9;]*[A-Za-z]")
+
+_buf = collections.deque(maxlen=5)
+_shown = 0  # output lines currently rendered on screen
+
+
+def _w(s):
+    sys.stdout.write(s)
+    sys.stdout.flush()
+
+
+def _feed(raw):
+    """Add one subprocess output line to the rolling buffer and redraw."""
+    global _shown
+    line = _ANSI.sub("", raw.rstrip())
+    if not _TTY:
+        print(f"    {line}")
+        return
+    cols = shutil.get_terminal_size().columns
+    if _shown:
+        _w(f"\033[{_shown}A\r\033[J")
+    _buf.append(line[: cols - 4])
+    _shown = len(_buf)
+    for ln in _buf:
+        _w(f"  {_D}{_W}{ln}{_X}\n")
+
+
+@contextlib.contextmanager
+def step(name):
+    """Named step: prints → on entry, ✓/✗ on exit; rolls subprocess output."""
+    global _buf, _shown
+    _buf = collections.deque(maxlen=5)
+    _shown = 0
+    if _TTY:
+        _w(f"  {_B}→{_X} {name}\n")
+    else:
+        print(f"\n→ {name}")
+    try:
+        yield
+    except Exception:
+        if _TTY:
+            _w(f"\033[{_shown + 1}A\r\033[J")
+            _w(f"  {_R}✗{_X} {name}\n")
+            for ln in _buf:
+                _w(f"  {_D}{_W}{ln}{_X}\n")
+        else:
+            print(f"✗ {name}")
+        raise
+    else:
+        if _TTY:
+            _w(f"\033[{_shown + 1}A\r\033[J")
+            _w(f"  {_G}✓{_X} {name}\n")
+        else:
+            print(f"✓ {name}")
+
+
+def run(cmd, check=True, **kw):
+    """Run a command inside the current step, feeding output to the rolling buffer."""
+    if isinstance(cmd, str):
+        cmd = cmd.split()
+    proc = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        bufsize=1,
+        **kw,
+    )
+    for line in proc.stdout:
+        _feed(line)
+    proc.wait()
+    if check and proc.returncode != 0:
+        raise subprocess.CalledProcessError(proc.returncode, cmd)
+
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
+
+REPO = pathlib.Path(__file__).resolve().parent.parent
+
+
+def _hm_target():
+    """Resolve the home-manager flake attribute for standalone Linux."""
+    target = os.environ.get("HM_TARGET", "")
+    if not target:
+        try:
+            target = subprocess.check_output(
+                [
+                    "nix", "eval", "--raw", f"{REPO}#homeConfigurations",
+                    "--apply",
+                    "c: let n = builtins.attrNames c; "
+                    "in if builtins.length n == 1 then builtins.head n else \"\"",
+                ],
+                stderr=subprocess.DEVNULL,
+                text=True,
+            ).strip()
+        except Exception:
+            pass
+    return target or f"{getpass.getuser()}@{socket.gethostname()}"
+
+
+def _rebuild():
+    with step("stage"):
+        run(["git", "fetch"], check=False)
+        run(["git", "add", "."])
+
+    if sys.platform == "darwin":
+        with step("darwin-rebuild switch"):
+            run(["sudo", "-i", "darwin-rebuild", "switch",
+                 "--flake", str(REPO), "--print-build-logs"])
+    elif os.path.exists("/etc/NIXOS"):
+        with step("nixos-rebuild switch"):
+            run(["sudo", "-i", "nixos-rebuild", "switch",
+                 "--flake", str(REPO), "--print-build-logs"])
+    else:
+        target = _hm_target()
+        with step(f"home-manager switch → {target}"):
+            run(["home-manager", "switch", "-b", "bak",
+                 "--flake", f"{REPO}#{target}", "--print-build-logs"])
+
+    if subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=REPO).returncode != 0:
+        with step("commit & push"):
+            run(["git", "commit", "-m", "Nix rebuild"])
+            run(["git", "push"])
+
+
+# ── Subcommands ───────────────────────────────────────────────────────────────
+
+def cmd_rebuild(_args):
+    os.chdir(REPO)
+    _rebuild()
+
+
+def cmd_upgrade(_args):
+    os.chdir(REPO)
+    with step("update flake inputs"):
+        run(["nix", "flake", "update", "--flake", str(REPO)])
+    _rebuild()
+
+
+def cmd_clean(_args):
+    if sys.platform.startswith("linux") and not os.path.exists("/etc/NIXOS"):
+        with step("expire home-manager generations"):
+            run(["home-manager", "expire-generations", "-7 days"], check=False)
+        with step("nix-collect-garbage"):
+            run(["nix-collect-garbage", "-d"])
+    else:
+        with step("delete old generations"):
+            run(["sudo", "-i", "nix-env", "--delete-generations", "old"])
+        with step("nix-collect-garbage"):
+            run(["sudo", "-i", "nix-collect-garbage", "-d"])
+
+
+def cmd_edit(_args):
+    editor = os.environ.get("EDITOR", "vi")
+    os.chdir(REPO)
+    # Editor is interactive — bypass the TUI runner so it gets a clean terminal
+    if _TTY:
+        _w(f"  {_B}→{_X} open {editor}\n")
+    subprocess.run([editor], check=True)
+    if _TTY:
+        _w(f"  {_G}✓{_X} open {editor}\n")
+    else:
+        print(f"✓ open {editor}")
+    _rebuild()
+
+
+# ── Entry point ───────────────────────────────────────────────────────────────
+
+def main():
+    p = argparse.ArgumentParser(prog="nxm", description=__doc__)
+    sub = p.add_subparsers(dest="cmd", required=True, metavar="COMMAND")
+    sub.add_parser("rebuild", help="stage all changes, rebuild, commit")
+    sub.add_parser("upgrade", help="update flake inputs then rebuild")
+    sub.add_parser("clean",   help="GC old nix generations")
+    sub.add_parser("edit",    help="open $EDITOR then rebuild")
+
+    args = p.parse_args()
+    dispatch = {
+        "rebuild": cmd_rebuild,
+        "upgrade": cmd_upgrade,
+        "clean":   cmd_clean,
+        "edit":    cmd_edit,
+    }
+    try:
+        dispatch[args.cmd](args)
+    except subprocess.CalledProcessError as e:
+        _w(f"\n  {_R}command failed (exit {e.returncode}){_X}\n")
+        sys.exit(e.returncode)
+    except KeyboardInterrupt:
+        _w(f"\n  {_D}interrupted{_X}\n")
+        sys.exit(130)
+
+
+if __name__ == "__main__":
+    main()
