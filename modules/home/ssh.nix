@@ -51,7 +51,7 @@ in
                     IdentityFile = [
                         "~/.ssh/id_ed25519"
                         "~/.ssh/homeserver_rsa"
-                        "~/.ssh/homeserver_rsa"
+                        "~/.ssh/imperial_doc_ed25519"
                         "~/.ssh/imperial_gitlab_ed25519"
                     ];
                     AddKeysToAgent = "yes";
@@ -72,6 +72,15 @@ in
                 // keychain;
 
                 "github.com" = {
+                    IdentityFile = "~/.ssh/id_ed25519";
+                    AddKeysToAgent = "yes";
+                }
+                // keychain;
+
+                ## WORK MACHINE ##
+                "workbox" = {
+                    User = "ipratt";
+                    HostName = "172.24.20.25";
                     IdentityFile = "~/.ssh/id_ed25519";
                     AddKeysToAgent = "yes";
                 }
