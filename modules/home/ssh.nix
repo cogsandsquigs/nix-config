@@ -15,7 +15,13 @@ let
     keychain = optionalAttrs stdenv.isDarwin { UseKeychain = "yes"; };
 in
 {
-    options.my.user.ssh.enable = tools.opt.mkEnabled "ssh client config";
+    options.my.user.ssh = {
+        # Enables SSH config and such.
+        enable = tools.opt.mkEnabled "ssh client config";
+
+        # # SSH IP aliases
+        # aliases = tools.opt.mk
+    };
 
     config = mkIf config.my.user.ssh.enable {
         programs.ssh = {
