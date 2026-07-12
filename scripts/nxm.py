@@ -1,5 +1,64 @@
 #!/usr/bin/env python3
-"""nxm — nix manage.  Rebuild, upgrade, clean, or edit this flake."""
+"""nxm — nix manage.  Rebuild, upgrade, clean, or edit this flake.
+
+Usage
+-----
+  nxm rebuild   stage all changes, rebuild the system, commit
+  nxm upgrade   update flake.lock inputs then rebuild
+  nxm clean     GC old nix generations
+  nxm edit      open $EDITOR then rebuild
+
+Architecture
+------------
+The TUI is built from three primitives, all pure stdlib:
+
+  step(name)  — context manager. Prints "→ name" on entry, "✓/✗ name" on
+                exit, and erases the rolling output block on success.
+
+  run(cmd)    — runs a subprocess *inside* an active step, feeding its
+                stdout+stderr into a 5-line circular buffer that is redrawn
+                on each new line.  Raises CalledProcessError on non-zero exit.
+
+  _feed(raw)  — internal; called by run() for each output line. Handles the
+                cursor movement (ANSI escape sequences) and the buffer redraw.
+
+Cursor mechanics (TTY only)
+---------------------------
+State: _buf (deque[str], maxlen=5), _shown (int — lines currently on screen).
+
+  New line arrives:
+    1. \033[{_shown}A\r\033[J  — move cursor up _shown lines, go to col 1,
+                                  erase from cursor to end of screen
+    2. append to _buf, reprint all _buf lines in dim grey
+    3. _shown = len(_buf)
+
+  Step succeeds:
+    1. \033[{_shown+1}A\r\033[J  — same, but also erase the "→ name" header
+    2. print "  ✓ name\n"
+
+  Step fails:
+    1. same erase of header + buffer
+    2. print "  ✗ name\n"
+    3. reprint buffer (dim grey) so the last output is still visible
+
+When stdout is not a TTY (piped to file, CI, etc.) all cursor sequences are
+skipped and each line is printed with a plain indent.
+
+Extending
+---------
+To add a subcommand:
+  1. Write a cmd_* function (signature: (args: argparse.Namespace) -> None).
+  2. Add a sub.add_parser(...) entry in main().
+  3. Add it to the dispatch dict in main().
+
+To add a new step inside an existing command, use:
+  with step("description"):
+      run(["command", "arg1", "arg2"])
+      run(["another", "command"])   # multiple run() calls per step are fine
+
+run() accepts check=False to ignore a non-zero exit (useful for best-effort
+commands like `git fetch` that should never abort the whole script).
+"""
 
 import argparse
 import collections
@@ -12,29 +71,44 @@ import shutil
 import socket
 import subprocess
 import sys
+from collections.abc import Generator
+from typing import Union
 
 # ── TUI ──────────────────────────────────────────────────────────────────────
 
-_TTY = sys.stdout.isatty()
+_TTY: bool = sys.stdout.isatty()
+
+# ANSI colour/style codes — only emitted when stdout is a TTY.
 _G = "\033[32m"  # green
 _R = "\033[31m"  # red
 _D = "\033[2m"  # dim
 _W = "\033[37m"  # light grey
 _B = "\033[1m"  # bold
-_X = "\033[0m"  # reset
-_ANSI = re.compile(r"\033\[[0-9;]*[A-Za-z]")
+_X = "\033[0m"  # reset all attributes
 
-_buf = collections.deque(maxlen=5)
-_shown = 0  # output lines currently rendered on screen
+# Strip ANSI codes from subprocess output before storing in the buffer so that
+# nested colour sequences don't bleed into the dim-grey rendering style.
+_ANSI: re.Pattern[str] = re.compile(r"\033\[[0-9;]*[A-Za-z]")
+
+# Rolling output buffer — last 5 lines of the current step's subprocess output.
+_buf: collections.deque[str] = collections.deque(maxlen=5)
+# How many output lines are currently rendered below the step header on screen.
+_shown: int = 0
 
 
-def _w(s):
+def _w(s: str) -> None:
+    """Write directly to stdout and flush immediately."""
     sys.stdout.write(s)
     sys.stdout.flush()
 
 
-def _feed(raw):
-    """Add one subprocess output line to the rolling buffer and redraw."""
+def _feed(raw: str) -> None:
+    """Ingest one raw output line from a subprocess into the rolling buffer.
+
+    On a TTY: erases the previously rendered buffer lines, appends the new
+    line, and redraws the whole buffer in dim grey.
+    Off a TTY: plain print with an indent, no cursor movement.
+    """
     global _shown
     line = _ANSI.sub("", raw.rstrip())
     if not _TTY:
@@ -50,8 +124,18 @@ def _feed(raw):
 
 
 @contextlib.contextmanager
-def step(name):
-    """Named step: prints → on entry, ✓/✗ on exit; rolls subprocess output."""
+def step(name: str) -> Generator[None, None, None]:
+    """Context manager for a named execution step.
+
+    Prints "  → name" on entry.  On clean exit replaces the header+buffer with
+    "  ✓ name".  On exception replaces the header with "  ✗ name" and leaves
+    the buffer visible so the last lines of output remain readable.
+
+    Example::
+
+        with step("build"):
+            run(["nix", "build"])
+    """
     global _buf, _shown
     _buf = collections.deque(maxlen=5)
     _shown = 0
@@ -78,8 +162,17 @@ def step(name):
             print(f"✓ {name}")
 
 
-def run(cmd, check=True, **kw):
-    """Run a command inside the current step, feeding output to the rolling buffer."""
+def run(cmd: Union[list[str], str], check: bool = True) -> None:
+    """Run a subprocess inside the current step, streaming output to the buffer.
+
+    Args:
+        cmd:   Command as a list of strings, or a whitespace-split string.
+        check: If True (default), raise CalledProcessError on non-zero exit.
+               Pass check=False for best-effort commands (e.g. ``git fetch``).
+
+    stdout and stderr are merged and fed to _feed() line by line.
+    Must be called inside a ``with step(...)`` block.
+    """
     if isinstance(cmd, str):
         cmd = cmd.split()
     proc = subprocess.Popen(
@@ -88,8 +181,8 @@ def run(cmd, check=True, **kw):
         stderr=subprocess.STDOUT,
         text=True,
         bufsize=1,
-        **kw,
     )
+    assert proc.stdout is not None  # guaranteed: we passed stdout=PIPE
     for line in proc.stdout:
         _feed(line)
     proc.wait()
@@ -99,11 +192,19 @@ def run(cmd, check=True, **kw):
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
-REPO = pathlib.Path(__file__).resolve().parent.parent
+# Absolute path to the repo root — one level above this script's scripts/ dir.
+# Works regardless of CWD or symlinks because __file__ is resolved first.
+REPO: pathlib.Path = pathlib.Path(__file__).resolve().parent.parent
 
 
-def _hm_target():
-    """Resolve the home-manager flake attribute for standalone Linux."""
+def _hm_target() -> str:
+    """Resolve the home-manager flake attribute for standalone Linux.
+
+    Resolution order:
+      1. $HM_TARGET env var (explicit override)
+      2. The sole key in flake#homeConfigurations (the normal single-box case)
+      3. Fallback: "<user>@<hostname>"
+    """
     target = os.environ.get("HM_TARGET", "")
     if not target:
         try:
@@ -125,9 +226,10 @@ def _hm_target():
     return target or f"{getpass.getuser()}@{socket.gethostname()}"
 
 
-def _rebuild():
+def _rebuild() -> None:
+    """Core rebuild sequence shared by `rebuild` and `upgrade`."""
     with step("stage"):
-        run(["git", "fetch"], check=False)
+        run(["git", "fetch"], check=False)  # best-effort; offline is fine
         run(["git", "add", "."])
 
     if sys.platform == "darwin":
@@ -171,6 +273,7 @@ def _rebuild():
                 ]
             )
 
+    # Only commit+push when there are actually staged changes to record.
     if subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=REPO).returncode != 0:
         with step("commit & push"):
             run(["git", "commit", "-m", "Nix rebuild"])
@@ -180,35 +283,41 @@ def _rebuild():
 # ── Subcommands ───────────────────────────────────────────────────────────────
 
 
-def cmd_rebuild(_args):
+def cmd_rebuild(_args: argparse.Namespace) -> None:
+    """Stage all changes, rebuild the system, commit."""
     os.chdir(REPO)
     _rebuild()
 
 
-def cmd_upgrade(_args):
+def cmd_upgrade(_args: argparse.Namespace) -> None:
+    """Update all flake inputs (flake.lock) then rebuild."""
     os.chdir(REPO)
     with step("update flake inputs"):
         run(["nix", "flake", "update", "--flake", str(REPO)])
     _rebuild()
 
 
-def cmd_clean(_args):
+def cmd_clean(_args: argparse.Namespace) -> None:
+    """GC old nix generations to free disk space."""
     if sys.platform.startswith("linux") and not os.path.exists("/etc/NIXOS"):
+        # Standalone home-manager (e.g. Ubuntu work desktop) — no sudo needed.
         with step("expire home-manager generations"):
             run(["home-manager", "expire-generations", "-7 days"], check=False)
         with step("nix-collect-garbage"):
             run(["nix-collect-garbage", "-d"])
     else:
+        # System host (macOS / NixOS) — needs root for the system profile.
         with step("delete old generations"):
             run(["sudo", "-i", "nix-env", "--delete-generations", "old"])
         with step("nix-collect-garbage"):
             run(["sudo", "-i", "nix-collect-garbage", "-d"])
 
 
-def cmd_edit(_args):
+def cmd_edit(_args: argparse.Namespace) -> None:
+    """Open $EDITOR interactively then rebuild."""
     editor = os.environ.get("EDITOR", "vi")
     os.chdir(REPO)
-    # Editor is interactive — bypass the TUI runner so it gets a clean terminal
+    # The editor needs raw terminal access — bypass the TUI runner entirely.
     if _TTY:
         _w(f"  {_B}→{_X} open {editor}\n")
     subprocess.run([editor], check=True)
@@ -222,8 +331,12 @@ def cmd_edit(_args):
 # ── Entry point ───────────────────────────────────────────────────────────────
 
 
-def main():
-    p = argparse.ArgumentParser(prog="nxm", description=__doc__)
+def main() -> None:
+    p = argparse.ArgumentParser(
+        prog="nxm",
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     sub = p.add_subparsers(dest="cmd", required=True, metavar="COMMAND")
     sub.add_parser("rebuild", help="stage all changes, rebuild, commit")
     sub.add_parser("upgrade", help="update flake inputs then rebuild")

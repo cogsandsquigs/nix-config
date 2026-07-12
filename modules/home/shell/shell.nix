@@ -23,11 +23,11 @@ let
         nv = "nvim";
         lg = "lazygit";
         neofetch = "fastfetch"; # Neofetch via fastfetch
-        nxm     = "${flakeDir}/scripts/nxm";
-        rebuild = "${flakeDir}/scripts/nxm rebuild";
-        upgrade = "${flakeDir}/scripts/nxm upgrade";
-        cleanup = "${flakeDir}/scripts/nxm clean";
-        editnix = "${flakeDir}/scripts/nxm edit";
+        nxm = "${flakeDir}/scripts/nxm.py";
+        rebuild = "${flakeDir}/scripts/nxm.py rebuild";
+        upgrade = "${flakeDir}/scripts/nxm.py upgrade";
+        cleanup = "${flakeDir}/scripts/nxm.py clean";
+        editnix = "${flakeDir}/scripts/nxm.py edit";
     };
 
     editor = "hx";
