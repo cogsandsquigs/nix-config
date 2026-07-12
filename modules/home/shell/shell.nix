@@ -28,10 +28,10 @@ let
         # upgrade = "${flakeDir}/scripts/nxm.py upgrade";
         # cleanup = "${flakeDir}/scripts/nxm.py clean";
         # editnix = "${flakeDir}/scripts/nxm.py edit";
-        rebuild = ''bash -c "printf '\033[31mThis command is outdated. Please use `nxm rebuild | r` instead!\033[0m'""'';
-        upgrade = ''bash -c "printf '\033[31mThis command is outdated. Please use `nxm upgrade | u` instead!\033[0m'"'';
-        cleanup = ''bash -c "printf '\033[31mThis command is outdated. Please use `nxm cleanup | c` instead!\033[0m'"'';
-        editnix = ''bash -c "printf '\033[31mThis command is outdated. Please use `nxm edit | e` instead!\033[0m'"'';
+        rebuild = ''bash -c "echo -e '\033[31mThis command is outdated. Please use `nxm rebuild | r` instead!\033[0m'"'';
+        upgrade = ''bash -c "echo -e '\033[31mThis command is outdated. Please use `nxm upgrade | u` instead!\033[0m'"'';
+        cleanup = ''bash -c "echo -e '\033[31mThis command is outdated. Please use `nxm cleanup | c` instead!\033[0m'"'';
+        editnix = ''bash -c "echo -e '\033[31mThis command is outdated. Please use `nxm edit | e` instead!\033[0m'"'';
     };
 
     editor = "hx";
