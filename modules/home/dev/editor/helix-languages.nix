@@ -8,18 +8,6 @@
             languages = {
                 # Language-server settings.
                 language-server = {
-                    # Rust language server
-                    rust-analyzer = {
-                        command = "rust-analyzer";
-
-                        # See: https://rust-analyzer.github.io/book/configuration
-                        config.rust-analyzer = {
-                            check.command = "clippy";
-                            procMacro.enable = true;
-                            cargo.buildScripts.enable = true;
-                        };
-                    };
-
                     # Haskell language server
                     haskell-language-server = {
                         command = "haskell-language-server-wrapper";
@@ -320,20 +308,6 @@
                             args = [ "%{buffer_name}" ];
                         };
                     }
-                    {
-                        name = "rust";
-                        language-servers = [ "rust-analyzer" ];
-                        auto-format = true;
-                        indent = {
-                            tab-width = 4;
-                            unit = "    ";
-                        };
-                        formatter = {
-                            command = "rustfmt";
-                            args = [ ];
-                        };
-                    }
-
                     {
                         name = "haskell";
                         language-servers = [ "haskell-language-server" ];
