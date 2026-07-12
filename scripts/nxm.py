@@ -341,17 +341,25 @@ def main() -> None:
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     sub = p.add_subparsers(dest="cmd", required=True, metavar="COMMAND")
-    sub.add_parser("rebuild", help="stage all changes, rebuild, commit")
-    sub.add_parser("upgrade", help="update flake inputs then rebuild")
-    sub.add_parser("clean", help="GC old nix generations")
-    sub.add_parser("edit", help="open $EDITOR then rebuild")
+    sub.add_parser("rebuild", aliases=["r"], help="stage all changes, rebuild, commit")
+    sub.add_parser("upgrade", aliases=["u"], help="update flake inputs then rebuild")
+    sub.add_parser("clean", aliases=["c"], help="GC old nix generations")
+    sub.add_parser("edit", aliases=["e"], help="open $EDITOR then rebuild")
 
     args = p.parse_args()
     dispatch = {
+        # NOTE: each alias has to also have it's entry since argparse doesn't resolve aliases back
+        # to the original parent command name. This kinda sucks.
+        #
+        # TODO: Force alias resolve or just find way to not have this (fragile code!)
         "rebuild": cmd_rebuild,
+        "r": cmd_rebuild,
         "upgrade": cmd_upgrade,
+        "u": cmd_upgrade,
         "clean": cmd_clean,
+        "c": cmd_clean,
         "edit": cmd_edit,
+        "e": cmd_edit,
     }
     try:
         dispatch[args.cmd](args)
