@@ -5,6 +5,6 @@
 { lib, system }:
 
 {
-    # system is baked in at tools construction time (see tools/default.nix mkTools).
-    eachOs = nixConf: darwinConf: if lib.strings.hasSuffix "darwin" system then darwinConf else nixConf;
+  # system is baked in at tools construction time (see tools/default.nix mkTools).
+  eachOs = nixConf: darwinConf: if lib.strings.hasSuffix "darwin" system then darwinConf else nixConf;
 }

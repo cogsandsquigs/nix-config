@@ -4,19 +4,19 @@
 #
 # OS-specific differences are handled inline with `lib.optionals pkgs.stdenv.isDarwin` etc.
 { ... }: {
-    imports = [
-        ./base.nix
-        ./secrets.nix
-        ./git.nix
-        ./ssh.nix
-        ./terminal.nix
+  imports = [
+    ./base.nix
+    ./secrets.nix
+    ./git.nix
+    ./ssh.nix
+    ./terminal.nix
 
-        ./shell
-        ./utils
-        ./dev
+    ./shell
+    ./utils
+    ./dev
 
-        ./games.nix
-        ./desktop-apps
-        ./vpn.nix
-    ];
+    ./games.nix
+    ./desktop-apps
+    ./vpn.nix
+  ];
 }

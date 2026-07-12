@@ -7,11 +7,11 @@
 # The agenix module is imported unconditionally (imports can't be option-gated, and it's inert
 # without secrets) — mirroring the system-side `modules/system/<class>/secrets.nix`.
 { inputs, config, ... }: {
-    imports = [ inputs.agenix.homeManagerModules.default ];
+  imports = [ inputs.agenix.homeManagerModules.default ];
 
-    # Private age identity per user, at a fixed path (this machine's key for this user — distinct per
-    # machine, never copied). Gitignored, never committed. Bootstrap once, on this machine:
-    # `age-keygen -o /etc/nix/age/<user>`, then add its public key to secrets/recipients.nix as
-    # "<user>@<host>".
-    age.identityPaths = [ "/etc/nix/age/${config.home.username}" ];
+  # Private age identity per user, at a fixed path (this machine's key for this user — distinct per
+  # machine, never copied). Gitignored, never committed. Bootstrap once, on this machine:
+  # `age-keygen -o /etc/nix/age/<user>`, then add its public key to secrets/recipients.nix as
+  # "<user>@<host>".
+  age.identityPaths = [ "/etc/nix/age/${config.home.username}" ];
 }

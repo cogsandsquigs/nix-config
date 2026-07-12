@@ -8,78 +8,78 @@
 #   tools.secrets.*  — agenix secret wiring (register a secret + read its decrypted path).
 { lib }:
 let
-    t = lib.types;
+  t = lib.types;
 
-    # A boolean option with an explicit default. The `example` is the opposite of the default, so
-    # `nix eval`/docs show the meaningful flip.
-    mkBoolOpt =
-        default: description:
-        lib.mkOption {
-            inherit default description;
-            type = t.bool;
-            example = !default;
-        };
+  # A boolean option with an explicit default. The `example` is the opposite of the default, so
+  # `nix eval`/docs show the meaningful flip.
+  mkBoolOpt =
+    default: description:
+    lib.mkOption {
+      inherit default description;
+      type = t.bool;
+      example = !default;
+    };
 
 in
 {
-    # ── tools.opt — option & module-authoring helpers ────────────────────────────────────────────
-    ## enable-style toggles
-    mkEnabled = mkBoolOpt true; # core feature: on unless explicitly disabled
-    mkDisabled = mkBoolOpt false; # optional feature: opt-in
-    mkRiding = parent: mkBoolOpt parent; # sub-feature: default follows its parent group's value
-    mkRequired =
-        # no default → eval errors if a host/user forgets to choose. Reserve for features where a
-        # forgotten value would be a *silent* bug (most core fails loudly, so rarely needed).
-        description:
-        lib.mkOption {
-            inherit description;
-            type = t.bool;
-        };
+  # ── tools.opt — option & module-authoring helpers ────────────────────────────────────────────
+  ## enable-style toggles
+  mkEnabled = mkBoolOpt true; # core feature: on unless explicitly disabled
+  mkDisabled = mkBoolOpt false; # optional feature: opt-in
+  mkRiding = parent: mkBoolOpt parent; # sub-feature: default follows its parent group's value
+  mkRequired =
+    # no default → eval errors if a host/user forgets to choose. Reserve for features where a
+    # forgotten value would be a *silent* bug (most core fails loudly, so rarely needed).
+    description:
+    lib.mkOption {
+      inherit description;
+      type = t.bool;
+    };
 
-    ## typed value options (for the "only what varies" settings)
-    mkStr =
-        default: description:
-        lib.mkOption {
-            inherit default description;
-            type = t.str;
-        };
-    mkNullStr =
-        description:
-        lib.mkOption {
-            inherit description;
-            type = t.nullOr t.str;
-            default = null;
-        };
-    mkEnum =
-        values: default: description:
-        lib.mkOption {
-            inherit default description;
-            type = t.enum values;
-        };
+  ## typed value options (for the "only what varies" settings)
+  mkStr =
+    default: description:
+    lib.mkOption {
+      inherit default description;
+      type = t.str;
+    };
+  mkNullStr =
+    description:
+    lib.mkOption {
+      inherit description;
+      type = t.nullOr t.str;
+      default = null;
+    };
+  mkEnum =
+    values: default: description:
+    lib.mkOption {
+      inherit default description;
+      type = t.enum values;
+    };
 
-    ## the agnostic secret path-hole a feature exposes (e.g.
-    ## `git.signingKeyFile = tools.opt.mkSecretPath "…"`). It's an option constructor, so it lives
-    ## here; the unit fills it via the secret-wiring helpers below.
-    mkSecretPath =
-        description:
-        lib.mkOption {
-            inherit description;
-            type = t.nullOr t.str;
-            default = null;
-        };
+  ## the agnostic secret path-hole a feature exposes (e.g.
+  ## `git.signingKeyFile = tools.opt.mkSecretPath "…"`). It's an option constructor, so it lives
+  ## here; the unit fills it via the secret-wiring helpers below.
+  mkSecretPath =
+    description:
+    lib.mkOption {
+      inherit description;
+      type = t.nullOr t.str;
+      default = null;
+    };
 
-    ## safety: express "feature A requires feature B" as an assertions entry. Usage:
-    ##   config.assertions = [ (tools.opt.requires { when = cfg.enable; needs = otherCfg.enable;
-    ##                                                message = "A needs B"; }) ];
-    requires =
-        {
-            when,
-            needs,
-            message,
-        }:
-        {
-            assertion = (!when) || needs;
-            inherit message;
-        };
+  ## safety: express "feature A requires feature B" as an assertions entry. Usage:
+  ##   config.assertions = [ (tools.opt.requires { when = cfg.enable; needs = otherCfg.enable;
+  ##                                                message = "A needs B"; }) ];
+  requires =
+    {
+      when,
+      needs,
+      message,
+    }:
+    {
+      assertion = (!when) || needs;
+      inherit message;
+    };
 
 }

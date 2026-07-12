@@ -5,40 +5,40 @@
 #
 # Imported per-user by the wiring (home-manager.users.cogs on full-OS hosts; mkHome on standalone).
 {
-    config,
-    lib,
-    tools,
-    hostId,
-    ...
+  config,
+  lib,
+  tools,
+  hostId,
+  ...
 }:
 let
-    me = "cogs@${hostId.hostName}";
+  me = "cogs@${hostId.hostName}";
 
-    # presence of the .age is the switch — no allowlist; every machine self-wires uniformly.
-    haveGpg = builtins.pathExists (../../secrets + "/${me}/gpg.age");
+  # presence of the .age is the switch — no allowlist; every machine self-wires uniformly.
+  haveGpg = builtins.pathExists (../../secrets + "/${me}/gpg.age");
 in
 {
-    imports = [ ../../modules/home ];
+  imports = [ ../../modules/home ];
 
-    my.user.games.enable = true;
-    my.user.desktopApps.enable = true;
-    my.user.vpn.enable = true;
+  my.user.games.enable = true;
+  my.user.desktopApps.enable = true;
+  my.user.vpn.enable = true;
 
-    my.user.git = {
-        userName = "Ian Pratt";
-        email = "ianjdpratt@gmail.com";
-        signingKey = "E0DB58169CA551AA!";
-        signByDefault = true;
-        signingKeyFile = lib.mkIf haveGpg (tools.secrets.path config me "gpg");
-    };
+  my.user.git = {
+    userName = "Ian Pratt";
+    email = "ianjdpratt@gmail.com";
+    signingKey = "E0DB58169CA551AA!";
+    signByDefault = true;
+    signingKeyFile = lib.mkIf haveGpg (tools.secrets.path config me "gpg");
+  };
 
-    my.user.vpn.profiles.work-alt-ipratt = {
-        name = "Work Alt (ipratt)";
-        path = tools.secrets.path config "cogs" "work-alt-ipratt-ovpn";
-    };
+  my.user.vpn.profiles.work-alt-ipratt = {
+    name = "Work Alt (ipratt)";
+    path = tools.secrets.path config "cogs" "work-alt-ipratt-ovpn";
+  };
 
-    age.secrets = lib.mkMerge [
-        (lib.mkIf haveGpg (tools.secrets.declare me "gpg"))
-        (tools.secrets.declare "cogs" "work-alt-ipratt-ovpn")
-    ];
+  age.secrets = lib.mkMerge [
+    (lib.mkIf haveGpg (tools.secrets.declare me "gpg"))
+    (tools.secrets.declare "cogs" "work-alt-ipratt-ovpn")
+  ];
 }

@@ -8,21 +8,21 @@
 # NOTE: this is the *personal* Linux box. The work machine is a separate, leaner standalone
 # home-manager config — see hosts/work-desktop.
 { hostId, ... }: {
-    nixpkgs.hostPlatform = hostId.system;
+  nixpkgs.hostPlatform = hostId.system;
 
-    # Optional system features this host opts into (all default off in the modules).
-    my.sys.games.enable = true;
+  # Optional system features this host opts into (all default off in the modules).
+  my.sys.games.enable = true;
 
-    # Hostname from ./id.nix via the hostId specialArg (README `id.nix` convention).
-    networking.hostName = hostId.hostName;
+  # Hostname from ./id.nix via the hostId specialArg (README `id.nix` convention).
+  networking.hostName = hostId.hostName;
 
-    # TODO: replace with the generated ./hardware-configuration.nix once the machine is installed.
-    boot.loader.systemd-boot.enable = true;
-    fileSystems."/" = {
-        device = "/dev/disk/by-label/nixos";
-        fsType = "ext4";
-    };
+  # TODO: replace with the generated ./hardware-configuration.nix once the machine is installed.
+  boot.loader.systemd-boot.enable = true;
+  fileSystems."/" = {
+    device = "/dev/disk/by-label/nixos";
+    fsType = "ext4";
+  };
 
-    # NOTE: keep in sync with home.stateVersion the first time this box is actually installed.
-    system.stateVersion = "25.05";
+  # NOTE: keep in sync with home.stateVersion the first time this box is actually installed.
+  system.stateVersion = "25.05";
 }

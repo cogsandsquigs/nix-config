@@ -1,5 +1,9 @@
 { pkgs, ... }: {
-    lang = [ "java" ];
+  lang = [ "java" ];
 
-    pkgs = with pkgs; [ jdk gradle kotlin ];
+  pkgs = with pkgs; [
+    jdk
+    gradle
+    kotlin
+  ];
 }

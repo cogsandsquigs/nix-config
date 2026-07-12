@@ -1,7 +1,10 @@
 { pkgs, ... }: {
-    lang = [ "docker-compose" ];
+  lang = [ "docker-compose" ];
 
-    pkgs = with pkgs; [ docker-compose-language-service ];
+  pkgs = with pkgs; [ docker-compose-language-service ];
 
-    fmt = [ "prettierd" "%{buffer_name}" ];
+  fmt = [
+    "prettierd"
+    "%{buffer_name}"
+  ];
 }
