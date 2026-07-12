@@ -1,9 +1,14 @@
 { pkgs, ... }: {
-    home.packages = with pkgs; [
-        scala-next # Latest (stable!) version, `scala` is the LTS version
-        bloop # Buildserver
-        metals # LSP
+    lang = [ "scala" ];
+
+    pkgs = with pkgs; [
+        scala-next # Latest stable; `scala` is the LTS version
+        bloop # Build server
+        metals # LSP — also provides formatting via scalafmt; no explicit fmt needed
         scalafix # Linter
-        scalafmt # Formatter
+        scalafmt # Formatter (invoked by metals)
     ];
+
+    # lsp = [] — metals is helix's built-in default for scala; no explicit config needed
+    # fmt = null — metals formats via scalafmt; options go in .scalafmt.conf (HOCON)
 }
