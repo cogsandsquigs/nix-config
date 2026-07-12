@@ -36,28 +36,70 @@
 
                     };
 
-                    # # Nix language server # NOTE: OUTDATED -- use nixd!
-                    # nil = {
-                    #     command = "nil";
-                    #     args = [ "--stdio" ];
-                    #     config.nil = {
-                    #         # // Auto-archiving behavior which may use network.
-                    #         # //
-                    #         # // - null: Ask every time.
-                    #         # // - true: Automatically run `nix flake archive` when necessary.
-                    #         # // - false: Do not archive. Only load inputs that are already on disk.
-                    #         # // Type: null | boolean
-                    #         # // Example: true
-                    #         flake.autoArchive = true;
-                    #     };
-                    # };
+                    ## HTML ##
 
-                    nixd = {
-                        command = "nixd";
-
+                    vscode-html-language-server = {
+                        command = "vscode-html-language-server";
+                        args = [ "--stdio" ];
                     };
 
-                    # Python language server(s):
+                    ## CSS ##
+
+                    vscode-css-language-server = {
+                        command = "vscode-css-language-server";
+                        args = [ "--stdio" ];
+                    };
+
+                    ## JSON ##
+
+                    vscode-json-language-server = {
+                        command = "vscode-json-language-server";
+                        args = [ "--stdio" ];
+                    };
+
+                    ## YAML ##
+                    yaml-language-server = {
+                        command = "yaml-language-server";
+                        args = [ "--stdio" ];
+                    };
+
+                    ## JAVASCRIPT / TYPESCRIPT ##
+
+                    # VSCode ESLint language server
+                    vscode-eslint-language-server = {
+                        command = "vscode-eslint-language-server";
+                        args = [ "--stdio" ];
+                    };
+
+                    typescript-language-server = {
+                        command = "typescript-language-server";
+                        args = [ "--stdio" ];
+                    };
+
+                    ## NIX ##
+
+                    # Nix language server # NOTE: OUTDATED -- use nixd!
+                    nil = {
+                        command = "nil";
+                        args = [ "--stdio" ];
+                        config.nil = {
+                            # // Auto-archiving behavior which may use network.
+                            # //
+                            # // - null: Ask every time.
+                            # // - true: Automatically run `nix flake archive` when necessary.
+                            # // - false: Do not archive. Only load inputs that are already on disk.
+                            # // Type: null | boolean
+                            # // Example: true
+                            flake.autoArchive = true;
+                        };
+                    };
+                    # NOTE: Somehow, this requires a very weird configuration that I can't figure
+                    # out yet. So for now `nil` fills in gaps.
+                    nixd = {
+                        command = "nixd";
+                    };
+
+                    ## PYTHON ##
 
                     # Linter and formatter, from Astral.sh
                     ruff = {
@@ -73,6 +115,8 @@
                             # Settings...
                         };
                     };
+
+                    ## LATEX ##
 
                     # LaTeX language server
                     # See: https://github.com/helix-editor/helix/issues/340#issuecomment-1167200354
@@ -137,6 +181,7 @@
                     }
                     {
                         name = "html";
+                        language-servers = [ "vscode-html-language-server" ];
                         auto-format = true;
                         indent = {
                             tab-width = 4;
@@ -149,6 +194,7 @@
                     }
                     {
                         name = "css";
+                        language-servers = [ "vscode-css-language-server" ];
                         auto-format = true;
                         indent = {
                             tab-width = 4;
@@ -173,6 +219,10 @@
                     }
                     {
                         name = "svelte";
+                        language-servers = [
+                            "typescript-language-server"
+                            "vscode-eslint-language-server"
+                        ];
                         auto-format = true;
                         indent = {
                             tab-width = 4;
@@ -185,6 +235,10 @@
                     }
                     {
                         name = "javascript";
+                        language-servers = [
+                            "typescript-language-server"
+                            "vscode-eslint-language-server"
+                        ];
                         auto-format = true;
                         indent = {
                             tab-width = 4;
@@ -197,6 +251,10 @@
                     }
                     {
                         name = "typescript";
+                        language-servers = [
+                            "typescript-language-server"
+                            "vscode-eslint-language-server"
+                        ];
                         auto-format = true;
                         indent = {
                             tab-width = 4;
@@ -209,6 +267,7 @@
                     }
                     {
                         name = "jsonc";
+                        language-servers = [ "vscode-json-language-server" ];
                         auto-format = true;
                         indent = {
                             tab-width = 4;
@@ -221,6 +280,7 @@
                     }
                     {
                         name = "json";
+                        language-servers = [ "vscode-json-language-server" ];
                         file-types = [
                             "json"
                             "prettierrc"
@@ -237,6 +297,7 @@
                     }
                     {
                         name = "yaml";
+                        language-servers = [ "yaml-language-server" ];
                         auto-format = true;
                         indent = {
                             tab-width = 4;

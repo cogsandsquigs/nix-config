@@ -1,6 +1,6 @@
 { pkgs, ... }: {
     home.packages = with pkgs; [
-        vscode-langservers-extracted
+        vscode-langservers-extracted # JSON langserv
         jsonnet-language-server
     ];
 }
