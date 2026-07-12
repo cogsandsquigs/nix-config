@@ -74,8 +74,6 @@ let
     # of the new pane's ID.
 in
 {
-    # imports = [ ./helix-languages.nix ];
-
     config = lib.mkIf config.my.user.dev.editors.helix.enable {
         home.packages = with pkgs; [
             helix

@@ -1,12 +1,16 @@
 { pkgs, ... }: {
-    home.packages = with pkgs; [
-        kotlin
-        # kotlin-native # Native runtime for Kotlin (since its JVM) NOTE; Fails on MacOS?
-        kotlin-language-server # (Currently) Alpha language-server for Kotlin
+    lang = [ "kotlin" ];
 
-        # NOTE: These packages may be subsumed/replaced by the LSP, as these are unofficial.
-        detekt # Static code analysis
+    pkgs = with pkgs; [
+        kotlin
+        # kotlin-native # Native runtime — fails on macOS
+        kotlin-language-server # Alpha LSP
+
+        # NOTE: May be subsumed by the LSP eventually.
+        detekt # Static analysis
         ktlint # Linting
         ktfmt # Formatting
     ];
+
+    lsp = [{ name = "kotlin-language-server"; cmd = [ "kotlin-language-server" ]; }];
 }

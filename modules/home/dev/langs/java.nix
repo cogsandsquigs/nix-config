@@ -1,7 +1,5 @@
 { pkgs, ... }: {
-    home.packages = with pkgs; [
-        jdk
-        gradle
-        kotlin
-    ];
+    lang = [ "java" ];
+
+    pkgs = with pkgs; [ jdk gradle kotlin ];
 }
