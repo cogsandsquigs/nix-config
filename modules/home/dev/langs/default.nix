@@ -1,6 +1,7 @@
 # Language tooling. Every *.nix file in this directory is picked up automatically.
 #
-# Lang files return a typed data spec ({ lang, pkgs, lsp, fmt, file-types, roots }).
+# Lang files return either a typed data spec ({ lang, pkgs, lsp, fmt, file-types, roots })
+# or a list of specs (for files that configure multiple languages with different LSPs).
 # Validated specs are exposed via my.user.dev.langs.specs for editor modules to consume.
 # Old-format modules (returning NixOS config directly) are merged via the compat path.
 {
@@ -44,9 +45,14 @@ let
         };
     };
 
-    rawMods   = lib.mapAttrsToList (n: _: import (dir + "/${n}") { inherit pkgs lib config; }) files;
-    dataSpecs = builtins.filter (m: m ? lang) rawMods;
-    oldMods   = builtins.filter (m: !(m ? lang)) rawMods;
+    allResults = lib.mapAttrsToList (n: _: import (dir + "/${n}") { inherit pkgs lib config; }) files;
+
+    # A result is a data spec if it has a `lang` key (single spec) or is a list (multiple specs).
+    isDataResult = m: (m ? lang) || builtins.isList m;
+
+    dataSpecs = lib.concatMap (m: if builtins.isList m then m else [ m ])
+        (builtins.filter isDataResult allResults);
+    oldMods   = builtins.filter (m: !(isDataResult m)) allResults;
 
     allPkgs = lib.concatMap (s: s.pkgs or []) dataSpecs;
 in
@@ -64,8 +70,8 @@ in
     config = lib.mkIf config.my.user.dev.langs.enable (lib.mkMerge (
         oldMods   # compat: old-format modules; removed after full migration
         ++ [{
-            home.packages              = allPkgs;
-            my.user.dev.langs.specs    = dataSpecs;
+            home.packages           = allPkgs;
+            my.user.dev.langs.specs = dataSpecs;
         }]
     ));
 }
