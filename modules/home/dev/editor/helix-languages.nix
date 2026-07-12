@@ -8,22 +8,6 @@
             languages = {
                 # Language-server settings.
                 language-server = {
-                    # Haskell language server
-                    haskell-language-server = {
-                        command = "haskell-language-server-wrapper";
-                        args = [ "--lsp" ];
-                        config.haskell = {
-                            formattingProvider = "fourmolu";
-
-                            plugin = {
-                                fourmolu.config.external = true;
-                                hlint.diagnosticsOn = false; # Fixes https://github.com/haskell/haskell-language-server/issues/4674 until GHC fixed
-                                rename.config.crossModule = true; # Fixes https://github.com/haskell/haskell-language-server/issues/3571
-                            };
-                        };
-
-                    };
-
                     ## HTML ##
 
                     vscode-html-language-server = {
@@ -49,46 +33,6 @@
                     yaml-language-server = {
                         command = "yaml-language-server";
                         args = [ "--stdio" ];
-                    };
-
-                    ## NIX ##
-
-                    # Nix language server # NOTE: OUTDATED -- use nixd!
-                    nil = {
-                        command = "nil";
-                        args = [ "--stdio" ];
-                        config.nil = {
-                            # // Auto-archiving behavior which may use network.
-                            # //
-                            # // - null: Ask every time.
-                            # // - true: Automatically run `nix flake archive` when necessary.
-                            # // - false: Do not archive. Only load inputs that are already on disk.
-                            # // Type: null | boolean
-                            # // Example: true
-                            flake.autoArchive = true;
-                        };
-                    };
-                    # NOTE: Somehow, this requires a very weird configuration that I can't figure
-                    # out yet. So for now `nil` fills in gaps.
-                    nixd = {
-                        command = "nixd";
-                    };
-
-                    ## PYTHON ##
-
-                    # Linter and formatter, from Astral.sh
-                    ruff = {
-                        command = "ruff";
-                        args = [ "server" ];
-                    };
-
-                    # More advanced server, from Astral.sh (makers of Ruff)
-                    ty = {
-                        command = "ty";
-                        args = [ "server" ];
-                        config.ty = {
-                            # Settings...
-                        };
                     };
 
                     ## LATEX ##
@@ -248,49 +192,6 @@
                         };
                     }
                     {
-                        name = "haskell";
-                        language-servers = [ "haskell-language-server" ];
-                        auto-format = true;
-                        indent = {
-                            tab-width = 4;
-                            unit = "    ";
-                        };
-                        roots = [
-                            "Setup.hs"
-                            "stack.yaml"
-                            "*.cabal"
-                            "*.hs"
-                            "*.lhs"
-                        ];
-                        formatter = {
-                            command = "fourmolu";
-                            args = [
-                                "--stdin-input-file=%{buffer_name}"
-                                # Actual formatting arguments
-                                "--column-limit=100"
-                                "--comma-style=trailing"
-                                "--function-arrows=leading"
-                                "--haddock-style=single-line"
-                                "--haddock-style-module=single-line"
-                                "--if-style=hanging"
-                                "--import-export-style=diff-friendly"
-                                "--indentation=4"
-                                "--indent-wheres=true"
-                                "--in-style=left-align"
-                                "--let-style=mixed"
-                                # "--record-style=knr" # Unreleased as of 2025-11-30!
-                                "--single-constraint-parens=always"
-                                "--single-deriving-parens=always"
-                                "--sort-constraints=true"
-                                "--sort-derived-classes=true"
-                                "--sort-deriving-clauses=true"
-                                "--trailing-section-operators=false"
-                            ];
-                        };
-
-                    }
-
-                    {
                         name = "toml";
                         auto-format = true;
                         indent = {
@@ -324,49 +225,6 @@
                         # NOTE: No need to configure, pest-language-server is default
                         # NOTE: LSP comes with formatter, no need for formatter!
                         language-servers = [ "pest-language-server" ];
-                    }
-
-                    {
-                        name = "nix";
-                        language-servers = [ "nixd" ];
-                        auto-format = true;
-                        indent = {
-                            tab-width = 4;
-                            unit = "    ";
-                        };
-                        formatter = {
-                            command = "nixfmt";
-                            args = [
-                                "--width=100"
-                                "--indent=4"
-                                "--quiet"
-                                "--strict"
-                                "-"
-                            ];
-
-                        };
-                    }
-                    {
-                        name = "python";
-                        language-servers = [
-                            "ty"
-                            "ruff"
-                        ];
-                        auto-format = true;
-                        indent = {
-                            tab-width = 4;
-                            unit = "    ";
-                        };
-                        # This is gonna be a biiit weird
-                        # See: https://stackoverflow.com/questions/77876253/sort-imports-alphabetically-with-ruff
-                        # And: https://github.com/helix-editor/helix/discussions/7749
-                        formatter = {
-                            command = "bash";
-                            args = [
-                                "-c"
-                                "ruff check --select I --fix - | ruff format -"
-                            ];
-                        };
                     }
 
                     {
