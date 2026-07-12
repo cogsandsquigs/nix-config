@@ -275,8 +275,11 @@ def _rebuild() -> None:
 
     # Only commit+push when there are actually staged changes to record.
     if subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=REPO).returncode != 0:
-        with step("commit & push"):
+        with step("commit & pull"):
             run(["git", "commit", "-m", "Nix rebuild"])
+            run(["git", "pull"])
+
+        with step("push"):
             run(["git", "push"])
 
 
