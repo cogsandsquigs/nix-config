@@ -51,19 +51,6 @@
                         args = [ "--stdio" ];
                     };
 
-                    ## JAVASCRIPT / TYPESCRIPT ##
-
-                    # VSCode ESLint language server
-                    vscode-eslint-language-server = {
-                        command = "vscode-eslint-language-server";
-                        args = [ "--stdio" ];
-                    };
-
-                    typescript-language-server = {
-                        command = "typescript-language-server";
-                        args = [ "--stdio" ];
-                    };
-
                     ## NIX ##
 
                     # Nix language server # NOTE: OUTDATED -- use nixd!
@@ -195,54 +182,6 @@
                     }
                     {
                         name = "scss";
-                        auto-format = true;
-                        indent = {
-                            tab-width = 4;
-                            unit = "    ";
-                        };
-                        formatter = {
-                            command = "prettierd";
-                            args = [ "%{buffer_name}" ];
-                        };
-                    }
-                    {
-                        name = "svelte";
-                        language-servers = [
-                            "typescript-language-server"
-                            "vscode-eslint-language-server"
-                        ];
-                        auto-format = true;
-                        indent = {
-                            tab-width = 4;
-                            unit = "    ";
-                        };
-                        formatter = {
-                            command = "prettierd";
-                            args = [ "%{buffer_name}" ];
-                        };
-                    }
-                    {
-                        name = "javascript";
-                        language-servers = [
-                            "typescript-language-server"
-                            "vscode-eslint-language-server"
-                        ];
-                        auto-format = true;
-                        indent = {
-                            tab-width = 4;
-                            unit = "    ";
-                        };
-                        formatter = {
-                            command = "prettierd";
-                            args = [ "%{buffer_name}" ];
-                        };
-                    }
-                    {
-                        name = "typescript";
-                        language-servers = [
-                            "typescript-language-server"
-                            "vscode-eslint-language-server"
-                        ];
                         auto-format = true;
                         indent = {
                             tab-width = 4;

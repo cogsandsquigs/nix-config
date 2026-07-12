@@ -5,6 +5,44 @@
     ...
 }:
 let
+    # Translate lang specs → Helix language config
+    specs = config.my.user.dev.langs.specs;
+
+    toCmd = list: {
+        command = lib.head list;
+        args = lib.tail list;
+    };
+
+    toLsp =
+        lsp:
+        lib.nameValuePair lsp.name (
+            {
+                command = lib.head lsp.cmd;
+            }
+            // lib.optionalAttrs (builtins.length lsp.cmd > 1) { args = lib.tail lsp.cmd; }
+            // lib.optionalAttrs (lsp.config != { }) { inherit (lsp) config; }
+        );
+
+    toLang =
+        spec: langName:
+        {
+            name = langName;
+        }
+        // {
+            auto-format = true;
+            indent = {
+                tab-width = 4;
+                unit = "    ";
+            };
+        }
+        // lib.optionalAttrs (spec.lsp != [ ]) { language-servers = map (l: l.name) spec.lsp; }
+        // lib.optionalAttrs (spec.fmt != null) { formatter = toCmd spec.fmt; }
+        // lib.optionalAttrs (spec.file-types ? ${langName}) { file-types = spec.file-types.${langName}; }
+        // lib.optionalAttrs (spec.roots ? ${langName}) { roots = spec.roots.${langName}; };
+
+    specLsps = lib.listToAttrs (lib.concatMap (s: map toLsp s.lsp) specs);
+    specLangs = lib.concatMap (s: map (toLang s) s.lang) specs;
+
     floating_pane_size_percent = 80;
 
     # Opens a Zellij floating pane of height and width
@@ -36,6 +74,8 @@ let
     # of the new pane's ID.
 in
 {
+    # imports = [ ./helix-languages.nix ];
+
     config = lib.mkIf config.my.user.dev.editors.helix.enable {
         home.packages = with pkgs; [
             helix
@@ -49,6 +89,11 @@ in
 
             # General settings
             # See: https://docs.helix-editor.com/configuration.html
+            languages = {
+                language-server = specLsps;
+                language = specLangs;
+            };
+
             settings = {
                 theme = "catppuccin_mocha";
 

@@ -4,7 +4,6 @@
 { config, tools, ... }: {
     imports = [
         ./helix.nix
-        ./helix-languages.nix
         ./vscode.nix
     ];
 
