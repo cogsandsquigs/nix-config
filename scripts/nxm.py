@@ -291,18 +291,28 @@ def _sync_down() -> bool:
 
     Returns: Whether any synchronization changes were made.
     """
+
+    with step("stage"):
+        run(["git", "add", "."])
+
     did_sync = (
         subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=REPO).returncode != 0
     )
 
     if did_sync:
         with step("stage & commit"):
-            run(["git", "fetch"], check=False)  # best-effort; offline is fine
-            run(["git", "add", "."])
             run(["git", "commit", "-m", "Nix rebuild"])
 
+    # Regardless of commit status, pull if necessary
+    if (
+        subprocess.run(
+            ["bash", "-c", "git fetch && git diff --quiet HEAD @{u}"],
+            cwd=REPO,
+        ).returncode
+        != 0
+    ):
         with step("pull"):
-            run(["git", "push"])
+            run(["git", "pull"])
 
     return did_sync
 
