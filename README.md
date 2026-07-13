@@ -1,4 +1,4 @@
-# nix
+# nix-config
 
 My personal NixOS / nix-darwin / home-manager configuration! A single-user, single-repo flake that
 builds a Mac, a personal Linux desktop, and a standalone-home-manager work desktop.
