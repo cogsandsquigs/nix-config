@@ -304,16 +304,16 @@ def _sync_down() -> bool:
         with step("commit"):
             run(["git", "commit", "-m", "Nix rebuild"])
 
-    fetch = subprocess.run(["git", "fetch"], cwd=REPO, capture_output=True, text=True)
-    if fetch.returncode != 0:
-        print(f"fetch failed: {fetch.stderr}")
-        # handle network/auth error case separately
-    else:
-        diff = subprocess.run(["git", "diff", "--quiet", "HEAD", "@{u}"], cwd=REPO)
-        if diff.returncode == 0:
-            print("up to date")
-        else:
-            print("changes to pull")
+    # fetch = subprocess.run(["git", "fetch"], cwd=REPO, capture_output=True, text=True)
+    # if fetch.returncode != 0:
+    #     print(f"fetch failed: {fetch.stderr}")
+    #     # handle network/auth error case separately
+    # else:
+    #     diff = subprocess.run(["git", "diff", "--quiet", "HEAD", "@{u}"], cwd=REPO)
+    #     if diff.returncode == 0:
+    #         print("up to date")
+    #     else:
+    #         print("changes to pull")
 
     with step("fetch"):
         run(["git", "fetch"], check=False)
