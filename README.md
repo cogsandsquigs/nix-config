@@ -13,7 +13,7 @@ Three hosts are built:
 
 | Host                 | Class        | Platform         | Attribute                                   | User(s)            |
 | -------------------- | ------------ | ---------------- | ------------------------------------------- | ------------------ |
-| `glorpbook` | nix-darwin   | `aarch64-darwin` | `darwinConfigurations."glorpbook"` | `cogs` (personal)  |
+| `glorpbook`          | nix-darwin   | `aarch64-darwin` | `darwinConfigurations."glorpbook"`          | `cogs` (personal)  |
 | `home-desktop`       | NixOS        | `x86_64-linux`   | `nixosConfigurations.home-desktop`          | `cogs` (personal)  |
 | `work-desktop`       | home-manager | `x86_64-linux`   | `homeConfigurations."ipratt@work-desktop"`  | `ipratt` (work)    |
 
