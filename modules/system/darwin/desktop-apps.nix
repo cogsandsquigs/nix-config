@@ -14,6 +14,7 @@
             casks = [
                 "whatsapp" # Updated more freq. than whatsapp-for-mac nix
                 "firefox"
+                "chromium"
                 #"google-drive" # Google drive GUI client
             ];
         };
