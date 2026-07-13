@@ -372,9 +372,9 @@ def cmd_rebuild(_args: argparse.Namespace) -> None:
 def cmd_upgrade(_args: argparse.Namespace) -> None:
     """Update all flake inputs (flake.lock) then rebuild."""
     os.chdir(REPO)
+    with step("update flake inputs"):
+        run(["nix", "flake", "update", "--flake", str(REPO)])
     with sync():
-        with step("update flake inputs"):
-            run(["nix", "flake", "update", "--flake", str(REPO)])
         _rebuild()
 
 
