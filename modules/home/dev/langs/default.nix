@@ -24,6 +24,14 @@ let
                 type = lib.types.attrs;
                 default = { };
             };
+            only-features = lib.mkOption {
+                type = lib.types.listOf lib.types.str;
+                default = [ ];
+            };
+            except-features = lib.mkOption {
+                type = lib.types.listOf lib.types.str;
+                default = [ ];
+            };
         };
     };
 
@@ -69,6 +77,14 @@ in
     };
 
     config = lib.mkIf config.my.user.dev.langs.enable {
+        assertions = lib.concatMap (
+            spec:
+            map (lsp: {
+                assertion = lsp.only-features == [ ] || lsp.except-features == [ ];
+                message = "LSP '${lsp.name}': only-features and except-features are mutually exclusive";
+            }) spec.lsp
+        ) config.my.user.dev.langs.specs;
+
         home.packages = allPkgs;
         my.user.dev.langs.specs = dataSpecs;
     };

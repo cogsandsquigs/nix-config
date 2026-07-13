@@ -1,4 +1,29 @@
-{ pkgs, ... }: {
+{ pkgs, lib, ... }:
+let
+    eslintTool = [
+        {
+            lint-command = "eslint --stdin --stdin-filename \${INPUT}";
+            lint-ignore-exit-code = true;
+            lint-stdin = true;
+            lint-after-open = true;
+            lint-formats = [
+                "%+P%f"
+                "%*[ ]%l:%c%*[ ]%t%*[^ ]%*[ ]%m"
+                "%-O"
+            ];
+        }
+    ];
+
+    efmConfig = builtins.toFile "efm-config.yaml" (
+        lib.generators.toYAML { } {
+            version = 2;
+            root-markers = [ ".git/" ];
+            lint-debounce = "1s";
+            languages = lib.genAttrs [ "javascript" "typescript" "svelte" ] (_: eslintTool);
+        }
+    );
+in
+{
     lang = [
         "javascript"
         "typescript"
@@ -9,7 +34,7 @@
         nodejs
         bun
         typescript-language-server
-        vscode-langservers-extracted
+        efm-langserver
         prettierd
     ];
 
@@ -22,29 +47,13 @@
             ];
         }
         {
-            name = "vscode-eslint-language-server";
+            name = "efm-langserver";
             cmd = [
-                "vscode-eslint-language-server"
-                "--stdio"
+                "efm-langserver"
+                "-c"
+                "${efmConfig}"
             ];
-            config = {
-                validate = "on";
-                run = "onType";
-                packageManager = "npm";
-                nodePath = "";
-                quiet = false;
-                rulesCustomizations = [ ];
-                problems.shortenToSingleLine = false;
-                experimental.useFlatConfig = true;
-                workingDirectory.mode = "auto";
-                codeAction = {
-                    disableRuleComment = {
-                        enable = true;
-                        location = "separateLine";
-                    };
-                    showDocumentation.enable = true;
-                };
-            };
+            only-features = [ "diagnostics" ];
         }
     ];
 

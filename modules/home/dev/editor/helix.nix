@@ -35,7 +35,23 @@ let
                 unit = "    ";
             };
         }
-        // lib.optionalAttrs (spec.lsp != [ ]) { language-servers = map (l: l.name) spec.lsp; }
+        // lib.optionalAttrs (spec.lsp != [ ]) {
+            language-servers =
+                let
+                    hasFlags = builtins.any (
+                        l: l.only-features != [ ] || l.except-features != [ ]
+                    ) spec.lsp;
+                    toEntry =
+                        l:
+                        if !hasFlags then
+                            l.name
+                        else
+                            { name = l.name; }
+                            // lib.optionalAttrs (l.only-features != [ ]) { inherit (l) only-features; }
+                            // lib.optionalAttrs (l.except-features != [ ]) { inherit (l) except-features; };
+                in
+                map toEntry spec.lsp;
+        }
         // lib.optionalAttrs (spec.fmt != null) { formatter = toCmd spec.fmt; }
         // lib.optionalAttrs (spec.file-types ? ${langName}) { file-types = spec.file-types.${langName}; }
         // lib.optionalAttrs (spec.roots ? ${langName}) { roots = spec.roots.${langName}; };
