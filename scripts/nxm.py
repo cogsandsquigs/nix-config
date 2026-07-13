@@ -72,6 +72,7 @@ import socket
 import subprocess
 import sys
 from collections.abc import Generator
+from subprocess import CalledProcessError
 from typing import Union
 
 # ── TUI ──────────────────────────────────────────────────────────────────────
@@ -300,17 +301,30 @@ def _sync_down() -> bool:
     )
 
     if did_sync:
-        with step("stage & commit"):
+        with step("commit"):
             run(["git", "commit", "-m", "Nix rebuild"])
 
+    fetch = subprocess.run(["git", "fetch"], cwd=REPO, capture_output=True, text=True)
+    if fetch.returncode != 0:
+        print(f"fetch failed: {fetch.stderr}")
+        # handle network/auth error case separately
+    else:
+        diff = subprocess.run(["git", "diff", "--quiet", "HEAD", "@{u}"], cwd=REPO)
+        if diff.returncode == 0:
+            print("up to date")
+        else:
+            print("changes to pull")
+
+    with step("fetch"):
+        run(["git", "fetch"], check=False)
+        try:
+            run(["git", "diff", "--quiet", "HEAD", "@{u}"], check=True)
+            need_pull = False
+        except CalledProcessError:
+            need_pull = True
+
     # Regardless of commit status, pull if necessary
-    if (
-        subprocess.run(
-            ["bash", "-c", "git fetch && git diff --quiet HEAD @{u}"],
-            cwd=REPO,
-        ).returncode
-        != 0
-    ):
+    if need_pull:
         with step("pull"):
             run(["git", "pull"])
 
