@@ -3,10 +3,10 @@
 
     pkgs = with pkgs; [
         rustup
-        cargo-watch
-        cargo-workspaces
-        cargo-license
-        trunk
+        cargo-watch # Project watching
+        cargo-workspaces # Workspace management
+        cargo-license # License checking
+        trunk # Rust WASM compiler / bundler
     ];
 
     lsp = [

@@ -228,9 +228,9 @@ def _hm_target() -> str:
 
 def _rebuild() -> None:
     """Core rebuild sequence shared by `rebuild` and `upgrade`."""
-    with step("stage"):
-        run(["git", "fetch"], check=False)  # best-effort; offline is fine
-        run(["git", "add", "."])
+    # with step("stage"):
+    #     run(["git", "fetch"], check=False)  # best-effort; offline is fine
+    #     run(["git", "add", "."])
 
     if sys.platform == "darwin":
         with step("darwin-rebuild switch"):
@@ -273,14 +273,66 @@ def _rebuild() -> None:
                 ]
             )
 
-    # Only commit+push when there are actually staged changes to record.
-    if subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=REPO).returncode != 0:
-        with step("commit & pull"):
-            run(["git", "commit", "-m", "Nix rebuild"])
-            run(["git", "pull"])
+    # # Only commit+push when there are actually staged changes to record.
+    # if subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=REPO).returncode != 0:
+    #     with step("commit & pull"):
+    #         run(["git", "commit", "-m", "Nix rebuild"])
+    #         run(["git", "pull"])
 
+    #     with step("push"):
+    #         run(["git", "push"])
+
+
+def _sync_down() -> bool:
+    """
+    Synchronizes *down* the configuration. Adds, commits, & pulls from the repo it's in.
+
+    Run this BEFORE calling anything else!
+
+    Returns: Whether any synchronization changes were made.
+    """
+    did_sync = (
+        subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=REPO).returncode != 0
+    )
+
+    if did_sync:
+        with step("stage & commit"):
+            run(["git", "fetch"], check=False)  # best-effort; offline is fine
+            run(["git", "add", "."])
+            run(["git", "commit", "-m", "Nix rebuild"])
+
+        with step("pull"):
+            run(["git", "push"])
+
+    return did_sync
+
+
+def _sync_up(did_sync: bool = False) -> None:
+    """
+    Synchronizes *up* the configuration. If `did_sync` is true, this runs. Otherwise, does nothing.
+
+    This is REQUIRED to be fed the output of `_sync_down`!!!
+
+    This MUST be called last, otherwise you are at risk of pushing bad changes upstream!
+    """
+
+    if did_sync:
         with step("push"):
             run(["git", "push"])
+
+
+@contextlib.contextmanager
+def sync() -> Generator[None, None, None]:
+    """
+    Generator / context manager for a sync.
+
+    Synchronizes down before calling any action, and then synchronizes up if necessary
+    """
+    try:
+        did_sync = _sync_down()
+        yield
+    finally:
+        _sync_up(did_sync)
 
 
 # ── Subcommands ───────────────────────────────────────────────────────────────
@@ -289,15 +341,17 @@ def _rebuild() -> None:
 def cmd_rebuild(_args: argparse.Namespace) -> None:
     """Stage all changes, rebuild the system, commit."""
     os.chdir(REPO)
-    _rebuild()
+    with sync():
+        _rebuild()
 
 
 def cmd_upgrade(_args: argparse.Namespace) -> None:
     """Update all flake inputs (flake.lock) then rebuild."""
     os.chdir(REPO)
-    with step("update flake inputs"):
-        run(["nix", "flake", "update", "--flake", str(REPO)])
-    _rebuild()
+    with sync():
+        with step("update flake inputs"):
+            run(["nix", "flake", "update", "--flake", str(REPO)])
+        _rebuild()
 
 
 def cmd_clean(_args: argparse.Namespace) -> None:
@@ -328,7 +382,9 @@ def cmd_edit(_args: argparse.Namespace) -> None:
         _w(f"  {_G}✓{_X} open {editor}\n")
     else:
         print(f"✓ open {editor}")
-    _rebuild()
+
+    with sync():
+        _rebuild()
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────
