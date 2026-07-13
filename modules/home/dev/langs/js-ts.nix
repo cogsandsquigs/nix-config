@@ -27,6 +27,12 @@
                 "vscode-eslint-language-server"
                 "--stdio"
             ];
+            config = {
+                validate = "on";
+                run = "onType";
+                packageManager = "npm";
+                experimental.useFlatConfig = true;
+            };
         }
     ];
 
