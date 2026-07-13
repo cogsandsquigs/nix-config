@@ -36,6 +36,7 @@
                 rulesCustomizations = [ ];
                 problems.shortenToSingleLine = false;
                 experimental.useFlatConfig = true;
+                workingDirectory.mode = "auto";
                 codeAction = {
                     disableRuleComment = {
                         enable = true;
