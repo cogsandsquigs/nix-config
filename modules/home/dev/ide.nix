@@ -1,12 +1,12 @@
 {
-  pkgs,
-  lib,
-  config,
-  tools,
-  ...
+    pkgs,
+    lib,
+    config,
+    tools,
+    ...
 }:
 {
-  options.my.user.dev.ide.enable = tools.opt.mkRiding config.my.user.dev.enable "JetBrains IDEA";
+    options.my.user.dev.ide.enable = tools.opt.mkRiding config.my.user.dev.enable "JetBrains IDEA";
 
-  config = lib.mkIf config.my.user.dev.ide.enable { home.packages = with pkgs; [ jetbrains.idea ]; };
+    config = lib.mkIf config.my.user.dev.ide.enable { home.packages = with pkgs; [ jetbrains.idea ]; };
 }

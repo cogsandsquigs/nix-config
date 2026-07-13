@@ -2,12 +2,12 @@
 # The work box itself is standalone home-manager (no system layer), so this only matters if the
 # work user is ever placed on a NixOS/darwin host.
 { pkgs, lib, ... }: {
-  users.users.ipratt = {
-    description = "ipratt";
-    shell = pkgs.fish;
-  }
-  // lib.optionalAttrs pkgs.stdenv.isLinux {
-    isNormalUser = true;
-    extraGroups = [ "wheel" ];
-  };
+    users.users.ipratt = {
+        description = "ipratt";
+        shell = pkgs.fish;
+    }
+    // lib.optionalAttrs pkgs.stdenv.isLinux {
+        isNormalUser = true;
+        extraGroups = [ "wheel" ];
+    };
 }

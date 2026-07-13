@@ -1,23 +1,23 @@
 { pkgs, ... }: {
-  lang = [ "bash" ];
+    lang = [ "bash" ];
 
-  pkgs = with pkgs; [
-    bash-language-server
-    shfmt
-    shellcheck
-  ];
+    pkgs = with pkgs; [
+        bash-language-server
+        shfmt
+        shellcheck
+    ];
 
-  file-types.bash = [
-    "bash"
-    "sh"
-  ];
+    file-types.bash = [
+        "bash"
+        "sh"
+    ];
 
-  fmt = [
-    "shfmt"
-    "--indent=4"
-    "--binary-next-line"
-    "--case-indent"
-    "--space-redirects"
-    "-"
-  ];
+    fmt = [
+        "shfmt"
+        "--indent=4"
+        "--binary-next-line"
+        "--case-indent"
+        "--space-redirects"
+        "-"
+    ];
 }

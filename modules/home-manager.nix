@@ -9,26 +9,26 @@
 # NOTE: the work machine is a *standalone* home-manager config that does not go through this module
 # at all — see lib.mkHome and hosts/work-desktop.
 {
-  inputs,
-  hostId,
-  lib,
-  tools,
-  ...
+    inputs,
+    hostId,
+    lib,
+    tools,
+    ...
 }:
 {
-  home-manager = {
-    verbose = true;
-    useGlobalPkgs = true; # home-manager uses the system's `pkgs` (so nixpkgs config is shared)
-    useUserPackages = true;
-    backupFileExtension = "bak";
+    home-manager = {
+        verbose = true;
+        useGlobalPkgs = true; # home-manager uses the system's `pkgs` (so nixpkgs config is shared)
+        useUserPackages = true;
+        backupFileExtension = "bak";
 
-    # Forward our `tools` helpers into the home-manager sub-eval, so home feature modules get
-    # the same option/safety helpers the system modules do. (HM's sub-eval doesn't inherit the
-    # parent specialArgs, so this forward is necessary — irreducible.)
-    extraSpecialArgs = { inherit inputs hostId tools; };
+        # Forward our `tools` helpers into the home-manager sub-eval, so home feature modules get
+        # the same option/safety helpers the system modules do. (HM's sub-eval doesn't inherit the
+        # parent specialArgs, so this forward is necessary — irreducible.)
+        extraSpecialArgs = { inherit inputs hostId tools; };
 
-    users = lib.genAttrs hostId.users (name: {
-      imports = [ (../users + "/${name}/home.nix") ];
-    });
-  };
+        users = lib.genAttrs hostId.users (name: {
+            imports = [ (../users + "/${name}/home.nix") ];
+        });
+    };
 }
