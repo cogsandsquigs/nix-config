@@ -2,7 +2,7 @@
 let
     eslintTool = [
         {
-            lint-command = "eslint --stdin --stdin-filename \${INPUT}";
+            lint-command = "npx --no-install eslint --stdin --stdin-filename \${INPUT}";
             lint-ignore-exit-code = true;
             lint-stdin = true;
             lint-after-open = true;
