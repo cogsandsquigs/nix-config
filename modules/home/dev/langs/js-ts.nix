@@ -31,7 +31,18 @@
                 validate = "on";
                 run = "onType";
                 packageManager = "npm";
+                nodePath = "";
+                quiet = false;
+                rulesCustomizations = [ ];
+                problems.shortenToSingleLine = false;
                 experimental.useFlatConfig = true;
+                codeAction = {
+                    disableRuleComment = {
+                        enable = true;
+                        location = "separateLine";
+                    };
+                    showDocumentation.enable = true;
+                };
             };
         }
     ];
