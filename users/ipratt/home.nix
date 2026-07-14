@@ -13,5 +13,5 @@
         signByDefault = false;
     };
 
-    my.user.dev.vscode.enable = true;
+    my.user.dev.editors.vscode.enable = true;
 }
