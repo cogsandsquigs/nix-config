@@ -106,7 +106,7 @@ in
                 extraSpecialArgs = specialArgsFor host;
                 modules = [
                     (../users + "/${user}/home.nix")
-                    ../modules/home-manager.nix
+                    (inputs: (import ../modules/home-manager.nix inputs).home-manager)
                     host
                 ];
             }

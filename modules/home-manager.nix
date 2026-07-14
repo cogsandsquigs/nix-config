@@ -24,10 +24,6 @@
         # parent specialArgs, so this forward is necessary — irreducible.)
         extraSpecialArgs = { inherit inputs hostId tools; };
 
-        fonts.fontconfig = {
-            enable = true;
-        };
-
         users = lib.genAttrs hostId.users (name: {
             imports = [ (../users + "/${name}/home.nix") ];
         });
