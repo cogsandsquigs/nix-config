@@ -9,10 +9,14 @@
 }:
 {
     config = lib.mkIf config.my.user.dev.editors.vscode.enable {
-        home.packages = with pkgs; [ vscode ];
+        home.packages = with pkgs; [
+
+            vscode-fhs
+        ];
 
         programs.vscode = {
             enable = true;
+            package = pkgs.vscode-fhs;
 
             profiles."Default" = {
                 userSettings = {
