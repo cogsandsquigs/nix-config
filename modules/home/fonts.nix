@@ -9,7 +9,7 @@
 {
     options.my.user.fonts.enable = tools.opt.mkEnabled "Fonts (Fira Code, Atkinson Hyperlegible)";
 
-    config = lib.mkIf config.my.sys.fonts.enable {
+    config = lib.mkIf config.my.user.fonts.enable {
         home = {
             fonts = {
                 fontconfig.enable = true;
