@@ -7,11 +7,14 @@
     ...
 }:
 {
-    options.my.sys.fonts.enable =
-        tools.opt.mkEnabled "system-wide fonts (Fira Code, Atkinson Hyperlegible)";
+    options.my.user.fonts.enable = tools.opt.mkEnabled "Fonts (Fira Code, Atkinson Hyperlegible)";
 
     config = lib.mkIf config.my.sys.fonts.enable {
-        fonts = {
+        home = {
+            fonts = {
+                fontconfig.enable = true;
+            };
+
             packages = with pkgs; [
                 nerd-fonts.fira-code
                 atkinson-hyperlegible # Old version

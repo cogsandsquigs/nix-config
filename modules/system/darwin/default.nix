@@ -8,7 +8,6 @@
         ./nix.nix
         ./system-defaults.nix
         ./apps-fix.nix
-        ./fonts.nix
         ./packages.nix
         ./games.nix
         ./desktop-apps.nix

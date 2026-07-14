@@ -6,6 +6,7 @@
 { ... }: {
     imports = [
         ./base.nix
+        ./fonts.nix
         ./secrets.nix
         ./git.nix
         ./ssh.nix

@@ -7,7 +7,6 @@
         ../../home-manager.nix
 
         ./nix.nix
-        ./fonts.nix
         ./security.nix
         ./games.nix
         ./secrets.nix
