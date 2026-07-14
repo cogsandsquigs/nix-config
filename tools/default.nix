@@ -106,7 +106,7 @@ in
                 extraSpecialArgs = specialArgsFor host;
                 modules = [
                     (../users + "/${user}/home.nix")
-                    { home.username = user; }
+                    ../modules/home-manager.nix
                     host
                 ];
             }

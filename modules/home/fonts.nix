@@ -15,6 +15,5 @@
             atkinson-hyperlegible # Old version
             atkinson-hyperlegible-next # New version (preferred!)
         ];
-
     };
 }

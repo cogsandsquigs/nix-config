@@ -5,9 +5,6 @@
 # user the host declares (hostId.users, from its id.nix) at that user's home unit under
 # `../users/<name>/home.nix`. The user unit — not this module — decides the feature set (personal
 # vs work, …), keeping users isolated and portable across hosts.
-#
-# NOTE: the work machine is a *standalone* home-manager config that does not go through this module
-# at all — see lib.mkHome and hosts/work-desktop.
 {
     inputs,
     hostId,
@@ -26,6 +23,10 @@
         # the same option/safety helpers the system modules do. (HM's sub-eval doesn't inherit the
         # parent specialArgs, so this forward is necessary — irreducible.)
         extraSpecialArgs = { inherit inputs hostId tools; };
+
+        fonts.fontconfig = {
+            enable = true;
+        };
 
         users = lib.genAttrs hostId.users (name: {
             imports = [ (../users + "/${name}/home.nix") ];
