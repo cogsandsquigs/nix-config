@@ -12,4 +12,6 @@
         signingKey = null;
         signByDefault = false;
     };
+
+    my.user.dev.vscode.enable = true;
 }
