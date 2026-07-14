@@ -16,7 +16,6 @@
 
             settings = {
                 use-agent = true;
-                no-tty = true;
             };
         };
 
