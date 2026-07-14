@@ -10,5 +10,9 @@
 {
     config = lib.mkIf config.my.user.dev.editors.vscode.enable {
         home.packages = with pkgs; [ vscode ];
+
+        programs.vscode = {
+            enable = true;
+        };
     };
 }

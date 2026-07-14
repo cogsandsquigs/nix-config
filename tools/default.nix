@@ -35,7 +35,10 @@ let
     idOf = host: import (host + "/id.nix");
 
     specialArgsFor =
-        host:
+        {
+            host,
+            isHomeOnly ? false,
+        }:
         let
             id = idOf host;
         in
@@ -43,6 +46,7 @@ let
             inherit inputs;
             tools = mkTools id.system;
             hostId = id;
+            isHomeOnly = isHomeOnly;
         };
 in
 {
@@ -59,7 +63,8 @@ in
     mkDarwin =
         host:
         nix-darwin.lib.darwinSystem {
-            specialArgs = specialArgsFor host;
+            specialArgs = specialArgsFor { inherit host; };
+
             modules = [
                 ../modules/system/darwin
                 host
@@ -70,7 +75,7 @@ in
     mkNixos =
         host:
         nixpkgs.lib.nixosSystem {
-            specialArgs = specialArgsFor host;
+            specialArgs = specialArgsFor { inherit host; };
             modules = [
                 ../modules/system/nixos
                 host
@@ -103,10 +108,16 @@ in
             in
             {
                 pkgs = pkgs;
-                extraSpecialArgs = specialArgsFor host;
+
+                extraSpecialArgs = specialArgsFor {
+                    inherit host;
+                    isHomeOnly = true;
+                };
+
                 modules = [
-                    (../users + "/${user}/home.nix")
                     { home.username = user; }
+                    (../users + "/${user}/home.nix")
+                    (inputs: (import ../modules/home-manager.nix inputs).home-manager)
                     host
                 ];
             }
