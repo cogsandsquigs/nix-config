@@ -33,6 +33,8 @@ in
     pkgs = with pkgs; [
         nodejs
         bun
+        deno
+
         typescript-language-server
         efm-langserver
         prettierd
