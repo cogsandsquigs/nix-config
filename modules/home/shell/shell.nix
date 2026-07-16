@@ -38,7 +38,18 @@ let
 
     variables = {
         EDITOR = editor;
-        JAVA_HOME = "$(dirname $(dirname $(readlink -f $(which java))))"; # Add java home
+        # JAVA_HOME = "$(dirname $(dirname $(readlink -f $(which java))))"; # Add java home
+        # NOTE: The below complex script is necessary if local java is preferred over nix java. This
+        # is the case for my current job (Arctic Lake).
+        JAVA_HOME = ''
+            $(bash -c '
+                local_java=$(ls -d /usr/lib/jdk-* 2>/dev/null | sort -V | tail -1)
+                if [ -n "$local_java" ]; then
+                    echo "$local_java"
+                else
+                    dirname $(dirname $(readlink -f $(command -v java)))
+                fi
+            ')'';
 
         # NOTE: Necessary for (some) rust compilation things/libs
         LIBRARY_PATH = pkgs.lib.makeLibraryPath [ pkgs.libiconvReal ];
