@@ -65,7 +65,7 @@ let
     );
 
     binPaths = [
-        "$JAVA_HOME/bin"
+        "$JAVA_HOME/bin" # Put before nix installs, so we prefer java-home java over other javas
         "$HOME/.cargo/bin"
         "${pkgs.llvmPackages_21.clang-tools}/bin"
         "$HOME/.local/bin"
