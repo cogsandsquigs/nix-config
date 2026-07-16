@@ -14,5 +14,5 @@
     };
 
     my.user.dev.editors.vscode.enable = true;
-    my.user.dev.ldap.enable = true;
+    my.user.dev.ldap.enable = false;
 }
