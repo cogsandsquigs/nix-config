@@ -65,6 +65,7 @@ let
     );
 
     binPaths = [
+        "$JAVA_HOME/bin"
         "$HOME/.cargo/bin"
         "${pkgs.llvmPackages_21.clang-tools}/bin"
         "$HOME/.local/bin"
