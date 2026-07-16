@@ -15,7 +15,7 @@
                 # Restriction necessary since apache-directory-studio only works on linux (for nix builds) :/
                 pkgs.stdenv.isLinux
             then
-                with pkgs; [ apache-apache-directory-studio ]
+                with pkgs; [ apache-directory-studio ]
             else
                 [ ]
         );
