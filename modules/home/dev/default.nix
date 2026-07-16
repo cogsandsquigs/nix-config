@@ -15,6 +15,7 @@
         ./ide.nix
         ./direnv.nix
         ./containers.nix
+        ./ldap.nix
 
         ./editor
         ./langs
