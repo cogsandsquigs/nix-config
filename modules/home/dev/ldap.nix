@@ -7,7 +7,8 @@
 }:
 {
 
-    options.my.user.dev.ldap.enable = tools.opt.mkRiding config.my.user.dev.enable "JetBrains IDEA";
+    # options.my.user.dev.ldap.enable = tools.opt.mkRiding config.my.user.dev.enable "LDAP Tools";
+    options.my.user.dev.ldap.enable = tools.opt.mkDisabled "LDAP Tools";
 
     config = lib.mkIf config.my.user.dev.ldap.enable {
         home.packages = (
