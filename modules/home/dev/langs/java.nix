@@ -2,7 +2,7 @@
     lang = [ "java" ];
 
     pkgs = with pkgs; [
-        # jdk
+        jdk
         gradle
         kotlin
     ];
