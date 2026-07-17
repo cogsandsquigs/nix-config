@@ -10,3 +10,6 @@ registry.json
 
 # Plaintext VPN profiles — encrypt with age-stash before staging, never commit raw.
 *.ovpn
+
+# Machine-local runtime env overrides, sourced at shell startup. Never commit.
+.env

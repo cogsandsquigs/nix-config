@@ -38,18 +38,9 @@ let
 
     variables = {
         EDITOR = editor;
-        # JAVA_HOME = "$(dirname $(dirname $(readlink -f $(which java))))"; # Add java home
-        # NOTE: The below complex script is necessary if local java is preferred over nix java. This
-        # is the case for my current job (Arctic Lake).
-        JAVA_HOME = ''
-            $(bash -c '
-                local_java=$(ls -d /usr/lib/jdk-* 2>/dev/null | sort -V | tail -1)
-                if [ -n "$local_java" ]; then
-                    echo "$local_java"
-                else
-                    dirname $(dirname $(readlink -f $(command -v java)))
-                fi
-            ')'';
+        # Nix-provided java by default. To prefer a locally-installed JDK (e.g. the Arctic Lake work
+        # box), set JAVA_HOME in ${flakeDir}/.env — the .env loader below overrides this.
+        JAVA_HOME = "$(dirname $(dirname $(readlink -f $(command -v java))))";
 
         # NOTE: Necessary for (some) rust compilation things/libs
         LIBRARY_PATH = pkgs.lib.makeLibraryPath [ pkgs.libiconvReal ];
@@ -87,6 +78,23 @@ let
     # a command to add it to the path.
     # @returns a string of commands to add things to path.
     pathsToString = f: (concatMapStrings (s: (f s) + "\n") binPaths);
+
+    # Machine-local overrides: read ${flakeDir}/.env (KEY=VALUE, untracked) at shell startup and
+    # let it override anything `variables` set. Loaded AFTER variables but BEFORE paths, so an
+    # overridden JAVA_HOME still feeds "$JAVA_HOME/bin" in binPaths. Missing file is a no-op.
+    # One canonical parser: bash sources the file directly; fish reuses it via `bass`.
+    envFileLoaderPosix = ''
+        if [ -f "${flakeDir}/.env" ]; then
+            set -a
+            . "${flakeDir}/.env"
+            set +a
+        fi
+    '';
+    envFileLoaderFish = ''
+        if test -f "${flakeDir}/.env"
+            bass set -a \; source "${flakeDir}/.env" \; set +a
+        end
+    '';
 in
 {
     options.my.user.flakeDir = tools.opt.mkStr "/etc/nix" "Absolute path to this flake's checkout on the host.";
@@ -101,6 +109,15 @@ in
             enable = true;
             generateCompletions = true;
 
+            # `bass` lets fish run a bash command and import its env changes — used by the .env
+            # loader so fish parses ${flakeDir}/.env through bash rather than a hand-rolled parser.
+            plugins = [
+                {
+                    name = "bass";
+                    src = pkgs.fishPlugins.bass.src;
+                }
+            ];
+
             shellAliases = aliases;
 
             interactiveShellInit = ''
@@ -113,6 +130,7 @@ in
 
             shellInit = ''
                 ${variablesToString (name: val: "set -gx ${name} ${val}")}
+                ${envFileLoaderFish}
                 ${pathsToString (path: "fish_add_path ${path}")}
             '';
 
@@ -141,6 +159,7 @@ in
 
             initExtra = ''
                 ${variablesToString (name: val: "export ${name}=\"${val}\"")}
+                ${envFileLoaderPosix}
                 ${pathsToString (path: "export PATH=${path}:$PATH")}
             '';
         };
@@ -164,6 +183,7 @@ in
 
             envExtra = ''
                 ${variablesToString (name: val: "export ${name}=\"${val}\"")}
+                ${envFileLoaderPosix}
                 ${pathsToString (path: "export PATH=${path}:$PATH")}
             '';
 
