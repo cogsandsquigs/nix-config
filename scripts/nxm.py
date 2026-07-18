@@ -274,26 +274,26 @@ def _rebuild() -> None:
                 ]
             )
 
-    # # Only commit+push when there are actually staged changes to record.
-    # if subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=REPO).returncode != 0:
-    #     with step("commit & pull"):
-    #         run(["git", "commit", "-m", "Nix rebuild"])
-    #         run(["git", "pull"])
-
-    #     with step("push"):
-    #         run(["git", "push"])
-
 
 def _need_pull() -> bool:
     """True iff upstream has commits we don't have (ignores local-ahead state)."""
-    out = subprocess.run(
+
+    proc = subprocess.run(
         ["git", "rev-list", "--count", "HEAD..@{u}"],
         cwd=REPO,
         capture_output=True,
         text=True,
-        check=True,
-    ).stdout.strip()
-    return out != "0"
+    )
+
+    if proc.returncode != 0:
+        for line in (proc.stderr or proc.stdout).splitlines():
+            _feed(line)
+
+        raise subprocess.CalledProcessError(
+            proc.returncode, proc.args, proc.stdout, proc.stderr
+        )
+
+    return proc.stdout.strip() != "0"
 
 
 def _sync_down() -> bool:
