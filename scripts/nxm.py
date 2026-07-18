@@ -284,6 +284,18 @@ def _rebuild() -> None:
     #         run(["git", "push"])
 
 
+def _need_pull() -> bool:
+    """True iff upstream has commits we don't have (ignores local-ahead state)."""
+    out = subprocess.run(
+        ["git", "rev-list", "--count", "HEAD..@{u}"],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout.strip()
+    return out != "0"
+
+
 def _sync_down() -> bool:
     """
     Synchronizes *down* the configuration. Adds, commits, & pulls from the repo it's in.
@@ -304,26 +316,10 @@ def _sync_down() -> bool:
         with step("commit"):
             run(["git", "commit", "-m", "Nix rebuild"])
 
-    # fetch = subprocess.run(["git", "fetch"], cwd=REPO, capture_output=True, text=True)
-    # if fetch.returncode != 0:
-    #     print(f"fetch failed: {fetch.stderr}")
-    #     # handle network/auth error case separately
-    # else:
-    #     diff = subprocess.run(["git", "diff", "--quiet", "HEAD", "@{u}"], cwd=REPO)
-    #     if diff.returncode == 0:
-    #         print("up to date")
-    #     else:
-    #         print("changes to pull")
-
     with step("fetch"):
         run(["git", "fetch"], check=False)
-        try:
-            run(["git", "diff", "--quiet", "HEAD", "@{u}"], check=True)
-            need_pull = False
-        except CalledProcessError:
-            need_pull = True
+        need_pull = _need_pull()
 
-    # Regardless of commit status, pull if necessary
     if need_pull:
         with step("pull"):
             run(["git", "pull"])
