@@ -275,24 +275,29 @@ def _rebuild() -> None:
             )
 
 
-def _need_pull() -> bool:
-    """True iff upstream has commits we don't have (ignores local-ahead state)."""
+def capture(cmd: list[str], ok: tuple[int, ...] = (0,)) -> subprocess.CompletedProcess:
+    """Run cmd, capturing output, cwd=REPO. `ok` lists exit codes that are NOT
+    failures (e.g. git's --quiet convention uses 0/1 as a boolean signal).
+    Any other exit code feeds captured stderr/stdout into the current step's
+    buffer — same display path run() failures already use — then raises.
+    """
 
-    proc = subprocess.run(
-        ["git", "rev-list", "--count", "HEAD..@{u}"],
-        cwd=REPO,
-        capture_output=True,
-        text=True,
-    )
+    proc = subprocess.run(cmd, cwd=REPO, capture_output=True, text=True)
 
-    if proc.returncode != 0:
+    if proc.returncode not in ok:
         for line in (proc.stderr or proc.stdout).splitlines():
             _feed(line)
 
         raise subprocess.CalledProcessError(
-            proc.returncode, proc.args, proc.stdout, proc.stderr
+            proc.returncode, cmd, proc.stdout, proc.stderr
         )
 
+    return proc
+
+
+def _need_pull() -> bool:
+    """True iff upstream has commits we don't have (ignores local-ahead state)."""
+    proc = capture(["git", "rev-list", "--count", "HEAD..@{u}"])
     return proc.stdout.strip() != "0"
 
 
@@ -307,10 +312,9 @@ def _sync_down() -> bool:
 
     with step("stage"):
         run(["git", "add", "."])
-
-    did_sync = (
-        subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=REPO).returncode != 0
-    )
+        did_sync = (
+            capture(["git", "diff", "--cached", "--quiet"], ok=(0, 1)).returncode != 0
+        )
 
     if did_sync:
         with step("commit"):
