@@ -46,7 +46,7 @@ let
         LIBRARY_PATH = pkgs.lib.makeLibraryPath [ pkgs.libiconvReal ];
 
         # Stop Zoxide from complaining sometimes
-        _ZO_DOCTOR = 0;
+        _ZO_DOCTOR = "0";
     }
     // (
         if pkgs.stdenv.isDarwin then
