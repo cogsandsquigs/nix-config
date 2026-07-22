@@ -67,7 +67,7 @@
                 # Direnv detection
                 direnv = {
                     disabled = false;
-                    format = "[$symbol$allowed$loaded]($style)";
+                    format = "[$symbol$allowed$loaded]($style) ";
                     symbol = "direnv ";
                     allowed_msg = "✓";
                     not_allowed_msg = "-";
