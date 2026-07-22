@@ -67,6 +67,13 @@
                 # Direnv detection
                 direnv = {
                     disabled = false;
+                    format = "[$symbol($loaded/$allowed)]($style)";
+                    symbol = "direnv ";
+                    allowed_msg = "✓";
+                    not_allowed_msg = "-";
+                    denied_msg = "✗";
+                    loaded_msg = "⬆";
+                    unloaded_msg = "⬇";
                 };
 
                 # Command duration
