@@ -7,12 +7,12 @@
 }:
 let
     inherit (pkgs) stdenv;
-    inherit (lib) mkIf optionalAttrs;
+    inherit (lib) mkIf; # optionalAttrs;
 
-    # `UseKeychain` is an Apple-only addition to OpenSSH. Stock OpenSSH (i.e. Ubuntu, NixOS)
-    # rejects it as an unknown keyword and refuses to parse the whole config, so it must only
-    # ever be emitted on Darwin.
-    keychain = optionalAttrs stdenv.isDarwin { UseKeychain = "yes"; };
+    # # `UseKeychain` is an Apple-only addition to OpenSSH. Stock OpenSSH (i.e. Ubuntu, NixOS)
+    # # rejects it as an unknown keyword and refuses to parse the whole config, so it must only
+    # # ever be emitted on Darwin.
+    # keychain = optionalAttrs stdenv.isDarwin { UseKeychain = "yes"; };
 in
 {
     options.my.user.ssh = {
