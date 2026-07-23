@@ -12,10 +12,7 @@ let
     # `UseKeychain` is an Apple-only addition to OpenSSH. Stock OpenSSH (i.e. Ubuntu, NixOS)
     # rejects it as an unknown keyword and refuses to parse the whole config, so it must only
     # ever be emitted on Darwin.
-    keychain = optionalAttrs stdenv.isDarwin {
-        IgnoreUnknown = "";
-        UseKeychain = "yes";
-    };
+    keychain = optionalAttrs stdenv.isDarwin { UseKeychain = "yes"; };
 in
 {
     options.my.user.ssh = {
@@ -65,20 +62,17 @@ in
                     User = "ip124";
                     IdentityFile = "~/.ssh/imperial_doc_ed25519";
                     AddKeysToAgent = "yes";
-                }
-                // keychain;
+                };
 
                 "gitlab.doc.ic.ac.uk" = {
                     IdentityFile = "~/.ssh/imperial_gitlab_ed25519";
                     AddKeysToAgent = "yes";
-                }
-                // keychain;
+                };
 
                 "github.com" = {
                     IdentityFile = "~/.ssh/id_ed25519";
                     AddKeysToAgent = "yes";
-                }
-                // keychain;
+                };
 
                 ## WORK MACHINE ##
                 "workbox" = {
@@ -86,8 +80,7 @@ in
                     HostName = "172.24.20.25";
                     IdentityFile = "~/.ssh/id_ed25519";
                     AddKeysToAgent = "yes";
-                }
-                // keychain;
+                };
             };
         };
     };
