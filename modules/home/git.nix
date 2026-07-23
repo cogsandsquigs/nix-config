@@ -29,7 +29,7 @@ in
 
     config = lib.mkIf cfg.enable {
         home.packages = with pkgs; [
-            git # <3
+            gitFull # <3
             delta # Git diff highlighting
             lazygit # Awesome git TUI
         ];
