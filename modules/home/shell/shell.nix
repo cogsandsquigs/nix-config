@@ -119,6 +119,10 @@ in
                     name = "bass";
                     src = pkgs.fishPlugins.bass.src;
                 }
+                {
+                    name = "fishbang";
+                    src = pkgs.fishPlugins.fishbang.src;
+                }
             ];
 
             shellAliases = aliases;

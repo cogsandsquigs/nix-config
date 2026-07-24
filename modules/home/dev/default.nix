@@ -19,6 +19,7 @@
 
         ./editor
         ./langs
+        ./ai
     ];
 
     options.my.user.dev.enable = tools.opt.mkEnabled "dev toolchain (editors, langs, containers, …)";
@@ -30,10 +31,6 @@
 
             # API querying/development
             postman
-
-            # AI stuffs (work *blech*)
-            claude-code
-            claude-monitor
         ];
     };
 }
