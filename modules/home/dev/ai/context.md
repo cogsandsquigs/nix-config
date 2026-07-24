@@ -18,6 +18,11 @@ down.
 Plan mode: draft → check for issues → revise → repeat until stable. Report all issues + mitigations
 to user.
 
+## Git: never push changes, ask
+
+Git for user only. Only use when user requests fix / git actions, never push. Never push upstream --
+user does that.
+
 ## Comments: min
 
 Only when:
