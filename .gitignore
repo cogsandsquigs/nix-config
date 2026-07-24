@@ -4,11 +4,11 @@ nix.custom.conf*
 registry.json
 *.log
 
-# Private agenix age identities (/etc/nix/age/<owner>) — secret keys, NEVER commit. Only the
-# public keys (secrets/recipients.nix) are tracked.
+# Private age identities (/etc/nix/age/<owner>) — secret keys sops decrypts with, NEVER commit. Only
+# the public keys (in secrets/.sops.yaml) are tracked.
 /age/
 
-# Plaintext VPN profiles — encrypt with age-stash before staging, never commit raw.
+# Plaintext VPN profiles — encrypt with sops-stash before staging, never commit raw.
 *.ovpn
 
 # Machine-local runtime env overrides, sourced at shell startup. Never commit.

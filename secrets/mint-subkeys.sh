@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Mint FRESH per-machine GPG subkeys (signing + encryption) from your offline master, and stash them
-# as that machine's agenix secret. A distinct subkey set per box means you can revoke one machine
+# as that machine's sops secret. A distinct subkey set per box means you can revoke one machine
 # without touching the others.
 #
 # ⚠ RUN ON YOUR AIR-GAPPED / OFFLINE BOX. Adding subkeys needs the master SECRET; this imports it
@@ -14,8 +14,8 @@
 #   actually buys revocation/isolation.
 #
 # Prereqs (in the repo checkout you run this from):
-#   • the target machine's age key bootstrapped + its "cogs@<host>" line in secrets/recipients.nix
-#   • "cogs@<host>/gpg" added to the `declared` list in secrets/secrets.nix
+#   • the target machine's age key bootstrapped + a creation_rule matching "cogs@<host>/" in
+#     secrets/.sops.yaml (with that machine's public age key)
 #
 # Usage:  ./mint-machine-subkeys.sh <master-secret.asc> <host> [expire]
 #   <master-secret.asc>  armored master secret key from your offline backup
@@ -27,7 +27,7 @@ MASTER_ASC="${1:?path to master-secret.asc}"
 HOST="${2:?host, e.g. home-desktop}"
 EXPIRE="${3:-0}" # 0 = never
 NAME="cogs@${HOST}/gpg"
-DIR="$(cd "$(dirname "$0")" && pwd)" # this secrets/ dir (agenix rules live here)
+DIR="$(cd "$(dirname "$0")" && pwd)" # this secrets/ dir (sops rules — .sops.yaml — live here)
 
 # Best-effort secure wipe (shred on Linux, rm -P on macOS, else plain rm).
 wipe() {
@@ -70,8 +70,9 @@ echo ">> new subkeys: $1 (sign), $2 (encr)"
 KEYTMP="$(mktemp)"
 gpg --armor --export-secret-subkeys "${1}!" "${2}!" > "$KEYTMP" # ONLY the new subkeys; master = stub
 mkdir -p "$DIR/cogs@${HOST}"
-(cd "$DIR" && EDITOR="cp $KEYTMP" agenix -e "${NAME}.age")
-echo ">> wrote secrets/${NAME}.age (encrypted to cogs@${HOST})"
+(cd "$DIR" && sops encrypt --input-type binary --output-type json \
+    --filename-override "${NAME}.sops" "$KEYTMP" > "${NAME}.sops")
+echo ">> wrote secrets/${NAME}.sops (encrypted to cogs@${HOST})"
 
 echo ""
 echo ">> Re-publish your UPDATED master public key so the new subkeys are recognised elsewhere"

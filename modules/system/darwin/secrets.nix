@@ -1,6 +1,9 @@
-# agenix secret management (darwin).
+# sops-nix secret management (darwin).
+#
+# Only installs the `sops` CLI. There is no `imports = [ sops-nix.darwinModules.sops ]` because every
+# secret here is home-scope — the per-user home-manager module (modules/home/secrets.nix) does all the
+# decryption. Add the system module here only if you ever declare a SYSTEM-scope secret (root-owned).
 {
-    inputs,
     pkgs,
     lib,
     config,
@@ -8,15 +11,10 @@
     ...
 }:
 {
-    # The agenix module is imported unconditionally (imports can't be option-gated, and it's inert
-    # until a secret is declared). The toggle only governs whether the `agenix` CLI is installed.
-    # Defaults true — never accidentally lose secret tooling.
-    imports = [ inputs.agenix.darwinModules.default ];
-
     options.my.sys.secrets.enable =
-        tools.opt.mkEnabled "agenix secret management (installs the agenix CLI)";
+        tools.opt.mkEnabled "sops secret management (installs the sops CLI)";
 
     config = lib.mkIf config.my.sys.secrets.enable {
-        environment.systemPackages = [ inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default ];
+        environment.systemPackages = [ pkgs.sops ];
     };
 }

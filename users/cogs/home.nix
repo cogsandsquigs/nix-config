@@ -14,8 +14,8 @@
 let
     me = "cogs@${hostId.hostName}";
 
-    # presence of the .age is the switch — no allowlist; every machine self-wires uniformly.
-    haveGpg = builtins.pathExists (../../secrets + "/${me}/gpg.age");
+    # presence of the .sops file is the switch — no allowlist; every machine self-wires uniformly.
+    haveGpg = builtins.pathExists (../../secrets + "/${me}/gpg.sops");
 in
 {
     imports = [ ../../modules/home ];
@@ -37,7 +37,7 @@ in
         path = tools.secrets.path config "cogs" "work-alt-ipratt-ovpn";
     };
 
-    age.secrets = lib.mkMerge [
+    sops.secrets = lib.mkMerge [
         (lib.mkIf haveGpg (tools.secrets.declare me "gpg"))
         (tools.secrets.declare "cogs" "work-alt-ipratt-ovpn")
     ];

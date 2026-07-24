@@ -35,7 +35,7 @@ Every user imports the **same full home library** (`modules/home`); `cogs` vs `i
 in which `my.user.*` flags they flip — no import-bundle split.
 
 Key inputs (`flake.nix`): [nixpkgs] (stable), [nix-darwin], [home-manager], [Determinate
-Nix][determinate], [agenix] for secrets.
+Nix][determinate], [sops-nix] for secrets.
 
 ## Structure
 
@@ -46,7 +46,7 @@ Nix][determinate], [agenix] for secrets.
   - `forAllSystems` — map over systems for per-system outputs (e.g. the formatter).
   - `specialArgsFor` — the shared `specialArgs`/`extraSpecialArgs`: `inputs`, `hostId`, per-host `tools`.
 - **`tools/opt.nix`** — option constructors + safety helpers (`tools.opt`).
-- **`tools/secrets.nix`** — agenix wiring helpers (`tools.secrets`).
+- **`tools/secrets.nix`** — sops wiring helpers (`tools.secrets`).
 - **`tools/conf.nix`** — config utilities (`tools.conf`, e.g. `eachOs` for per-OS branches). `tools`
   is a dedicated `specialArg`, not folded into `lib` — extending HM's `lib` clobbers `lib.hm.*`.
 - **`hosts/`** — per-machine **selection**. Each host has an **`id.nix`**
@@ -80,8 +80,8 @@ Nix][determinate], [agenix] for secrets.
 - **`scripts/`** — wrappers `rebuild.sh`/`upgrade.sh`/`cleanup.sh`/`editnix.sh`. Location-independent
   (derive the flake dir from their own path) and auto-detect `darwin-rebuild` / `nixos-rebuild` /
   standalone `home-manager switch`.
-- **`secrets/`** — agenix-encrypted secrets + rules (`recipients.nix`, computed `secrets.nix`),
-  `mint-subkeys.sh`, and a how-to `README.md`. See [Secrets](#secrets).
+- **`secrets/`** — sops-encrypted secrets + rules (`.sops.yaml`), `sops-stash.sh` / `mint-subkeys.sh`
+  helpers, and a how-to `README.md`. See [Secrets](#secrets).
 - **`nix.conf`** — Nix daemon settings.
 - **`treefmt.toml`** — one-command repo formatting (`treefmt`); also nixfmt's `--width`/`--indent`
   (no native config file). Matches the helix formatter settings (4-space, 100 cols).
@@ -218,7 +218,7 @@ and `my.user.flakeDir`. Everything identical everywhere stays inline.
 
 **Helpers** come from `tools` (a per-host `specialArg`): **`tools.opt.*`** — option constructors
 (`mkEnabled`/`mkDisabled`/`mkRiding`, `mkStr`/`mkEnum`, `mkSecretPath`, `requires`);
-**`tools.secrets.*`** — agenix wiring; **`tools.conf.*`** — config utilities (`eachOs`).
+**`tools.secrets.*`** — sops wiring; **`tools.conf.*`** — config utilities (`eachOs`).
 
 **Safety.** Every `my.*` leaf is _declared_ (never a freeform `attrsOf`), so a typo like
 `my.user.gmes.enable` fails evaluation with "option does not exist". That strict schema is the real
@@ -229,25 +229,25 @@ The module tree under `modules/` is the source of truth for which features exist
 
 ## Secrets
 
-Sensitive material (a GPG key, VPN profile, token) is encrypted with [agenix] and committed under
-`secrets/` — the `*.age` blobs are safe to push; only the matching **private age key** decrypts them.
+Sensitive material (a GPG key, VPN profile, token) is encrypted with [sops-nix] and committed under
+`secrets/` — the `*.sops` blobs are safe to push; only the matching **private age key** decrypts them.
 Full workflow (create/edit/rotate, bootstrapping, the GPG ceremony) is in
 **[`secrets/README.md`](secrets/README.md)**; in brief:
 
 - **Identities are per-(user, machine).** Each machine generates its own age key at
-  `/etc/nix/age/<user>` (never copied), registered in `secrets/recipients.nix` as `"<user>@<host>"`.
+  `/etc/nix/age/<user>` (never copied), registered in `secrets/.sops.yaml` as a rule's recipient.
   A leaked key exposes only that machine's secrets.
-- **A secret's folder picks its audience** (resolved by `secrets/secrets.nix`): `cogs@glorpbook/…`
-  → that machine only; `cogs/…` → all of that user's machines. "On all my boxes" = encrypt to
-  multiple recipients, never share a private key.
+- **A secret's folder picks its audience** (via the `creation_rules` in `secrets/.sops.yaml`):
+  `cogs@glorpbook/…` → that machine only; `cogs/…` → all of that user's machines. "On all my boxes" =
+  encrypt to multiple recipients, never share a private key.
 - **Features stay secret-agnostic.** A feature exposes a `tools.opt.mkSecretPath` hole; the user/host
-  unit wires it — `age.secrets = tools.secrets.declare "<id>" "<name>"` to register,
+  unit wires it — `sops.secrets = tools.secrets.declare "<id>" "<name>"` to register,
   `tools.secrets.path config "<id>" "<name>"` to feed the decrypted path in. So "which secret feeds
   which feature" lives in one file, the unit.
 
 ```nix
-# users/cogs/home.nix — git's signing key on a box provisioned via agenix
-age.secrets                = tools.secrets.declare "cogs@home-desktop" "gpg";
+# users/cogs/home.nix — git's signing key on a box provisioned via sops
+sops.secrets               = tools.secrets.declare "cogs@home-desktop" "gpg";
 my.user.git.signingKeyFile = tools.secrets.path config "cogs@home-desktop" "gpg";
 ```
 
@@ -483,6 +483,6 @@ set `NIX_CONF_DIR` (which would tell Nix to read `nix.conf` from the repo — wr
 [home-manager]: https://github.com/nix-community/home-manager
 [determinate]: https://determinate.systems/nix/
 [determinate-darwin]: https://docs.determinate.systems/guides/nix-darwin/
-[agenix]: https://github.com/ryantm/agenix
+[sops-nix]: https://github.com/Mic92/sops-nix
 [det-uninstall]: https://manual.determinate.systems/installation/uninstall.html
 [nix-uninstall]: https://nix.dev/manual/nix/latest/installation/uninstall

@@ -5,7 +5,7 @@
 #
 # Grouped by what a helper DOES:
 #   tools.opt.*      — option & module-authoring helpers (constructors + assertions).
-#   tools.secrets.*  — agenix secret wiring (register a secret + read its decrypted path).
+#   tools.secrets.*  — sops secret wiring (register a secret + read its decrypted path).
 { lib }:
 let
     t = lib.types;

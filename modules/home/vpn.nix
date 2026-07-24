@@ -47,10 +47,10 @@ in
 
         # Linux: copy each profile into ~/.config/openvpn (plain openvpn reads from there).
         # macOS: OpenVPN Connect has no programmatic import interface — profiles must be imported
-        # once by hand through the app UI. The agenix secret is still decrypted and available at
+        # once by hand through the app UI. The sops secret is still decrypted and available at
         # its runtime path (tools.secrets.path); nothing to do here.
         home.activation.installOvpnProfiles = lib.mkIf (cfg.profiles != { }) (
-            tools.conf.eachOs (lib.hm.dag.entryAfter [ "writeBoundary" "setupLaunchAgents" "agenixInstall" ] (
+            tools.conf.eachOs (lib.hm.dag.entryAfter [ "writeBoundary" "setupLaunchAgents" "sops-nix" ] (
                 lib.concatStringsSep "\n" (
                     lib.mapAttrsToList (profileKey: profileCfg: ''
                         _ovpn_path="${profileCfg.path}"
