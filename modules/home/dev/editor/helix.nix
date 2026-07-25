@@ -28,13 +28,21 @@ let
         {
             name = langName;
         }
-        // {
-            auto-format = true;
-            indent = {
-                tab-width = 4;
-                unit = "    ";
-            };
-        }
+        //
+            # NOTE: need 2 be in parens since these are the "actual" language options, which we
+            # modify w/ editor-specific config
+            (
+                {
+                    auto-format = true;
+                    indent = {
+                        tab-width = 4;
+                        unit = "    ";
+                    };
+                }
+                # NOTE: Must come AFTER -- the `//` operator updates the prev (above) attrset with
+                # the next (below) one.
+                // (lib.optionalAttrs (spec.editor-specific ? helix) spec.editor-specific.helix)
+            )
         // lib.optionalAttrs (spec.lsp != [ ]) {
             language-servers =
                 let
@@ -105,15 +113,7 @@ in
             # See: https://docs.helix-editor.com/configuration.html
             languages = {
                 language-server = specLsps;
-                language = specLangs // [
-                    {
-                        name = "go";
-                        indent = {
-                            tab-width = 4;
-                            unit = "\t";
-                        };
-                    }
-                ];
+                language = specLangs;
             };
 
             settings = {

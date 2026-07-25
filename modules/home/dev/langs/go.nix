@@ -49,4 +49,13 @@
     ];
 
     fmt = [ "gofmt" ];
+
+    editor-specific = {
+        helix = {
+            indent = {
+                tab-width = 4;
+                unit = "\t";
+            };
+        };
+    };
 }

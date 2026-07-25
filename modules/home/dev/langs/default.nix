@@ -38,24 +38,43 @@ let
     langSpec = lib.types.submodule {
         options = {
             lang = lib.mkOption { type = lib.types.nonEmptyListOf lib.types.str; };
+
             pkgs = lib.mkOption {
                 type = lib.types.listOf lib.types.package;
                 default = [ ];
             };
+
             lsp = lib.mkOption {
                 type = lib.types.listOf lspSpec;
                 default = [ ];
             };
+
             fmt = lib.mkOption {
                 type = lib.types.nullOr (lib.types.nonEmptyListOf lib.types.str);
                 default = null;
             };
+
             file-types = lib.mkOption {
                 type = lib.types.attrsOf (lib.types.listOf lib.types.str);
                 default = { };
             };
+
             roots = lib.mkOption {
                 type = lib.types.attrsOf (lib.types.listOf lib.types.str);
+                default = { };
+            };
+
+            editor-specific = lib.mkOption {
+                type = lib.types.attrsOf lib.types.attrs;
+                description = "Editor-specific language configuration. Will be merged with the other language configuration (e.g. under `\"[<lang>]\": { ... }` in vscode)";
+                example = {
+                    helix = {
+                        auto-format = false;
+                    };
+                    vscode = {
+                        formatOnSave = false;
+                    };
+                };
                 default = { };
             };
         };
