@@ -8,6 +8,7 @@
         go # Bundles `gofmt`
         gopls # Primary LSP
         golangci-lint-langserver # Secondary LSP
+        golangci-lint # Linter, used by above
         delve # Debugger
     ];
 
