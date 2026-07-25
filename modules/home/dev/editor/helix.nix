@@ -38,15 +38,15 @@ let
         // lib.optionalAttrs (spec.lsp != [ ]) {
             language-servers =
                 let
-                    hasFlags = builtins.any (
-                        l: l.only-features != [ ] || l.except-features != [ ]
-                    ) spec.lsp;
+                    hasFlags = builtins.any (l: l.only-features != [ ] || l.except-features != [ ]) spec.lsp;
                     toEntry =
                         l:
                         if !hasFlags then
                             l.name
                         else
-                            { name = l.name; }
+                            {
+                                name = l.name;
+                            }
                             // lib.optionalAttrs (l.only-features != [ ]) { inherit (l) only-features; }
                             // lib.optionalAttrs (l.except-features != [ ]) { inherit (l) except-features; };
                 in
@@ -105,7 +105,15 @@ in
             # See: https://docs.helix-editor.com/configuration.html
             languages = {
                 language-server = specLsps;
-                language = specLangs;
+                language = specLangs // [
+                    {
+                        name = "go";
+                        indent = {
+                            tab-width = 4;
+                            unit = "\t";
+                        };
+                    }
+                ];
             };
 
             settings = {
