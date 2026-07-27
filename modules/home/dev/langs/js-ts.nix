@@ -2,7 +2,7 @@
 let
     eslintTool = [
         {
-            lint-command = "npx --no-install eslint --stdin --stdin-filename \${INPUT}";
+            lint-command = "npx -y eslint --stdin --stdin-filename \${INPUT}";
             lint-ignore-exit-code = true;
             lint-stdin = true;
             lint-after-open = true;
@@ -17,8 +17,11 @@ let
     efmConfig = builtins.toFile "efm-config.yaml" (
         lib.generators.toYAML { } {
             version = 2;
-            root-markers = [ ".git/" ];
-            lint-debounce = "1s";
+            root-markers = [
+                ".git/"
+                "package.json"
+            ];
+            lint-debounce = "2s";
             languages = lib.genAttrs [ "javascript" "typescript" "svelte" ] (_: eslintTool);
         }
     );
@@ -32,7 +35,7 @@ in
 
     pkgs = with pkgs; [
         nodejs
-        bun
+        aube
         deno
 
         typescript-language-server
