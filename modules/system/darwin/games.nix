@@ -15,6 +15,7 @@
                 "steam"
                 "olympus" # Celeste mod loader # NOTE: for some reason not supported on nix aarch-64
                 "porting-kit" # Windows -> Mac games
+                "aaf2tbz/tap/metalsharp" # Windows -> Mac games (via Game Porting ToolKit)
             ];
         };
     };
