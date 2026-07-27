@@ -11,8 +11,11 @@
         tools.opt.mkDisabled "games (Steam, Olympus, Porting Kit via Homebrew)";
 
     config = lib.mkIf config.my.sys.games.enable {
-        environment.systemPackages = [
-            pkgs._7zip-zstd-rar # Required for heroic winetricks for some reason?
+        environment.systemPackages = with pkgs; [
+            # ALl 3 below required for heroic winetricks for some reason?
+            p7zip-rar
+            zenity
+            cabextract
         ];
 
         homebrew = {
