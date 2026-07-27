@@ -3,23 +3,20 @@
     lib,
     config,
     tools,
-    pkgs,
     ...
 }:
 {
     options.my.sys.games.enable =
-        tools.opt.mkDisabled "games (Steam, Olympus, Porting Kit via Homebrew)";
+        tools.opt.mkDisabled "games (Steam, Olympus, Heroic Launcher & Porting Kit via Homebrew)";
 
     config = lib.mkIf config.my.sys.games.enable {
-        environment.systemPackages = with pkgs; [
-            # ALl 3 below required for heroic winetricks for some reason?
-            p7zip
-            # zenity # For some reason this fails -- using brew!
-            cabextract
-        ];
-
         homebrew = {
-            brews = [ "zenity" ]; # See above `systemPackages`
+            # All 3 below required for heroic winetricks for some reason?
+            brews = [
+                "sevenzip"
+                "zenity"
+                "cabextract"
+            ];
 
             casks = [
                 "steam"
