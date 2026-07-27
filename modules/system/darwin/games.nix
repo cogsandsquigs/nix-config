@@ -12,6 +12,10 @@
     config = lib.mkIf config.my.sys.games.enable {
         homebrew = {
 
+            brews = [
+                "7z" # Required for heroic winetricks for some reason?
+            ];
+
             casks = [
                 "steam"
                 "olympus" # Celeste mod loader # NOTE: for some reason not supported on nix aarch-64
