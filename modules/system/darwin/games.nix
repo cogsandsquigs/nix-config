@@ -13,12 +13,14 @@
     config = lib.mkIf config.my.sys.games.enable {
         environment.systemPackages = with pkgs; [
             # ALl 3 below required for heroic winetricks for some reason?
-            p7zip-rar
-            zenity
+            p7zip
+            # zenity # For some reason this fails -- using brew!
             cabextract
         ];
 
         homebrew = {
+            brews = [ "zenity" ]; # See above `systemPackages`
+
             casks = [
                 "steam"
                 "olympus" # Celeste mod loader # NOTE: for some reason not supported on nix aarch-64
