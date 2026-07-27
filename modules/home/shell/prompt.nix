@@ -80,7 +80,7 @@
                 cmd_duration = {
                     disabled = false;
                     min_time = 500; # in millis
-                    format = "took [$duration](bold yellow) ";
+                    format = "took [$duration](bold yellow) in ";
                     style = "bold yellow";
                 };
 
@@ -186,7 +186,7 @@
                     # Zellij integration
                     zellij = {
                         # NOTE: We need to do `\\` so it outputs the string `\(...\)` which then gets interpolated via Starship
-                        format = "in [Zellij \\($output\\)]($style) ";
+                        format = "[Zellij \\($output\\)]($style) ";
                         style = "green bold";
                         description = "Shows the current Zellij monitor you are in";
                         when = "test $ZELLIJ && test ! $__ZELLIJ_DONT_SHOW_STATUS"; # NOTE: `$__ZELLIJ_DONT_SHOW_STATUS` set by layout(s) that show zellij status
