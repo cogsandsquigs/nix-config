@@ -21,7 +21,7 @@ let
                 ".git/"
                 "package.json"
             ];
-            lint-debounce = "2s";
+            lint-debounce = "1s";
             languages = lib.genAttrs [ "javascript" "typescript" "svelte" ] (_: eslintTool);
         }
     );
