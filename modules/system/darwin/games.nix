@@ -11,17 +11,15 @@
 
     config = lib.mkIf config.my.sys.games.enable {
         homebrew = {
-            taps = [
-                "aaf2tbz/tap" # For `metalsharp`
-                "apple/apple" # For `game-porting-toolkit`
+            brews = [
+                "apple/apple/game-porting-toolkit" # Windows -> Mac games (Game Porting ToolKit)
             ];
 
             casks = [
                 "steam"
                 "olympus" # Celeste mod loader # NOTE: for some reason not supported on nix aarch-64
                 "porting-kit" # Windows -> Mac games
-                "metalsharp" # Windows -> Mac games (via Game Porting ToolKit)
-                "game-porting-toolkit" # Windows -> Mac games (Game Porting ToolKit)
+                "aaf2tbz/tap/metalsharp" # Windows -> Mac games (via Game Porting ToolKit)
             ];
         };
     };
