@@ -3,6 +3,7 @@
     lib,
     config,
     tools,
+    pkgs,
     ...
 }:
 {
@@ -10,12 +11,11 @@
         tools.opt.mkDisabled "games (Steam, Olympus, Porting Kit via Homebrew)";
 
     config = lib.mkIf config.my.sys.games.enable {
+        environment.systemPackages = [
+            pkgs._7zip-zstd-rar # Required for heroic winetricks for some reason?
+        ];
+
         homebrew = {
-
-            brews = [
-                "7z" # Required for heroic winetricks for some reason?
-            ];
-
             casks = [
                 "steam"
                 "olympus" # Celeste mod loader # NOTE: for some reason not supported on nix aarch-64
