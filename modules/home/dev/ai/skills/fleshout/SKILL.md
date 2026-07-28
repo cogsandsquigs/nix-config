@@ -1,5 +1,5 @@
 ---
-name: flesh-out
+name: fleshout
 description: >-
     Turn a code sample, git diff, scratch-pad notes, or half-formed guidance into a fully-fledged
     feature or program. Use this whenever the user hands over a rough sketch, stub, TODO-riddled
