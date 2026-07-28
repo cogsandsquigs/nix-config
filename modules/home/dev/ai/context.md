@@ -21,7 +21,11 @@ to user.
 ## Git: never push changes, ask
 
 Git for user only. Only use when user requests fix / git actions, never push. Never push upstream --
-user does that.
+user does that. Git commands allowed without permission:
+
+- `git add` / `git rm` / `git mv` -- moving around code is fine
+- `git diff` / `git rev-parse` -- use to view changes
+- Any other `git` command that does not modify state (read-only)
 
 ## Comments: min
 
