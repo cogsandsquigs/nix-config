@@ -6,13 +6,13 @@
 
     inputs = {
         # Main packages repo
-        # nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable"; # Unstable
-        nixpkgs.url = "github:NixOS/nixpkgs/release-26.05"; # Stable
+        nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable"; # Unstable
+        # nixpkgs.url = "github:NixOS/nixpkgs/release-26.05"; # Stable
 
         # MacOS config
         nix-darwin = {
-            # url = "github:nix-darwin/nix-darwin/master"; # Unstable
-            url = "github:nix-darwin/nix-darwin/nix-darwin-26.05"; # Stable
+            url = "github:nix-darwin/nix-darwin/master"; # Unstable
+            # url = "github:nix-darwin/nix-darwin/nix-darwin-26.05"; # Stable
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
@@ -20,8 +20,8 @@
 
         # Home Manager
         home-manager = {
-            # url = "github:nix-community/home-manager/master"; # Unstable
-            url = "github:nix-community/home-manager/release-26.05"; # Stable
+            url = "github:nix-community/home-manager/master"; # Unstable
+            # url = "github:nix-community/home-manager/release-26.05"; # Stable
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
