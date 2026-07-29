@@ -1,33 +1,44 @@
 ---
 name: goodplan
 description: >-
-    Produces a thorough, stabilized implementation plan for a codebase change before any code is
-    written — files touched, new files, edits, tech choices, and steps ordered by surface area, plus
-    open decisions and risks. Use whenever the user asks for a plan, enters plan mode, or asks "how
-    should I build/approach X" — especially for large, multi-step, or cross-cutting changes. This
-    skill plans only; it never edits the codebase.
+  Produces a thorough, red-teamed implementation plan for a codebase change before any code is
+  written: files edited, files created, tech choices, and steps ordered by surface area, plus the
+  open decisions and the risks found while attacking the draft. Use whenever the user asks for a
+  plan, enters plan mode, or asks "how should I build X" or "how should I approach X", especially
+  for large, multi-step, or cross-cutting changes. This skill plans only. It never edits the
+  codebase.
 argument-hint: "<goal to plan>"
 ---
 
 # goodplan
 
-Plan a codebase change end-to-end, then stress-test the plan until it stops changing. This skill
-only produces a plan — it makes no edits. Plan mode is expected and fine.
+Plan a codebase change end to end, attack the draft, then hand over the result. This skill produces
+a plan and makes no edits. Plan mode is expected and fine.
 
-Prefer the smallest correct change that meets the goal (YAGNI): reach for the standard library and
-existing patterns before new dependencies or abstractions, and don't plan extension points with no
+Prefer the smallest correct change that meets the goal. Reach for the standard library and existing
+patterns before new dependencies or abstractions, and do not plan extension points that have no
 second caller in sight. Where the change defines data, design types so illegal states are
-unrepresentable rather than planning runtime guards to catch them later — correctness by
-construction is cheaper to plan in than to retrofit.
+unrepresentable instead of planning runtime guards to catch them later. Correctness by construction
+is cheaper to plan in than to retrofit.
+
+## Operating rules
+
+- Plan only what the goal requires. A plan that quietly widens scope costs the user more than one
+  that asks.
+- Keep the plan as long as the change needs and no longer. Every section must carry information the
+  implementer does not already have.
 
 ## Repository orientation
 
-Shallow directory map (falls back to `find` if `tree` is absent):
+Shallow directory map, falling back to `find` when `tree` is absent:
 
-!`tree -L 2 -d --gitignore 2>/dev/null || find . -maxdepth 2 -type d -not -path '*/.*'`
+```!
+tree -L 2 -d --gitignore 2>/dev/null || find . -maxdepth 2 -type d -not -path '*/.*'
+```
 
-Use this only to orient. Read the specific files a change touches in Step 0; don't assume structure
-from the map alone.
+Use this only to orient. If the map above is empty, or reports that shell execution was disabled by
+policy, run that command yourself before you start. Read the specific files the change touches
+during step 0, and do not infer structure from the map alone.
 
 ## Workflow
 
@@ -37,64 +48,68 @@ Copy this checklist and tick items as you go:
 Plan progress:
 - [ ] Step 0: Gather — read the files the goal actually touches
 - [ ] Step 1: Formulate — draft the plan
-- [ ] Step 2: Red-team — find errors, hard spots, odd choices
-- [ ] Step 3: Stabilize — revise; repeat 0–3 until no changes
+- [ ] Step 2: Red-team — attack the draft and list every issue
+- [ ] Step 3: Fold in — revise, and re-attack only if the revision was structural
 - [ ] Step 4: Present — hand the user the plan
 ```
 
 ### Step 0 — Gather
 
-Read the code relevant to the goal: the files that will change, their callers, the types and
-interfaces at the boundary, and any existing pattern the change should match. Do not spawn agents to
-do this unless the user explicitly asks — read the files directly.
+Read the code the goal touches: the files that will change, their callers, the types and interfaces
+at the boundary, and any existing pattern the change should match. Never plan against a file you
+have not opened.
 
 ### Step 1 — Formulate
 
 Draft a plan covering:
 
-- **Files edited** — each file and the nature of the edit
-- **Files created** — each new file and its responsibility
-- **Tech choices** — libraries, data shapes, key types/signatures, error model
-- **Steps** — ordered by surface area (one coherent slice per step), each independently reviewable
+- **Files edited** — each file, and the nature of the edit.
+- **Files created** — each new file, and its responsibility.
+- **Tech choices** — libraries, data shapes, key types and signatures, the error model.
+- **Steps** — ordered by surface area, one coherent slice per step, each independently reviewable.
 
-Stop and ask the user before committing to a **high-leverage** decision — one that needs
+Stop and ask the user before committing to a **high-leverage** decision, meaning one that needs
 understanding of the codebase and is expensive to reverse:
 
-- Architecture: module boundaries, data flow, error model, public API shape
-- Core logic: the algorithm behind a central component (not a routine caller of it)
-- Cross-cutting changes spanning two or more parts of the system
-- Genuine trade-offs: present the options, recommend one, and say why
+- Architecture: module boundaries, data flow, error model, public API shape.
+- Core logic: the algorithm behind a central component, as opposed to a routine caller of it.
+- Cross-cutting changes that span two or more parts of the system.
+- Genuine trade-offs. Present the options, recommend one, and say why.
 
-Decide the rest yourself: filling registries/tables/enums, copying an existing shape, constant/ID
-lookups, boilerplate, mechanical refactors, test scaffolding. One meaty decision surfaced to the
-user beats a pile of trivial ones — don't hand over data entry.
+Decide the rest yourself: filling registries, tables, and enums, copying an existing shape, constant
+and ID lookups, boilerplate, mechanical refactors, test scaffolding. One meaty decision surfaced to
+the user beats a pile of trivial ones. Do not hand back data entry.
 
 ### Step 2 — Red-team
 
-Re-read the plan cold, adversarially, as if a different engineer wrote it and you must find what
-they missed. You cannot literally erase your own context, so compensate by actively attacking the
-plan rather than re-confirming it. Look for:
+Read the draft cold and adversarially, as if a different engineer wrote it and your job is to find
+what they missed. You cannot erase your own context, so compensate by attacking the plan rather than
+re-confirming it. Look for:
 
-- Steps that won't work against the actual code (wrong assumption about an interface, a dependency
-  that isn't there, an edit that breaks a caller not in the plan)
-- Ordering hazards: a step that needs something a later step produces
-- Illegal states or unhandled failures the design leaves open
-- Odd choices that a reader would question, and hidden constraints that block the ideal approach
+- Steps that will not work against the actual code: a wrong assumption about an interface, a
+  dependency that is not there, an edit that breaks a caller the plan never mentions.
+- Ordering hazards: a step that needs something a later step produces.
+- Illegal states or unhandled failures the design leaves open.
+- Odd choices a reader would question, and hidden constraints that block the ideal approach.
 
-List every issue found. If you genuinely cannot get critical distance from your own plan, ask the
-user whether to spawn a fresh sub-agent for an independent pass — do not spawn one on your own.
+List every issue found. This is one pass, not a loop.
 
-### Step 3 — Stabilize
+### Step 3 — Fold in
 
-Fold the Step 2 findings back into the plan, then run Step 2 again. Repeat Steps 0–3 until a full
-pass produces no changes. Keep a record of the issues found and how each was resolved or mitigated —
-the user sees these in the final plan, so they can judge the reasoning, not just the outcome.
+Fold the step 2 findings into the plan. Run step 2 a second time only if the revision changed
+something structural — the approach, a boundary, or the ordering — because a structural change can
+invalidate steps the first pass approved. A wording fix or an added risk note does not earn a second
+pass. Stop at two passes. Anything still unresolved goes into "Risks and mitigations" as an accepted
+risk, not into a third sweep.
+
+Keep the record of what each pass found and how it was resolved. The user sees these in the final
+plan and judges the reasoning, not only the outcome.
 
 ### Step 4 — Present
 
-Present the stabilized plan in the template below — readable by both a technical human and an agent
-that will implement it. If the user accepts, follow their instructions for implementation (this
-skill's job ends at the accepted plan).
+Present the plan in the template below, readable by both a technical human and an agent that will
+implement it. If the user accepts it, follow their instructions for implementation. This skill's job
+ends at the accepted plan.
 
 ## Plan template
 
@@ -103,11 +118,11 @@ skill's job ends at the accepted plan).
 
 ## Goal
 
-[1–2 sentences: what changes and why.]
+[1–2 sentences: what changes, and why.]
 
 ## Approach
 
-[The chosen design in a short paragraph. Name the key types/interfaces and the error model.]
+[The chosen design in a short paragraph. Name the key types and interfaces, and the error model.]
 
 ## Changes
 
@@ -117,7 +132,7 @@ skill's job ends at the accepted plan).
 
 **Edited files**
 
-- `path` — [what changes and why]
+- `path` — [what changes, and why]
 
 ## Steps
 
@@ -126,11 +141,11 @@ skill's job ends at the accepted plan).
 
 ## Decisions for you
 
-- [Open high-leverage choice, options, recommendation + rationale. Omit if none.]
+- [Open high-leverage choice, the options, and a recommendation with its rationale. Omit if none.]
 
 ## Risks & mitigations
 
-- [Issue surfaced in red-team → how the plan handles or accepts it.]
+- [Issue found in red-team → how the plan handles it, or why it is accepted.]
 
 ## Out of scope
 

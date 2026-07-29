@@ -1,21 +1,29 @@
-# Parse, Don't Validate — Patterns by Language
+# Parse, don't validate — patterns by language
 
-Core idea: instead of checking a value is valid and then passing around the _original_,
-less-trustworthy type, convert ("parse") it into a type that can only represent valid values, once,
-at the boundary. Every downstream function then just trusts the type — no re-checking, no defensive
-`if` chains, no forgotten edge case three call-frames deep.
+Instead of checking that a value is valid and then passing the _original_, less-trustworthy type
+onward, convert it once, at the boundary, into a type that can only hold valid values. Downstream
+functions trust the type: no re-checking, no defensive `if` chains, no forgotten edge case three
+call frames deep.
 
-Each pattern below appears in multiple languages so you can translate an idea across a diff's
-language boundary. Pick the one matching your target language, or use a neighboring one to see how
-the same shape plays out with different type-system power.
+Each pattern appears in several languages so you can translate the idea across a diff's language
+boundary. Take the one matching your target language, or read a neighboring one to see the same
+shape with different type-system power.
+
+## Contents
+
+1. Make illegal states unrepresentable — sum types over boolean and optional soup
+2. Smart constructors and newtypes for validated values
+3. Non-empty collections instead of a list plus a runtime check
+4. Exhaustive matching instead of `if`/`else` with a fallback
+5. Parse at the boundary, trust everywhere after
 
 ---
 
-## 1. Make illegal states unrepresentable (sum types over boolean/optional soup)
+## 1. Make illegal states unrepresentable
 
-**Anti-pattern** (any language): a struct with `is_loading: bool`, `error: Option<Error>`,
-`data: Option<T>` — where `is_loading: true, data: Some(...)` is possible in the type system but
-meaningless in reality.
+**Anti-pattern**, in any language: a struct with `is_loading: bool`, `error: Option<Error>`, and
+`data: Option<T>`, where `is_loading: true` together with `data: Some(...)` is representable but
+meaningless.
 
 **Rust** — tagged enum:
 
@@ -38,9 +46,8 @@ type FetchState<T> =
   | { status: "failed"; error: Error };
 ```
 
-**Go** — Go lacks sum types; approximate with an interface + sealed set of implementers (unexported
-marker method), or a small `Kind` enum plus a struct where only the relevant field is populated by
-convention, enforced through constructor functions rather than field access:
+**Go** — Go has no sum types. Approximate with an interface plus a sealed set of implementers, using
+an unexported marker method:
 
 ```go
 type FetchState interface{ isFetchState() }
@@ -50,16 +57,16 @@ type Loading struct{}
 type Loaded[T any] struct{ Data T }
 type Failed struct{ Err error }
 
-func (Idle) isFetchState()       {}
-func (Loading) isFetchState()    {}
-func (Loaded[T]) isFetchState()  {}
-func (Failed) isFetchState()     {}
+func (Idle) isFetchState()      {}
+func (Loading) isFetchState()   {}
+func (Loaded[T]) isFetchState() {}
+func (Failed) isFetchState()    {}
 ```
 
-Then a type switch at the point of use is exhaustive by convention (pair with a linter, e.g.
-`exhaustive`, since Go won't enforce it for you).
+A type switch at the point of use is then exhaustive by convention. Pair it with the `exhaustive`
+linter, because the compiler will not enforce it.
 
-**Haskell** — ADT, the natural home for this pattern:
+**Haskell** — an ADT, the natural home for this pattern:
 
 ```haskell
 data FetchState a
@@ -71,13 +78,13 @@ data FetchState a
 
 ---
 
-## 2. Smart constructors / newtypes for validated values
+## 2. Smart constructors and newtypes for validated values
 
-Wrap a primitive so that once you hold the wrapped value, the invariant is guaranteed — you can't
-construct one without passing validation, and there's no unwrapped version floating around to
-accidentally reuse.
+Wrap a primitive so that holding the wrapped value guarantees the invariant. There is no way to
+construct one without passing validation, and no unwrapped version floating around to reuse by
+accident.
 
-**Rust**:
+**Rust:**
 
 ```rust
 pub struct Email(String);
@@ -87,10 +94,10 @@ impl Email {
         if raw.contains('@') { Ok(Email(raw)) } else { Err(ValidationError::BadEmail) }
     }
 }
-// No public constructor besides `parse` — every `Email` in the system is valid.
+// `parse` is the only public constructor, so every `Email` in the system is valid.
 ```
 
-**TypeScript** (nominal typing via branding, since TS is structurally typed):
+**TypeScript** — nominal typing through branding, because TypeScript is structural:
 
 ```typescript
 type Email = string & { readonly __brand: "Email" };
@@ -101,7 +108,7 @@ function parseEmail(raw: string): Email | { error: string } {
 }
 ```
 
-**Go**:
+**Go:**
 
 ```go
 type Email struct{ value string }
@@ -112,13 +119,13 @@ func ParseEmail(raw string) (Email, error) {
     }
     return Email{value: raw}, nil
 }
-// unexported field means callers outside the package can't construct one directly
+// The unexported field stops callers outside the package constructing one directly.
 ```
 
-**Haskell**:
+**Haskell:**
 
 ```haskell
-newtype Email = Email Text  -- constructor not exported from the module
+newtype Email = Email Text  -- the constructor is not exported from the module
 
 parseEmail :: Text -> Either ValidationError Email
 parseEmail raw
@@ -128,33 +135,33 @@ parseEmail raw
 
 ---
 
-## 3. Non-empty collections, not "list + a runtime check"
+## 3. Non-empty collections
 
-Anti-pattern: `items: T[]` plus a function that throws/panics if it's empty, called defensively at
+**Anti-pattern:** `items: T[]` plus a function that throws when it is empty, called defensively at
 every use site.
 
-**Rust**: use a `NonEmpty<T>` type (e.g. from the `nonempty` crate, or hand-roll
-`struct NonEmpty<T> { head: T, tail: Vec<T> }`) so `.first()` returns `T`, not `Option<T>`.
+**Rust:** use a `NonEmpty<T>` — the `nonempty` crate, or hand-rolled `struct NonEmpty<T> { head: T,
+tail: Vec<T> }` — so `.first()` returns `T`, not `Option<T>`.
 
-**Haskell**: `Data.List.NonEmpty`, same idea — `NonEmpty a = a :| [a]`.
+**Haskell:** `Data.List.NonEmpty`, the same idea: `NonEmpty a = a :| [a]`.
 
-**TypeScript**: `type NonEmptyArray<T> = [T, ...T[]]` — a tuple type that TS will actually enforce
-at the call site.
+**TypeScript:** `type NonEmptyArray<T> = [T, ...T[]]`, a tuple type the compiler enforces at the
+call site.
 
-**Go**: no tuple types; hand-roll a small type with a private slice field and a constructor that
-errors on empty input, same shape as the `Email` example above.
+**Go:** no tuple types. Hand-roll a small type with a private slice field and a constructor that
+errors on empty input, the same shape as the `Email` example above.
 
 ---
 
-## 4. Exhaustive matching over `if/else` + fallback
+## 4. Exhaustive matching
 
-Once you have a sum type (pattern 1), let the compiler catch missing cases instead of relying on a
-`default:`/`else` that silently swallows a case you forgot.
+Once you have a sum type from pattern 1, let the compiler catch missing cases instead of relying on
+a `default:` or `else` that silently swallows a case you forgot.
 
-**Rust**: `match` without a wildcard arm — compiler error if a variant is unhandled. Only add
-`_ => ...` when you genuinely mean "everything else," not as a safety net.
+**Rust:** `match` with no wildcard arm — an unhandled variant is a compile error. Add `_ => ...`
+only when you genuinely mean "everything else", never as a safety net.
 
-**TypeScript**: omit the `default` case in a `switch` over a discriminated union, then add an
+**TypeScript:** omit the `default` case in a `switch` over a discriminated union and add an
 `assertNever` helper:
 
 ```typescript
@@ -163,24 +170,24 @@ function assertNever(x: never): never {
 }
 ```
 
-Called in the `default` position — if a new union member is added later without updating the switch,
-this becomes a compile error (`x` is no longer assignable to `never`).
+Call it in the `default` position. Adding a union member later without updating the switch becomes a
+compile error, because `x` is no longer assignable to `never`.
 
-**Haskell**: turn on `-Wincomplete-patterns` (ideally `-Werror=incomplete-patterns`) so an unmatched
-constructor is a build failure, not a runtime `Non-exhaustive patterns` crash.
+**Haskell:** turn on `-Wincomplete-patterns`, ideally `-Werror=incomplete-patterns`, so an unmatched
+constructor fails the build instead of crashing at runtime.
 
-**Go**: no compiler-enforced exhaustiveness. Use the `exhaustive` linter on type switches over the
+**Go:** no compiler-enforced exhaustiveness. Run the `exhaustive` linter over type switches on the
 sealed-interface pattern from section 1, and treat lint failures as build failures in CI.
 
 ---
 
 ## 5. Parse at the boundary, trust everywhere after
 
-The unifying discipline: do the messy work (parsing JSON, validating user input, checking a config
-file) exactly once, right where the untrusted data enters the system. Everything downstream takes
-the _parsed_ type as input, never the raw one — which means downstream code has no reason to
-re-validate, and can't forget to.
+The unifying discipline: do the messy work — parsing JSON, validating user input, reading a config
+file — exactly once, where the untrusted data enters the system. Everything downstream takes the
+_parsed_ type, never the raw one. Downstream code then has no reason to re-validate, and no way to
+forget.
 
-A useful smell test: if a function takes a raw `string`/`int`/`map` where a narrower type would do,
-and its first few lines are validation, that validation belongs at the caller's boundary instead —
-push the parse outward until the function's signature itself documents what's guaranteed.
+A useful smell test: a function that takes a raw `string`, `int`, or `map` where a narrower type
+would do, and whose first few lines are validation, is holding validation that belongs at the
+caller's boundary. Push the parse outward until the signature itself documents what is guaranteed.
