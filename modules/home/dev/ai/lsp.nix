@@ -13,6 +13,9 @@ let
     cfg = config.my.user.dev.ai.lsp;
     toolchains = config.my.user.dev.langs.toolchains;
 
+    startupTimeout = 30000;
+    maxRestarts = 3;
+
     # Claude binds one server per extension: the first registered wins and the rest never start.
     # The `lsp` lists are already ordered primary-first, so its head is the one worth declaring.
     langServers =
@@ -51,6 +54,7 @@ let
                 extensionToLanguage = lib.listToAttrs (
                     lib.concatMap (b: map (k: lib.nameValuePair k b.id) b.keys) mine
                 );
+                inherit startupTimeout maxRestarts;
             }
             // lib.optionalAttrs (builtins.length srv.cmd > 1) { args = lib.tail srv.cmd; }
             # Servers disagree on which channel carries settings: rust-analyzer reads
