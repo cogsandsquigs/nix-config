@@ -19,8 +19,29 @@ let
 
     lspSpec = lib.types.submodule {
         options = {
-            name = lib.mkOption { type = lib.types.str; };
-            cmd = lib.mkOption { type = lib.types.nonEmptyListOf lib.types.str; };
+            name = lib.mkOption {
+                type = lib.types.str;
+                description = ''
+                    Identifier for this server: how a language's `lsp` refers to it, and its key in
+                    the editor's server table. Reusing helix's builtin name for the same server
+                    makes this entry override that builtin instead of adding a second copy.
+                '';
+                example = "gopls";
+            };
+
+            cmd = lib.mkOption {
+                type = lib.types.nonEmptyListOf lib.types.str;
+                description = ''
+                    Command, then its arguments. Resolved on PATH at launch, so the binary has to
+                    come from a `pkgs` entry on some enabled toolchain.
+                '';
+                example = [
+                    "taplo"
+                    "lsp"
+                    "stdio"
+                ];
+            };
+
             config = lib.mkOption {
                 type = lib.types.attrs;
                 description = ''
@@ -32,25 +53,41 @@ let
             };
             only-features = lib.mkOption {
                 type = lib.types.listOf lib.types.str;
+                description = ''
+                    Take just these helix features from this server and ignore the rest, for a
+                    server kept around to do one job -- a linter contributing diagnostics only.
+                    Empty takes everything. Mutually exclusive with `except-features` (asserted).
+                '';
+                example = [ "diagnostics" ];
                 default = [ ];
             };
+
             except-features = lib.mkOption {
                 type = lib.types.listOf lib.types.str;
+                description = ''
+                    Take every helix feature from this server apart from these. Empty takes
+                    everything. Mutually exclusive with `only-features` (asserted).
+                '';
+                example = [ "format" ];
                 default = [ ];
             };
         };
     };
 
-    # One language served by the enclosing toolchain. Omitted fields inherit the editor's own
-    # defaults -- helix ships a builtin definition for nearly every language here, so only
-    # deliberate deviations belong in `file-types` and `roots`.
+    # One language served by the enclosing toolchain. Everything here is optional: helix ships a
+    # builtin definition for nearly every language, and an omitted field inherits it.
     langDef = lib.types.submodule {
         options = {
             extensions = lib.mkOption {
                 type = lib.types.listOf lib.types.str;
                 description = ''
-                    File extensions, leading dot kept, for clients that bind servers by extension
-                    rather than by language name. Pointless without an `lsp` on the toolchain.
+                    Extensions this language owns, each keeping its leading dot (asserted). For
+                    clients that bind a server to a file by extension instead of by language name;
+                    helix is not one of them, it matches on `file-types`. Values mirror helix's
+                    builtin `file-types` for the language, minus the glob entries -- bare filenames
+                    and patterns (`go.mod`, `docker-compose.yaml`) cannot be written as an
+                    extension, so languages matched that way leave this empty. Does nothing unless
+                    the language resolves to at least one server.
                 '';
                 example = [ ".ts" ];
                 default = [ ];
@@ -58,33 +95,65 @@ let
 
             file-types = lib.mkOption {
                 type = lib.types.listOf lib.types.str;
-                description = "Overrides helix's builtin list for this language, replacing it wholesale.";
+                description = ''
+                    Helix's own file matching for this language, replacing its builtin list
+                    wholesale rather than extending it. Leave empty to inherit that builtin, which
+                    is normally broader than anything worth restating by hand -- narrowing it by
+                    accident is the usual way this field causes harm. Entries carry no leading dot,
+                    which is the visible difference from `extensions`; helix also accepts glob
+                    entries here, which this type cannot express.
+                '';
+                example = [ "json" ];
                 default = [ ];
             };
 
             roots = lib.mkOption {
                 type = lib.types.listOf lib.types.str;
-                description = "Overrides helix's builtin project-root markers for this language.";
+                description = ''
+                    Filenames marking a project root, which decides the workspace a language server
+                    is handed. Replaces helix's builtin markers wholesale, so leave empty to inherit
+                    them. Keep any marker tight: one that matches ordinary source files (`*.hs`)
+                    turns every subdirectory into its own project and gives the server a workspace
+                    too small to resolve imports.
+                '';
+                example = [ "Cargo.toml" ];
                 default = [ ];
             };
 
             language-id = lib.mkOption {
                 type = lib.types.nullOr lib.types.str;
-                description = "LSP language identifier. Null means the language's own name.";
+                description = ''
+                    Identifier a client reports for this language over LSP, in
+                    `textDocument/didOpen`; some servers select a parser or feature set from it.
+                    Null means the language's own name, which is correct nearly always -- set it
+                    only where the protocol id genuinely differs, as with `jsx` and
+                    `javascriptreact`. Helix carries its own equivalent, so this reaches only the
+                    extension-binding clients.
+                '';
+                example = "typescriptreact";
                 default = null;
             };
 
-            # Both below are tri-state: null inherits the toolchain's value, [ ] opts out entirely,
-            # and a non-empty list overrides. Opting out of `fmt` leaves formatting to the LSP.
             lsp = lib.mkOption {
                 type = lib.types.nullOr (lib.types.listOf lib.types.str);
-                description = "Names, from the toolchain's own `lsp`, that serve this language.";
+                description = ''
+                    Which of the toolchain's servers serve this language, by name. Null inherits all
+                    of them, `[ ]` leaves the language with none, and a non-empty list selects a
+                    subset. Every name must appear in the toolchain's own `lsp` (asserted), so a
+                    typo fails the build instead of quietly dropping a server.
+                '';
                 example = [ "gopls" ];
                 default = null;
             };
 
             fmt = lib.mkOption {
                 type = lib.types.nullOr (lib.types.listOf lib.types.str);
+                description = ''
+                    Formatter for this language: command first, then arguments. Null inherits the
+                    toolchain's `fmt`, `[ ]` removes it and leaves formatting to whichever server
+                    offers it, and a non-empty list overrides. Use `[ ]` where the toolchain's
+                    formatter would corrupt the file -- `gofmt` on a `go.mod`, say.
+                '';
                 default = null;
             };
         };
@@ -94,22 +163,45 @@ let
         options = {
             pkgs = lib.mkOption {
                 type = lib.types.listOf lib.types.package;
+                description = ''
+                    Everything this toolchain installs: compilers, language servers, formatters,
+                    linters, debuggers. Merged into `home.packages` across all toolchains, so two
+                    toolchains naming the same package is harmless.
+                '';
                 default = [ ];
             };
 
             lsp = lib.mkOption {
                 type = lib.types.listOf lspSpec;
+                description = ''
+                    Language servers this toolchain provides. Every one of its languages uses all of
+                    them unless that language's own `lsp` narrows the set. Declaring a server here
+                    replaces helix's builtin entry of the same name, so the list a language ends up
+                    with is this one, not this one merged with the builtin.
+                '';
                 default = [ ];
             };
 
             fmt = lib.mkOption {
                 type = lib.types.nullOr (lib.types.nonEmptyListOf lib.types.str);
+                description = ''
+                    Default formatter for every language here: command first, then arguments. Null
+                    leaves formatting to the language servers. A single language overrides this, or
+                    opts out of it, with its own `fmt`.
+                '';
                 default = null;
             };
 
-            # No default: a toolchain serving no language would silently install packages and drop
-            # its LSP and formatter on the floor.
-            languages = lib.mkOption { type = lib.types.attrsOf langDef; };
+            # No default: a toolchain serving no language would install its packages and then drop
+            # its servers and formatter on the floor.
+            languages = lib.mkOption {
+                type = lib.types.attrsOf langDef;
+                description = ''
+                    Languages this toolchain serves, keyed by the editor's name for each. The keys
+                    are the only declaration of which languages a file covers, and no two toolchains
+                    may claim the same one (asserted).
+                '';
+            };
 
             editor-specific = lib.mkOption {
                 type = lib.types.attrsOf lib.types.attrs;
@@ -137,6 +229,11 @@ in
         enable = tools.opt.mkRiding config.my.user.dev.enable "language toolchains (LSPs, formatters, compilers)";
         toolchains = lib.mkOption {
             type = lib.types.listOf toolchain;
+            description = ''
+                Every toolchain in this directory, flattened and validated. Internal: the read side
+                of the contract between the lang files and the editor modules that translate them.
+                Nothing outside `modules/home/dev` should set or read it.
+            '';
             default = [ ];
             internal = true;
         };
