@@ -11,7 +11,8 @@
     ...
 }:
 let
-    cfg = config.my.user.dev.ai.mcp.gerrit;
+    mcp = config.my.user.dev.ai.mcp;
+    cfg = mcp.gerrit;
 
     gerritMcp = pkgs.callPackage ./package.nix { };
 in
@@ -27,7 +28,7 @@ in
         '';
     };
 
-    config = lib.mkIf cfg.enable {
+    config = lib.mkIf (mcp.enable && cfg.enable) {
         assertions = [
             {
                 assertion = config.my.user.dev.ai.enable;

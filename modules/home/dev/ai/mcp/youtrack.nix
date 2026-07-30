@@ -11,7 +11,8 @@
     ...
 }:
 let
-    cfg = config.my.user.dev.ai.mcp.youtrack;
+    mcp = config.my.user.dev.ai.mcp;
+    cfg = mcp.youtrack;
 in
 {
     options.my.user.dev.ai.mcp.youtrack = {
@@ -28,7 +29,7 @@ in
         '';
     };
 
-    config = lib.mkIf cfg.enable {
+    config = lib.mkIf (mcp.enable && cfg.enable) {
         assertions = [
             {
                 assertion = config.my.user.dev.ai.enable;
