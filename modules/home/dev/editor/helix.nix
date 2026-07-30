@@ -76,7 +76,6 @@ let
                 map toEntry lsps;
         }
         // lib.optionalAttrs (fmt != null) { formatter = toCmd fmt; }
-        // lib.optionalAttrs (def.file-types != [ ]) { inherit (def) file-types; }
         // lib.optionalAttrs (def.roots != [ ]) { inherit (def) roots; };
 
     specLsps = lib.listToAttrs (lib.concatMap (t: map toLsp t.lsp) toolchains);

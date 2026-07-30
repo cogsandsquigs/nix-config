@@ -73,6 +73,10 @@ in
             ".es6"
             ".pac"
         ];
+        javascript.filenames = [
+            "jakefile"
+            ".node_repl_history"
+        ];
         jsx = {
             extensions = [ ".jsx" ];
             language-id = "javascriptreact";

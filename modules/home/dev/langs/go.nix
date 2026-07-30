@@ -57,10 +57,10 @@
     languages = {
         go.extensions = [ ".go" ];
 
-        # No extensions: go.mod is a bare filename, which `extensions` cannot express. gofmt would
-        # mangle a go.mod (that needs `go mod edit -fmt`), and golangci-lint has nothing to say
-        # about it, so drop both and let gopls format it over LSP.
+        # gofmt would mangle a go.mod (that needs `go mod edit -fmt`), and golangci-lint has nothing
+        # to say about it, so drop both and let gopls format it over LSP.
         gomod = {
+            filenames = [ "go.mod" ];
             lsp = [ "gopls" ];
             fmt = [ ];
         };

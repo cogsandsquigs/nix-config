@@ -83,27 +83,27 @@ let
                 description = ''
                     Extensions this language owns, each keeping its leading dot (asserted). For
                     clients that bind a server to a file by extension instead of by language name;
-                    helix is not one of them, it matches on `file-types`. Values mirror helix's
-                    builtin `file-types` for the language, minus the glob entries -- bare filenames
-                    and patterns (`go.mod`, `docker-compose.yaml`) cannot be written as an
-                    extension, so languages matched that way leave this empty. Does nothing unless
-                    the language resolves to at least one server.
+                    helix is not one of them, it brings its own matching. Values mirror the plain
+                    entries of helix's builtin file types for the language. Files identified by
+                    their whole name rather than a suffix (`go.mod`) belong in `filenames`. Does
+                    nothing unless the language resolves to at least one server.
                 '';
                 example = [ ".ts" ];
                 default = [ ];
             };
 
-            file-types = lib.mkOption {
+            filenames = lib.mkOption {
                 type = lib.types.listOf lib.types.str;
                 description = ''
-                    Helix's own file matching for this language, replacing its builtin list
-                    wholesale rather than extending it. Leave empty to inherit that builtin, which
-                    is normally broader than anything worth restating by hand -- narrowing it by
-                    accident is the usual way this field causes harm. Entries carry no leading dot,
-                    which is the visible difference from `extensions`; helix also accepts glob
-                    entries here, which this type cannot express.
+                    Whole filenames this language owns, matched against a file's name in full
+                    rather than its extension -- `go.mod`, `Cargo.lock`, `.bashrc`. The companion to
+                    `extensions`, for the languages that have no meaningful extension at all. A
+                    leading dot here is part of the name, not a separator. Values mirror the plain
+                    entries of helix's builtin globs for the language; genuine patterns (`i3/config`,
+                    `*SConstruct`) are left out, since this matches names and not globs. Does nothing
+                    unless the language resolves to at least one server.
                 '';
-                example = [ "json" ];
+                example = [ "go.mod" ];
                 default = [ ];
             };
 

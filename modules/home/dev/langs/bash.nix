@@ -47,4 +47,29 @@
         ".bashrc_Apple_Terminal"
         ".zshrc_Apple_Terminal"
     ];
+
+    languages.bash.filenames = [
+        ".bashrc"
+        ".bash_profile"
+        ".bash_login"
+        ".bash_logout"
+        ".bash_aliases"
+        ".bash_history"
+        ".profile"
+        ".zshrc"
+        ".zshenv"
+        ".zprofile"
+        ".zlogin"
+        ".zlogout"
+        ".zimrc"
+        ".yashrc"
+        ".yash_profile"
+        ".xprofile"
+        ".xsession"
+        ".xsessionrc"
+        ".Renviron"
+        ".hushlogin"
+        "tmux.conf"
+        "APKBUILD"
+    ];
 }
