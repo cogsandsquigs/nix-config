@@ -16,7 +16,8 @@
     my.user.dev.editors.vscode.enable = true;
     my.user.dev.ldap.enable = false;
 
-    # Credentials come from GERRIT_HOST / GERRIT_USERNAME / GERRIT_PASSWORD in ${flakeDir}/.env,
-    # expanded by Claude Code at launch (see modules/home/dev/ai/mcp.nix).
+    # Credentials come from GERRIT_* / YOUTRACK_* in ${flakeDir}/.env, expanded by Claude Code at
+    # launch (see modules/home/dev/ai/mcp).
     my.user.dev.ai.mcp.gerrit.enable = true;
+    my.user.dev.ai.mcp.youtrack.enable = true;
 }

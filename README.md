@@ -11,11 +11,11 @@ and children, so a folder reads top-down as exactly what it pulls in.
 
 Three hosts:
 
-| Host                 | Class        | Platform         | Attribute                                   | User(s)            |
-| -------------------- | ------------ | ---------------- | ------------------------------------------- | ------------------ |
-| `glorpbook`          | nix-darwin   | `aarch64-darwin` | `darwinConfigurations."glorpbook"`          | `cogs` (personal)  |
-| `home-desktop`       | NixOS        | `x86_64-linux`   | `nixosConfigurations.home-desktop`          | `cogs` (personal)  |
-| `work-desktop`       | home-manager | `x86_64-linux`   | `homeConfigurations."ipratt@work-desktop"`  | `ipratt` (work)    |
+| Host           | Class        | Platform         | Attribute                                  | User(s)           |
+| -------------- | ------------ | ---------------- | ------------------------------------------ | ----------------- |
+| `glorpbook`    | nix-darwin   | `aarch64-darwin` | `darwinConfigurations."glorpbook"`         | `cogs` (personal) |
+| `home-desktop` | NixOS        | `x86_64-linux`   | `nixosConfigurations.home-desktop`         | `cogs` (personal) |
+| `work-desktop` | home-manager | `x86_64-linux`   | `homeConfigurations."ipratt@work-desktop"` | `ipratt` (work)   |
 
 The first two are **system** configs applied with `*-rebuild`. The third is **standalone
 home-manager** on Ubuntu 24 — Nix per-user, no system layer, applied with `home-manager switch`.
@@ -188,12 +188,12 @@ design goal.
 
 **Every feature has an `enable`**; only the _default_ differs. Four classes:
 
-| class        | default                        | helper                 | example                                  |
-| ------------ | ------------------------------ | ---------------------- | ---------------------------------------- |
-| **plumbing** | — (no flag; unconditional)     | —                      | `base.nix`, `nixpkgs.nix`, `users.nix`   |
-| **core**     | `true` (on unless disabled)    | `tools.opt.mkEnabled`  | `git`, `shell`, `fonts`, `secrets`       |
-| **optional** | `false` (opt-in)               | `tools.opt.mkDisabled` | `games`, `desktopApps`, `vpn`, `fuse`    |
-| **ride**     | = parent group's value         | `tools.opt.mkRiding p` | `dev.direnv`, `dev.editors.helix`        |
+| class        | default                     | helper                 | example                                |
+| ------------ | --------------------------- | ---------------------- | -------------------------------------- |
+| **plumbing** | — (no flag; unconditional)  | —                      | `base.nix`, `nixpkgs.nix`, `users.nix` |
+| **core**     | `true` (on unless disabled) | `tools.opt.mkEnabled`  | `git`, `shell`, `fonts`, `secrets`     |
+| **optional** | `false` (opt-in)            | `tools.opt.mkDisabled` | `games`, `desktopApps`, `vpn`, `fuse`  |
+| **ride**     | = parent group's value      | `tools.opt.mkRiding p` | `dev.direnv`, `dev.editors.helix`      |
 
 **Groups.** A group (e.g. `dev`) is a namespace: a master `my.user.dev.enable` plus sub-features
 whose default _rides_ it (`tools.opt.mkRiding config.my.user.dev.enable`). Flip the master, the whole
@@ -259,16 +259,17 @@ is built. It overrides anything the `variables` set in `modules/home/shell/shell
 overridden `JAVA_HOME` still feeds `$JAVA_HOME/bin`. A missing file is a no-op.
 
 - **No rebuild to change values.** The shells re-read `.env` on every startup, so editing a value
-  there takes effect in the next shell — no `rebuild`. (Adding the *mechanism* needed a rebuild;
+  there takes effect in the next shell — no `rebuild`. (Adding the _mechanism_ needed a rebuild;
   changing values in `.env` does not.)
 - **One parser.** bash/zsh source it directly (`set -a; . .env; set +a`); fish reuses bash via the
   `bass` plugin — so bash quoting rules apply everywhere (quote values with spaces).
 - **Typical use:** the work box sets `JAVA_HOME=/usr/lib/jdk-21` to prefer a locally-installed JDK
   over the Nix one, instead of hardcoding it in the flake.
-- **Credentials for MCP servers.** `my.user.dev.ai.mcp.gerrit` defaults to `${GERRIT_HOST}`,
+- **Credentials for MCP servers.** `my.user.dev.ai.mcp.*` defaults to `${GERRIT_HOST}`,
   `${GERRIT_USERNAME}`, `${GERRIT_PASSWORD}` (an HTTP password: Gerrit → Settings → HTTP
-  Credentials). Claude Code expands them at launch, so they stay out of `/nix/store`. Only shells
-  load `.env`, so a `claude` started from a desktop launcher exits naming the missing var.
+  Credentials) and `${YOUTRACK_HOST}`, `${YOUTRACK_AUTH_TOKEN}` (a permanent token, YouTrack scope).
+  Claude Code expands them at launch, so they stay out of `/nix/store`. Only shells load `.env`, so a
+  `claude` started from a desktop launcher can't reach either server.
 
 ## Common tasks
 
@@ -378,13 +379,13 @@ After the first switch, `home-manager` is on `PATH`, so the usual aliases work (
 On any non-NixOS host (Ubuntu, other distros, WSL, macOS) Nix installs into `/nix` and leaves the
 OS's package manager untouched. Two installers:
 
-|                | **Determinate Nix**                     | **Regular (upstream) Nix**                       |
-| -------------- | --------------------------------------- | ------------------------------------------------ |
-| Installer host | `install.determinate.systems/nix`       | `nixos.org/nix/install`                          |
-| Mode           | multi-user only                         | `--daemon` (multi) **or** `--no-daemon` (single) |
-| Flakes         | on by default                           | opt-in (via `nix.conf`)                          |
-| Extras         | `lazy-trees`, FlakeHub cache, managed `/etc/nix/nix.conf` | —                              |
-| Uninstall      | one command                             | manual                                           |
+|                | **Determinate Nix**                                       | **Regular (upstream) Nix**                       |
+| -------------- | --------------------------------------------------------- | ------------------------------------------------ |
+| Installer host | `install.determinate.systems/nix`                         | `nixos.org/nix/install`                          |
+| Mode           | multi-user only                                           | `--daemon` (multi) **or** `--no-daemon` (single) |
+| Flakes         | on by default                                             | opt-in (via `nix.conf`)                          |
+| Extras         | `lazy-trees`, FlakeHub cache, managed `/etc/nix/nix.conf` | —                                                |
+| Uninstall      | one command                                               | manual                                           |
 
 **Determinate Nix** (recommended; what this repo targets). As of early 2026 the installer always
 installs Determinate Nix (the old `--prefer-upstream-nix` opt-out was removed) — no flag needed.
@@ -445,7 +446,7 @@ environment is declarative and rebuilt from this flake.
    `curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install`.
 4. Move the repo from `~/.config/nix` to `/etc/nix` (the path the multi-user setup and
    `users/ipratt`'s `my.user.flakeDir` expect): `sudo mkdir -p /etc/nix && sudo chown
-   "$(id -u):$(id -g)" /etc/nix && mv ~/.config/nix/* ~/.config/nix/.git /etc/nix/`.
+"$(id -u):$(id -g)" /etc/nix && mv ~/.config/nix/* ~/.config/nix/.git /etc/nix/`.
 5. Re-apply: `home-manager switch -b bak --flake /etc/nix#ipratt@work-desktop` (or `rebuild`).
 
 No repo changes needed beyond moving it. `rebuild`/`upgrade`/`cleanup` keep working sudo-free on your
