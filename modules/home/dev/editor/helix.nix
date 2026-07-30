@@ -23,8 +23,23 @@ let
             // lib.optionalAttrs (lsp.config != { }) { inherit (lsp) config; }
         );
 
+    # Both fall back to the toolchain's value; an explicit [ ] on the language opts out.
+    langLsps = t: def: if def.lsp == null then t.lsp else lib.filter (l: lib.elem l.name def.lsp) t.lsp;
+    langFmt =
+        t: def:
+        if def.fmt == null then
+            t.fmt
+        else if def.fmt == [ ] then
+            null
+        else
+            def.fmt;
+
     toLang =
         t: langName: def:
+        let
+            lsps = langLsps t def;
+            fmt = langFmt t def;
+        in
         {
             name = langName;
         }
@@ -43,10 +58,10 @@ let
                 # the next (below) one.
                 // (lib.optionalAttrs (t.editor-specific ? helix) t.editor-specific.helix)
             )
-        // lib.optionalAttrs (t.lsp != [ ]) {
+        // lib.optionalAttrs (lsps != [ ]) {
             language-servers =
                 let
-                    hasFlags = builtins.any (l: l.only-features != [ ] || l.except-features != [ ]) t.lsp;
+                    hasFlags = builtins.any (l: l.only-features != [ ] || l.except-features != [ ]) lsps;
                     toEntry =
                         l:
                         if !hasFlags then
@@ -58,9 +73,9 @@ let
                             // lib.optionalAttrs (l.only-features != [ ]) { inherit (l) only-features; }
                             // lib.optionalAttrs (l.except-features != [ ]) { inherit (l) except-features; };
                 in
-                map toEntry t.lsp;
+                map toEntry lsps;
         }
-        // lib.optionalAttrs (t.fmt != null) { formatter = toCmd t.fmt; }
+        // lib.optionalAttrs (fmt != null) { formatter = toCmd fmt; }
         // lib.optionalAttrs (def.file-types != [ ]) { inherit (def) file-types; }
         // lib.optionalAttrs (def.roots != [ ]) { inherit (def) roots; };
 

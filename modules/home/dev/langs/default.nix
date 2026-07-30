@@ -73,6 +73,20 @@ let
                 description = "LSP language identifier. Null means the language's own name.";
                 default = null;
             };
+
+            # Both below are tri-state: null inherits the toolchain's value, [ ] opts out entirely,
+            # and a non-empty list overrides. Opting out of `fmt` leaves formatting to the LSP.
+            lsp = lib.mkOption {
+                type = lib.types.nullOr (lib.types.listOf lib.types.str);
+                description = "Names, from the toolchain's own `lsp`, that serve this language.";
+                example = [ "gopls" ];
+                default = null;
+            };
+
+            fmt = lib.mkOption {
+                type = lib.types.nullOr (lib.types.listOf lib.types.str);
+                default = null;
+            };
         };
     };
 
@@ -149,6 +163,19 @@ in
                         assertion = lib.hasPrefix "." ext;
                         message = "language '${name}': extension '${ext}' must keep its leading dot";
                     }) t.languages.${name}.extensions
+                ) (lib.attrNames t.languages)
+            ) toolchains
+            ++ lib.concatMap (
+                t:
+                let
+                    known = map (l: l.name) t.lsp;
+                in
+                lib.concatMap (
+                    name:
+                    map (n: {
+                        assertion = lib.elem n known;
+                        message = "language '${name}': lsp '${n}' is not one of its toolchain's servers (${lib.concatStringsSep ", " known})";
+                    }) (if t.languages.${name}.lsp == null then [ ] else t.languages.${name}.lsp)
                 ) (lib.attrNames t.languages)
             ) toolchains
             ++ [

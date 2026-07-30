@@ -46,6 +46,10 @@
             ".bbx"
             ".cbx"
         ];
-        bibtex.extensions = [ ".bib" ];
+        # latexindent is for .tex; texlab formats .bib itself over LSP.
+        bibtex = {
+            extensions = [ ".bib" ];
+            fmt = [ ];
+        };
     };
 }
