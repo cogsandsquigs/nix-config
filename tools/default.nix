@@ -7,7 +7,7 @@ let
     inherit (inputs) nixpkgs nix-darwin home-manager;
 
     # Our own option/safety helpers (see lib/opts.nix), passed to every module as the `tools`
-    # specialArg — on all three host classes, system and home alike.
+    # specialArg -- on all three host classes, system and home alike.
     #
     # Why a dedicated `tools` arg and NOT `lib.my.*`: home-manager owns its modules' `lib` and pins
     # it via specialArgs, rebuilding it as `pkgs.lib` + its own `lib.hm.*`. Injecting our helpers by
@@ -16,11 +16,11 @@ let
     # uniformly in both system and home modules: `tools.mkEnabled`.
     #
     # The one route that *could* yield `lib.my.*` is a nixpkgs lib-overlay (make `pkgs.lib` carry
-    # `.my` so home-manager extends THAT with hm → my + hm both present). We did NOT take it: overlaying
+    # `.my` so home-manager extends THAT with hm -> my + hm both present). We did NOT take it: overlaying
     # `lib` is discouraged upstream (nixpkgs internals capture the pre-overlay lib, so you get two lib
-    # instances) and it needs asymmetric wiring — an overlay for the home side plus `specialArgs.lib`
+    # instances) and it needs asymmetric wiring -- an overlay for the home side plus `specialArgs.lib`
     # for the system side. `tools` is one mechanism, robust and uniform. (The overlay is worth a spike
-    # someday just to gauge its fragility — see the migration plan.)
+    # someday just to gauge its fragility -- see the migration plan.)
     # Per-host tools: opt/secrets are system-agnostic; conf is baked with the host's system so
     # `tools.conf.eachOs` needs no system argument at the call site.
     mkTools = system: {
@@ -82,11 +82,11 @@ in
             ];
         };
 
-    # Build a STANDALONE home-manager configuration — for a machine where Nix is installed
+    # Build a STANDALONE home-manager configuration -- for a machine where Nix is installed
     # per-user and there is no NixOS/nix-darwin system layer (e.g. the work desktop on Ubuntu).
     # `host` is a path to the host module (e.g. ./hosts/work-desktop); its id.nix supplies the
-    # platform (`system`) and the single user unit to apply. The user's home.nix — not this
-    # builder — owns the feature set, so a standalone box is just "this user, no system layer".
+    # platform (`system`) and the single user unit to apply. The user's home.nix -- not this
+    # builder -- owns the feature set, so a standalone box is just "this user, no system layer".
     #
     # Unlike the system hosts (which get nixpkgs config via useGlobalPkgs), a standalone config
     # owns its own `pkgs`, so allowUnfree/qt are set here to match modules/system/common/nixpkgs.

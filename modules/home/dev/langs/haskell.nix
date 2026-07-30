@@ -29,6 +29,11 @@
         }
     ];
 
+    extensions = {
+        ".hs" = "haskell";
+        ".lhs" = "literate haskell"; # HLS' own id for Bird-style sources; the space is correct
+    };
+
     fmt = [
         "fourmolu"
         "--stdin-input-file=%{buffer_name}"
@@ -43,7 +48,7 @@
         "--indent-wheres=true"
         "--in-style=left-align"
         "--let-style=mixed"
-        # "--record-style=knr" # Unreleased as of 2025-11-30!
+        "--record-style=knr"
         "--single-constraint-parens=always"
         "--single-deriving-parens=always"
         "--sort-constraints=true"

@@ -12,5 +12,7 @@
         }
     ];
 
-    # fmt = null — LSP provides formatting
+    extensions.".pest" = "pest";
+
+    # fmt = null -- LSP provides formatting
 }

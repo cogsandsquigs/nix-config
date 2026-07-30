@@ -1,7 +1,7 @@
 ---
 name: fleshout
 description: >-
-  Turns rough material — a code sample, a git diff, scratch-pad notes, half-formed guidance — into
+  Turns rough material -- a code sample, a git diff, scratch-pad notes, half-formed guidance -- into
   a complete, production-quality feature written in the codebase's own style. Use when the user
   hands over a stub, a TODO-riddled diff, or a "here's roughly what I'm thinking" note, even when
   they never say "flesh this out". Trigger signals: a match/switch handles one case and the rest
@@ -9,7 +9,7 @@ description: >-
   notes describe a workflow larger than the code shown, or guidance gestures at a feature while
   supplying only fragments. Also triggers on "turn this into a feature", "make this a real
   implementation", "flesh this out", "build this out properly". Does not apply to small
-  self-contained requests — a single bug fix, a one-off script, "add a null check here" — where no
+  self-contained requests -- a single bug fix, a one-off script, "add a null check here" -- where no
   larger feature is lurking. Do those directly.
 argument-hint: "<sketch, diff, or notes to build out>"
 ---
@@ -26,10 +26,10 @@ requirement wearing a hedge.
 
 ## The two failure modes
 
-**Under-building** — implementing only what the sketch literally shows and leaving `TODO` for the
+**Under-building** -- implementing only what the sketch literally shows and leaving `TODO` for the
 rest.
 
-**Over-building** — inventing scope nobody asked for: an abstraction layer with one caller, a config
+**Over-building** -- inventing scope nobody asked for: an abstraction layer with one caller, a config
 knob with no second use, a refactor of surrounding code that was not part of the request, defensive
 handling for states the domain cannot produce.
 
@@ -53,9 +53,9 @@ Collect before writing anything:
 - Scratch notes, TODOs, and comments. These usually carry the real intent.
 - The user's guidance, however informal.
 - The surrounding code, if this is an existing project. New code should look like the same person
-  wrote it. Read `references/convention-detection.md` for the order to check things in — linter
+  wrote it. Read `references/convention-detection.md` for the order to check things in -- linter
   config, a representative existing feature, the error-handling idiom, module layout, naming, test
-  style — rather than generalizing from whichever file happens to be open.
+  style -- rather than generalizing from whichever file happens to be open.
 
 If something needed is missing, ask for it instead of guessing: "do you have a `git diff` for this,
 or should I read the working tree directly?"
@@ -80,8 +80,8 @@ through the logic:
   never re-checks the same invariant.
 - Use sum types, tagged unions, or enums for "one of several known cases" instead of optional fields
   plus booleans that are only valid in certain combinations.
-- Use newtype-style wrappers for values with invariants — a validated email, a non-empty list, a
-  positive quantity — so the type carries the guarantee.
+- Use newtype-style wrappers for values with invariants -- a validated email, a non-empty list, a
+  positive quantity -- so the type carries the guarantee.
 - Prefer exhaustive matching over `if`/`else` chains with a fallback. Exhaustiveness checking
   catches a missing case at compile time instead of at 2am.
 
@@ -92,13 +92,13 @@ the one matching the diff's language, or use a neighboring one to translate the 
 
 Stop and ask before proceeding whenever the next step is not purely mechanical:
 
-- **Architecture** — how a new concept fits the existing module or type structure, which layer owns
+- **Architecture** -- how a new concept fits the existing module or type structure, which layer owns
   a new responsibility, whether to add a type or extend an existing one.
-- **Ambiguous scope** — a note hints at behavior without pinning it down. "Handle retries somehow":
+- **Ambiguous scope** -- a note hints at behavior without pinning it down. "Handle retries somehow":
   how many, what backoff, which errors are retryable?
-- **Trade-offs with no obviously correct answer** — performance against simplicity, breaking an API
+- **Trade-offs with no obviously correct answer** -- performance against simplicity, breaking an API
   against adding a parallel one, sync against async.
-- **Anything expensive to unwind** — a schema shape, a public API surface, a persistence format.
+- **Anything expensive to unwind** -- a schema shape, a public API surface, a persistence format.
 
 Do not ask about mechanical steps. Wiring up a function, matching a naming convention, and writing
 obvious plumbing are yours to do. Checkpoints protect the user's real decisions; spending them on
@@ -125,5 +125,5 @@ invariant has a type behind it, and no leftover validation is doing a job a type
 ## Language
 
 This process is language-agnostic, the code is not. Write in the language of the input and match its
-idioms — Rust enums with exhaustive `match`, TypeScript discriminated unions, Go interfaces with
-explicit error returns, Haskell ADTs — rather than porting another language's style.
+idioms -- Rust enums with exhaustive `match`, TypeScript discriminated unions, Go interfaces with
+explicit error returns, Haskell ADTs -- rather than porting another language's style.

@@ -34,6 +34,13 @@
         }
     ];
 
+    extensions = {
+        ".tex" = "latex";
+        ".sty" = "latex";
+        ".cls" = "latex";
+        ".bib" = "bibtex";
+    };
+
     fmt = [
         "latexindent"
         "-"

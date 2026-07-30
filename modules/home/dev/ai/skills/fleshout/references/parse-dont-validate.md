@@ -1,4 +1,4 @@
-# Parse, don't validate — patterns by language
+# Parse, don't validate -- patterns by language
 
 Instead of checking that a value is valid and then passing the _original_, less-trustworthy type
 onward, convert it once, at the boundary, into a type that can only hold valid values. Downstream
@@ -11,7 +11,7 @@ shape with different type-system power.
 
 ## Contents
 
-1. Make illegal states unrepresentable — sum types over boolean and optional soup
+1. Make illegal states unrepresentable -- sum types over boolean and optional soup
 2. Smart constructors and newtypes for validated values
 3. Non-empty collections instead of a list plus a runtime check
 4. Exhaustive matching instead of `if`/`else` with a fallback
@@ -25,7 +25,7 @@ shape with different type-system power.
 `data: Option<T>`, where `is_loading: true` together with `data: Some(...)` is representable but
 meaningless.
 
-**Rust** — tagged enum:
+**Rust** -- tagged enum:
 
 ```rust
 enum FetchState<T> {
@@ -36,7 +36,7 @@ enum FetchState<T> {
 }
 ```
 
-**TypeScript** — discriminated union:
+**TypeScript** -- discriminated union:
 
 ```typescript
 type FetchState<T> =
@@ -46,7 +46,7 @@ type FetchState<T> =
   | { status: "failed"; error: Error };
 ```
 
-**Go** — Go has no sum types. Approximate with an interface plus a sealed set of implementers, using
+**Go** -- Go has no sum types. Approximate with an interface plus a sealed set of implementers, using
 an unexported marker method:
 
 ```go
@@ -66,7 +66,7 @@ func (Failed) isFetchState()    {}
 A type switch at the point of use is then exhaustive by convention. Pair it with the `exhaustive`
 linter, because the compiler will not enforce it.
 
-**Haskell** — an ADT, the natural home for this pattern:
+**Haskell** -- an ADT, the natural home for this pattern:
 
 ```haskell
 data FetchState a
@@ -97,7 +97,7 @@ impl Email {
 // `parse` is the only public constructor, so every `Email` in the system is valid.
 ```
 
-**TypeScript** — nominal typing through branding, because TypeScript is structural:
+**TypeScript** -- nominal typing through branding, because TypeScript is structural:
 
 ```typescript
 type Email = string & { readonly __brand: "Email" };
@@ -140,8 +140,8 @@ parseEmail raw
 **Anti-pattern:** `items: T[]` plus a function that throws when it is empty, called defensively at
 every use site.
 
-**Rust:** use a `NonEmpty<T>` — the `nonempty` crate, or hand-rolled `struct NonEmpty<T> { head: T,
-tail: Vec<T> }` — so `.first()` returns `T`, not `Option<T>`.
+**Rust:** use a `NonEmpty<T>` -- the `nonempty` crate, or hand-rolled `struct NonEmpty<T> { head: T,
+tail: Vec<T> }` -- so `.first()` returns `T`, not `Option<T>`.
 
 **Haskell:** `Data.List.NonEmpty`, the same idea: `NonEmpty a = a :| [a]`.
 
@@ -158,7 +158,7 @@ errors on empty input, the same shape as the `Email` example above.
 Once you have a sum type from pattern 1, let the compiler catch missing cases instead of relying on
 a `default:` or `else` that silently swallows a case you forgot.
 
-**Rust:** `match` with no wildcard arm — an unhandled variant is a compile error. Add `_ => ...`
+**Rust:** `match` with no wildcard arm -- an unhandled variant is a compile error. Add `_ => ...`
 only when you genuinely mean "everything else", never as a safety net.
 
 **TypeScript:** omit the `default` case in a `switch` over a discriminated union and add an
@@ -183,8 +183,8 @@ sealed-interface pattern from section 1, and treat lint failures as build failur
 
 ## 5. Parse at the boundary, trust everywhere after
 
-The unifying discipline: do the messy work — parsing JSON, validating user input, reading a config
-file — exactly once, where the untrusted data enters the system. Everything downstream takes the
+The unifying discipline: do the messy work -- parsing JSON, validating user input, reading a config
+file -- exactly once, where the untrusted data enters the system. Everything downstream takes the
 _parsed_ type, never the raw one. Downstream code then has no reason to re-validate, and no way to
 forget.
 

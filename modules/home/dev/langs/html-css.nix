@@ -1,4 +1,4 @@
-# Returns a list of specs: html, css, and scss each need different (or no) LSPs.
+# Returns a list of specs: html and css/scss need different LSPs.
 { pkgs, ... }: [
     {
         lang = [ "html" ];
@@ -16,13 +16,20 @@
                 ];
             }
         ];
+        extensions = {
+            ".html" = "html";
+            ".htm" = "html";
+        };
         fmt = [
             "prettierd"
             "%{buffer_name}"
         ];
     }
     {
-        lang = [ "css" ];
+        lang = [
+            "css"
+            "scss"
+        ];
         lsp = [
             {
                 name = "vscode-css-language-server";
@@ -32,13 +39,10 @@
                 ];
             }
         ];
-        fmt = [
-            "prettierd"
-            "%{buffer_name}"
-        ];
-    }
-    {
-        lang = [ "scss" ];
+        extensions = {
+            ".css" = "css";
+            ".scss" = "scss";
+        };
         fmt = [
             "prettierd"
             "%{buffer_name}"

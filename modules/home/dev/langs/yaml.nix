@@ -16,6 +16,11 @@
         }
     ];
 
+    extensions = {
+        ".yaml" = "yaml";
+        ".yml" = "yaml";
+    };
+
     fmt = [
         "prettierd"
         "%{buffer_name}"

@@ -3,6 +3,20 @@
 
     pkgs = with pkgs; [ taplo ];
 
+    # Drops helix's `tombi` fallback, which is not installed anyway.
+    lsp = [
+        {
+            name = "taplo";
+            cmd = [
+                "taplo"
+                "lsp"
+                "stdio"
+            ];
+        }
+    ];
+
+    extensions.".toml" = "toml";
+
     fmt = [
         "taplo"
         "fmt"

@@ -5,7 +5,7 @@
     ...
 }:
 let
-    # Translate lang specs → Helix language config
+    # Translate lang specs -> Helix language config
     specs = config.my.user.dev.langs.specs;
 
     toCmd = list: {

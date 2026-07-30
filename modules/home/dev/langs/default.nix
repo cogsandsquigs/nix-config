@@ -22,6 +22,11 @@ let
             cmd = lib.mkOption { type = lib.types.nonEmptyListOf lib.types.str; };
             config = lib.mkOption {
                 type = lib.types.attrs;
+                description = ''
+                    Server config, passed through verbatim. Setting it replaces helix's builtin
+                    `config` for that server wholesale (its merge bottoms out at this depth), so
+                    omit it to inherit the builtin rather than restating it.
+                '';
                 default = { };
             };
             only-features = lib.mkOption {
@@ -56,6 +61,21 @@ let
 
             file-types = lib.mkOption {
                 type = lib.types.attrsOf (lib.types.listOf lib.types.str);
+                default = { };
+            };
+
+            extensions = lib.mkOption {
+                type = lib.types.attrsOf lib.types.str;
+                description = ''
+                    File extension (leading dot kept) -> LSP language identifier. For clients that
+                    bind servers by extension rather than by language name -- helix reads its own
+                    `file-types` instead, so the two lists overlap without being derivable from
+                    each other (`.prettierrc` is a filename, and bash's id is `shellscript`).
+                '';
+                example = {
+                    ".ts" = "typescript";
+                    ".tsx" = "typescriptreact";
+                };
                 default = { };
             };
 
@@ -96,13 +116,21 @@ in
     };
 
     config = lib.mkIf config.my.user.dev.langs.enable {
-        assertions = lib.concatMap (
-            spec:
-            map (lsp: {
-                assertion = lsp.only-features == [ ] || lsp.except-features == [ ];
-                message = "LSP '${lsp.name}': only-features and except-features are mutually exclusive";
-            }) spec.lsp
-        ) config.my.user.dev.langs.specs;
+        assertions =
+            lib.concatMap (
+                spec:
+                map (lsp: {
+                    assertion = lsp.only-features == [ ] || lsp.except-features == [ ];
+                    message = "LSP '${lsp.name}': only-features and except-features are mutually exclusive";
+                }) spec.lsp
+            ) config.my.user.dev.langs.specs
+            ++ lib.concatMap (
+                spec:
+                map (ext: {
+                    assertion = lib.hasPrefix "." ext;
+                    message = "lang '${lib.head spec.lang}': extension '${ext}' must keep its leading dot";
+                }) (lib.attrNames spec.extensions)
+            ) config.my.user.dev.langs.specs;
 
         home.packages = allPkgs;
         my.user.dev.langs.specs = dataSpecs;

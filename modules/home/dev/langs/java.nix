@@ -2,7 +2,7 @@
     lang = [ "java" ];
 
     pkgs = with pkgs; [
-        jdk # Project toolchain. NOT the LSP's JVM — jdtls hardcodes its own bundled JDK 21.
+        jdk # Project toolchain only; jdtls hardcodes its own bundled JDK, ignoring JAVA_HOME
         gradle
         kotlin
 
@@ -13,14 +13,12 @@
     lsp = [
         {
             name = "jdtls";
-            # nixpkgs' `jdtls` wrapper resolves the equinox launcher, platform config dir and JVM
-            # itself, so bare is correct. WART: `-data` defaults to a hash of *basename(cwd)*, so
-            # two checkouts with the same directory name share one workspace index. Unfixable from
-            # here (helix can't expand the project root into args) — wrap it if that bites.
+            # The nixpkgs wrapper resolves the equinox launcher, platform config dir and JVM, so
+            # bare is correct. WART: `-data` defaults to a hash of *basename(cwd)*, so two
+            # checkouts sharing a directory name share one workspace index.
             cmd = [ "jdtls" ];
 
-            # Nested, not dotted like gopls': jdtls' MapFlattener splits its `java.*` keys and
-            # walks submaps, so a literal "java.format.enabled" attr never resolves.
+            # Nested, not dotted like gopls': jdtls walks submaps to resolve its `java.*` keys.
             config.java = {
                 # Default "interactive" waits on a reload command no client here can send.
                 configuration.updateBuildConfiguration = "automatic";
@@ -34,13 +32,15 @@
         }
     ];
 
+    extensions.".java" = "java";
+
     fmt = [
         "google-java-format"
         "--aosp" # 4-space / 100-col, matching treefmt and the helix indent
         "-"
     ];
 
-    # Helix's builtin list omits settings.gradle*, rooting a multi-module build at a subproject.
+    # Adds settings.gradle*, absent from helix's builtin, which roots a multi-module build wrong.
     roots.java = [
         "pom.xml"
         "build.gradle"

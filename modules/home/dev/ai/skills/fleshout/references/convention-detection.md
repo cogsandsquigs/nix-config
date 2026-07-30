@@ -14,7 +14,7 @@ style. This is the pass to run before writing new code into an existing project.
 
 1. **Formatter and linter config.** The fastest and most authoritative signal, because it is
    enforced mechanically rather than remembered.
-   - Rust: `rustfmt.toml`, `.rustfmt.toml`, `clippy.toml` — check `edition`, `max_width`, and denied
+   - Rust: `rustfmt.toml`, `.rustfmt.toml`, `clippy.toml` -- check `edition`, `max_width`, and denied
      lints. `#![deny(...)]` in `lib.rs` or `main.rs` is worth reading directly.
    - TypeScript and JavaScript: `.eslintrc*`, `.prettierrc*`, `tsconfig.json`. `strict` and
      `noImplicitAny` tell you how tight the typing culture is.
@@ -25,7 +25,7 @@ style. This is the pass to run before writing new code into an existing project.
      by default).
 
 2. **A representative existing feature, not the nearest file.** Pick something structurally similar
-   to what you are adding — another handler, another parser, another CLI subcommand. The nearest
+   to what you are adding -- another handler, another parser, another CLI subcommand. The nearest
    file may be an outlier.
 
 3. **The error-handling idiom.** This varies more than almost anything else and is highly visible
@@ -45,7 +45,7 @@ style. This is the pass to run before writing new code into an existing project.
    or by feature (`orders/`, `users/`, each holding its own handler, model, and service)? Follow
    whichever the project committed to, even when the other style is arguably better in the abstract.
 
-5. **Naming.** Check case conventions per identifier kind, not globally — some codebases use
+5. **Naming.** Check case conventions per identifier kind, not globally -- some codebases use
    different conventions for constants, functions, and types. Check whether the project prefers
    verbose or terse names (`fetch_user_by_id` against `get_user`).
 

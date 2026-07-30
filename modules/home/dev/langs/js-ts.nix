@@ -62,6 +62,19 @@ in
         }
     ];
 
+    # The *react ids are not cosmetic -- tsserver picks the JSX-aware parser off them.
+    extensions = {
+        ".ts" = "typescript";
+        ".mts" = "typescript";
+        ".cts" = "typescript";
+        ".tsx" = "typescriptreact";
+        ".js" = "javascript";
+        ".mjs" = "javascript";
+        ".cjs" = "javascript";
+        ".jsx" = "javascriptreact";
+        ".svelte" = "svelte";
+    };
+
     fmt = [
         "prettierd"
         "%{buffer_name}"

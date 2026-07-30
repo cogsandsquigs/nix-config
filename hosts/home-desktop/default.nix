@@ -1,12 +1,12 @@
-# home-desktop — x86_64-linux NixOS tower (personal daily-driver desktop).
+# home-desktop -- x86_64-linux NixOS tower (personal daily-driver desktop).
 #
 # STUB: this machine doesn't exist yet. It already inherits everything under
-# modules/system/nixos + modules/home (the full personal profile: games, desktop-apps, …), so
+# modules/system/nixos + modules/home (the full personal profile: games, desktop-apps, ...), so
 # filling it in mostly means adding the real hardware details below. The placeholder root
 # filesystem / bootloader keep the config evaluable.
 #
 # NOTE: this is the *personal* Linux box. The work machine is a separate, leaner standalone
-# home-manager config — see hosts/work-desktop.
+# home-manager config -- see hosts/work-desktop.
 { hostId, ... }: {
     nixpkgs.hostPlatform = hostId.system;
 

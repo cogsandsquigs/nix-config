@@ -16,7 +16,7 @@ in
     lang = [ "markdown" ];
 
     pkgs = with pkgs; [
-        # marksman # Markdown LSP — heavy package, excluded for now
+        # marksman # Markdown LSP -- heavy package, excluded for now
         mdbook
         dprint
     ];

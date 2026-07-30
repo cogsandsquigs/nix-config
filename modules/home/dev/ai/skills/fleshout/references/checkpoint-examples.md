@@ -13,7 +13,7 @@ context they already hold.
 
 ## The shape to aim for
 
-1. One or two sentences of context — enough that the question makes sense without re-reading the
+1. One or two sentences of context -- enough that the question makes sense without re-reading the
    diff.
 2. Two or three concrete options. More than three usually means the question needs narrowing first.
 3. Your lean and the reason for it, briefly.
@@ -25,11 +25,11 @@ context they already hold.
 The scratch note says "handle retries somehow" for the payment webhook.
 Three reasonable options:
 
-1. Fixed retry count (3x) with exponential backoff — simplest, matches what
+1. Fixed retry count (3x) with exponential backoff -- simplest, matches what
    `internal/queue/worker.go` already does in this repo.
-2. Retry with jitter plus a dead-letter queue after N failures — more robust,
+2. Retry with jitter plus a dead-letter queue after N failures -- more robust,
    needs a new table/topic for the DLQ.
-3. No automatic retry; surface the failure and let the caller decide — least
+3. No automatic retry; surface the failure and let the caller decide -- least
    code, pushes the problem to the caller.
 
 This repo already has a DLQ pattern in `internal/queue/`, so I lean (2) for

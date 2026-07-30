@@ -25,7 +25,7 @@ feature nobody asked for. This is the calibration checklist, with worked example
 - **A diff touches a schema, config shape, or public signature** without touching the call sites
   that must change to stay consistent. Either the diff is deliberately partial (ask) or the rest was
   not gathered yet (go find it).
-- **The user's guidance describes a workflow** — "when a user submits an order, we should…" — while
+- **The user's guidance describes a workflow** -- "when a user submits an order, we should..." -- while
   the code shown implements one step of it.
 
 ## Signals that the request really is small
@@ -53,7 +53,7 @@ silently.
 
 ## Worked examples
 
-**Small — build it directly, no checkpoint:**
+**Small -- build it directly, no checkpoint:**
 
 ```
 User: "This function throws on empty input instead of returning an error, can you fix it?"
@@ -61,7 +61,7 @@ User: "This function throws on empty input instead of returning an error, can yo
 
 Self-contained bug, no hidden scope. Fix it.
 
-**Bigger than it looks — flesh out, checkpoint on the ambiguous part:**
+**Bigger than it looks -- flesh out, checkpoint on the ambiguous part:**
 
 ```rust
 fn handle_event(e: Event) {
@@ -73,13 +73,13 @@ fn handle_event(e: Event) {
 ```
 
 The `_ => {}` plus an `Event` enum that on inspection has `Updated`, `Deleted`, and `Archived`
-variants is a strong signal: all four need handling. But _how_ `Deleted` should behave — soft
-delete, hard delete, cascade — is not inferable from the code. That is the checkpoint.
+variants is a strong signal: all four need handling. But _how_ `Deleted` should behave -- soft
+delete, hard delete, cascade -- is not inferable from the code. That is the checkpoint.
 
-**Ambiguous — use the checklist, do not guess:**
+**Ambiguous -- use the checklist, do not guess:**
 
 ```
-Scratch note: "auth stuff — probably JWT, need refresh somehow"
+Scratch note: "auth stuff -- probably JWT, need refresh somehow"
 ```
 
 "Probably" and "somehow" are the tell. This is a real feature wearing the shape of an offhand
@@ -89,5 +89,5 @@ on it per SKILL.md step 4.
 ## When genuinely unsure
 
 Mixed signals cost one question, and one question beats both under- and over-building: "This TODO on
-the `Deleted` case — do you want full handling for all four event types, or is `Created` the only
+the `Deleted` case -- do you want full handling for all four event types, or is `Created` the only
 one that matters right now?"

@@ -1,5 +1,5 @@
-# Shared GPG configuration. The OS-specific pieces — the pinentry program, and
-# on macOS the wake-time agent restart — live in the per-OS files.
+# Shared GPG configuration. The OS-specific pieces -- the pinentry program, and
+# on macOS the wake-time agent restart -- live in the per-OS files.
 
 {
     pkgs,

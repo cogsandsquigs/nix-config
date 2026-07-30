@@ -18,7 +18,7 @@ in
     options.my.sys.systemDefaults.enable =
         tools.opt.mkEnabled "macOS system defaults + nix-darwin base pkgs";
 
-    # stateVersion is plumbing (identifies the config generation) — keep it unconditional so the
+    # stateVersion is plumbing (identifies the config generation) -- keep it unconditional so the
     # toggle only governs the actual defaults/packages, never the version marker.
     config = lib.mkMerge [
         { system.stateVersion = 6; }

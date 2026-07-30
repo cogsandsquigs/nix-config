@@ -1,7 +1,7 @@
 # GerritCodeReview/gerrit-mcp-server as a stdio launcher. Wired up by ./default.nix.
 #
 # Source tree, not a wheel: no console script, and `main.py` imports siblings as `gerrit_mcp_server.*`
-# — hence PYTHONPATH at the repo root. Declared `uvicorn`/`websockets` deps are dead. Shells out to
+# -- hence PYTHONPATH at the repo root. Declared `uvicorn`/`websockets` deps are dead. Shells out to
 # `curl` per request.
 {
     lib,
@@ -24,7 +24,7 @@ let
 
         # --replace-fail: an unmatched pattern would build fine, then fail at the first tool call.
         #
-        # 1. Upstream logs every curl call to <repo root>/server.log — read-only store, so every tool
+        # 1. Upstream logs every curl call to <repo root>/server.log -- read-only store, so every tool
         #    call dies with EROFS. Honour $GERRIT_MCP_LOG instead.
         # 2. `curl --user user:token` leaks the token to world-readable /proc/<pid>/cmdline and, via
         #    that log, to disk. Read it from a 0600 netrc: no argv, no log.
@@ -60,13 +60,13 @@ writeShellApplication {
     };
 
     # Claude Code expands the `${GERRIT_*}` refs in its MCP config before spawning us (see
-    # ../default.nix). Upstream wants a JSON config file, so translate at launch — nothing in the
+    # ../default.nix). Upstream wants a JSON config file, so translate at launch -- nothing in the
     # store.
     text = ''
         for var in GERRIT_HOST GERRIT_USERNAME GERRIT_PASSWORD; do
             if [ -z "''${!var:-}" ]; then
                 echo "gerrit-mcp: $var is unset or empty. Set it in your .env, then restart the client" >&2
-                echo "gerrit-mcp: (a client launched outside a shell never sourced .env — that is the usual cause)" >&2
+                echo "gerrit-mcp: (a client launched outside a shell never sourced .env -- that is the usual cause)" >&2
                 exit 1
             fi
         done
@@ -87,7 +87,7 @@ writeShellApplication {
         netrc="$runtime_dir/netrc"
         url="https://$host"
 
-        # auth_token is a placeholder — upstream requires the field, but the patched path reads the
+        # auth_token is a placeholder -- upstream requires the field, but the patched path reads the
         # real token from the netrc below.
         jq -n --arg url "$url" --arg host "$host" --arg user "$GERRIT_USERNAME" '{
             default_gerrit_base_url: $url,

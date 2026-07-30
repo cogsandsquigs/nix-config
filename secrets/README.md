@@ -1,6 +1,6 @@
 # secrets
 
-Anything sensitive — a private key, a VPN profile, a token — gets encrypted here with
+Anything sensitive -- a private key, a VPN profile, a token -- gets encrypted here with
 [sops](https://github.com/getsops/sops) (using [sops-nix](https://github.com/Mic92/sops-nix) to
 decrypt it at activation) so it can live in the repo safely. The encrypted `*.sops` files are fine to
 commit and push; the only thing that decrypts them is your private age key at `/etc/nix/age/<you>`,
@@ -8,10 +8,10 @@ which is generated **per machine** and never leaves it (gitignored).
 
 Two things live in this folder:
 
-- **`.sops.yaml`** — the `creation_rules`: a list of `path_regex → age public key(s)`. This is the
+- **`.sops.yaml`** -- the `creation_rules`: a list of `path_regex -> age public key(s)`. This is the
   "who's allowed to read what" list. The `sops` CLI reads it when you create/edit/re-key a secret.
-- **the `*.sops` files** — each under an **audience folder**: an identity (`cogs@home-desktop/…` →
-  that machine only) or a bare user (`cogs/…` → all of your machines). Which key a secret is
+- **the `*.sops` files** -- each under an **audience folder**: an identity (`cogs@home-desktop/...` ->
+  that machine only) or a bare user (`cogs/...` -> all of your machines). Which key a secret is
   encrypted to is decided by the first `path_regex` in `.sops.yaml` that matches its folder.
 
 A secret is addressed by its folder + leaf: `cogs@home-desktop/gpg` is the file
@@ -30,7 +30,7 @@ If the folder is new, first add a `creation_rule` for it in `.sops.yaml` (which 
 Then encrypt a plaintext file into place with the helper:
 
 ```sh
-./sops-stash.sh ~/api-token.txt cogs/api-token   # → secrets/cogs/api-token.sops
+./sops-stash.sh ~/api-token.txt cogs/api-token   # -> secrets/cogs/api-token.sops
 ```
 
 (`sops-stash.sh` is just a wrapper around `sops encrypt --input-type binary`; the recipient is picked
@@ -69,19 +69,19 @@ sops updatekeys cogs/api-token.sops
 Every machine gets its own key. On that machine:
 
 ```sh
-age-keygen -o /etc/nix/age/cogs   # makes the private key (keep it!), prints a "Public key: age1…"
+age-keygen -o /etc/nix/age/cogs   # makes the private key (keep it!), prints a "Public key: age1..."
 ```
 
-Add that `age1…` to the relevant `creation_rules` in `.sops.yaml` (e.g. the `cogs/` rule so the new
+Add that `age1...` to the relevant `creation_rules` in `.sops.yaml` (e.g. the `cogs/` rule so the new
 box can read all-machines secrets) and commit. Then re-key those secrets so the new key is included:
 `sops updatekeys <file>.sops` (needs `SOPS_AGE_KEY_FILE` set to an existing identity).
 
 ## Keep your GPG signing key across machines
 
 You use an offline master key with a per-machine signing subkey (the secure setup). A new machine
-needs its own subkey — stash it here, encrypted to just that machine, and it imports on activation.
+needs its own subkey -- stash it here, encrypted to just that machine, and it imports on activation.
 
-> ⚠️ Export the **subkey only**, never the master secret. Back up `~/.gnupg` first anyway.
+> WARNING: Export the **subkey only**, never the master secret. Back up `~/.gnupg` first anyway.
 
 Add a `creation_rule` matching `cogs@home-desktop/` in `.sops.yaml` first (encrypted to that machine's
 key). Then:
@@ -92,11 +92,11 @@ cp -a ~/.gnupg ~/.gnupg.backup
 gpg --list-secret-keys --keyid-format=long        # note your PRIMARY fingerprint + the signing subkey id
 
 gpg --export-secret-subkeys --armor <SUBKEY>! > /tmp/sub.asc   # the trailing ! pins that one subkey
-./sops-stash.sh /tmp/sub.asc cogs@home-desktop/gpg             # → secrets/cogs@home-desktop/gpg.sops
+./sops-stash.sh /tmp/sub.asc cogs@home-desktop/gpg             # -> secrets/cogs@home-desktop/gpg.sops
 rm -P /tmp/sub.asc                                             # wipe the temp copy (Linux: shred -u)
 ```
 
-Wire it per-machine in `users/cogs/home.nix` — gated on whether the `.sops` file exists (so only
+Wire it per-machine in `users/cogs/home.nix` -- gated on whether the `.sops` file exists (so only
 provisioned machines import; the machine where the key was created already has it in its keyring):
 
 ```nix
@@ -117,15 +117,15 @@ each box automatically uses whichever signing subkey it has locally.
 ### Minting a _fresh_ subkey per machine (stronger isolation)
 
 The steps above copy your existing subkeys to a new box. If you'd rather each machine have its
-**own** signing (+ encryption) subkey — so you can revoke one box without touching the others — use
+**own** signing (+ encryption) subkey -- so you can revoke one box without touching the others -- use
 [`./mint-subkeys.sh`](./mint-subkeys.sh). It mints them from your master and stashes them as the
 machine's secret in one go.
 
-> ⚠️ It needs the master **secret**, so run it on your **air-gapped** box (where the master lives),
+> WARNING: It needs the master **secret**, so run it on your **air-gapped** box (where the master lives),
 > not a daily machine. See the header comment for the full flow and caveats.
 
 ```sh
-./mint-subkeys.sh <master-secret.asc> <host>   # → secrets/cogs@<host>/gpg.sops
+./mint-subkeys.sh <master-secret.asc> <host>   # -> secrets/cogs@<host>/gpg.sops
 ```
 
 ## OpenVPN

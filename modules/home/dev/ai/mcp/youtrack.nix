@@ -3,7 +3,7 @@
 #
 # Token over OAuth because this Hub advertises no registration_endpoint (no dynamic client
 # registration) and no PKCE, so OAuth would mean an admin-registered confidential client plus a
-# client secret on disk — strictly worse than a token that grants the same access.
+# client secret on disk -- strictly worse than a token that grants the same access.
 {
     lib,
     tools,
@@ -23,9 +23,9 @@ in
             "https://<host>/mcp".
         '';
         token = tools.opt.mkNonEmptyStr "\${YOUTRACK_AUTH_TOKEN}" ''
-            YouTrack permanent token with YouTrack scope (Profile → Account Security →
+            YouTrack permanent token with YouTrack scope (Profile -> Account Security ->
             Authentication), sent as `Authorization: Bearer <token>`. Keep it a
-            `$YOUTRACK_AUTH_TOKEN` ref — a literal lands in the world-readable /nix/store.
+            `$YOUTRACK_AUTH_TOKEN` ref -- a literal lands in the world-readable /nix/store.
         '';
     };
 

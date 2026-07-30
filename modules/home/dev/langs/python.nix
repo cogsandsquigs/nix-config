@@ -25,6 +25,11 @@
         }
     ];
 
+    extensions = {
+        ".py" = "python";
+        ".pyi" = "python";
+    };
+
     # See: https://stackoverflow.com/questions/77876253/sort-imports-alphabetically-with-ruff
     # And: https://github.com/helix-editor/helix/discussions/7749
     fmt = [

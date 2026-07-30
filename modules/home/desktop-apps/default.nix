@@ -10,7 +10,7 @@
     imports = [ ./browser.nix ];
 
     options.my.user.desktopApps.enable =
-        tools.opt.mkDisabled "personal GUI apps (Discord, Obsidian, Zoom, …)";
+        tools.opt.mkDisabled "personal GUI apps (Discord, Obsidian, Zoom, ...)";
 
     config = lib.mkIf config.my.user.desktopApps.enable {
         home.packages = with pkgs; [

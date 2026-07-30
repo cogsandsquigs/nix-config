@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SUPERSEDED by scripts/nxm — use `nxm rebuild` instead.
+# SUPERSEDED by scripts/nxm -- use `nxm rebuild` instead.
 #
 # Rebuild / switch the current machine from this flake.
 #
@@ -9,10 +9,10 @@
 #   - other Linux (Ubuntu -> standalone home-manager switch  (no sudo)
 #
 # The flake dir is derived from THIS script's location, so it works whether the repo lives at
-# /etc/nix (system hosts) or ~/.config/nix (the standalone work box) — no hardcoded path.
+# /etc/nix (system hosts) or ~/.config/nix (the standalone work box) -- no hardcoded path.
 #
 # NOTE: we deliberately do NOT touch $NIX_CONF_DIR. That variable controls where Nix reads
-# nix.conf from (default /etc/nix), NOT where your flake lives — pointing it at the repo would
+# nix.conf from (default /etc/nix), NOT where your flake lives -- pointing it at the repo would
 # make Nix load this repo's nix.conf, which is the macOS Determinate config and wrong on Ubuntu.
 
 set -e # exit if any command errors
@@ -40,7 +40,7 @@ elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     #
     # Resolve the flake attribute modularly, so renaming the box (hosts/work-desktop/id.nix)
     # needs no change here, and it does not depend on the machine's actual hostname:
-    #   1. $HM_TARGET, if set — explicit override.
+    #   1. $HM_TARGET, if set -- explicit override.
     #   2. else the flake's sole homeConfigurations entry (the normal single-work-box case).
     #   3. else fall back to "$(whoami)@$(hostname)".
     TARGET="${HM_TARGET:-}"

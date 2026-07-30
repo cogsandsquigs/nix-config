@@ -1,4 +1,4 @@
-# Nix daemon settings for NixOS (darwin uses Determinate Nix instead — see system/darwin/nix.nix).
+# Nix daemon settings for NixOS (darwin uses Determinate Nix instead -- see system/darwin/nix.nix).
 { inputs, ... }:
 let
     substituters = [

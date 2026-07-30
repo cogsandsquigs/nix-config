@@ -66,7 +66,7 @@
         {
             inherit tools;
 
-            # Personal MacBook — "glorpbook" (nix-darwin).
+            # Personal MacBook -- "glorpbook" (nix-darwin).
             darwinConfigurations.${glorpbookId.hostName} = tools.mkDarwin glorpbook;
 
             # Personal desktop tower (NixOS).
@@ -78,7 +78,7 @@
                 host = workDesktop;
             };
 
-            # `nix fmt` → treefmt, driven by ./treefmt.toml (4-space, 100 cols — the repo's real
+            # `nix fmt` -> treefmt, driven by ./treefmt.toml (4-space, 100 cols -- the repo's real
             # style). Wrapped with the formatters treefmt invokes (nixfmt/shfmt/prettier) on PATH
             # so `nix fmt` is self-contained and matches editor + `treefmt` output.
             formatter = tools.forAllSystems (

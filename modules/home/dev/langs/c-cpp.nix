@@ -12,10 +12,30 @@
         llvmPackages_21.clang-unwrapped.python # git-clang-format and other tools
         llvmPackages_21.clang-tools
         pkg-config
-        # valgrind # Memory profiler/debugger — currently broken
+        # valgrind # Memory profiler/debugger -- currently broken
     ];
 
-    # TODO: home.file.".clang-format" — deploy the clang-format config file.
+    lsp = [
+        {
+            name = "clangd";
+            cmd = [ "clangd" ];
+        }
+    ];
+
+    extensions = {
+        ".c" = "c";
+        ".cc" = "cpp";
+        ".cpp" = "cpp";
+        ".cxx" = "cpp";
+        ".h" = "cpp"; # Ambiguous by nature; helix resolves it to cpp too, and clangd reads both
+        ".hh" = "cpp";
+        ".hpp" = "cpp";
+        ".hxx" = "cpp";
+        ".ipp" = "cpp";
+        ".tpp" = "cpp";
+    };
+
+    # TODO: home.file.".clang-format" -- deploy the clang-format config file.
     # Previously in the old-format module; needs a mechanism in the spec (e.g. a `files` field)
     # or a separate home-manager module. Config was:
     #

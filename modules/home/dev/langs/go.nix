@@ -48,6 +48,9 @@
         }
     ];
 
+    # No `gomod` entry: go.mod is a bare filename, and this maps extensions only.
+    extensions.".go" = "go";
+
     fmt = [ "gofmt" ];
 
     editor-specific = {

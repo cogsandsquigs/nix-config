@@ -11,7 +11,7 @@ let
     inherit (lib.attrsets) mapAttrsToList;
 
     # Where this flake lives on the host (default /etc/nix; the standalone work box overrides
-    # this to ~/.config/nix). The shell aliases (rebuild/upgrade/…) point here — the only reader
+    # this to ~/.config/nix). The shell aliases (rebuild/upgrade/...) point here -- the only reader
     # of flakeDir, so its option is declared below rather than in a central options file.
     flakeDir = config.my.user.flakeDir;
 
@@ -39,7 +39,7 @@ let
     variables = {
         EDITOR = editor;
         # Nix-provided java by default. To prefer a locally-installed JDK (e.g. the Arctic Lake work
-        # box), set JAVA_HOME in ${flakeDir}/.env — the .env loader below overrides this.
+        # box), set JAVA_HOME in ${flakeDir}/.env -- the .env loader below overrides this.
         JAVA_HOME = "$(dirname $(dirname $(readlink -f $(command -v java))))";
 
         # NOTE: Necessary for (some) rust compilation things/libs
@@ -112,7 +112,7 @@ in
             enable = true;
             generateCompletions = true;
 
-            # `bass` lets fish run a bash command and import its env changes — used by the .env
+            # `bass` lets fish run a bash command and import its env changes -- used by the .env
             # loader so fish parses ${flakeDir}/.env through bash rather than a hand-rolled parser.
             plugins = [
                 {

@@ -13,7 +13,7 @@ in
         enable = tools.opt.mkDisabled "OpenVPN CLI + profile management";
         # Keyed by profile identifier (used as the .ovpn filename). Submodule so fields can grow
         # without changing call sites. `name` is the display name in the VPN client UI (not yet
-        # wired on all platforms — declared now so call sites don't change when it is).
+        # wired on all platforms -- declared now so call sites don't change when it is).
         profiles = lib.mkOption {
             type = lib.types.attrsOf (
                 lib.types.submodule {
@@ -38,7 +38,7 @@ in
     config = lib.mkIf cfg.enable {
         home.packages = [ pkgs.openvpn ];
 
-        # Fail the build if any declared profile has an empty path — catches mis-wired secrets
+        # Fail the build if any declared profile has an empty path -- catches mis-wired secrets
         # before activation rather than silently installing nothing.
         assertions = lib.mapAttrsToList (key: profile: {
             assertion = profile.path != "";
@@ -46,7 +46,7 @@ in
         }) cfg.profiles;
 
         # Linux: copy each profile into ~/.config/openvpn (plain openvpn reads from there).
-        # macOS: OpenVPN Connect has no programmatic import interface — profiles must be imported
+        # macOS: OpenVPN Connect has no programmatic import interface -- profiles must be imported
         # once by hand through the app UI. The sops secret is still decrypted and available at
         # its runtime path (tools.secrets.path); nothing to do here.
         home.activation.installOvpnProfiles = lib.mkIf (cfg.profiles != { }) (

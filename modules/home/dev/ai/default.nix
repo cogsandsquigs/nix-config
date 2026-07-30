@@ -16,10 +16,7 @@
         home.packages = with pkgs; [
             # AI stuffs (work *blech*)
             claude-code
-            claude-monitor
-
-            # Token reducer
-            rtk
+            ccusage
         ];
 
         programs.claude-code = {

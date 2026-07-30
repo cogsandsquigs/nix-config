@@ -1,4 +1,4 @@
-# treefmt — one-command, repo-wide formatting. Run `treefmt` from the repo root (the binary is in
+# treefmt -- one-command, repo-wide formatting. Run `treefmt` from the repo root (the binary is in
 # nixpkgs: `nix run nixpkgs#treefmt`, or `nix shell nixpkgs#treefmt`).
 #
 # This file is ALSO where nixfmt's options live: nixfmt has no native config file of its own
@@ -8,7 +8,7 @@
 # from the editor and from the CLI agree.
 #
 # NOTE: the flake's `nix fmt` output (see flake.nix `formatter`) is a *separate*, bare
-# nixfmt-rfc-style (2-space default) — prefer `treefmt` for the repo's real 4-space style.
+# nixfmt-rfc-style (2-space default) -- prefer `treefmt` for the repo's real 4-space style.
 
 [formatter.nixfmt]
     command  = "nixfmt"

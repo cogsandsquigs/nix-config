@@ -28,4 +28,10 @@
         "json"
         "prettierrc"
     ];
+
+    # `prettierrc` has no counterpart below: .prettierrc is a whole filename, not an extension.
+    extensions = {
+        ".json" = "json";
+        ".jsonc" = "jsonc";
+    };
 }

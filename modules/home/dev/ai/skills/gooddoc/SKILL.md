@@ -1,8 +1,8 @@
 ---
 name: gooddoc
 description: >-
-  Rewrites prose — docs, READMEs, PR descriptions, error messages, release notes, comments, agent
-  instructions — into ASD-STE100 Simplified Technical English, which removes the padding, hedging,
+  Rewrites prose -- docs, READMEs, PR descriptions, error messages, release notes, comments, agent
+  instructions -- into ASD-STE100 Simplified Technical English, which removes the padding, hedging,
   and marketing register that read as "AI slop". Never applies to code, identifiers, or command
   syntax. Use when writing or cleaning up documentation in or for a codebase, manuals, technical
   documents, or agent instructions, and when the user asks for text "without AI slop". Two modes:
@@ -10,7 +10,7 @@ description: >-
 argument-hint: "<text or file to rewrite>"
 ---
 
-# gooddoc — ASD-STE100 writing
+# gooddoc -- ASD-STE100 writing
 
 Write prose in ASD-STE100 Simplified Technical English. This applies to documentation, READMEs,
 pull-request text, error messages, release notes, comments, and agent instructions. It does not
@@ -21,9 +21,9 @@ Write only the requested text. No preamble, no summary, no closing remarks.
 
 ## Modes
 
-- **strict** — procedures, runbooks, safety text, error messages. Apply every rule and both length
+- **strict** -- procedures, runbooks, safety text, error messages. Apply every rule and both length
   caps.
-- **STE-flavored** — general prose such as READMEs, PR descriptions, and docs. Apply the sentence,
+- **STE-flavored** -- general prose such as READMEs, PR descriptions, and docs. Apply the sentence,
   paragraph, active-voice, and plain-verb discipline. Relax the ~900-word dictionary so the text
   keeps enough range to read naturally.
 

@@ -4,8 +4,8 @@
 # `tools` arg composes cleanly and reads uniformly in system + home modules.
 #
 # Grouped by what a helper DOES:
-#   tools.opt.*      — option & module-authoring helpers (constructors + assertions).
-#   tools.secrets.*  — sops secret wiring (register a secret + read its decrypted path).
+#   tools.opt.*      -- option & module-authoring helpers (constructors + assertions).
+#   tools.secrets.*  -- sops secret wiring (register a secret + read its decrypted path).
 { lib }:
 let
     t = lib.types;
@@ -22,13 +22,13 @@ let
 
 in
 {
-    # ── tools.opt — option & module-authoring helpers ────────────────────────────────────────────
+    # -- tools.opt -- option & module-authoring helpers --------------------------------------------
     ## enable-style toggles
     mkEnabled = mkBoolOpt true; # core feature: on unless explicitly disabled
     mkDisabled = mkBoolOpt false; # optional feature: opt-in
     mkRiding = parent: mkBoolOpt parent; # sub-feature: default follows its parent group's value
     mkRequired =
-        # no default → eval errors if a host/user forgets to choose. Reserve for features where a
+        # no default -> eval errors if a host/user forgets to choose. Reserve for features where a
         # forgotten value would be a *silent* bug (most core fails loudly, so rarely needed).
         description:
         lib.mkOption {
@@ -66,7 +66,7 @@ in
         };
 
     ## the agnostic secret path-hole a feature exposes (e.g.
-    ## `git.signingKeyFile = tools.opt.mkSecretPath "…"`). It's an option constructor, so it lives
+    ## `git.signingKeyFile = tools.opt.mkSecretPath "..."`). It's an option constructor, so it lives
     ## here; the unit fills it via the secret-wiring helpers below.
     mkSecretPath =
         description:

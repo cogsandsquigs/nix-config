@@ -1,4 +1,4 @@
-# The `cogs` user's home-manager config — the PERSONAL unit: full home library plus the personal
+# The `cogs` user's home-manager config -- the PERSONAL unit: full home library plus the personal
 # selections (games + desktop-apps on) and git identity. Self-contained: sets its own
 # `my.user.git.*` rather than relying on the option defaults, so the unit stays correct wherever
 # it's placed.
@@ -14,7 +14,7 @@
 let
     me = "cogs@${hostId.hostName}";
 
-    # presence of the .sops file is the switch — no allowlist; every machine self-wires uniformly.
+    # presence of the .sops file is the switch -- no allowlist; every machine self-wires uniformly.
     haveGpg = builtins.pathExists (../../secrets + "/${me}/gpg.sops");
 in
 {

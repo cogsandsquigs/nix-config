@@ -3,7 +3,7 @@
 
     pkgs = with pkgs; [
         kotlin
-        # kotlin-native # Native runtime — fails on macOS
+        # kotlin-native # Native runtime -- fails on macOS
         kotlin-language-server # Alpha LSP
 
         # NOTE: May be subsumed by the LSP eventually.
@@ -18,4 +18,9 @@
             cmd = [ "kotlin-language-server" ];
         }
     ];
+
+    extensions = {
+        ".kt" = "kotlin";
+        ".kts" = "kotlin";
+    };
 }

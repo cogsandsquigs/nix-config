@@ -22,7 +22,7 @@
         ./ai
     ];
 
-    options.my.user.dev.enable = tools.opt.mkEnabled "dev toolchain (editors, langs, containers, …)";
+    options.my.user.dev.enable = tools.opt.mkEnabled "dev toolchain (editors, langs, containers, ...)";
 
     config = lib.mkIf config.my.user.dev.enable {
         home.packages = with pkgs; [

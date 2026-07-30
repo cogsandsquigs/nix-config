@@ -1,7 +1,7 @@
-# Gerrit MCP server — GerritCodeReview/gerrit-mcp-server, packaged in ./package.nix.
+# Gerrit MCP server -- GerritCodeReview/gerrit-mcp-server, packaged in ./package.nix.
 #
-# Picked over the third-party ones as the only one that can *read* — query changes, list comments,
-# read votes — so an agent can work through review feedback, not just post it. It reads /comments,
+# Picked over the third-party ones as the only one that can *read* -- query changes, list comments,
+# read votes -- so an agent can work through review feedback, not just post it. It reads /comments,
 # not /robotcomments, so analyzer *plugin* comments (as opposed to bot accounts) are invisible.
 {
     lib,
@@ -23,7 +23,7 @@ in
         host = tools.opt.mkNonEmptyStr "\${GERRIT_HOST}" ''Gerrit host, no scheme (e.g. "gerrit.example.com").'';
         username = tools.opt.mkNonEmptyStr "\${GERRIT_USERNAME}" "Gerrit account username.";
         password = tools.opt.mkNonEmptyStr "\${GERRIT_PASSWORD}" ''
-            Gerrit HTTP password (Settings → HTTP Credentials). Keep it a `$GERRIT_PASSWORD` ref — a
+            Gerrit HTTP password (Settings -> HTTP Credentials). Keep it a `$GERRIT_PASSWORD` ref -- a
             literal lands in the world-readable /nix/store.
         '';
     };

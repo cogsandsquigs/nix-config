@@ -21,5 +21,7 @@
         }
     ];
 
+    extensions.".rs" = "rust";
+
     fmt = [ "rustfmt" ];
 }

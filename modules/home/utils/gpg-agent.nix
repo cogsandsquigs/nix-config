@@ -12,8 +12,8 @@ let
     enabled = config.my.user.utils.enable;
 in
 {
-    # mkMerge of per-OS mkIf (NOT a raw `if pkgs… then …`): keeps the config structure static so it
-    # doesn't force `pkgs` — which, in standalone home-manager, depends on `config` (config.nixpkgs)
+    # mkMerge of per-OS mkIf (NOT a raw `if pkgs... then ...`): keeps the config structure static so it
+    # doesn't force `pkgs` -- which, in standalone home-manager, depends on `config` (config.nixpkgs)
     # and would otherwise cause infinite recursion. launchd.agents is darwin-only, so it must only
     # ever be defined on darwin.
     config = lib.mkMerge [
@@ -28,7 +28,7 @@ in
             # gpg-agent.conf. On macOS, `grab` causes pinentry-mac to call a window-server grab
             # API on startup; after wake from sleep the window server is unsettled and this call
             # fails, making pinentry-mac exit immediately ("No pinentry"). Disabling grab lets
-            # pinentry-mac retrieve the passphrase from the macOS Keychain silently — no dialog,
+            # pinentry-mac retrieve the passphrase from the macOS Keychain silently -- no dialog,
             # no window-server interaction needed.
             services.gpg-agent.grabKeyboardAndMouse = false;
 
@@ -40,7 +40,7 @@ in
         })
 
         # Linux/NixOS: home-manager runs gpg-agent as a systemd user service, so the macOS
-        # workarounds do not apply. Just pick a pinentry — a headless default; a GUI host can
+        # workarounds do not apply. Just pick a pinentry -- a headless default; a GUI host can
         # override with e.g. pkgs.pinentry-gnome3.
         (lib.mkIf (enabled && !isDarwin) { services.gpg-agent.pinentry.package = pkgs.pinentry-curses; })
     ];

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""nxm — nix manage.  Rebuild, upgrade, clean, or edit this flake.
+"""nxm -- nix manage.  Rebuild, upgrade, clean, or edit this flake.
 
 Usage
 -----
@@ -12,28 +12,28 @@ Architecture
 ------------
 The TUI is built from three primitives, all pure stdlib:
 
-  step(name)  — context manager. Prints "→ name" on entry, "✓/✗ name" on
+  step(name)  -- context manager. Prints "→ name" on entry, "✓/✗ name" on
                 exit, and erases the rolling output block on success.
 
-  run(cmd)    — runs a subprocess *inside* an active step, feeding its
+  run(cmd)    -- runs a subprocess *inside* an active step, feeding its
                 stdout+stderr into a 5-line circular buffer that is redrawn
                 on each new line.  Raises CalledProcessError on non-zero exit.
 
-  _feed(raw)  — internal; called by run() for each output line. Handles the
+  _feed(raw)  -- internal; called by run() for each output line. Handles the
                 cursor movement (ANSI escape sequences) and the buffer redraw.
 
 Cursor mechanics (TTY only)
 ---------------------------
-State: _buf (deque[str], maxlen=5), _shown (int — lines currently on screen).
+State: _buf (deque[str], maxlen=5), _shown (int -- lines currently on screen).
 
   New line arrives:
-    1. \033[{_shown}A\r\033[J  — move cursor up _shown lines, go to col 1,
+    1. \033[{_shown}A\r\033[J  -- move cursor up _shown lines, go to col 1,
                                   erase from cursor to end of screen
     2. append to _buf, reprint all _buf lines in dim grey
     3. _shown = len(_buf)
 
   Step succeeds:
-    1. \033[{_shown+1}A\r\033[J  — same, but also erase the "→ name" header
+    1. \033[{_shown+1}A\r\033[J  -- same, but also erase the "→ name" header
     2. print "  ✓ name\n"
 
   Step fails:
@@ -75,11 +75,11 @@ from collections.abc import Generator
 from subprocess import CalledProcessError
 from typing import Union
 
-# ── TUI ──────────────────────────────────────────────────────────────────────
+# -- TUI ----------------------------------------------------------------------
 
 _TTY: bool = sys.stdout.isatty()
 
-# ANSI colour/style codes — only emitted when stdout is a TTY.
+# ANSI colour/style codes -- only emitted when stdout is a TTY.
 _G = "\033[32m"  # green
 _R = "\033[31m"  # red
 _D = "\033[2m"  # dim
@@ -91,7 +91,7 @@ _X = "\033[0m"  # reset all attributes
 # nested colour sequences don't bleed into the dim-grey rendering style.
 _ANSI: re.Pattern[str] = re.compile(r"\033\[[0-9;]*[A-Za-z]")
 
-# Rolling output buffer — last 5 lines of the current step's subprocess output.
+# Rolling output buffer -- last 5 lines of the current step's subprocess output.
 _buf: collections.deque[str] = collections.deque(maxlen=5)
 # How many output lines are currently rendered below the step header on screen.
 _shown: int = 0
@@ -191,9 +191,9 @@ def run(cmd: Union[list[str], str], check: bool = True) -> None:
         raise subprocess.CalledProcessError(proc.returncode, cmd)
 
 
-# ── Helpers ───────────────────────────────────────────────────────────────────
+# -- Helpers -------------------------------------------------------------------
 
-# Absolute path to the repo root — one level above this script's scripts/ dir.
+# Absolute path to the repo root -- one level above this script's scripts/ dir.
 # Works regardless of CWD or symlinks because __file__ is resolved first.
 REPO: pathlib.Path = pathlib.Path(__file__).resolve().parent.parent
 
@@ -279,7 +279,7 @@ def capture(cmd: list[str], ok: tuple[int, ...] = (0,)) -> subprocess.CompletedP
     """Run cmd, capturing output, cwd=REPO. `ok` lists exit codes that are NOT
     failures (e.g. git's --quiet convention uses 0/1 as a boolean signal).
     Any other exit code feeds captured stderr/stdout into the current step's
-    buffer — same display path run() failures already use — then raises.
+    buffer -- same display path run() failures already use -- then raises.
     """
 
     proc = subprocess.run(cmd, cwd=REPO, capture_output=True, text=True)
@@ -359,7 +359,7 @@ def sync() -> Generator[None, None, None]:
         _sync_up(did_sync)
 
 
-# ── Subcommands ───────────────────────────────────────────────────────────────
+# -- Subcommands ---------------------------------------------------------------
 
 
 def cmd_rebuild(_args: argparse.Namespace) -> None:
@@ -381,13 +381,13 @@ def cmd_upgrade(_args: argparse.Namespace) -> None:
 def cmd_clean(_args: argparse.Namespace) -> None:
     """GC old nix generations to free disk space."""
     if sys.platform.startswith("linux") and not os.path.exists("/etc/NIXOS"):
-        # Standalone home-manager (e.g. Ubuntu work desktop) — no sudo needed.
+        # Standalone home-manager (e.g. Ubuntu work desktop) -- no sudo needed.
         with step("expire home-manager generations"):
             run(["home-manager", "expire-generations", "-7 days"], check=False)
         with step("nix-collect-garbage"):
             run(["nix-collect-garbage", "-d"])
     else:
-        # System host (macOS / NixOS) — needs root for the system profile.
+        # System host (macOS / NixOS) -- needs root for the system profile.
         with step("delete old generations"):
             run(["sudo", "-i", "nix-env", "--delete-generations", "old"])
         with step("nix-collect-garbage"):
@@ -398,7 +398,7 @@ def cmd_edit(_args: argparse.Namespace) -> None:
     """Open $EDITOR interactively then rebuild."""
     editor = os.environ.get("EDITOR", "vi")
     os.chdir(REPO)
-    # The editor needs raw terminal access — bypass the TUI runner entirely.
+    # The editor needs raw terminal access -- bypass the TUI runner entirely.
     if _TTY:
         _w(f"  {_B}→{_X} open {editor}\n")
     subprocess.run([editor], check=True)
@@ -411,7 +411,7 @@ def cmd_edit(_args: argparse.Namespace) -> None:
         _rebuild()
 
 
-# ── Entry point ───────────────────────────────────────────────────────────────
+# -- Entry point ---------------------------------------------------------------
 
 
 def main() -> None:

@@ -69,7 +69,7 @@ in
                 credential.helper =
                     if pkgs.stdenv.isDarwin then "osxkeychain" else "${pkgs.gitFull}/bin/git-credential-libsecret";
 
-                # signing.signer doesn't wire gpg.program — set it here.
+                # signing.signer doesn't wire gpg.program -- set it here.
                 gpg.program = "${pkgs.gnupg}/bin/gpg";
             };
 
