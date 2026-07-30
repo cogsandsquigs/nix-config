@@ -7,7 +7,7 @@
 # /nix/store.
 #
 # Every server also rides `ai.enable` (that leaf owns programs.claude-code), so a server enabled on
-# its own would emit config nothing consumes — each file asserts against that.
+# its own would emit config nothing consumes — each file asserts against that itself.
 {
     imports = [
         ./gerrit

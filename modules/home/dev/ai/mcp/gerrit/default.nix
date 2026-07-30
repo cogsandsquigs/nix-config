@@ -29,11 +29,10 @@ in
 
     config = lib.mkIf cfg.enable {
         assertions = [
-            (tools.opt.requires {
-                when = cfg.enable;
-                needs = config.my.user.dev.ai.enable;
+            {
+                assertion = config.my.user.dev.ai.enable;
                 message = "my.user.dev.ai.mcp.gerrit.enable requires my.user.dev.ai.enable";
-            })
+            }
         ];
 
         # home-manager infers `type = "stdio"` from `command` (lib.hm.mcp.addType).

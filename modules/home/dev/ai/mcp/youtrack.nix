@@ -30,11 +30,10 @@ in
 
     config = lib.mkIf cfg.enable {
         assertions = [
-            (tools.opt.requires {
-                when = cfg.enable;
-                needs = config.my.user.dev.ai.enable;
+            {
+                assertion = config.my.user.dev.ai.enable;
                 message = "my.user.dev.ai.mcp.youtrack.enable requires my.user.dev.ai.enable";
-            })
+            }
         ];
 
         # `type = "http"` is inferred from `url`. Claude Code expands `${VAR}` refs inside both
