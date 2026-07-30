@@ -13,7 +13,7 @@
     config = lib.mkIf config.my.sys.packages.enable {
         environment.systemPackages = with pkgs; [
             pinentry_mac # EZ pinentry for GPG
-            appcleaner # For cleaning up rogue `.app`s
+            # appcleaner # For cleaning up rogue `.app`s # NOTE: Currently has SHA mismatch
         ];
     };
 }
