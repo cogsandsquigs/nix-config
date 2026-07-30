@@ -6,7 +6,10 @@
     ...
 }:
 {
-    imports = [ ./mcp ];
+    imports = [
+        ./mcp
+        ./lsp.nix
+    ];
 
     options.my.user.dev.ai.enable =
         tools.opt.mkRiding config.my.user.dev.enable "AI tooling / coding agents (for work)";
