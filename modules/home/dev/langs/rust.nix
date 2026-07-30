@@ -1,6 +1,4 @@
 { pkgs, ... }: {
-    lang = [ "rust" ];
-
     pkgs = with pkgs; [
         rustup
         cargo-watch # Project watching
@@ -21,7 +19,7 @@
         }
     ];
 
-    extensions.".rs" = "rust";
-
     fmt = [ "rustfmt" ];
+
+    languages.rust.extensions = [ ".rs" ];
 }

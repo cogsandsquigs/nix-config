@@ -1,6 +1,4 @@
 { pkgs, ... }: {
-    lang = [ "python" ];
-
     pkgs = with pkgs; [
         python3
         uv # Project manager
@@ -25,16 +23,23 @@
         }
     ];
 
-    extensions = {
-        ".py" = "python";
-        ".pyi" = "python";
-    };
-
     # See: https://stackoverflow.com/questions/77876253/sort-imports-alphabetically-with-ruff
     # And: https://github.com/helix-editor/helix/discussions/7749
     fmt = [
         "bash"
         "-c"
         "ruff check --select I --fix - | ruff format -"
+    ];
+
+    languages.python.extensions = [
+        ".py"
+        ".pyi"
+        ".py3"
+        ".pyw"
+        ".ptl"
+        ".rpy"
+        ".cpy"
+        ".ipy"
+        ".pyt"
     ];
 }

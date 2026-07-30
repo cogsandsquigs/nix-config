@@ -1,6 +1,4 @@
 { pkgs, lib, ... }: {
-    lang = [ "haskell" ];
-
     pkgs = with pkgs; [
         ghc
         haskellPackages.haskell-language-server
@@ -29,11 +27,6 @@
         }
     ];
 
-    extensions = {
-        ".hs" = "haskell";
-        ".lhs" = "literate haskell"; # HLS' own id for Bird-style sources; the space is correct
-    };
-
     fmt = [
         "fourmolu"
         "--stdin-input-file=%{buffer_name}"
@@ -57,11 +50,9 @@
         "--trailing-section-operators=false"
     ];
 
-    roots.haskell = [
-        "Setup.hs"
-        "stack.yaml"
-        "*.cabal"
-        "*.hs"
-        "*.lhs"
+    languages.haskell.extensions = [
+        ".hs"
+        ".hs-boot"
+        ".hsc"
     ];
 }

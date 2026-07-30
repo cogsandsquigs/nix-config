@@ -1,6 +1,4 @@
 { pkgs, ... }: {
-    lang = [ "latex" ];
-
     pkgs = with pkgs; [
         texlab
         texpresso
@@ -34,15 +32,20 @@
         }
     ];
 
-    extensions = {
-        ".tex" = "latex";
-        ".sty" = "latex";
-        ".cls" = "latex";
-        ".bib" = "bibtex";
-    };
-
     fmt = [
         "latexindent"
         "-"
     ];
+
+    languages = {
+        latex.extensions = [
+            ".tex"
+            ".sty"
+            ".cls"
+            ".Rd"
+            ".bbx"
+            ".cbx"
+        ];
+        bibtex.extensions = [ ".bib" ];
+    };
 }

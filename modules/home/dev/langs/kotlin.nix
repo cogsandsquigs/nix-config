@@ -1,6 +1,4 @@
 { pkgs, ... }: {
-    lang = [ "kotlin" ];
-
     pkgs = with pkgs; [
         kotlin
         # kotlin-native # Native runtime -- fails on macOS
@@ -19,8 +17,8 @@
         }
     ];
 
-    extensions = {
-        ".kt" = "kotlin";
-        ".kts" = "kotlin";
-    };
+    languages.kotlin.extensions = [
+        ".kt"
+        ".kts"
+    ];
 }

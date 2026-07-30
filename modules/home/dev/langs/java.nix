@@ -1,6 +1,4 @@
 { pkgs, ... }: {
-    lang = [ "java" ];
-
     pkgs = with pkgs; [
         jdk # Project toolchain only; jdtls hardcodes its own bundled JDK, ignoring JAVA_HOME
         gradle
@@ -32,20 +30,15 @@
         }
     ];
 
-    extensions.".java" = "java";
-
     fmt = [
         "google-java-format"
         "--aosp" # 4-space / 100-col, matching treefmt and the helix indent
         "-"
     ];
 
-    # Adds settings.gradle*, absent from helix's builtin, which roots a multi-module build wrong.
-    roots.java = [
-        "pom.xml"
-        "build.gradle"
-        "build.gradle.kts"
-        "settings.gradle"
-        "settings.gradle.kts"
+    languages.java.extensions = [
+        ".java"
+        ".jav"
+        ".pde"
     ];
 }

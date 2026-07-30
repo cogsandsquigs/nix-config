@@ -1,6 +1,4 @@
 { pkgs, ... }: {
-    lang = [ "bash" ];
-
     pkgs = with pkgs; [
         bash-language-server
         shfmt
@@ -17,16 +15,6 @@
         }
     ];
 
-    file-types.bash = [
-        "bash"
-        "sh"
-    ];
-
-    extensions = {
-        ".sh" = "shellscript";
-        ".bash" = "shellscript";
-    };
-
     fmt = [
         "shfmt"
         "--indent=4"
@@ -34,5 +22,29 @@
         "--case-indent"
         "--space-redirects"
         "-"
+    ];
+
+    languages.bash.extensions = [
+        ".sh"
+        ".bash"
+        ".ash"
+        ".dash"
+        ".ksh"
+        ".mksh"
+        ".zsh"
+        ".zshenv"
+        ".zlogin"
+        ".zlogout"
+        ".zprofile"
+        ".zshrc"
+        ".eclass"
+        ".ebuild"
+        ".bazelrc"
+        ".Renviron"
+        ".zsh-theme"
+        ".cshrc"
+        ".tcshrc"
+        ".bashrc_Apple_Terminal"
+        ".zshrc_Apple_Terminal"
     ];
 }

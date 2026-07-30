@@ -5,8 +5,8 @@
     ...
 }:
 let
-    # Translate lang specs -> Helix language config
-    specs = config.my.user.dev.langs.specs;
+    # Translate lang toolchains -> Helix language config
+    toolchains = config.my.user.dev.langs.toolchains;
 
     toCmd = list: {
         command = lib.head list;
@@ -24,7 +24,7 @@ let
         );
 
     toLang =
-        spec: langName:
+        t: langName: def:
         {
             name = langName;
         }
@@ -41,12 +41,12 @@ let
                 }
                 # NOTE: Must come AFTER -- the `//` operator updates the prev (above) attrset with
                 # the next (below) one.
-                // (lib.optionalAttrs (spec.editor-specific ? helix) spec.editor-specific.helix)
+                // (lib.optionalAttrs (t.editor-specific ? helix) t.editor-specific.helix)
             )
-        // lib.optionalAttrs (spec.lsp != [ ]) {
+        // lib.optionalAttrs (t.lsp != [ ]) {
             language-servers =
                 let
-                    hasFlags = builtins.any (l: l.only-features != [ ] || l.except-features != [ ]) spec.lsp;
+                    hasFlags = builtins.any (l: l.only-features != [ ] || l.except-features != [ ]) t.lsp;
                     toEntry =
                         l:
                         if !hasFlags then
@@ -58,14 +58,14 @@ let
                             // lib.optionalAttrs (l.only-features != [ ]) { inherit (l) only-features; }
                             // lib.optionalAttrs (l.except-features != [ ]) { inherit (l) except-features; };
                 in
-                map toEntry spec.lsp;
+                map toEntry t.lsp;
         }
-        // lib.optionalAttrs (spec.fmt != null) { formatter = toCmd spec.fmt; }
-        // lib.optionalAttrs (spec.file-types ? ${langName}) { file-types = spec.file-types.${langName}; }
-        // lib.optionalAttrs (spec.roots ? ${langName}) { roots = spec.roots.${langName}; };
+        // lib.optionalAttrs (t.fmt != null) { formatter = toCmd t.fmt; }
+        // lib.optionalAttrs (def.file-types != [ ]) { inherit (def) file-types; }
+        // lib.optionalAttrs (def.roots != [ ]) { inherit (def) roots; };
 
-    specLsps = lib.listToAttrs (lib.concatMap (s: map toLsp s.lsp) specs);
-    specLangs = lib.concatMap (s: map (toLang s) s.lang) specs;
+    specLsps = lib.listToAttrs (lib.concatMap (t: map toLsp t.lsp) toolchains);
+    specLangs = lib.concatMap (t: lib.mapAttrsToList (toLang t) t.languages) toolchains;
 
     floating_pane_size_percent = 80;
 

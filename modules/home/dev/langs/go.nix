@@ -1,9 +1,4 @@
 { pkgs, ... }: {
-    lang = [
-        "go"
-        "gomod"
-    ];
-
     pkgs = with pkgs; [
         go # Bundles `gofmt`
         gopls # Primary LSP
@@ -48,9 +43,6 @@
         }
     ];
 
-    # No `gomod` entry: go.mod is a bare filename, and this maps extensions only.
-    extensions.".go" = "go";
-
     fmt = [ "gofmt" ];
 
     editor-specific = {
@@ -60,5 +52,11 @@
                 unit = "\t";
             };
         };
+    };
+
+    languages = {
+        go.extensions = [ ".go" ];
+        # No extensions: go.mod is a bare filename, which `extensions` cannot express.
+        gomod = { };
     };
 }

@@ -1,9 +1,4 @@
 { pkgs, ... }: {
-    lang = [
-        "c"
-        "cpp"
-    ];
-
     # NOTE: Using LLVM v21 for C/C++ development
     pkgs = with pkgs; [
         bear
@@ -22,17 +17,19 @@
         }
     ];
 
-    extensions = {
-        ".c" = "c";
-        ".cc" = "cpp";
-        ".cpp" = "cpp";
-        ".cxx" = "cpp";
-        ".h" = "cpp"; # Ambiguous by nature; helix resolves it to cpp too, and clangd reads both
-        ".hh" = "cpp";
-        ".hpp" = "cpp";
-        ".hxx" = "cpp";
-        ".ipp" = "cpp";
-        ".tpp" = "cpp";
+    languages = {
+        c.extensions = [ ".c" ];
+        cpp.extensions = [
+            ".cc"
+            ".cpp"
+            ".cxx"
+            ".h" # Ambiguous by nature; helix resolves it to cpp too, and clangd reads both
+            ".hh"
+            ".hpp"
+            ".hxx"
+            ".ipp"
+            ".tpp"
+        ];
     };
 
     # TODO: home.file.".clang-format" -- deploy the clang-format config file.

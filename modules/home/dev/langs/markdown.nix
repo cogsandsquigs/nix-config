@@ -13,8 +13,6 @@ let
     );
 in
 {
-    lang = [ "markdown" ];
-
     pkgs = with pkgs; [
         # marksman # Markdown LSP -- heavy package, excluded for now
         mdbook
@@ -28,4 +26,7 @@ in
         "--stdin"
         "%{buffer_name}"
     ];
+
+    # No extensions: nothing to bind without an `lsp`.
+    languages.markdown = { };
 }

@@ -1,6 +1,4 @@
 { pkgs, ... }: {
-    lang = [ "pest" ];
-
     pkgs = with pkgs; [ pest-ide-tools ];
 
     # pest-language-server is auto-registered by pest-ide-tools;
@@ -12,7 +10,7 @@
         }
     ];
 
-    extensions.".pest" = "pest";
-
     # fmt = null -- LSP provides formatting
+
+    languages.pest.extensions = [ ".pest" ];
 }

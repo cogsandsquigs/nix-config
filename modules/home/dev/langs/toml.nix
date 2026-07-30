@@ -1,6 +1,4 @@
 { pkgs, ... }: {
-    lang = [ "toml" ];
-
     pkgs = with pkgs; [ taplo ];
 
     # Drops helix's `tombi` fallback, which is not installed anyway.
@@ -15,8 +13,6 @@
         }
     ];
 
-    extensions.".toml" = "toml";
-
     fmt = [
         "taplo"
         "fmt"
@@ -30,4 +26,6 @@
         "-o=reorder_keys=true"
         "-"
     ];
+
+    languages.toml.extensions = [ ".toml" ];
 }

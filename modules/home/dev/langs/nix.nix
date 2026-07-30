@@ -1,6 +1,4 @@
 { pkgs, ... }: {
-    lang = [ "nix" ];
-
     pkgs = with pkgs; [
         nixfmt # Official/default formatter (per-file, used by the editor)
         treefmt # Whole-tree formatter (alt) -- driven by ./treefmt.toml; also what `nix fmt` runs
@@ -23,8 +21,6 @@
         }
     ];
 
-    extensions.".nix" = "nix";
-
     fmt = [
         "nixfmt"
         "--width=100"
@@ -33,4 +29,6 @@
         "--strict"
         "-"
     ];
+
+    languages.nix.extensions = [ ".nix" ];
 }

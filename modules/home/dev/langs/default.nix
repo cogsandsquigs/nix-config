@@ -1,8 +1,9 @@
 # Language tooling. Every *.nix file in this directory is picked up automatically.
 #
-# Lang files return either a typed data spec ({ lang, pkgs, lsp, fmt, file-types, roots })
-# or a list of specs (for files that configure multiple languages with different LSPs).
-# Validated specs are exposed via my.user.dev.langs.specs for editor modules to consume.
+# Each file returns a toolchain -- packages, LSPs, formatter -- plus the table of languages that
+# toolchain serves ({ pkgs, lsp, fmt, editor-specific, languages }), or a list of toolchains when
+# one file covers languages needing different servers. Validated toolchains are exposed via
+# my.user.dev.langs.toolchains for editor modules to consume.
 {
     pkgs,
     lib,
@@ -40,10 +41,43 @@ let
         };
     };
 
-    langSpec = lib.types.submodule {
+    # One language served by the enclosing toolchain. Omitted fields inherit the editor's own
+    # defaults -- helix ships a builtin definition for nearly every language here, so only
+    # deliberate deviations belong in `file-types` and `roots`.
+    langDef = lib.types.submodule {
         options = {
-            lang = lib.mkOption { type = lib.types.nonEmptyListOf lib.types.str; };
+            extensions = lib.mkOption {
+                type = lib.types.listOf lib.types.str;
+                description = ''
+                    File extensions, leading dot kept, for clients that bind servers by extension
+                    rather than by language name. Pointless without an `lsp` on the toolchain.
+                '';
+                example = [ ".ts" ];
+                default = [ ];
+            };
 
+            file-types = lib.mkOption {
+                type = lib.types.listOf lib.types.str;
+                description = "Overrides helix's builtin list for this language, replacing it wholesale.";
+                default = [ ];
+            };
+
+            roots = lib.mkOption {
+                type = lib.types.listOf lib.types.str;
+                description = "Overrides helix's builtin project-root markers for this language.";
+                default = [ ];
+            };
+
+            language-id = lib.mkOption {
+                type = lib.types.nullOr lib.types.str;
+                description = "LSP language identifier. Null means the language's own name.";
+                default = null;
+            };
+        };
+    };
+
+    toolchain = lib.types.submodule {
+        options = {
             pkgs = lib.mkOption {
                 type = lib.types.listOf lib.types.package;
                 default = [ ];
@@ -59,30 +93,9 @@ let
                 default = null;
             };
 
-            file-types = lib.mkOption {
-                type = lib.types.attrsOf (lib.types.listOf lib.types.str);
-                default = { };
-            };
-
-            extensions = lib.mkOption {
-                type = lib.types.attrsOf lib.types.str;
-                description = ''
-                    File extension (leading dot kept) -> LSP language identifier. For clients that
-                    bind servers by extension rather than by language name -- helix reads its own
-                    `file-types` instead, so the two lists overlap without being derivable from
-                    each other (`.prettierrc` is a filename, and bash's id is `shellscript`).
-                '';
-                example = {
-                    ".ts" = "typescript";
-                    ".tsx" = "typescriptreact";
-                };
-                default = { };
-            };
-
-            roots = lib.mkOption {
-                type = lib.types.attrsOf (lib.types.listOf lib.types.str);
-                default = { };
-            };
+            # No default: a toolchain serving no language would silently install packages and drop
+            # its LSP and formatter on the floor.
+            languages = lib.mkOption { type = lib.types.attrsOf langDef; };
 
             editor-specific = lib.mkOption {
                 type = lib.types.attrsOf lib.types.attrs;
@@ -101,15 +114,15 @@ let
     };
 
     allResults = lib.mapAttrsToList (n: _: import (dir + "/${n}") { inherit pkgs lib config; }) files;
-    dataSpecs = lib.concatMap (m: if builtins.isList m then m else [ m ]) allResults;
+    dataToolchains = lib.concatMap (m: if builtins.isList m then m else [ m ]) allResults;
 
-    allPkgs = lib.concatMap (s: s.pkgs or [ ]) dataSpecs;
+    allPkgs = lib.concatMap (t: t.pkgs or [ ]) dataToolchains;
 in
 {
     options.my.user.dev.langs = {
         enable = tools.opt.mkRiding config.my.user.dev.enable "language toolchains (LSPs, formatters, compilers)";
-        specs = lib.mkOption {
-            type = lib.types.listOf langSpec;
+        toolchains = lib.mkOption {
+            type = lib.types.listOf toolchain;
             default = [ ];
             internal = true;
         };
@@ -117,22 +130,39 @@ in
 
     config = lib.mkIf config.my.user.dev.langs.enable {
         assertions =
+            let
+                toolchains = config.my.user.dev.langs.toolchains;
+                langNames = lib.concatMap (t: lib.attrNames t.languages) toolchains;
+            in
             lib.concatMap (
-                spec:
+                t:
                 map (lsp: {
                     assertion = lsp.only-features == [ ] || lsp.except-features == [ ];
                     message = "LSP '${lsp.name}': only-features and except-features are mutually exclusive";
-                }) spec.lsp
-            ) config.my.user.dev.langs.specs
+                }) t.lsp
+            ) toolchains
             ++ lib.concatMap (
-                spec:
-                map (ext: {
-                    assertion = lib.hasPrefix "." ext;
-                    message = "lang '${lib.head spec.lang}': extension '${ext}' must keep its leading dot";
-                }) (lib.attrNames spec.extensions)
-            ) config.my.user.dev.langs.specs;
+                t:
+                lib.concatMap (
+                    name:
+                    map (ext: {
+                        assertion = lib.hasPrefix "." ext;
+                        message = "language '${name}': extension '${ext}' must keep its leading dot";
+                    }) t.languages.${name}.extensions
+                ) (lib.attrNames t.languages)
+            ) toolchains
+            ++ [
+                {
+                    assertion = langNames == lib.unique langNames;
+                    message =
+                        "language defined by more than one toolchain: "
+                        + lib.concatStringsSep ", " (
+                            lib.unique (lib.filter (n: lib.count (m: m == n) langNames > 1) langNames)
+                        );
+                }
+            ];
 
         home.packages = allPkgs;
-        my.user.dev.langs.specs = dataSpecs;
+        my.user.dev.langs.toolchains = dataToolchains;
     };
 }

@@ -1,6 +1,4 @@
 { pkgs, ... }: {
-    lang = [ "scala" ];
-
     pkgs = with pkgs; [
         scala-next # Latest stable; `scala` is the LTS version
         bloop # Build server
@@ -16,11 +14,11 @@
         }
     ];
 
-    extensions = {
-        ".scala" = "scala";
-        ".sbt" = "scala";
-        ".sc" = "scala";
-    };
-
     # fmt = null -- metals formats via scalafmt; options go in .scalafmt.conf (HOCON)
+
+    languages.scala.extensions = [
+        ".scala"
+        ".sbt"
+        ".sc"
+    ];
 }

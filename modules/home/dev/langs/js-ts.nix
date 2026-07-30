@@ -22,17 +22,14 @@ let
                 "package.json"
             ];
             lint-debounce = "1s";
-            languages = lib.genAttrs [ "javascript" "typescript" "svelte" ] (_: eslintTool);
+            # Keys are the ids helix sends: javascriptreact/typescriptreact, not jsx/tsx.
+            languages = lib.genAttrs [ "javascript" "javascriptreact" "typescript" "typescriptreact" ] (
+                _: eslintTool
+            );
         }
     );
 in
 {
-    lang = [
-        "javascript"
-        "typescript"
-        "svelte"
-    ];
-
     pkgs = with pkgs; [
         nodejs
         aube
@@ -62,21 +59,32 @@ in
         }
     ];
 
-    # The *react ids are not cosmetic -- tsserver picks the JSX-aware parser off them.
-    extensions = {
-        ".ts" = "typescript";
-        ".mts" = "typescript";
-        ".cts" = "typescript";
-        ".tsx" = "typescriptreact";
-        ".js" = "javascript";
-        ".mjs" = "javascript";
-        ".cjs" = "javascript";
-        ".jsx" = "javascriptreact";
-        ".svelte" = "svelte";
-    };
-
     fmt = [
         "prettierd"
         "%{buffer_name}"
     ];
+
+    languages = {
+        javascript.extensions = [
+            ".js"
+            ".mjs"
+            ".cjs"
+            ".rules"
+            ".es6"
+            ".pac"
+        ];
+        jsx = {
+            extensions = [ ".jsx" ];
+            language-id = "javascriptreact";
+        };
+        typescript.extensions = [
+            ".ts"
+            ".mts"
+            ".cts"
+        ];
+        tsx = {
+            extensions = [ ".tsx" ];
+            language-id = "typescriptreact";
+        };
+    };
 }

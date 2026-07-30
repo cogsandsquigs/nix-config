@@ -1,7 +1,6 @@
-# Returns a list of specs: html and css/scss need different LSPs.
+# Returns a list of toolchains: html and css/scss need different LSPs.
 { pkgs, ... }: [
     {
-        lang = [ "html" ];
         pkgs = with pkgs; [
             zola
             vscode-langservers-extracted
@@ -16,20 +15,26 @@
                 ];
             }
         ];
-        extensions = {
-            ".html" = "html";
-            ".htm" = "html";
-        };
         fmt = [
             "prettierd"
             "%{buffer_name}"
         ];
+        languages.html.extensions = [
+            ".html"
+            ".htm"
+            ".shtml"
+            ".xhtml"
+            ".xht"
+            ".jsp"
+            ".asp"
+            ".aspx"
+            ".jshtm"
+            ".volt"
+            ".rhtml"
+            ".cshtml"
+        ];
     }
     {
-        lang = [
-            "css"
-            "scss"
-        ];
         lsp = [
             {
                 name = "vscode-css-language-server";
@@ -39,13 +44,13 @@
                 ];
             }
         ];
-        extensions = {
-            ".css" = "css";
-            ".scss" = "scss";
-        };
         fmt = [
             "prettierd"
             "%{buffer_name}"
         ];
+        languages = {
+            css.extensions = [ ".css" ];
+            scss.extensions = [ ".scss" ];
+        };
     }
 ]
