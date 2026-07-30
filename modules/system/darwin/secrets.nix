@@ -14,7 +14,5 @@
     options.my.sys.secrets.enable =
         tools.opt.mkEnabled "sops secret management (installs the sops CLI)";
 
-    config = lib.mkIf config.my.sys.secrets.enable {
-        environment.systemPackages = [ pkgs.sops ];
-    };
+    config = lib.mkIf config.my.sys.secrets.enable { environment.systemPackages = [ pkgs.sops ]; };
 }

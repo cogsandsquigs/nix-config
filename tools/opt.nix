@@ -43,6 +43,14 @@ in
             inherit default description;
             type = t.str;
         };
+    ## for a value that is only ever meaningful non-empty (creds, hosts). A type, not an assertion:
+    ## the error names the offending option instead of surfacing at the end of the build.
+    mkNonEmptyStr =
+        default: description:
+        lib.mkOption {
+            inherit default description;
+            type = t.nonEmptyStr;
+        };
     mkNullStr =
         description:
         lib.mkOption {
