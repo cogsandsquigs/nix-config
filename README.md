@@ -265,6 +265,10 @@ overridden `JAVA_HOME` still feeds `$JAVA_HOME/bin`. A missing file is a no-op.
   `bass` plugin — so bash quoting rules apply everywhere (quote values with spaces).
 - **Typical use:** the work box sets `JAVA_HOME=/usr/lib/jdk-21` to prefer a locally-installed JDK
   over the Nix one, instead of hardcoding it in the flake.
+- **Credentials for MCP servers.** `my.user.dev.ai.mcp.gerrit` defaults to `${GERRIT_HOST}`,
+  `${GERRIT_USERNAME}`, `${GERRIT_PASSWORD}` (an HTTP password: Gerrit → Settings → HTTP
+  Credentials). Claude Code expands them at launch, so they stay out of `/nix/store`. Only shells
+  load `.env`, so a `claude` started from a desktop launcher exits naming the missing var.
 
 ## Common tasks
 
