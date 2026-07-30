@@ -1,0 +1,22 @@
+[
+  {"query": "ok so I've been building this typescript query builder for like 4 months and honestly I have no idea if it's usable by anyone but me. can you figure out whether a normal person could pick it up? it's in packages/qb", "should_trigger": true},
+  {"query": "review my library", "should_trigger": true},
+  {"query": "I keep getting DMs from people asking how to do basic stuff with my package. is the problem the docs or the API itself", "should_trigger": true},
+  {"query": "my team lead says packages/pricing is 'hard to use' but won't tell me why. can you work out what he means", "should_trigger": true},
+  {"query": "do you think the tsdoc comments on my exports are actually enough for someone to get going without reading src/", "should_trigger": true},
+  {"query": "is this API any good", "should_trigger": true},
+  {"query": "before I publish 1.0 I want to know where new users are going to get stuck. lib is at ./crates/parser, rust", "should_trigger": true},
+  {"query": "I want to test whether an agent can use my sdk from types alone, no docs, no source. is that something you can set up", "should_trigger": true},
+  {"query": "we're onboarding two juniors onto the billing module next sprint and I'd rather find the sharp edges myself first", "should_trigger": true},
+  {"query": "zero to hero check on ./lib/http-client please", "should_trigger": true},
+  {"query": "can you review the code in packages/qb for bugs and bad practices", "should_trigger": false},
+  {"query": "write the README for my query builder library, it's in packages/qb", "should_trigger": false},
+  {"query": "add tsdoc comments to every exported symbol in src/index.ts", "should_trigger": false},
+  {"query": "my library's types are broken, Infer<F> resolves to never when the field is optional. can you fix it", "should_trigger": false},
+  {"query": "compare my query builder's API against drizzle and kysely, which design is nicer", "should_trigger": false},
+  {"query": "write integration tests for packages/pricing", "should_trigger": false},
+  {"query": "do a usability review of our checkout flow, users keep dropping off at the address step", "should_trigger": false},
+  {"query": "is this library any good? thinking about adding zod to the project, worth it?", "should_trigger": false},
+  {"query": "audit my dependencies for CVEs and unmaintained packages", "should_trigger": false},
+  {"query": "set up a docker-compose with postgres for my integration tests", "should_trigger": false}
+]
