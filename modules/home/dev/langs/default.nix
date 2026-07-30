@@ -84,26 +84,13 @@ let
                     Extensions this language owns, each keeping its leading dot (asserted). For
                     clients that bind a server to a file by extension instead of by language name;
                     helix is not one of them, it brings its own matching. Values mirror the plain
-                    entries of helix's builtin file types for the language. Files identified by
-                    their whole name rather than a suffix (`go.mod`) belong in `filenames`. Does
-                    nothing unless the language resolves to at least one server.
-                '';
-                example = [ ".ts" ];
-                default = [ ];
-            };
-
-            filenames = lib.mkOption {
-                type = lib.types.listOf lib.types.str;
-                description = ''
-                    Whole filenames this language owns, matched against a file's name in full
-                    rather than its extension -- `go.mod`, `Cargo.lock`, `.bashrc`. The companion to
-                    `extensions`, for the languages that have no meaningful extension at all. A
-                    leading dot here is part of the name, not a separator. Values mirror the plain
-                    entries of helix's builtin globs for the language; genuine patterns (`i3/config`,
-                    `*SConstruct`) are left out, since this matches names and not globs. Does nothing
+                    entries of helix's builtin file types for the language. Files identified by their
+                    whole name rather than a suffix (`go.mod`, `.bashrc`) cannot be listed at all:
+                    a dotless key rejects Claude's whole config, and a dot-led one never matches,
+                    so helix's builtin globs are the only thing that catches them. Does nothing
                     unless the language resolves to at least one server.
                 '';
-                example = [ "go.mod" ];
+                example = [ ".ts" ];
                 default = [ ];
             };
 

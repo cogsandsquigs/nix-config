@@ -27,13 +27,5 @@
         "-"
     ];
 
-    languages.toml = {
-        extensions = [ ".toml" ];
-        filenames = [
-            "Cargo.lock"
-            "uv.lock"
-            "pdm.lock"
-            "poetry.lock"
-        ];
-    };
+    languages.toml.extensions = [ ".toml" ];
 }

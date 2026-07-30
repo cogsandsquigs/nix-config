@@ -19,18 +19,9 @@
         "%{buffer_name}"
     ];
 
-    languages.yaml = {
-        extensions = [
-            ".yml"
-            ".yaml"
-            ".sublime-syntax"
-        ];
-        # Dotfiles whose whole name identifies them; prettier's rc is YAML, not JSON.
-        filenames = [
-            ".prettierrc"
-            ".clangd"
-            ".clang-format"
-            ".clang-tidy"
-        ];
-    };
+    languages.yaml.extensions = [
+        ".yml"
+        ".yaml"
+        ".sublime-syntax"
+    ];
 }

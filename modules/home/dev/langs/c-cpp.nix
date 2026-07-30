@@ -23,12 +23,24 @@
             ".cc"
             ".cpp"
             ".cxx"
+            ".c++"
+            ".C" # Capitalised variants are distinct extensions, not duplicates of .c/.h
+            ".cppm"
+            ".cu"
+            ".ino"
+            ".ii"
+            ".ixx"
             ".h" # Ambiguous by nature; helix resolves it to cpp too, and clangd reads both
             ".hh"
             ".hpp"
             ".hxx"
+            ".h++"
+            ".H"
+            ".cuh"
             ".ipp"
             ".tpp"
+            ".txx"
+            ".inl"
         ];
     };
 

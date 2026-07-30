@@ -49,24 +49,6 @@
             ".sublime-theme"
             ".sublime-workspace"
         ];
-        json.filenames = [
-            "flake.lock"
-            "composer.lock"
-            ".babelrc"
-            ".bowerrc"
-            ".jscrc"
-            ".jslintrc"
-            ".vuerc"
-            ".watchmanconfig"
-            ".swift-format"
-        ];
-
         jsonc.extensions = [ ".jsonc" ];
-        # helix writes these as one `{t,j}sconfig.json` glob.
-        jsonc.filenames = [
-            "tsconfig.json"
-            "jsconfig.json"
-            "bun.lock"
-        ];
     };
 }

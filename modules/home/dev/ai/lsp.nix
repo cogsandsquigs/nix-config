@@ -25,10 +25,10 @@ let
             let
                 def = t.languages.${name};
                 servers = langServers t def;
-                # `filenames` deliberately excluded. Every extensionToLanguage key must start with
-                # a dot; one that does not rejects the whole .lsp.json, taking every other server
-                # down with it -- verified, and worse than the docs imply. So `go.mod` and friends
-                # cannot bind here at all, rather than binding and being ignored.
+                # Extensions only, and whole filenames are not an option, measured not assumed: a
+                # dotless key (go.mod) rejects the entire .lsp.json and every server in it, while a
+                # dot-led one (.bashrc) is accepted but never matches, since Claude reads an empty
+                # file type off a name with no second dot.
                 keys = def.extensions;
             in
             lib.optional (servers != [ ] && keys != [ ]) {
