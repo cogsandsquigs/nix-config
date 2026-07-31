@@ -68,7 +68,7 @@ let
                             l.name
                         else
                             {
-                                name = l.name;
+                                inherit (l) name;
                             }
                             // lib.optionalAttrs (l.only-features != [ ]) { inherit (l) only-features; }
                             // lib.optionalAttrs (l.except-features != [ ]) { inherit (l) except-features; };

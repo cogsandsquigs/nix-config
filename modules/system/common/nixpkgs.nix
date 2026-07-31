@@ -1,6 +1,6 @@
 # nixpkgs settings + overlays. Applies to the system and, via home-manager's `useGlobalPkgs`,
 # to the home configuration too.
-{ ... }:
+_:
 let
     overlays = [
         # (final: _prev: {
@@ -15,6 +15,6 @@ in
             qt.enable = true;
         };
 
-        overlays = overlays;
+        inherit overlays;
     };
 }

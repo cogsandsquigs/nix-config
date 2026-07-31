@@ -7,10 +7,11 @@
 #   fleet-eval     -- every host still evaluates, including hosts this machine cannot build
 #   typed-options  -- no `my.*` option is loosely typed or undocumented
 #   tools-tests    -- unit tests over tools/, via lib.runTests
-{ tools }:
+#   lint           -- statix reports nothing (see ../statix.toml)
+{ self, tools }:
 pkgs:
 let
-    lib = pkgs.lib;
+    inherit (pkgs) lib;
 
     # Every host's top-level derivation, whatever class the host is.
     toplevels =
@@ -115,4 +116,12 @@ in
             fail "typed-options" "loosely typed or undocumented options" offenders;
 
     tools-tests = import ./_fixtures/tests.nix { inherit pkgs; };
+
+    # `self` is the flake source, so this sees git-tracked files only -- the same set `nxm` stages
+    # before a rebuild. A finding in an unstaged file will not appear here.
+    lint = pkgs.runCommand "lint" { nativeBuildInputs = [ pkgs.statix ]; } ''
+        cd ${self}
+        statix check .
+        touch $out
+    '';
 }

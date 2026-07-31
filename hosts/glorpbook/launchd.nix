@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
 
     # NOTE: See:
     #   - https://www.danielcorin.com/til/nix-darwin/launch-agents/

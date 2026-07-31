@@ -26,7 +26,7 @@ in
     ## enable-style toggles
     mkEnabled = mkBoolOpt true; # core feature: on unless explicitly disabled
     mkDisabled = mkBoolOpt false; # optional feature: opt-in
-    mkRiding = parent: mkBoolOpt parent; # sub-feature: default follows its parent group's value
+    mkRiding = mkBoolOpt; # sub-feature: default follows its parent group's value
     mkRequired =
         # no default -> eval errors if a host/user forgets to choose. Reserve for features where a
         # forgotten value would be a *silent* bug (most core fails loudly, so rarely needed).

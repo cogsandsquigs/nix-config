@@ -36,7 +36,7 @@ in
     };
 
     system = {
-        primaryUser = primaryUser;
+        inherit primaryUser;
 
         # activationScripts are executed every time you boot the system or run `darwin-rebuild`.
         activationScripts = {

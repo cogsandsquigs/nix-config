@@ -9,4 +9,4 @@
 # flake checkout path all live in the portable user unit (users/ipratt/), and home.username + platform
 # come from ./id.nix. This file remains the host module, and is the place for any genuinely
 # work-box-only home overrides if they ever arise.
-{ ... }: { _class = "homeManager"; }
+_: { _class = "homeManager"; }

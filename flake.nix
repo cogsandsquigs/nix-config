@@ -50,7 +50,7 @@
     # No host is named here. Each machine declares its class in hosts/<name>/id.nix, and ./tools maps
     # the fleet onto the right builder, so adding a host touches only its own directory.
     outputs =
-        { ... }@inputs:
+        { self, ... }@inputs:
         let
             tools = import ./tools {
                 inherit inputs;
@@ -67,7 +67,7 @@
 
             # `nix flake check` -> the gates in ./tools/checks.nix. Runnable from any machine in the
             # fleet, including the checks that cover the machines it cannot build.
-            checks = tools.forAllSystems (import ./tools/checks.nix { inherit tools; });
+            checks = tools.forAllSystems (import ./tools/checks.nix { inherit self tools; });
 
             # `nix fmt` -> treefmt, driven by ./treefmt.toml (4-space, 100 cols -- the repo's real
             # style). Wrapped with the formatters treefmt invokes (nixfmt/shfmt/prettier) on PATH

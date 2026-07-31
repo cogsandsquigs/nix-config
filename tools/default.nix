@@ -11,7 +11,7 @@
 { inputs, root }:
 let
     inherit (inputs) nixpkgs nix-darwin home-manager;
-    lib = nixpkgs.lib;
+    inherit (nixpkgs) lib;
 
     fleet = import ./fleet.nix { inherit lib root; };
 

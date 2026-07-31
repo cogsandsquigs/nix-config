@@ -7,7 +7,7 @@
 # a host does. Each `bad-*` tree isolates one way of getting a host declaration wrong.
 { pkgs }:
 let
-    lib = pkgs.lib;
+    inherit (pkgs) lib;
 
     opt = import ../opt.nix { inherit lib; };
 

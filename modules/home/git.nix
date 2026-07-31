@@ -52,7 +52,7 @@ in
             settings = {
                 user = {
                     name = cfg.userName;
-                    email = cfg.email;
+                    inherit (cfg) email;
                 };
 
                 url = {
@@ -75,7 +75,7 @@ in
 
             signing = {
                 key = cfg.signingKey;
-                signByDefault = cfg.signByDefault;
+                inherit (cfg) signByDefault;
                 # signer = "${pkgs.gnupg}/bin/gpg"; # NOTE: See `extraConfig.gpg.program`
             };
         };

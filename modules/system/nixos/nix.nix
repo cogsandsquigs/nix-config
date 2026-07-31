@@ -31,9 +31,9 @@ in
                 "flakes"
             ];
 
-            substituters = substituters;
-            trusted-public-keys = trusted-public-keys;
-            trusted-users = trusted-users;
+            inherit substituters;
+            inherit trusted-public-keys;
+            inherit trusted-users;
             builders-use-substitutes = true;
         };
 

@@ -1,0 +1,7 @@
+# statix configuration. `nix flake check` runs `statix check` as the `lint` gate.
+
+# repeated_keys wants `my.user.a = x; my.user.b = y;` collapsed into `my = { user.a = x; ... };`.
+# That works against this repo on purpose: a host or user unit selects features as one flat line each,
+# so a feature is one line in one file and a diff shows exactly which feature moved. Nesting them buys
+# nothing and costs the property the layout is built around.
+disabled = [ "repeated_keys" ]
