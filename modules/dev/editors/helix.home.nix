@@ -55,8 +55,8 @@ let
                     };
                 }
                 # NOTE: Must come AFTER -- the `//` operator updates the prev (above) attrset with
-                # the next (below) one.
-                // (lib.optionalAttrs (t.editor-specific ? helix) t.editor-specific.helix)
+                # the next (below) one. Defaults to `{ }`, so no presence test is needed.
+                // t.editor-specific.helix
             )
         // lib.optionalAttrs (lsps != [ ]) {
             language-servers =

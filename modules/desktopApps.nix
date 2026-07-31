@@ -41,7 +41,8 @@
         }:
         {
             options.my.sys.desktopApps.enable =
-                tools.opt.mkDisabled "GUI apps via Homebrew (WhatsApp, Firefox)";
+                tools.opt.mkFollowsUsers config "desktopApps"
+                    "GUI apps via Homebrew (WhatsApp, Firefox).";
 
             config = lib.mkIf config.my.sys.desktopApps.enable {
                 homebrew = {

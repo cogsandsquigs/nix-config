@@ -38,7 +38,7 @@
             ...
         }:
         {
-            options.my.sys.games.enable = tools.opt.mkDisabled "Steam (native on NixOS)";
+            options.my.sys.games.enable = tools.opt.mkFollowsUsers config "games" "Steam (native on NixOS).";
 
             config = lib.mkIf config.my.sys.games.enable {
                 programs.steam = {
@@ -57,7 +57,8 @@
         }:
         {
             options.my.sys.games.enable =
-                tools.opt.mkDisabled "games (Steam, Olympus, Heroic Launcher & Porting Kit via Homebrew)";
+                tools.opt.mkFollowsUsers config "games"
+                    "games (Steam, Olympus, Heroic Launcher & Porting Kit via Homebrew).";
 
             config = lib.mkIf config.my.sys.games.enable {
                 environment.systemPackages = [ pkgs.p7zip ]; # required for heroic winetricks for some reason?

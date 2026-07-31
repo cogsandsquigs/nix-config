@@ -16,12 +16,9 @@ in
 
     nixpkgs.hostPlatform = host.system;
 
-    # Optional system features this host opts into (all default off in the modules).
-    my.sys = {
-        games.enable = true;
-        desktopApps.enable = true;
-        fuse.enable = true;
-    };
+    # `games` and `desktopApps` follow the users on this host, so only the genuinely host-level
+    # opt-in is named here.
+    my.sys.fuse.enable = true;
 
     networking.hostName = hostName;
     networking.computerName = hostName;

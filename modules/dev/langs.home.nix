@@ -190,18 +190,26 @@ let
                 '';
             };
 
+            # A submodule rather than `attrsOf attrs`: the editors are ours to enumerate, so a typo
+            # like `helyx = { ... }` is an error instead of an attribute silently ignored. What each
+            # editor accepts inside is that editor's own schema, so those values stay free-form.
+            # Add an editor here when a module actually reads it, not before.
             editor-specific = lib.mkOption {
-                type = lib.types.attrsOf lib.types.attrs;
-                description = "Editor-specific language configuration. Will be merged with the other language configuration (e.g. under `\"[<lang>]\": { ... }` in vscode)";
-                example = {
-                    helix = {
-                        auto-format = false;
-                    };
-                    vscode = {
-                        formatOnSave = false;
+                type = lib.types.submodule {
+                    options.helix = lib.mkOption {
+                        type = lib.types.attrs;
+                        default = { };
+                        description = ''
+                            Extra helix language settings for every language this toolchain serves,
+                            merged over the defaults. Keys are helix's own, not ours.
+                        '';
+                        example = {
+                            auto-format = false;
+                        };
                     };
                 };
                 default = { };
+                description = "Per-editor language configuration, merged with the shared settings.";
             };
         };
     };

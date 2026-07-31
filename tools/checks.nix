@@ -106,11 +106,11 @@ let
     ];
 
     # Options that are free-form on purpose. Enumerated, so the exceptions stay finite and visible.
+    # Each of these is a foreign schema: the value is handed verbatim to a tool that defines its own
+    # keys, so declaring a type here would mean tracking someone else's config format.
     allowedLoose = [
-        # Passed through verbatim to the editor's own config file, whose schema is not ours.
-        "my.user.dev.langs.toolchains.lsp.config"
-        # TODO: give this a submodule with the editors we actually support, then drop this entry.
-        "my.user.dev.langs.toolchains.editor-specific"
+        "my.user.dev.langs.toolchains.lsp.config" # a language server's own settings
+        "my.user.dev.langs.toolchains.editor-specific.helix" # helix's own language settings
     ];
 
     # A loose type anywhere inside a type expression counts: `attrsOf attrs` checks its keys and nothing

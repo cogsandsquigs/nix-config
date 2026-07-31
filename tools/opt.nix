@@ -27,6 +27,30 @@ in
     mkEnabled = mkBoolOpt true; # core feature: on unless explicitly disabled
     mkDisabled = mkBoolOpt false; # optional feature: opt-in
     mkRiding = mkBoolOpt; # sub-feature: default follows its parent group's value
+
+    ## A SYSTEM feature whose default is "some user on this host wants the matching home feature".
+    ##
+    ## A machine needs Steam at the system level only because a user on it plays games, so saying that
+    ## twice -- once in the host, once in the user unit -- is bookkeeping the host should not have to
+    ## do. Usage, from a nixos or darwin half:
+    ##
+    ##   options.my.sys.games.enable = tools.opt.mkFollowsUsers config "games" "Steam ...";
+    ##
+    ## This works only because home-manager runs as a submodule of the system evaluation, so the system
+    ## can read the home config. It is one-directional on purpose: a home feature must never read
+    ## `my.sys.*` back, or the two evaluations would deadlock. `feature` is a single name under
+    ## `my.user`, not a dotted path.
+    mkFollowsUsers =
+        config: feature: description:
+        lib.mkOption {
+            inherit description;
+            type = t.bool;
+            default = lib.any (user: user.my.user.${feature}.enable or false) (
+                lib.attrValues (config.home-manager.users or { })
+            );
+            defaultText = lib.literalMD "true when any user on this host sets `my.user.${feature}.enable`";
+        };
+
     mkRequired =
         # no default -> eval errors if a host/user forgets to choose. Reserve for features where a
         # forgotten value would be a *silent* bug (most core fails loudly, so rarely needed).

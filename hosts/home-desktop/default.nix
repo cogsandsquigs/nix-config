@@ -12,9 +12,6 @@
 
     nixpkgs.hostPlatform = host.system;
 
-    # Optional system features this host opts into (all default off in the modules).
-    my.sys.games.enable = true;
-
     # Hostname is the host directory's name -- see tools/fleet.nix.
     networking.hostName = host.name;
 
