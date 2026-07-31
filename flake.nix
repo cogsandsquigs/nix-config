@@ -65,6 +65,10 @@
                 homeConfigurations
                 ;
 
+            # `nix flake check` -> the gates in ./tools/checks.nix. Runnable from any machine in the
+            # fleet, including the checks that cover the machines it cannot build.
+            checks = tools.forAllSystems (import ./tools/checks.nix { inherit tools; });
+
             # `nix fmt` -> treefmt, driven by ./treefmt.toml (4-space, 100 cols -- the repo's real
             # style). Wrapped with the formatters treefmt invokes (nixfmt/shfmt/prettier) on PATH
             # so `nix fmt` is self-contained and matches editor + `treefmt` output.
