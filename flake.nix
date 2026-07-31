@@ -35,6 +35,12 @@
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
+        # Recursive module discovery, so `modules/` needs no hand-written import lists. Deliberately
+        # the only framework-ish dependency here: its own flake.nix is `{ outputs = _: import ./.; }`,
+        # so it has no inputs of its own and no nixpkgs dependency (pure builtins). flake.lock grows
+        # by exactly one node and there is nothing to `follows`.
+        import-tree.url = "github:vic/import-tree";
+
         ## Secrets and such ##
 
         sops-nix = {
@@ -64,6 +70,13 @@
                 darwinConfigurations
                 homeConfigurations
                 ;
+
+            # The feature registry, as the standard per-class module outputs. `nix flake show` then
+            # lists every feature and its class -- the index the deleted default.nix import lists used
+            # to approximate, except this one cannot be out of date.
+            nixosModules = tools.registry.nixos;
+            darwinModules = tools.registry.darwin;
+            homeModules = tools.registry.homeManager;
 
             # `nix flake check` -> the gates in ./tools/checks.nix. Runnable from any machine in the
             # fleet, including the checks that cover the machines it cannot build.

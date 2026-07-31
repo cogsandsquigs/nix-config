@@ -5,7 +5,7 @@
 # `hosts/<name>/{id.nix,default.nix}` and nothing else.
 #
 # Exposes:
-#   fleet, root                        -- the typed fleet, and the flake root (checks derive paths)
+#   fleet, registry, root              -- the typed fleet, the feature registry, the flake root
 #   forAllSystems                      -- map over every platform the fleet uses (per-system outputs)
 #   {nixos,darwin,home}Configurations  -- one entry per host of that class
 { inputs, root }:
@@ -14,6 +14,11 @@ let
     inherit (nixpkgs) lib;
 
     fleet = import ./fleet.nix { inherit lib root; };
+
+    registry = import ./registry.nix {
+        inherit lib root;
+        importTree = inputs.import-tree;
+    };
 
     # Our own option/safety helpers, handed to every module as the `tools` specialArg -- on all three
     # host classes, system and home alike.
@@ -46,7 +51,12 @@ let
         host:
         let
             args = {
-                inherit inputs fleet host;
+                inherit
+                    inputs
+                    fleet
+                    registry
+                    host
+                    ;
                 tools = mkTools host.system;
             };
         in
@@ -64,20 +74,14 @@ let
         host:
         lib.nixosSystem {
             specialArgs = argsFor host;
-            modules = [
-                (root + "/modules/system/nixos")
-                (hostDir host)
-            ];
+            modules = lib.attrValues registry.nixos ++ [ (hostDir host) ];
         };
 
     mkDarwin =
         host:
         nix-darwin.lib.darwinSystem {
             specialArgs = argsFor host;
-            modules = [
-                (root + "/modules/system/darwin")
-                (hostDir host)
-            ];
+            modules = lib.attrValues registry.darwin ++ [ (hostDir host) ];
         };
 
     # A STANDALONE home-manager configuration -- a machine where Nix is installed per-user and there
@@ -99,7 +103,7 @@ let
 
             extraSpecialArgs = argsFor host;
 
-            modules = [
+            modules = lib.attrValues registry.homeManager ++ [
                 { home.username = host.primaryUser; }
                 (root + "/users/${host.primaryUser}/home.nix")
                 (hostDir host)
@@ -109,7 +113,7 @@ let
     ofClass = class: lib.filterAttrs (_: h: h.class == class) fleet.hosts;
 in
 {
-    inherit fleet root;
+    inherit fleet registry root;
 
     # Map a function over every platform the fleet actually uses (per-system outputs such as the
     # formatter and the checks). Replaces flake-parts' `perSystem`.

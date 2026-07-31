@@ -18,8 +18,6 @@ let
     haveGpg = builtins.pathExists (../../secrets + "/${me}/gpg.sops");
 in
 {
-    imports = [ ../../modules/home ];
-
     my.user.games.enable = true;
     my.user.desktopApps.enable = true;
     my.user.vpn.enable = true;
