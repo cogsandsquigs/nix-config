@@ -34,21 +34,33 @@ in
     ## twice -- once in the host, once in the user unit -- is bookkeeping the host should not have to
     ## do. Usage, from a nixos or darwin half:
     ##
-    ##   options.my.sys.games.enable = tools.opt.mkFollowsUsers config "games" "Steam ...";
+    ##   options.my.sys.apps.games.enable =
+    ##       tools.opt.mkFollowsUsers config [ "apps" "games" ] "Steam ...";
     ##
     ## This works only because home-manager runs as a submodule of the system evaluation, so the system
     ## can read the home config. It is one-directional on purpose: a home feature must never read
-    ## `my.sys.*` back, or the two evaluations would deadlock. `feature` is a single name under
-    ## `my.user`, not a dotted path.
+    ## `my.sys.*` back, or the two evaluations would deadlock.
+    ##
+    ## `path` is the option path under `my.user` as a LIST, because a name misses once the feature moves
+    ## into a namespace folder and a missed lookup is a silent `false` -- it uninstalls rather than
+    ## errors.
     mkFollowsUsers =
-        config: feature: description:
+        config: path: description:
         lib.mkOption {
             inherit description;
             type = t.bool;
-            default = lib.any (user: user.my.user.${feature}.enable or false) (
-                lib.attrValues (config.home-manager.users or { })
-            );
-            defaultText = lib.literalMD "true when any user on this host sets `my.user.${feature}.enable`";
+            default = lib.any (
+                user:
+                lib.attrByPath (
+                    [
+                        "my"
+                        "user"
+                    ]
+                    ++ path
+                    ++ [ "enable" ]
+                ) false user
+            ) (lib.attrValues (config.home-manager.users or { }));
+            defaultText = lib.literalMD "true when any user on this host sets `my.user.${lib.concatStringsSep "." path}.enable`";
         };
 
     mkRequired =

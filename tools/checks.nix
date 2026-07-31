@@ -95,6 +95,10 @@ let
         ) (o.opt.declarations or [ ])
     ) allOptions;
 
+    # No check for a shared `options` block overlapping a class key: the module system already rejects
+    # a duplicate declaration ("The option `x' in `f' is already declared in `f'"), and it does so
+    # before anything here could read the option, so a check of our own would be unreachable.
+
     # -- typed-options ---------------------------------------------------------------------------
 
     # Types that carry no information: they accept anything, so they check nothing.

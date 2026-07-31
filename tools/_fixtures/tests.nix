@@ -24,6 +24,20 @@ let
 
     ok = fleetOf "ok";
 
+    # Path -> feature name. The paths need not exist: the mapping is string manipulation, and keeping it
+    # that way is why one definition can serve both the registry and the `feature-paths` check.
+    featureOf =
+        relative:
+        import ../feature.nix {
+            inherit lib;
+            root = ./ok;
+        } (./ok + "/modules/${relative}");
+
+    # `mkFollowsUsers` takes the option path as a list. A name would miss once a feature moves into a
+    # namespace folder, and a missed lookup defaults to `false`, which uninstalls rather than errors.
+    followsGames =
+        users: (opt.mkFollowsUsers { home-manager.users = users; } [ "apps" "games" ] "games").default;
+
     results = lib.runTests {
         # -- tools/fleet.nix, accepting a valid declaration ---------------------------------------
 
@@ -62,7 +76,32 @@ let
             expected = true;
         };
 
+        # -- tools/feature.nix ---------------------------------------------------------------------
+
+        testFeatureNameAtTopLevel = {
+            expr = featureOf "secrets.nix";
+            expected = "secrets";
+        };
+
+        testFeatureNameCountsFolders = {
+            expr = featureOf "cli/utils/gpg.nix";
+            expected = "cli.utils.gpg";
+        };
+
         # -- tools/opt.nix -------------------------------------------------------------------------
+
+        testOptFollowsUsersReadsAPath = {
+            expr = followsGames { someone.my.user.apps.games.enable = true; };
+            expected = true;
+        };
+
+        testOptFollowsUsersFalseWhenNobodyAsks = {
+            expr = followsGames {
+                someone.my.user.apps.games.enable = false;
+                other = { };
+            };
+            expected = false;
+        };
 
         testOptEnabledDefaultsOn = {
             expr = (opt.mkEnabled "core feature").default;

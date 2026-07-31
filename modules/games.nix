@@ -3,6 +3,18 @@
 # The three halves install different things because the platforms do: nixpkgs has the launchers on all
 # of them, NixOS has Steam natively, and nix-darwin cannot manage Steam at all so macOS goes through
 # Homebrew casks.
+#
+# No shared `options` block: the home half owns `my.user.games` and the system halves own
+# `my.sys.games`, so a shared block would declare each scope's option on classes that cannot read it.
+let
+    # Both system halves declare the same option, so they describe it identically. Declared twice with
+    # two descriptions, the class you happened to evaluate decided the documentation.
+    sysEnable =
+        config: tools:
+        tools.opt.mkFollowsUsers config [
+            "games"
+        ] "games at the system level (Steam natively on NixOS, Homebrew casks on macOS)";
+in
 {
     home =
         {
@@ -38,7 +50,7 @@
             ...
         }:
         {
-            options.my.sys.games.enable = tools.opt.mkFollowsUsers config "games" "Steam (native on NixOS).";
+            options.my.sys.games.enable = sysEnable config tools;
 
             config = lib.mkIf config.my.sys.games.enable {
                 programs.steam = {
@@ -56,9 +68,7 @@
             ...
         }:
         {
-            options.my.sys.games.enable =
-                tools.opt.mkFollowsUsers config "games"
-                    "games (Steam, Olympus, Heroic Launcher & Porting Kit via Homebrew).";
+            options.my.sys.games.enable = sysEnable config tools;
 
             config = lib.mkIf config.my.sys.games.enable {
                 environment.systemPackages = [ pkgs.p7zip ]; # required for heroic winetricks for some reason?
