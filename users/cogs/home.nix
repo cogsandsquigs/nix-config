@@ -1,9 +1,8 @@
-# The `cogs` user's home-manager config -- the PERSONAL unit: full home library plus the personal
-# selections (games + desktop-apps on) and git identity. Self-contained: sets its own
-# `my.user.git.*` rather than relying on the option defaults, so the unit stays correct wherever
-# it's placed.
+# The `cogs` user's home-manager config -- the PERSONAL unit.
 #
-# Imported per-user by the wiring (home-manager.users.cogs on full-OS hosts; mkHome on standalone).
+# Every feature under modules/ is already loaded by the registry, so this unit is pure selection: which
+# optional features to turn on, and this user's own values. It sets `my.user.git.*` explicitly rather
+# than relying on the option defaults, so the unit stays correct wherever it is placed.
 {
     config,
     lib,
@@ -20,7 +19,6 @@ in
 {
     my.user.games.enable = true;
     my.user.desktopApps.enable = true;
-    my.user.vpn.enable = true;
 
     my.user.git = {
         userName = "Ian Pratt";
@@ -30,13 +28,5 @@ in
         signingKeyFile = lib.mkIf haveGpg (tools.secrets.path config me "gpg");
     };
 
-    my.user.vpn.profiles.work-alt-ipratt = {
-        name = "Work Alt (ipratt)";
-        path = tools.secrets.path config "cogs" "work-alt-ipratt-ovpn";
-    };
-
-    sops.secrets = lib.mkMerge [
-        (lib.mkIf haveGpg (tools.secrets.declare me "gpg"))
-        (tools.secrets.declare "cogs" "work-alt-ipratt-ovpn")
-    ];
+    sops.secrets = lib.mkIf haveGpg (tools.secrets.declare me "gpg");
 }

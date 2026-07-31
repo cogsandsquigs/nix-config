@@ -33,13 +33,9 @@ let
     # so home-manager extends THAT). We did not take it: overlaying `lib` is discouraged upstream
     # (nixpkgs internals capture the pre-overlay lib, so you get two lib instances) and it needs
     # asymmetric wiring -- an overlay for the home side plus `specialArgs.lib` for the system side.
-    # Per-host, because `tools.conf.eachOs` bakes in the host's platform so the call site needs no
-    # system argument. `opt` and `secrets` are platform-agnostic. (Step 4 of the migration removes
-    # `conf` along with its only callers, at which point this stops needing the host.)
-    mkTools = system: {
+    tools = {
         opt = import ./opt.nix { inherit lib; };
         secrets = import ./secrets.nix;
-        conf = import ./conf.nix { inherit lib system; };
     };
 
     # The complete module-argument contract, in one place, for all three builders.
@@ -56,8 +52,8 @@ let
                     fleet
                     registry
                     host
+                    tools
                     ;
-                tools = mkTools host.system;
             };
         in
         args // { moduleArgs = args; };
@@ -88,17 +84,14 @@ let
     # is no NixOS/nix-darwin system layer (the work desktop on Ubuntu). The user's home.nix, not this
     # builder, owns the feature set, so a standalone box is just "this user, no system layer".
     #
-    # Unlike the system hosts (which get nixpkgs config via useGlobalPkgs) a standalone config owns
-    # its own `pkgs`, so allowUnfree/qt are set here to match modules/system/common/nixpkgs.nix.
+    # Unlike the system hosts (which get their nixpkgs config through useGlobalPkgs) a standalone config
+    # owns its own `pkgs`, so it reads the same shared config attribute modules/nixpkgs.nix does.
     mkHome =
         host:
         home-manager.lib.homeManagerConfiguration {
             pkgs = import nixpkgs {
                 inherit (host) system;
-                config = {
-                    allowUnfree = true;
-                    qt.enable = true;
-                };
+                config = import (root + "/modules/_nixpkgs-config.nix");
             };
 
             extraSpecialArgs = argsFor host;

@@ -1,14 +1,16 @@
 # System accounts for the users this host declares (host.users, from its id.nix).
 #
-# Each user's account attributes live in its own portable unit at users/<name>/system.nix, so this only
-# places the ones this host hosts. Home configuration for the same users flows separately, through
-# modules/home-manager.nix.
+# Each user's account attributes live in its own portable unit at users/<name>/system.nix, keyed by
+# class for the same reason a feature is: the two classes accept different attributes. This selects the
+# half that matches, so a NixOS host never sees the darwin account and the reverse.
 #
-# Identical on both system classes, so the body is written once.
+# Home configuration for the same users flows separately, through modules/home-manager.nix.
 let
-    accounts = { host, ... }: { imports = map (name: ../users + "/${name}/system.nix") host.users; };
+    accountsFor = class: { host, ... }: {
+        imports = map (name: (import (../users + "/${name}/system.nix")).${class}) host.users;
+    };
 in
 {
-    nixos = accounts;
-    darwin = accounts;
+    nixos = accountsFor "nixos";
+    darwin = accountsFor "darwin";
 }

@@ -1,16 +1,12 @@
 # nixpkgs settings and overlays.
 #
-# Applies to the system and, through home-manager's `useGlobalPkgs`, to the home configuration too. A
-# standalone home-manager host has no system layer, so tools/default.nix instantiates its `pkgs` with
-# the same config attribute -- step 4 of the migration moves that shared value into one file so the two
-# cannot drift.
+# Applies to the system and, through home-manager's `useGlobalPkgs`, to the home configuration too. The
+# `config` values live in ./_nixpkgs-config.nix because tools/default.nix needs the same ones from
+# outside the module system, to instantiate `pkgs` for a standalone home-manager host.
 let
     nixpkgs = _: {
         nixpkgs = {
-            config = {
-                allowUnfree = true;
-                qt.enable = true;
-            };
+            config = import ./_nixpkgs-config.nix;
 
             overlays = [
                 # (final: _prev: {

@@ -11,7 +11,7 @@ let
     keyOf = location: name: builtins.replaceStrings [ "/" ] [ "-" ] "${location}/${name}";
 
     # Build a `sops.secrets` fragment. `format = "binary"` means "the decrypted payload is the raw
-    # file bytes" (an .ovpn, an exported GPG key) -- not a value looked up inside a YAML/JSON document.
+    # file bytes" (an exported GPG key, a certificate) -- not a value looked up inside a YAML document.
     # In `let` so `declare` below can reuse it.
     mkSecret = location: name: attrs: {
         "${keyOf location name}" = {

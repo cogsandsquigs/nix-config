@@ -1,15 +1,26 @@
-# System account for `cogs` on a full-OS host (NixOS or nix-darwin). Class-portable: the
-# NixOS-only attrs (`isNormalUser`, `extraGroups`) are omitted on darwin, which rejects them.
-# Standalone home-manager hosts (per-user Nix, no system layer) never import this.
-{ pkgs, lib, ... }: {
-    my.sys.vpn.enable = true;
-
-    users.users.cogs = {
+# System account for `cogs` on a full-OS host. Keyed by class, like a feature under modules/, because
+# the two classes accept different attributes: `isNormalUser` and `extraGroups` are NixOS-only and
+# nix-darwin rejects them. Splitting by class replaces the `lib.optionalAttrs pkgs.stdenv.isLinux`
+# branch that used to hide that difference inside one attribute set.
+#
+# A standalone home-manager host has no system layer and never reads this file.
+let
+    account = {
         description = "cogs";
-        shell = pkgs.fish;
-    }
-    // lib.optionalAttrs pkgs.stdenv.isLinux {
-        isNormalUser = true;
-        extraGroups = [ "wheel" ];
+    };
+in
+{
+    nixos = { pkgs, ... }: {
+        users.users.cogs = account // {
+            shell = pkgs.fish;
+            isNormalUser = true;
+            extraGroups = [ "wheel" ];
+        };
+    };
+
+    darwin = { pkgs, ... }: {
+        users.users.cogs = account // {
+            shell = pkgs.fish;
+        };
     };
 }
