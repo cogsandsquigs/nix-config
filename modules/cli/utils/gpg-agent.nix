@@ -1,5 +1,5 @@
-# gpg-agent OS-specific tweaks. Gated by `my.user.utils.enable` (../utils.home.nix)
-# alongside the rest of gpg (./gpg.home.nix enables the agent itself). Self-gates on OS: the macOS branch
+# gpg-agent OS-specific tweaks. Gated by `my.user.cli.utils.enable` (../utils.nix)
+# alongside the rest of gpg (./gpg.nix enables the agent itself). Self-gates on OS: the macOS branch
 # adds mac-native pinentry; the Linux branch just picks a pinentry.
 {
     home =
@@ -11,7 +11,7 @@
         }:
         let
             inherit (pkgs.stdenv) isDarwin;
-            enabled = config.my.user.utils.enable;
+            enabled = config.my.user.cli.utils.enable;
         in
         {
             # mkMerge of per-OS mkIf (NOT a raw `if pkgs... then ...`): keeps the config structure static so it

@@ -20,7 +20,7 @@
             };
         in
         {
-            options.my.user.ssh = {
+            options.my.user.cli.ssh = {
                 # Enables SSH config and such.
                 enable = tools.opt.mkEnabled "ssh client config";
 
@@ -28,7 +28,7 @@
                 # aliases = tools.opt.mk
             };
 
-            config = mkIf config.my.user.ssh.enable {
+            config = mkIf config.my.user.cli.ssh.enable {
                 programs.ssh = {
                     enable = true;
                     enableDefaultConfig = false;

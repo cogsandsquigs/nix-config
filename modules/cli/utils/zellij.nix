@@ -7,7 +7,7 @@
             ...
         }:
         {
-            config = lib.mkIf config.my.user.utils.enable {
+            config = lib.mkIf config.my.user.cli.utils.enable {
                 home.packages = with pkgs; [ zellij ];
 
                 programs.zellij = {

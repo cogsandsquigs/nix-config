@@ -10,7 +10,7 @@
             ...
         }:
         {
-            config = lib.mkIf config.my.user.utils.enable {
+            config = lib.mkIf config.my.user.cli.utils.enable {
                 home.packages = with pkgs; [ gnupg ];
 
                 programs.gpg = {
@@ -27,7 +27,7 @@
                     enableZshIntegration = true;
                     enableFishIntegration = true;
 
-                    # pinentry.package & the macOS wake-time restart are set per-OS in ./gpg-agent.home.nix
+                    # pinentry.package & the macOS wake-time restart are set per-OS in ./gpg-agent.nix
                     # (imported alongside this file).
                 };
             };

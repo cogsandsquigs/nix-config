@@ -9,9 +9,9 @@
             ...
         }:
         {
-            options.my.sys.fuse.enable = tools.opt.mkDisabled "FUSE filesystem support (macfuse-stubs)";
+            options.my.sys.darwin.fuse.enable = tools.opt.mkDisabled "FUSE filesystem support (macfuse-stubs)";
 
-            config = lib.mkIf config.my.sys.fuse.enable {
+            config = lib.mkIf config.my.sys.darwin.fuse.enable {
                 environment.systemPackages = with pkgs; [
                     macfuse-stubs
                     pkg-config

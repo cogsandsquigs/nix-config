@@ -4,10 +4,10 @@
 # class for the same reason a feature is: the two classes accept different attributes. This selects the
 # half that matches, so a NixOS host never sees the darwin account and the reverse.
 #
-# Home configuration for the same users flows separately, through modules/home-manager.nix.
+# Home configuration for the same users flows separately, through modules/sys/home-manager.nix.
 let
     accountsFor = class: { host, ... }: {
-        imports = map (name: (import (../users + "/${name}/system.nix")).${class}) host.users;
+        imports = map (name: (import (../../users + "/${name}/system.nix")).${class}) host.users;
     };
 in
 {

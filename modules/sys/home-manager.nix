@@ -32,7 +32,7 @@ let
                 extraSpecialArgs = moduleArgs;
 
                 users = lib.genAttrs host.users (name: {
-                    imports = lib.attrValues registry.homeManager ++ [ (../users + "/${name}/home.nix") ];
+                    imports = lib.attrValues registry.homeManager ++ [ (../../users + "/${name}/home.nix") ];
                 });
             };
         };

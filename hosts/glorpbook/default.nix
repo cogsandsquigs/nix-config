@@ -18,8 +18,8 @@ in
     # `games` and `desktopApps` follow the users on this host, so only the genuinely host-level
     # opt-ins are named here.
     my.sys = {
-        fuse.enable = true;
-        tailscale.enable = true;
+        darwin.fuse.enable = true;
+        net.tailscale.enable = true;
     };
 
     networking.hostName = hostName;

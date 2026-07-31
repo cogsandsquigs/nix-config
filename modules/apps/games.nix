@@ -4,14 +4,15 @@
 # of them, NixOS has Steam natively, and nix-darwin cannot manage Steam at all so macOS goes through
 # Homebrew casks.
 #
-# No shared `options` block: the home half owns `my.user.games` and the system halves own
-# `my.sys.games`, so a shared block would declare each scope's option on classes that cannot read it.
+# No shared `options` block: the home half owns `my.user.apps.games` and the system halves own
+# `my.sys.apps.games`, so a shared block would declare each scope's option on classes that cannot read it.
 let
     # Both system halves declare the same option, so they describe it identically. Declared twice with
     # two descriptions, the class you happened to evaluate decided the documentation.
     sysEnable =
         config: tools:
         tools.opt.mkFollowsUsers config [
+            "apps"
             "games"
         ] "games at the system level (Steam natively on NixOS, Homebrew casks on macOS)";
 in
@@ -25,10 +26,10 @@ in
             ...
         }:
         {
-            options.my.user.games.enable =
+            options.my.user.apps.games.enable =
                 tools.opt.mkDisabled "games (Minecraft via Prism, KSP via CKAN, ...)";
 
-            config = lib.mkIf config.my.user.games.enable {
+            config = lib.mkIf config.my.user.apps.games.enable {
                 home.packages = with pkgs; [
                     # Minecraft
                     prismlauncher # NOTE: wrapped ver. has issue w/ extra-cmake-modules not supporting macos
@@ -50,9 +51,9 @@ in
             ...
         }:
         {
-            options.my.sys.games.enable = sysEnable config tools;
+            options.my.sys.apps.games.enable = sysEnable config tools;
 
-            config = lib.mkIf config.my.sys.games.enable {
+            config = lib.mkIf config.my.sys.apps.games.enable {
                 programs.steam = {
                     enable = true;
                 };
@@ -68,9 +69,9 @@ in
             ...
         }:
         {
-            options.my.sys.games.enable = sysEnable config tools;
+            options.my.sys.apps.games.enable = sysEnable config tools;
 
-            config = lib.mkIf config.my.sys.games.enable {
+            config = lib.mkIf config.my.sys.apps.games.enable {
                 environment.systemPackages = [ pkgs.p7zip ]; # required for heroic winetricks for some reason?
 
                 homebrew = {

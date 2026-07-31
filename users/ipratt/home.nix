@@ -7,7 +7,7 @@
 _: {
     my.user.shell.flakeDir = "/etc/nix";
 
-    my.user.git = {
+    my.user.cli.git = {
         email = "ian.pratt@arcticlake.com";
         signingKey = null;
         signByDefault = false;

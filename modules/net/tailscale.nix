@@ -17,8 +17,8 @@
         {
             _class = "darwin";
 
-            options.my.sys.tailscale.enable = tools.opt.mkDisabled "Tailscale (Homebrew cask)";
+            options.my.sys.net.tailscale.enable = tools.opt.mkDisabled "Tailscale (Homebrew cask)";
 
-            config = lib.mkIf config.my.sys.tailscale.enable { homebrew.casks = [ "tailscale-app" ]; };
+            config = lib.mkIf config.my.sys.net.tailscale.enable { homebrew.casks = [ "tailscale-app" ]; };
         };
 }

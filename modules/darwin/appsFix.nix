@@ -12,9 +12,10 @@
             ...
         }:
         {
-            options.my.sys.appsFix.enable = tools.opt.mkEnabled "copy Nix .app bundles so Spotlight finds them";
+            options.my.sys.darwin.appsFix.enable =
+                tools.opt.mkEnabled "copy Nix .app bundles so Spotlight finds them";
 
-            config = lib.mkIf config.my.sys.appsFix.enable {
+            config = lib.mkIf config.my.sys.darwin.appsFix.enable {
                 home-manager.sharedModules = [
                     {
                         home.activation = {

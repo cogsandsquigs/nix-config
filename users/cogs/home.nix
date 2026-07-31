@@ -1,7 +1,7 @@
 # The `cogs` user's home-manager config -- the PERSONAL unit.
 #
 # Every feature under modules/ is already loaded by the registry, so this unit is pure selection: which
-# optional features to turn on, and this user's own values. It sets `my.user.git.*` explicitly rather
+# optional features to turn on, and this user's own values. It sets `my.user.cli.git.*` explicitly rather
 # than relying on the option defaults, so the unit stays correct wherever it is placed.
 {
     config,
@@ -17,10 +17,10 @@ let
     haveGpg = builtins.pathExists (../../secrets + "/${me}/gpg.sops");
 in
 {
-    my.user.games.enable = true;
-    my.user.desktopApps.enable = true;
+    my.user.apps.games.enable = true;
+    my.user.apps.desktopApps.enable = true;
 
-    my.user.git = {
+    my.user.cli.git = {
         userName = "Ian Pratt";
         email = "ianjdpratt@gmail.com";
         signingKey = "E0DB58169CA551AA!";

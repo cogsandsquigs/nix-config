@@ -61,7 +61,7 @@ the module its class.
 A file that covers more than one class is an attribute set, keyed by class:
 
 ```nix
-# modules/games.nix
+# modules/apps/games.nix
 {
     home = { ... };   # a home-manager module
     nixos = { ... };  # a NixOS module
@@ -70,17 +70,17 @@ A file that covers more than one class is an attribute set, keyed by class:
 ```
 
 The classes share one `let` block, so a value two of them need is written once. This is why
-`modules/nix.nix` states the substituter list one time instead of once per system class.
+`modules/sys/nix.nix` states the substituter list one time instead of once per system class.
 
 A file that covers one class is a plain module and names its class in the file name:
 
 ```
-modules/git.home.nix         a home-manager module
-modules/security.nixos.nix   a NixOS module
-modules/fuse.darwin.nix      a nix-darwin module
+modules/cli/git.nix         a home-manager module
+modules/nixos/security.nix   a NixOS module
+modules/darwin/fuse.nix      a nix-darwin module
 ```
 
-A directory adds a level to the feature name. `modules/dev/ai/mcp/gerrit.home.nix` is the feature
+A directory adds a level to the feature name. `modules/dev/ai/mcp/gerrit.nix` is the feature
 `dev.ai.mcp.gerrit`, and that feature owns the option path `my.user.dev.ai.mcp.gerrit`.
 
 A name that starts with `_` is not a module. Use it for shared values, package definitions, and data
@@ -165,19 +165,19 @@ Every feature has an `enable`. Only the default differs.
 | **core**     | `true`, on unless disabled | `tools.opt.mkEnabled`      | `git`, `shell`, `fonts`, `secrets`   |
 | **optional** | `false`, opt-in            | `tools.opt.mkDisabled`     | `dev.editors.vscode`, `fuse`         |
 | **ride**     | follows its parent group   | `tools.opt.mkRiding p`     | `dev.direnv`, `dev.editors.helix`    |
-| **follows**  | follows this host's users  | `tools.opt.mkFollowsUsers` | `my.sys.games`, `my.sys.desktopApps` |
+| **follows**  | follows this host's users  | `tools.opt.mkFollowsUsers` | `my.sys.apps.games`, `my.sys.apps.desktopApps` |
 
 A group such as `dev` is a namespace: a master `my.user.dev.enable` plus sub-features whose default
 rides it. Flip the master and the whole group follows. Override any sub-feature to carve it out.
 
 `mkFollowsUsers` removes a double flip. A machine needs Steam at the system level only because a
-user on it plays games, so `my.sys.games.enable` defaults to "some user on this host enabled
-`my.user.games`". This works because home-manager runs as a submodule of the system evaluation. It
+user on it plays games, so `my.sys.apps.games.enable` defaults to "some user on this host enabled
+`my.user.apps.games`". This works because home-manager runs as a submodule of the system evaluation. It
 is one-directional: a home feature must never read `my.sys.*` back, or the two evaluations would
 deadlock.
 
 Value options exist only for settings that differ between hosts or users, such as
-`my.user.git.userName` and `my.user.shell.flakeDir`. Anything identical everywhere stays inline.
+`my.user.cli.git.userName` and `my.user.shell.flakeDir`. Anything identical everywhere stays inline.
 
 Every `my.*` leaf is declared, never a free-form attribute set, so a typo like `my.user.gmes.enable`
 fails evaluation with "option does not exist". `tools.opt.requires` covers cross-feature invariants
@@ -214,7 +214,7 @@ own and not only as part of a host.
 ## Add a feature
 
 1. Choose the option path the feature owns, for example `my.user.dev.rust`.
-2. Create the file at the matching path, for example `modules/dev/rust.home.nix`.
+2. Create the file at the matching path, for example `modules/dev/rust.nix`.
 3. Declare the `enable` option with a `tools.opt` constructor.
 4. Put the rest of the module under `lib.mkIf cfg.enable`.
 5. Run `nix flake check`.
@@ -265,14 +265,14 @@ decrypts them. Full workflow (create/edit/rotate, bootstrapping, the GPG ceremon
 ```nix
 # users/cogs/home.nix -- git's signing key on a box provisioned via sops
 sops.secrets               = tools.secrets.declare "cogs@home-desktop" "gpg";
-my.user.git.signingKeyFile = tools.secrets.path config "cogs@home-desktop" "gpg";
+my.user.cli.git.signingKeyFile = tools.secrets.path config "cogs@home-desktop" "gpg";
 ```
 
 ## Local env overrides (`.env`)
 
 `${flakeDir}/.env` (i.e. `/etc/nix/.env` on every current host) is a machine-local, git-ignored
 `KEY=VALUE` file sourced at shell startup -- **after** the config sets its env vars, **before** PATH
-is built. It overrides anything the `variables` set in `modules/shell/env.home.nix` define, and an
+is built. It overrides anything the `variables` set in `modules/shell/env.nix` define, and an
 overridden `JAVA_HOME` still feeds `$JAVA_HOME/bin`. A missing file is a no-op.
 
 - **No rebuild to change values.** The shells re-read `.env` on every startup, so editing a value

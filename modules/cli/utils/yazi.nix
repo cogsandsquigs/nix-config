@@ -7,7 +7,7 @@
             ...
         }:
         {
-            config = lib.mkIf config.my.user.utils.enable {
+            config = lib.mkIf config.my.user.cli.utils.enable {
                 programs.yazi = {
                     enable = true; # NOTE: For some reason this causes a mismatched hash. when fix?
                     enableBashIntegration = true;

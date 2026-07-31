@@ -8,11 +8,11 @@
             ...
         }:
         let
-            cfg = config.my.user.git;
+            cfg = config.my.user.cli.git;
         in
         {
-            options.my.user.git = {
-                enable = tools.opt.mkEnabled "git + delta + lazygit (identity/signing via my.user.git.*)";
+            options.my.user.cli.git = {
+                enable = tools.opt.mkEnabled "git + delta + lazygit (identity/signing via my.user.cli.git.*)";
                 userName = tools.opt.mkStr "Ian Pratt" "Value for git user.name.";
                 email = tools.opt.mkStr "ianjdpratt@gmail.com" "Value for git user.email.";
                 signingKey = lib.mkOption {
