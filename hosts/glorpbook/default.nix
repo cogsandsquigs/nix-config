@@ -16,8 +16,11 @@ in
     nixpkgs.hostPlatform = host.system;
 
     # `games` and `desktopApps` follow the users on this host, so only the genuinely host-level
-    # opt-in is named here.
-    my.sys.fuse.enable = true;
+    # opt-ins are named here.
+    my.sys = {
+        fuse.enable = true;
+        tailscale.enable = true;
+    };
 
     networking.hostName = hostName;
     networking.computerName = hostName;
