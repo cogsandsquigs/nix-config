@@ -1,6 +1,5 @@
 # glorpbook -- aarch64-darwin MacBook.
-# This file owns the machine's identity and host-only tweaks; everything shared lives under
-# modules/system/darwin and modules/home.
+# This file owns the machine's identity and host-only tweaks; every shared feature lives under modules/.
 { pkgs, host, ... }:
 let
     # Host identity comes from ./id.nix via the `host` specialArg, checked by tools/fleet.nix. The

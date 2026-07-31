@@ -25,7 +25,7 @@
             enableZshIntegration = true;
             enableFishIntegration = true;
 
-            # pinentry.package & the macOS wake-time restart are set per-OS in ./gpg-agent.nix
+            # pinentry.package & the macOS wake-time restart are set per-OS in ./gpg-agent.home.nix
             # (imported alongside this file).
         };
     };

@@ -7,9 +7,9 @@
 #
 # Every server also rides `ai.enable` (that leaf owns programs.claude-code), so a server enabled on
 # its own would emit config nothing consumes -- each file asserts against that itself.
+# The group's own flag is a kill switch: it turns every server off without touching any server's own
+# leaf. It deliberately does NOT ride `ai.enable`, because then disabling ai would silently drop an
+# enabled server's config instead of tripping that server's assertion.
 { tools, ... }: {
-    # Kill switch for the whole group -- turns every server off without touching its own leaf.
-    # Deliberately NOT riding `ai.enable`: if it did, disabling ai would silently drop an enabled
-    # server's config instead of tripping that server's assertion.
     options.my.user.dev.ai.mcp.enable = tools.opt.mkEnabled "MCP servers for the coding agents";
 }

@@ -1,7 +1,7 @@
 # home-desktop -- x86_64-linux NixOS tower (personal daily-driver desktop).
 #
-# STUB: this machine doesn't exist yet. It already inherits everything under
-# modules/system/nixos + modules/home (the full personal profile: games, desktop-apps, ...), so
+# STUB: this machine doesn't exist yet. It already inherits every feature under
+# modules/ (the full personal profile: games, desktopApps, ...), so
 # filling it in mostly means adding the real hardware details below. The placeholder root
 # filesystem / bootloader keep the config evaluable.
 #

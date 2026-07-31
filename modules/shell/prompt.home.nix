@@ -16,13 +16,11 @@
             enableZshIntegration = true;
             enableTransience = true; # See: https://starship.rs/advanced-config/#transientprompt-and-transientrightprompt-in-fish
 
-            # Equivalent to writting starship.toml
-            # TODO: Use this at some point: https://starship.rs/presets/catppuccin-powerline#catppuccin-powerline-preset
+            # TODO: try https://starship.rs/presets/catppuccin-powerline
             settings = {
-                add_newline = false; # Disable the blank line at the start of the prompt
+                add_newline = false;
                 command_timeout = 750; # Number of millis to wait for a command to finish before timing out.
 
-                # The format of the prompt, which is a string containing the various symbols and styles.
                 # NOTE: $package should come after all language symbols as it displays the package manager + version for the
                 # current language.
                 # NOTE: We need to use `''` in front of any `${<...snip...>}` since that's how nix string interpolation is

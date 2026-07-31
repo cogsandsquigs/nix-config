@@ -1,4 +1,4 @@
-# GerritCodeReview/gerrit-mcp-server as a stdio launcher. Wired up by ./default.nix.
+# GerritCodeReview/gerrit-mcp-server as a stdio launcher. Wired up by ./gerrit.home.nix.
 #
 # Source tree, not a wheel: no console script, and `main.py` imports siblings as `gerrit_mcp_server.*`
 # -- hence PYTHONPATH at the repo root. Declared `uvicorn`/`websockets` deps are dead. Shells out to
@@ -60,7 +60,7 @@ writeShellApplication {
     };
 
     # Claude Code expands the `${GERRIT_*}` refs in its MCP config before spawning us (see
-    # ../default.nix). Upstream wants a JSON config file, so translate at launch -- nothing in the
+    # ./gerrit.home.nix). Upstream wants a JSON config file, so translate at launch -- nothing in the
     # store.
     text = ''
         for var in GERRIT_HOST GERRIT_USERNAME GERRIT_PASSWORD; do

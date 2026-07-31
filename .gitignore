@@ -13,3 +13,6 @@ registry.json
 
 # Machine-local runtime env overrides, sourced at shell startup. Never commit.
 .env
+
+# Misc.
+*.local.md

@@ -1,4 +1,4 @@
-# Language tooling. Every *.nix file in this directory is picked up automatically.
+# Language tooling. Every *.nix file in ./_langs is picked up automatically.
 #
 # Each file returns a toolchain -- packages, LSPs, formatter -- plus the table of languages that
 # toolchain serves ({ pkgs, lsp, fmt, editor-specific, languages }), or a list of toolchains when
@@ -13,9 +13,7 @@
 }:
 let
     dir = ./_langs;
-    files = lib.filterAttrs (n: t: t == "regular" && n != "default.nix" && lib.hasSuffix ".nix" n) (
-        builtins.readDir dir
-    );
+    files = lib.filterAttrs (n: t: t == "regular" && lib.hasSuffix ".nix" n) (builtins.readDir dir);
 
     lspSpec = lib.types.submodule {
         options = {
@@ -227,7 +225,7 @@ in
             description = ''
                 Every toolchain in this directory, flattened and validated. Internal: the read side
                 of the contract between the lang files and the editor modules that translate them.
-                Nothing outside `modules/home/dev` should set or read it.
+                Nothing outside `modules/dev` should set or read it.
             '';
             default = [ ];
             internal = true;

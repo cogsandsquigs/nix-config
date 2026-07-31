@@ -5,243 +5,260 @@ a personal Linux desktop, and a standalone-home-manager work desktop.
 
 ## Overview
 
-A **plain flake**. Every file under `modules/` is an ordinary NixOS / nix-darwin / home-manager
-module, and **the directory tree _is_ the import graph** -- each `default.nix` imports its siblings
-and children, so a folder reads top-down as exactly what it pulls in.
+A plain flake with one framework dependency. `import-tree` walks `modules/`, and the module system
+does everything else: it checks the class of every file, the schema of every host, and the placement
+of every option.
 
-Three hosts:
+Three machines:
 
-| Host           | Class        | Platform         | Attribute                                  | User(s)           |
+| Host           | Class        | Platform         | Output                                     | User(s)           |
 | -------------- | ------------ | ---------------- | ------------------------------------------ | ----------------- |
-| `glorpbook`    | nix-darwin   | `aarch64-darwin` | `darwinConfigurations."glorpbook"`         | `cogs` (personal) |
+| `glorpbook`    | nix-darwin   | `aarch64-darwin` | `darwinConfigurations.glorpbook`           | `cogs` (personal) |
 | `home-desktop` | NixOS        | `x86_64-linux`   | `nixosConfigurations.home-desktop`         | `cogs` (personal) |
 | `work-desktop` | home-manager | `x86_64-linux`   | `homeConfigurations."ipratt@work-desktop"` | `ipratt` (work)   |
 
-The first two are **system** configs applied with `*-rebuild`. The third is **standalone
-home-manager** on Ubuntu 24 -- Nix per-user, no system layer, applied with `home-manager switch`.
+The first two are system configurations, applied with `*-rebuild`. The third is standalone
+home-manager on Ubuntu: Nix per user, no system layer, applied with `home-manager switch`.
 
-**Two layers of selection:** a host picks _which users_ live on it; a user picks _which home
-features_ it wants. Neither touches feature-module code -- that's the whole design (see
-[the `users/` layer](#the-users-layer) and [feature toggles](#feature-toggles)):
+Selection happens at two levels, and neither one touches a feature's own code. A host picks which
+users live on it. A user picks which home features it wants.
 
-- **`hosts/<host>/`** -- host selection: platform, host-only tweaks, its user units (`id.nix`'s
-  `users`), and system features (`my.sys.<feature>.enable`).
-- **`users/<user>/`** -- a portable unit: one human's identity, home feature set
-  (`my.user.<feature>.enable`), and (on full-OS hosts) system account. Droppable on any host by
-  name. `cogs` enables the personal extras (games + GUI apps); `ipratt` leaves them off for a lean
-  work profile with a work git identity.
+- **`hosts/<host>/`** holds `id.nix`, the machine's typed identity, and `default.nix` for settings
+  only that machine needs.
+- **`users/<user>/`** holds one person's home configuration and, on a full-OS host, their system
+  account. Drop a user on any machine by naming them in that host's `users`.
 
-Every user imports the **same full home library** (`modules/home`); `cogs` vs `ipratt` differ only
-in which `my.user.*` flags they flip -- no import-bundle split.
+`cogs` turns on the personal extras. `ipratt` leaves them off and sets a work git identity.
 
-Key inputs (`flake.nix`): [nixpkgs] (stable), [nix-darwin], [home-manager], [Determinate
-Nix][determinate], [sops-nix] for secrets.
+Key inputs: [nixpkgs], [nix-darwin], [home-manager], [Determinate Nix][determinate], [sops-nix] for
+secrets, and [import-tree] for module discovery.
 
-## Structure
+## Repository layout
 
-- **`flake.nix`** -- inputs + outputs (the three host configs + formatter).
-- **`flake.lock`** -- pinned input revisions.
-- **`tools/default.nix`** -- the _only_ place that knows how a host is assembled:
-  - `mkDarwin` / `mkNixos` / `mkHome` -- build system or standalone home-manager hosts.
-  - `forAllSystems` -- map over systems for per-system outputs (e.g. the formatter).
-  - `specialArgsFor` -- the shared `specialArgs`/`extraSpecialArgs`: `inputs`, `hostId`, per-host `tools`.
-- **`tools/opt.nix`** -- option constructors + safety helpers (`tools.opt`).
-- **`tools/secrets.nix`** -- sops wiring helpers (`tools.secrets`).
-- **`tools/conf.nix`** -- config utilities (`tools.conf`, e.g. `eachOs` for per-OS branches). `tools`
-  is a dedicated `specialArg`, not folded into `lib` -- extending HM's `lib` clobbers `lib.hm.*`.
-- **`hosts/`** -- per-machine **selection**. Each host has an **`id.nix`**
-  (`{ hostName; system; users; primaryUser; }`; see the
-  [`id.nix` / `hostId` convention](#the-idnix--hostid-convention)) plus a `default.nix` for host-only
-  tweaks. No user identity or feature logic here.
-  - **`glorpbook/`** -- darwin (dock, TouchID sudo, homebrew, launchd).
-  - **`home-desktop/`** -- personal NixOS.
-  - **`work-desktop/`** -- standalone home-manager (Ubuntu). Nothing host-specific beyond its
-    `id.nix`; identity, git, and `my.user.flakeDir` live in the `ipratt` user unit.
-- **`users/`** -- per-user **isolated, portable units** (see [the `users/` layer](#the-users-layer)):
-  `identity.nix` (plain data), `home.nix` (home feature set + git identity), `system.nix` (system
-  account, full-OS hosts only).
-  - **`cogs/`** -- personal (full profile). **`ipratt/`** -- work (lean core, work git identity, signing off).
-- **`modules/`**
-  - **`home-manager.nix`** -- wires each `hostId.users` entry to its `users/<name>/home.nix` (system classes).
-  - **`system/`** -- system-level (system hosts only): **`common/`** (both classes: nixpkgs, shells),
-    **`darwin/`** (macOS), **`nixos/`** (Linux).
-  - **`home/`** -- home-manager, class-agnostic; OS differences handled inline
-    (`lib.optionals pkgs.stdenv.isDarwin ...`). `default.nix` imports the **full feature library**;
-    every module owns its own `my.user.<feature>.enable` flag ([feature toggles](#feature-toggles)):
-    - **`base.nix`** -- plumbing (stateVersion, home dir); no flag.
-    - **`git.nix`, `ssh.nix`, `terminal.nix`** -- core (on by default). `git.nix` also holds the
-      identity/signing value options (`my.user.git.userName/email/signingKey/...`).
-    - **`shell/`** -- shell + prompt (core). Holds `my.user.flakeDir` and the
-      [`.env` override loader](#local-env-overrides-env).
-    - **`utils/`** -- gpg, yazi, zellij, ... (core group).
-    - **`dev/`** -- dev toolchain **group**: master `my.user.dev.enable` + ride-along sub-features
-      (`ide`, `direnv`, `containers`, `langs/`, editors -- `helix` on, `vscode` opt-in install-only).
-    - **`games.nix`, `desktop-apps/`** -- optional (off by default); `cogs` opts in.
-- **`scripts/`** -- wrappers `rebuild.sh`/`upgrade.sh`/`cleanup.sh`/`editnix.sh`. Location-independent
-  (derive the flake dir from their own path) and auto-detect `darwin-rebuild` / `nixos-rebuild` /
-  standalone `home-manager switch`.
-- **`secrets/`** -- sops-encrypted secrets + rules (`.sops.yaml`), `sops-stash.sh` / `mint-subkeys.sh`
-  helpers, and a how-to `README.md`. See [Secrets](#secrets).
-- **`nix.conf`** -- Nix daemon settings.
-- **`treefmt.toml`** -- one-command repo formatting (`treefmt`); also nixfmt's `--width`/`--indent`
-  (no native config file). Matches the helix formatter settings (4-space, 100 cols).
-- **`.prettierrc.json`** -- prettier options (4-space, 100 cols) for JSON/YAML/JS/CSS/..., picked up by
-  prettier / prettierd (editor and `treefmt` alike).
+- **`flake.nix`** — inputs, and outputs derived from the fleet. It names no machine.
+- **`tools/`** — the only code that knows how a host is assembled.
+  - `default.nix` — the three builders and the module-argument contract.
+  - `fleet.nix` — the typed schema for `hosts/` and `users/`.
+  - `registry.nix` — turns `modules/` into per-class module sets.
+  - `feature.nix` — path to feature name, shared by the registry and the `feature-paths` check.
+  - `checks.nix` — the five gates.
+  - `opt.nix` — option constructors. `secrets.nix` — sops wiring.
+  - `_fixtures/` — module trees and host stubs for `tools-tests`.
+- **`modules/`** — every feature. One file per feature per class. See
+  [Module layout](#module-layout).
+- **`hosts/`** — per-machine identity and host-only settings.
+- **`users/`** — per-user home configuration and system account.
+- **`secrets/`** — sops-encrypted material and the rules that address it. See [Secrets](#secrets).
+- **`scripts/`** — `nxm` and the older shell wrappers.
+- **`treefmt.toml`**, **`.prettierrc.json`**, **`statix.toml`** — formatting and lint configuration.
+- **`nix.conf`** — Nix daemon settings.
 
-### How a host is assembled
+## Module layout
 
-A **system** host: `flake.nix` calls e.g. `lib.mkDarwin ./hosts/glorpbook`, producing a system from
-two module lists:
+Every `.nix` file under `modules/` is one feature. The path names the feature. The file name gives
+the module its class.
 
-1. `modules/system/<class>` -- shared system config for that OS. Its `default.nix` also imports
-   `modules/system/common`, pulls in home-manager via `modules/home-manager.nix`, and declares
-   system accounts via `system/<class>/users.nix`. Both iterate the host's `id.nix` `users`: each
-   user's `home.nix` -> a `home-manager.users.<name>` entry, each `system.nix` -> a system account.
-2. `./hosts/<name>` -- the machine-specific bits.
-
-The **standalone home-manager** host: `flake.nix` calls
-`lib.mkHome { host = ./hosts/work-desktop; }`. No system layer -- `mkHome` reads the host's single
-user from `id.nix` and builds a `homeConfigurations` entry from `users/<user>/home.nix` + the host
-file (setting `home.username`).
-
-So **hosts pick users, users pick features** -- a host never names a home feature, a user never names
-a host. That split lets a user move machines (or a machine gain a second user) by editing only `id.nix`.
-
-### The `users/` layer
-
-Each `users/<name>/` is an **isolated, portable unit** -- everything about one human account, with no
-reference to any hostname or other user, so a host can place it by listing it in `id.nix`'s `users`.
-Three files:
-
-```
-users/<name>/
-  identity.nix   # plain-data attrset: { username = "cogs"; }. No module args -- importable anywhere
-                 # (flake output naming, standalone home.username) without the module system.
-  home.nix       # home-manager module: imports the full home library (modules/home) and sets this
-                 # user's my.user.* flags + values (features on/off, git identity, flakeDir).
-  system.nix     # NixOS/darwin module: users.users.<name> account attrs. Full-OS hosts only;
-                 # class-portable (NixOS-only attrs guarded behind pkgs.stdenv.isLinux).
-```
-
-The feature set is a property of the **user**, not the host: `users/cogs/home.nix` and
-`users/ipratt/home.nix` import the same `modules/home` and differ only in the `my.user.*` flags they
-set. Putting the work user on a personal machine = adding `"ipratt"` to that host's `users`; it
-arrives as a distinct account with its own selection, not a "work profile" of `cogs`.
-
-**Add a user:** create `users/<name>/{identity.nix,home.nix,system.nix}` (copy an existing unit),
-import `modules/home` in `home.nix`, flip the `my.user.*` flags and set `my.user.git.*`, then add
-`"<name>"` to the `users` list of the host(s) that should have it.
-
-### The `id.nix` / `hostId` convention
-
-Every host directory carries an **`id.nix`** -- a plain attrset, the single source of truth for that
-machine's **host** identity (user identity lives in `users/`):
+A file that covers more than one class is an attribute set, keyed by class:
 
 ```nix
-# hosts/<name>/id.nix
+# modules/games.nix
 {
-    hostName    = "home-desktop";  # the machine's hostname
-    system      = "x86_64-linux";  # the machine's platform (nixpkgs.hostPlatform)
-    users       = [ "cogs" ];      # which user units live on this machine
-    primaryUser = "cogs";          # the user owning host-level singletons (below)
+    home = { ... };   # a home-manager module
+    nixos = { ... };  # a NixOS module
+    darwin = { ... }; # a nix-darwin module
 }
 ```
 
-It flows through the config in exactly two ways, so the name is never repeated:
+The classes share one `let` block, so a value two of them need is written once. This is why
+`modules/nix.nix` states the substituter list one time instead of once per system class.
 
-1. **Into modules as `hostId`.** The builders `import` it and pass it via `specialArgs`; modules read
-   it to drive per-host wiring without hardcoding names: `modules/home-manager.nix` -> one
-   `home-manager.users.<name>` per `hostId.users`; `system/{darwin,nixos}/users.nix` -> imports
-   `users/<name>/system.nix` per `hostId.users`; the host file -> `networking.hostName`,
-   `nixpkgs.hostPlatform`, and (glorpbook) `system.primaryUser` / homebrew owner from `primaryUser`.
-2. **Into `flake.nix` for output names.** `flake.nix` reads each `id.nix` to form
-   `darwinConfigurations.<hostName>`, `nixosConfigurations.<hostName>`,
-   `homeConfigurations."<primaryUser>@<hostName>"`. `scripts/rebuild.sh` then _discovers_ the
-   standalone name from the flake rather than hardcoding it.
+A file that covers one class is a plain module and names its class in the file name:
 
-**`primaryUser`** exists because some host-level singletons take exactly one user (nix-darwin's
-`system.primaryUser`, the Homebrew prefix owner). Single-user host -> just that user; multi-user ->
-whichever account owns those singletons.
+```
+modules/git.home.nix         a home-manager module
+modules/security.nixos.nix   a NixOS module
+modules/fuse.darwin.nix      a nix-darwin module
+```
 
-**Naming:** fields are camelCase (`hostName`, `system`, `users`, `primaryUser`).
+A directory adds a level to the feature name. `modules/dev/ai/mcp/gerrit.home.nix` is the feature
+`dev.ai.mcp.gerrit`, and that feature owns the option path `my.user.dev.ai.mcp.gerrit`.
 
-**Add a host:**
+A name that starts with `_` is not a module. Use it for shared values, package definitions, and data
+tables. The loader skips these files. `modules/dev/_langs/` holds the language tables, and
+`modules/dev/ai/mcp/_gerrit-package.nix` holds a package definition.
 
-1. `hosts/<name>/id.nix` (`{ hostName; system; users; primaryUser; }`), listing existing or new
-   ([the `users/` layer](#the-users-layer)) user units in `users`.
-2. `hosts/<name>/default.nix` -- machine-specific module. Pull identity from the `hostId` arg (don't
-   re-`import ./id.nix`); no user/feature logic here.
-3. Wire it in `flake.nix`: read its id (`idOf ./hosts/<name>`) and add the matching
-   `darwinConfigurations` / `nixosConfigurations` / `homeConfigurations` entry via the right `lib.mk*`.
+The path is binding, not advisory. The `feature-paths` check reads the file that declares each
+`my.*` option and compares that file to the path. A file may only declare options under the feature
+its path owns. To move a feature, move the file and rename its options in one commit. Either change
+alone fails the build.
+
+Three feature names are camelCase — `desktopApps`, `systemDefaults`, `appsFix` — because a path
+mirrors its option path and those options were already camelCase.
+
+## The registry
+
+`import-tree` walks `modules/` and passes each path to `tools/registry.nix`. The registry reads the
+class and the feature name from the path, then wraps the file:
+
+```nix
+{ _class = "nixos"; _file = <path>; imports = [ <the file> ]; }
+```
+
+`_class` makes the module system reject the module if it reaches an evaluation of another class, and
+the error names the file. The class comes from the path, so no other file has to agree.
+
+The registry collects these entries in a module evaluation with three options, one per class. Each
+option has the type `attrsOf deferredModule`. An unknown class key fails as "option does not exist".
+An entry that is not a module fails as a type error. Both errors come from the module system rather
+than from hand-written validation.
+
+`tools/default.nix` reads the registry and gives each class its own list. A NixOS host gets
+`registry.nixos`. A nix-darwin host gets `registry.darwin`. Every home-manager evaluation gets
+`registry.homeManager`.
+
+The registry is also a flake output. Run `nix flake show` to list every feature and its class. The
+attributes are `nixosModules`, `darwinModules`, and `homeModules`.
+
+## Host and user data
+
+`hosts/<name>/id.nix` holds three values and nothing else:
+
+```nix
+{
+    class = "darwin";
+    system = "aarch64-darwin";
+    users = [ "cogs" ];
+}
+```
+
+`tools/fleet.nix` checks these values against a schema before the flake builds anything. The schema
+uses types instead of assertions, so an error names the option that is wrong.
+
+- `class` selects the builder. The three values are `nixos`, `darwin`, and `home`.
+- `system` must suit the class. A `darwin` host cannot take a Linux platform.
+- `users` must name directories that exist under `users/`. A typo is a type error.
+- `primaryUser` must be one of this host's own users. It defaults to the first entry, which is all a
+  single-user host needs. It exists because some host-level settings take exactly one user, such as
+  nix-darwin's `system.primaryUser` and the Homebrew prefix owner.
+
+The host name comes from the directory name, and `id.nix` cannot set it. `flake.nix` reads the fleet
+and builds one output for each host, so `flake.nix` never names a machine.
+
+A user directory holds `home.nix`, and on a full-OS host also `system.nix`. The registry already
+loads every feature, so `home.nix` imports nothing: it is pure selection. `system.nix` is keyed by
+class, because the two classes accept different account attributes.
 
 ## Feature toggles
 
-Every feature is an independent module that **owns its own `enable` flag**. Turning a feature on/off
-for a host or user is one line in one file -- you never touch the feature's module. This is the core
-design goal.
+Every feature owns its own `enable` flag, so turning one on or off is one line in one file and never
+touches the feature's own code.
 
-**Two scopes:**
+There are two scopes. `my.sys.<feature>.enable` is a system feature, set per host.
+`my.user.<feature>.enable` is a home feature, set per user. Each user gets their own home-manager
+evaluation, so two users on one machine can differ.
 
-- **`my.sys.<feature>.enable`** -- a **system** feature (per host), set in `hosts/<host>/default.nix`.
-- **`my.user.<feature>.enable`** -- a **home** feature (per user), set in `users/<user>/home.nix`.
-  Each user gets its own home-manager evaluation, so two users on one machine can differ.
+Every feature has an `enable`. Only the default differs.
 
-**Every feature has an `enable`**; only the _default_ differs. Four classes:
+| Class        | Default                    | Constructor                | Example                              |
+| ------------ | -------------------------- | -------------------------- | ------------------------------------ |
+| **plumbing** | none; always on            | —                          | `base`, `nixpkgs`, `users`           |
+| **core**     | `true`, on unless disabled | `tools.opt.mkEnabled`      | `git`, `shell`, `fonts`, `secrets`   |
+| **optional** | `false`, opt-in            | `tools.opt.mkDisabled`     | `dev.editors.vscode`, `fuse`         |
+| **ride**     | follows its parent group   | `tools.opt.mkRiding p`     | `dev.direnv`, `dev.editors.helix`    |
+| **follows**  | follows this host's users  | `tools.opt.mkFollowsUsers` | `my.sys.games`, `my.sys.desktopApps` |
 
-| class        | default                     | helper                 | example                                |
-| ------------ | --------------------------- | ---------------------- | -------------------------------------- |
-| **plumbing** | -- (no flag; unconditional)  | --                      | `base.nix`, `nixpkgs.nix`, `users.nix` |
-| **core**     | `true` (on unless disabled) | `tools.opt.mkEnabled`  | `git`, `shell`, `fonts`, `secrets`     |
-| **optional** | `false` (opt-in)            | `tools.opt.mkDisabled` | `games`, `desktopApps`, `vpn`, `fuse`  |
-| **ride**     | = parent group's value      | `tools.opt.mkRiding p` | `dev.direnv`, `dev.editors.helix`      |
+A group such as `dev` is a namespace: a master `my.user.dev.enable` plus sub-features whose default
+rides it. Flip the master and the whole group follows. Override any sub-feature to carve it out.
 
-**Groups.** A group (e.g. `dev`) is a namespace: a master `my.user.dev.enable` plus sub-features
-whose default _rides_ it (`tools.opt.mkRiding config.my.user.dev.enable`). Flip the master, the whole
-group follows; override any sub to carve it out. Mutually-optional members (e.g. `vscode`) are
-independent opt-ins, not ride-alongs.
+`mkFollowsUsers` removes a double flip. A machine needs Steam at the system level only because a
+user on it plays games, so `my.sys.games.enable` defaults to "some user on this host enabled
+`my.user.games`". This works because home-manager runs as a submodule of the system evaluation. It
+is one-directional: a home feature must never read `my.sys.*` back, or the two evaluations would
+deadlock.
 
-**Flip a feature:**
+Value options exist only for settings that differ between hosts or users, such as
+`my.user.git.userName` and `my.user.shell.flakeDir`. Anything identical everywhere stays inline.
 
-```nix
-# users/ipratt/home.nix -- give the work user VS Code, drop the CLI utils group
-my.user.dev.editors.vscode.enable = true;
-my.user.utils.enable = false;
+Every `my.*` leaf is declared, never a free-form attribute set, so a typo like `my.user.gmes.enable`
+fails evaluation with "option does not exist". `tools.opt.requires` covers cross-feature invariants
+of the form "A needs B".
 
-# hosts/glorpbook/default.nix -- this host wants the VPN clients + games casks
-my.sys.vpn.enable = true;
-my.sys.games.enable = true;
+## Checks
+
+Run every check from any machine in the fleet:
+
+```sh
+nix flake check
 ```
 
-**Value options: only what varies.** A module gets _value_ options (beyond `enable`) only for
-settings that differ per host/user -- e.g. `my.user.git.{userName,email,signingKey,signByDefault}`
-and `my.user.flakeDir`. Everything identical everywhere stays inline.
+| Check           | It fails when                                                                   |
+| --------------- | ------------------------------------------------------------------------------- |
+| `fleet-eval`    | A host stops evaluating, including a host this machine cannot build.            |
+| `feature-paths` | A file declares a `my.*` option outside the feature its path owns.              |
+| `typed-options` | A `my.*` option has no description, or uses a type that carries no information. |
+| `tools-tests`   | A unit test over `tools/` fails.                                                |
+| `lint`          | `statix` reports a finding.                                                     |
 
-**Helpers** come from `tools` (a per-host `specialArg`): **`tools.opt.*`** -- option constructors
-(`mkEnabled`/`mkDisabled`/`mkRiding`, `mkStr`/`mkEnum`, `mkSecretPath`, `requires`);
-**`tools.secrets.*`** -- sops wiring; **`tools.conf.*`** -- config utilities (`eachOs`).
+`fleet-eval` forces the derivation path of every host and then discards the string context. The
+check therefore never builds a derivation for another platform. One command on the work desktop
+proves that the MacBook configuration still evaluates.
 
-**Safety.** Every `my.*` leaf is _declared_ (never a freeform `attrsOf`), so a typo like
-`my.user.gmes.enable` fails evaluation with "option does not exist". That strict schema is the real
-guard; `tools.opt.requires` covers genuine cross-feature invariants ("A needs B").
+`typed-options` rejects the types `attrs`, `anything`, `raw`, and `unspecified`, and follows
+composite types inward, so `attrsOf attrs` is caught too. A few values are free-form because they
+belong to a foreign schema, such as a language server's own settings. `tools/checks.nix` lists those
+exceptions by name, so the list stays short and visible.
 
-The module tree under `modules/` is the source of truth for which features exist -- each module's
-`options.my.<scope>.<feature>` declaration (near its top) names its flag and class.
+`nix flake check` also builds every feature in the registry, which proves each one evaluates on its
+own and not only as part of a host.
+
+## Add a feature
+
+1. Choose the option path the feature owns, for example `my.user.dev.rust`.
+2. Create the file at the matching path, for example `modules/dev/rust.home.nix`.
+3. Declare the `enable` option with a `tools.opt` constructor.
+4. Put the rest of the module under `lib.mkIf cfg.enable`.
+5. Run `nix flake check`.
+
+Do not edit any other file. The loader finds the new file.
+
+## Add a host
+
+1. Create `hosts/<name>/id.nix` with `class`, `system`, and `users`.
+2. Create `hosts/<name>/default.nix` for the settings only this machine needs.
+3. Run `nix flake check`.
+
+Do not edit `flake.nix`. The directory name becomes the host name.
+
+## Add a user
+
+1. Create `users/<name>/home.nix` and set the `my.user.*` flags for this person.
+2. If the host runs NixOS or nix-darwin, create `users/<name>/system.nix` for the account.
+3. Add `"<name>"` to the `users` list of each host that gets the account.
+4. Run `nix flake check`.
+
+## Move or rename a feature
+
+1. Move the file to the new path.
+2. Rename its options to match the new path.
+3. Run `nix flake check`.
+
+Step 1 without step 2 fails `feature-paths`. Step 2 without step 1 fails the same check.
 
 ## Secrets
 
-Sensitive material (a GPG key, VPN profile, token) is encrypted with [sops-nix] and committed under
-`secrets/` -- the `*.sops` blobs are safe to push; only the matching **private age key** decrypts them.
-Full workflow (create/edit/rotate, bootstrapping, the GPG ceremony) is in
+Sensitive material (a GPG key, a token, a certificate) is encrypted with [sops-nix] and committed
+under `secrets/` -- the `*.sops` blobs are safe to push; only the matching **private age key**
+decrypts them. Full workflow (create/edit/rotate, bootstrapping, the GPG ceremony) is in
 **[`secrets/README.md`](secrets/README.md)**; in brief:
 
 - **Identities are per-(user, machine).** Each machine generates its own age key at
-  `/etc/nix/age/<user>` (never copied), registered in `secrets/.sops.yaml` as a rule's recipient.
-  A leaked key exposes only that machine's secrets.
+  `/etc/nix/age/<user>` (never copied), registered in `secrets/.sops.yaml` as a rule's recipient. A
+  leaked key exposes only that machine's secrets.
 - **A secret's folder picks its audience** (via the `creation_rules` in `secrets/.sops.yaml`):
-  `cogs@glorpbook/...` -> that machine only; `cogs/...` -> all of that user's machines. "On all my boxes" =
-  encrypt to multiple recipients, never share a private key.
-- **Features stay secret-agnostic.** A feature exposes a `tools.opt.mkSecretPath` hole; the user/host
-  unit wires it -- `sops.secrets = tools.secrets.declare "<id>" "<name>"` to register,
+  `cogs@glorpbook/...` -> that machine only; `cogs/...` -> all of that user's machines. "On all my
+  boxes" = encrypt to multiple recipients, never share a private key.
+- **Features stay secret-agnostic.** A feature exposes a `tools.opt.mkSecretPath` hole; the
+  user/host unit wires it -- `sops.secrets = tools.secrets.declare "<id>" "<name>"` to register,
   `tools.secrets.path config "<id>" "<name>"` to feed the decrypted path in. So "which secret feeds
   which feature" lives in one file, the unit.
 
@@ -255,7 +272,7 @@ my.user.git.signingKeyFile = tools.secrets.path config "cogs@home-desktop" "gpg"
 
 `${flakeDir}/.env` (i.e. `/etc/nix/.env` on every current host) is a machine-local, git-ignored
 `KEY=VALUE` file sourced at shell startup -- **after** the config sets its env vars, **before** PATH
-is built. It overrides anything the `variables` set in `modules/home/shell/shell.nix` define, and an
+is built. It overrides anything the `variables` set in `modules/shell/env.home.nix` define, and an
 overridden `JAVA_HOME` still feeds `$JAVA_HOME/bin`. A missing file is a no-op.
 
 - **No rebuild to change values.** The shells re-read `.env` on every startup, so editing a value
@@ -268,8 +285,8 @@ overridden `JAVA_HOME` still feeds `$JAVA_HOME/bin`. A missing file is a no-op.
 - **Credentials for MCP servers.** `my.user.dev.ai.mcp.*` defaults to `${GERRIT_HOST}`,
   `${GERRIT_USERNAME}`, `${GERRIT_PASSWORD}` (an HTTP password: Gerrit -> Settings -> HTTP
   Credentials) and `${YOUTRACK_HOST}`, `${YOUTRACK_AUTH_TOKEN}` (a permanent token, YouTrack scope).
-  Claude Code expands them at launch, so they stay out of `/nix/store`. Only shells load `.env`, so a
-  `claude` started from a desktop launcher can't reach either server.
+  Claude Code expands them at launch, so they stay out of `/nix/store`. Only shells load `.env`, so
+  a `claude` started from a desktop launcher can't reach either server.
 
 ## Common tasks
 
@@ -290,8 +307,8 @@ cleanup   # ./scripts/cleanup.sh -- garbage-collect old generations
 ## Work desktop -- standalone home-manager on Ubuntu
 
 The work box runs Ubuntu 24, **not** NixOS: only the home-manager layer
-(`homeConfigurations."ipratt@work-desktop"`) is applied, so nothing here manages the OS. Ubuntu stays
-as-is; Nix lives alongside it under `/nix`.
+(`homeConfigurations."ipratt@work-desktop"`) is applied, so nothing here manages the OS. Ubuntu
+stays as-is; Nix lives alongside it under `/nix`.
 
 ### Which Nix install: multi-user (recommended) vs single-user
 
@@ -309,8 +326,8 @@ multi-user is the modern default:
 Use single-user **only** without root.
 
 Either way the flake is **install-method-agnostic**: `hosts/work-desktop` and the home modules make
-no single/multi-user assumption. The `shell.nix` nix-env sourcing and the scripts handle both, and no
-alias uses `sudo` here.
+no single/multi-user assumption. The `shell.nix` nix-env sourcing and the scripts handle both, and
+no alias uses `sudo` here.
 
 #### Recommended -- multi-user + Determinate Nix
 
@@ -324,7 +341,7 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
 sudo mkdir -p /etc/nix && sudo chown "$(id -u):$(id -g)" /etc/nix
 git clone <this-repo> /etc/nix
 
-# 3. Apply. Attribute is <primaryUser>@<hostName> from hosts/work-desktop/id.nix. On a fresh box
+# 3. Apply. The attribute is <primaryUser>@<directory name> -- see hosts/work-desktop/. On a fresh box
 #    `home-manager` isn't on PATH yet, so bootstrap the first switch via `nix run`:
 nix run home-manager/release-26.05 -- switch -b bak --flake /etc/nix#ipratt@work-desktop \
     --print-build-logs
@@ -347,13 +364,13 @@ echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
 nix run home-manager/release-26.05 -- switch -b bak --flake ~/.config/nix#ipratt@work-desktop
 ```
 
-After the first switch, `home-manager` is on `PATH`, so the usual aliases work (`rebuild` / `upgrade`
-/ `cleanup`, all sudo-free on this box).
+After the first switch, `home-manager` is on `PATH`, so the usual aliases work (`rebuild` /
+`upgrade` / `cleanup`, all sudo-free on this box).
 
 > [!note]
 >
-> **The work-box name is a single source of truth** -- `hosts/work-desktop/id.nix` (`hostName` +
-> `primaryUser`; see [the `id.nix` / `hostId` convention](#the-idnix--hostid-convention)). The
+> **The work-box name is a single source of truth** -- the `hosts/work-desktop/` directory name,
+> plus `primaryUser` from its `id.nix` (see [Host and user data](#host-and-user-data)). The
 > `homeConfigurations` attribute and `home.username` both derive from it, so renaming the box is a
 > one-file edit. `rebuild` auto-discovers the flake's sole `homeConfigurations` entry (falling back
 > to `$(whoami)@$(hostname)`, or an explicit `HM_TARGET`).
@@ -370,8 +387,8 @@ After the first switch, `home-manager` is on `PATH`, so the usual aliases work (
 >
 > **Git credentials on Linux use libsecret, shipped _inside_ the git package.** nixpkgs builds `git`
 > on Linux with libsecret support, so `${pkgs.git}/bin/git-credential-libsecret` exists with no
-> separate package. `git.nix` points `credential.helper` at it (not the plaintext `store` helper); it
-> talks to the running Secret Service (gnome-keyring / KWallet), which Ubuntu's GNOME session
+> separate package. `git.nix` points `credential.helper` at it (not the plaintext `store` helper);
+> it talks to the running Secret Service (gnome-keyring / KWallet), which Ubuntu's GNOME session
 > provides. (git's old `git-credential-gnome-keyring` is deprecated in favour of libsecret.)
 
 ### Installing Nix on a non-NixOS machine (reference)
@@ -384,7 +401,7 @@ OS's package manager untouched. Two installers:
 | Installer host | `install.determinate.systems/nix`                         | `nixos.org/nix/install`                          |
 | Mode           | multi-user only                                           | `--daemon` (multi) **or** `--no-daemon` (single) |
 | Flakes         | on by default                                             | opt-in (via `nix.conf`)                          |
-| Extras         | `lazy-trees`, FlakeHub cache, managed `/etc/nix/nix.conf` | --                                                |
+| Extras         | `lazy-trees`, FlakeHub cache, managed `/etc/nix/nix.conf` | --                                               |
 | Uninstall      | one command                                               | manual                                           |
 
 **Determinate Nix** (recommended; what this repo targets). As of early 2026 the installer always
@@ -398,8 +415,8 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
 /nix/nix-installer uninstall
 ```
 
-**Regular (upstream) Nix** -- official installer from nixos.org. Pick the mode explicitly; flakes are
-opt-in.
+**Regular (upstream) Nix** -- official installer from nixos.org. Pick the mode explicitly; flakes
+are opt-in.
 
 ```sh
 # Multi-user (daemon; recommended, needs sudo)
@@ -440,18 +457,20 @@ environment is declarative and rebuilt from this flake.
 
 1. (Optional) note your current generation: `home-manager generations | head -1`.
 2. Uninstall single-user Nix: remove `/nix`, `~/.nix-profile`, `~/.nix-defexpr`, `~/.nix-channels`,
-   and the Nix lines the installer appended to your shell profile (`~/.profile` / `~/.bash_profile`).
-3. Reinstall multi-user -- see the [install reference](#installing-nix-on-a-non-nixos-machine-reference).
-   Prefer Determinate:
+   and the Nix lines the installer appended to your shell profile (`~/.profile` /
+   `~/.bash_profile`).
+3. Reinstall multi-user -- see the
+   [install reference](#installing-nix-on-a-non-nixos-machine-reference). Prefer Determinate:
    `curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install`.
 4. Move the repo from `~/.config/nix` to `/etc/nix` (the path the multi-user setup and
-   `users/ipratt`'s `my.user.flakeDir` expect): `sudo mkdir -p /etc/nix && sudo chown
+   `users/ipratt`'s `my.user.shell.flakeDir` expect):
+   `sudo mkdir -p /etc/nix && sudo chown
 "$(id -u):$(id -g)" /etc/nix && mv ~/.config/nix/* ~/.config/nix/.git /etc/nix/`.
 5. Re-apply: `home-manager switch -b bak --flake /etc/nix#ipratt@work-desktop` (or `rebuild`).
 
-No repo changes needed beyond moving it. `rebuild`/`upgrade`/`cleanup` keep working sudo-free on your
-home-manager profile; `cleanup` never escalates on a standalone box (collects only your generations).
-On Determinate, its daemon manages `/etc/nix/nix.conf`.
+No repo changes needed beyond moving it. `rebuild`/`upgrade`/`cleanup` keep working sudo-free on
+your home-manager profile; `cleanup` never escalates on a standalone box (collects only your
+generations). On Determinate, its daemon manages `/etc/nix/nix.conf`.
 
 ### `/etc/nix` vs `/etc/nixos` vs `~/.config/nix`
 
@@ -459,16 +478,17 @@ Three easily-conflated things (the old scripts did):
 
 | Path             | What it is                                                                               |
 | ---------------- | ---------------------------------------------------------------------------------------- |
-| `/etc/nix/`      | The **Nix daemon/CLI** config dir -- home of `nix.conf`. Overridable via `NIX_CONF_DIR`.  |
+| `/etc/nix/`      | The **Nix daemon/CLI** config dir -- home of `nix.conf`. Overridable via `NIX_CONF_DIR`. |
 | `/etc/nixos/`    | Where **NixOS** looks for `configuration.nix` / its flake (`nixos-rebuild`). NixOS-only. |
 | `~/.config/nix/` | The **per-user** Nix config dir (user-level `nix.conf`, XDG).                            |
 
-None means "where my flake repo lives" -- that's incidental. On the Mac and work box this repo sits at
-`/etc/nix` (so repo-root and the nix.conf dir coincide; on the work box `/etc/nix` is user-owned, not
-root, since Nix is per-user). The single-user install path uses `~/.config/nix`, since a rootless
-machine can't write `/etc`. So the scripts **derive the flake dir from their own location** and never
-set `NIX_CONF_DIR` (which would tell Nix to read `nix.conf` from the repo -- wrong on Ubuntu).
-`nix.conf`/`*.crt` are gitignored, so cloning to `~/.config/nix` carries no stray Nix config there.
+None means "where my flake repo lives" -- that's incidental. On the Mac and work box this repo sits
+at `/etc/nix` (so repo-root and the nix.conf dir coincide; on the work box `/etc/nix` is user-owned,
+not root, since Nix is per-user). The single-user install path uses `~/.config/nix`, since a
+rootless machine can't write `/etc`. So the scripts **derive the flake dir from their own location**
+and never set `NIX_CONF_DIR` (which would tell Nix to read `nix.conf` from the repo -- wrong on
+Ubuntu). `nix.conf`/`*.crt` are gitignored, so cloning to `~/.config/nix` carries no stray Nix
+config there.
 
 ## Resources
 
@@ -489,5 +509,6 @@ set `NIX_CONF_DIR` (which would tell Nix to read `nix.conf` from the repo -- wro
 [determinate]: https://determinate.systems/nix/
 [determinate-darwin]: https://docs.determinate.systems/guides/nix-darwin/
 [sops-nix]: https://github.com/Mic92/sops-nix
+[import-tree]: https://github.com/vic/import-tree
 [det-uninstall]: https://manual.determinate.systems/installation/uninstall.html
 [nix-uninstall]: https://nix.dev/manual/nix/latest/installation/uninstall

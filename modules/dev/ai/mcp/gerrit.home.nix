@@ -1,4 +1,4 @@
-# Gerrit MCP server -- GerritCodeReview/gerrit-mcp-server, packaged in ./package.nix.
+# Gerrit MCP server -- GerritCodeReview/gerrit-mcp-server, packaged in ./_gerrit-package.nix.
 #
 # Picked over the third-party ones as the only one that can *read* -- query changes, list comments,
 # read votes -- so an agent can work through review feedback, not just post it. It reads /comments,
