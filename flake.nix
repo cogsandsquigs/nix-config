@@ -44,39 +44,26 @@
     };
 
     # Plain-flake composition: every file under ./modules is an ordinary NixOS / nix-darwin /
-    # home-manager module, and the directory tree *is* the import graph. `./lib` exposes the
-    # `mkDarwin` / `mkNixos` builders that wire a host together.
+    # home-manager module, and the directory tree *is* the import graph. `./tools` exposes the typed
+    # fleet and the builders that wire a host together.
+    #
+    # No host is named here. Each machine declares its class in hosts/<name>/id.nix, and ./tools maps
+    # the fleet onto the right builder, so adding a host touches only its own directory.
     outputs =
         { ... }@inputs:
         let
-            tools = import ./tools { inherit inputs; };
-
-            # Each host's identity is the single source of truth in hosts/<name>/id.nix (see the
-            # README `id.nix` convention). We read it here purely to form the output attribute
-            # names; the builders re-import it and hand it to the modules as `hostId`.
-            glorpbook = ./hosts/glorpbook;
-            homeDesktop = ./hosts/home-desktop;
-            workDesktop = ./hosts/work-desktop;
-
-            idOf = host: import (host + "/id.nix");
-            glorpbookId = idOf glorpbook;
-            homeDesktopId = idOf homeDesktop;
-            workId = idOf workDesktop;
+            tools = import ./tools {
+                inherit inputs;
+                root = ./.;
+            };
         in
         {
-            inherit tools;
-
-            # Personal MacBook -- "glorpbook" (nix-darwin).
-            darwinConfigurations.${glorpbookId.hostName} = tools.mkDarwin glorpbook;
-
-            # Personal desktop tower (NixOS).
-            nixosConfigurations.${homeDesktopId.hostName} = tools.mkNixos homeDesktop;
-
-            # Work desktop (standalone home-manager on Ubuntu 24, Nix installed per-user).
-            # Apply with: home-manager switch --flake ~/.config/nix#<userName>@<hostName>
-            homeConfigurations."${workId.primaryUser}@${workId.hostName}" = tools.mkHome {
-                host = workDesktop;
-            };
+            inherit (tools)
+                fleet
+                nixosConfigurations
+                darwinConfigurations
+                homeConfigurations
+                ;
 
             # `nix fmt` -> treefmt, driven by ./treefmt.toml (4-space, 100 cols -- the repo's real
             # style). Wrapped with the formatters treefmt invokes (nixfmt/shfmt/prettier) on PATH

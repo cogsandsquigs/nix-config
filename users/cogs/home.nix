@@ -8,11 +8,11 @@
     config,
     lib,
     tools,
-    hostId,
+    host,
     ...
 }:
 let
-    me = "cogs@${hostId.hostName}";
+    me = "cogs@${host.name}";
 
     # presence of the .sops file is the switch -- no allowlist; every machine self-wires uniformly.
     haveGpg = builtins.pathExists (../../secrets + "/${me}/gpg.sops");

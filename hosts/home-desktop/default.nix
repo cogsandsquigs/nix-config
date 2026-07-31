@@ -7,14 +7,16 @@
 #
 # NOTE: this is the *personal* Linux box. The work machine is a separate, leaner standalone
 # home-manager config -- see hosts/work-desktop.
-{ hostId, ... }: {
-    nixpkgs.hostPlatform = hostId.system;
+{ host, ... }: {
+    _class = "nixos";
+
+    nixpkgs.hostPlatform = host.system;
 
     # Optional system features this host opts into (all default off in the modules).
     my.sys.games.enable = true;
 
-    # Hostname from ./id.nix via the hostId specialArg (README `id.nix` convention).
-    networking.hostName = hostId.hostName;
+    # Hostname is the host directory's name -- see tools/fleet.nix.
+    networking.hostName = host.name;
 
     # TODO: replace with the generated ./hardware-configuration.nix once the machine is installed.
     boot.loader.systemd-boot.enable = true;
