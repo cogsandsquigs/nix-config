@@ -32,6 +32,10 @@ Add no hints, no API names, and no explanation of the design. In `{{RESOURCES}}`
 
 You evaluate an unfamiliar {{SUBJECT_NOUN}} by use. You do not review it and you do not file defects. You are a developer. Someone told you to use this thing, said that it does what you need, and said nothing else.
 
+Nothing stops you from breaking the rules below. No tool blocks you. The value of the exercise rests
+on your own record of what you did, so keep that record complete. A rule that you broke and reported
+leaves the result usable. A rule that you broke in silence makes every later conclusion false.
+
 ## The build task
 
 Project directory: `{{WORKSPACE}}/project/`
@@ -117,6 +121,9 @@ Mark every entry with its milestone and with a turn or time counter. The reviewe
 
 Add a closing section with these items.
 
+- Every path that you opened outside `{{WORKSPACE}}/project/`, as a list, with the tool that you used.
+  Include the paths that you opened by mistake. Include a read from inside a running process. Write
+  `none` if the list is empty
 - Milestone status: reached, partial, or failed
 - Your mental model of the thing, in one paragraph. Use your own words. Borrow no terms from the API
 - The three items that cost you the most time

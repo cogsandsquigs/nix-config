@@ -73,8 +73,8 @@ else
     COMMIT="unknown (not a git repository)"
 fi
 
-# infra/ holds compose files, env files and seed scripts. The blind guard blocks
-# every read inside it, at every tier. Provisioning detail cannot reach the explorer.
+# infra/ holds compose files, env files and seed scripts. The brief closes it at
+# every tier, and the ignore files below keep a search out of it.
 mkdir -p "$WORKSPACE/project" "$WORKSPACE/infra"
 
 EXCLUDES=(.git node_modules target .venv __pycache__ .pytest_cache)
@@ -93,35 +93,28 @@ fi
 
 : > "$WORKSPACE/journal.md"
 
-# A dependency directory inside project/ can hold a copy of the subject, and a
-# recursive search would walk into it. Search tools honor these files, so a search
-# of project/ stays on the code of the explorer. The guard closes the copy as well
-# when the configuration names it.
-IGNORE="node_modules/
+# The only mechanical part of the blind constraint. Search tools honor ignore
+# files, so a search that starts at the workspace root skips subject/ and infra/,
+# and a search inside project/ skips a dependency copy of the subject. This stops
+# the accident. It does not stop a named path and it does not survive
+# --no-ignore. The brief and the gate in step 7 carry the rest.
+#
+# Two names for the workspace root, because tools differ. ripgrep reads .ignore
+# and .rgignore. Other tools read .gitignore.
+ROOT_IGNORE="subject/
+infra/"
+printf '%s\n' "$ROOT_IGNORE" > "$WORKSPACE/.rgignore"
+cp "$WORKSPACE/.rgignore" "$WORKSPACE/.ignore"
+
+PROJECT_IGNORE="node_modules/
 site-packages/
 vendor/
 target/
 .venv/
 dist/"
-printf '%s\n' "$IGNORE" > "$WORKSPACE/project/.gitignore"
+printf '%s\n' "$PROJECT_IGNORE" > "$WORKSPACE/project/.gitignore"
 cp "$WORKSPACE/project/.gitignore" "$WORKSPACE/project/.rgignore"
-
-# Configuration for scripts/blind_guard.py. The script writes it disarmed. The
-# build inside subject/ and the wiring of project/ both need access to the
-# subject, and both happen before the explorer starts. The workflow arms the
-# guard just before the launch.
-#
-# Line 1 is the workspace and line 2 is the tier. Each later line adds one closed
-# root that follows the same tier rules as subject/. Add a line when the install
-# copies the subject into project/ instead of linking it, such as an install from
-# a packed tarball:
-#
-#   echo "$WORKSPACE/project/node_modules/<package>" >> "$GUARD_CONF"
-GUARD_CONF="${TMPDIR:-/tmp}/test-library-guard.conf"
-GUARD_LOG="${TMPDIR:-/tmp}/test-library-guard.log"
-printf '%s\n%s\n' "$WORKSPACE" "$TIER" > "$GUARD_CONF"
-rm -f "${TMPDIR:-/tmp}/test-library-guard.armed"
-: > "$GUARD_LOG"
+cp "$WORKSPACE/project/.gitignore" "$WORKSPACE/project/.ignore"
 
 cat > "$WORKSPACE/findings.md" <<EOF
 # \`$SUBJECT_NAME\` — blind usability audit
@@ -133,7 +126,8 @@ cat > "$WORKSPACE/findings.md" <<EOF
 - Audit workspace: $WORKSPACE
 - Information tier: $TIER
 - Consumed as: (fill in: path dep / packed tarball / workspace alias)
-- Blind constraint held: (fill in after the contamination gate)
+- Blind constraint: instructed, not enforced. Held: (fill in after the contamination gate)
+- Record the gate read: (fill in: explorer tool calls / journal and self-reported path list)
 - Language server available: (fill in; if not, note that strict collapses to general)
 EOF
 
@@ -145,15 +139,17 @@ Workspace ready: $WORKSPACE
   journal.md empty; the explorer appends to it
   findings.md setup block prefilled
 
-Guard config written to $GUARD_CONF, currently DISARMED.
-Guard decision log: $GUARD_LOG — the contamination gate in step 7 reads it.
+Ignore files written: .rgignore and .ignore at the root (skip subject/ and infra/),
+and the pair in project/ (skip dependency directories). They stop an accidental
+search. They do not stop a named path or --no-ignore. Nothing else holds the
+explorer to tier '$TIER'.
 
-If the install copies the subject into project/ rather than linking it, close that
-copy too:
-  echo "$WORKSPACE/project/node_modules/<package>" >> $GUARD_CONF
+If the install copies the subject into project/ rather than linking it, that copy
+is a second readable tree. List what it holds, and record it in findings.md:
+  ls -R "$WORKSPACE/project/node_modules/<package>"
 
 Next: build inside subject/ if it ships compiled artifacts, wire up project/,
 provision any resources the milestones need into infra/ and verify they are
 reachable, fill brief.md from references/explorer-brief.md, run the leakage gate,
-then arm the guard with: touch ${TMPDIR:-/tmp}/test-library-guard.armed
+then launch the explorer.
 EOF

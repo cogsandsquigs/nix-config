@@ -44,6 +44,25 @@ as follows. Then show the result before you start.
 - Either value unknown: ask the user. A run with the wrong label gives findings that nobody can
   read.
 
+## Blindness is instructed, not enforced
+
+Nothing blocks the explorer from opening the source. The constraint rests on three things, and each
+one has a limit that you must know before you read a report.
+
+- **The brief.** It states the allowances and the prohibitions of the tier. It also asks the explorer
+  to record the wish to read the source instead of acting on it. This holds for a cooperative agent.
+  It holds for nothing else.
+- **The ignore files.** `setup_audit.sh` writes `.rgignore` and `.ignore` at the root of the
+  workspace, and the same pair inside `project/`. A search tool honors them, so a search that starts
+  at the workspace root stays out of `subject/` and `infra/`. This catches the accident, which is the
+  common case. It does not survive an explicit path, and it does not survive `--no-ignore`.
+- **The gate in step 7.** It reads the record of the run after the fact. This is the only check that
+  can find a breach, and it finds one only when the record shows it.
+
+So the audit measures a cooperative explorer. Say that in the report. Never write that the tier was
+enforced, because no part of this method enforces it. A run where the explorer read the source is
+still worth reporting, with the breach named and the affected milestones marked.
+
 ## Workflow
 
 Copy this checklist. Mark each item when you complete it.
@@ -55,9 +74,9 @@ Audit progress:
 - [ ] 3. Scaffold the workspace with scripts/setup_audit.sh
 - [ ] 4. Provision external resources. Verify that each one answers
 - [ ] 5. Fill the brief. Then run the leakage gate
-- [ ] 6. Arm the blind guard. Run the explorer. Check the journal shape during the run
+- [ ] 6. Run the explorer. Check the journal shape during the run
 - [ ] 7. Run the contamination gate. It must pass before phase 2
-- [ ] 8. Disarm the guard. Review with full access
+- [ ] 8. Review with full access
 - [ ] 9. Write findings.md. Then remove the resources
 ```
 
@@ -88,7 +107,7 @@ in watch mode and the declaration files instead. This substitution makes `strict
 A module often ships no declarations at all. It resolves straight to source through a path alias,
 and the repository builds it with the application. Without a language server the explorer then holds
 only diagnostics, and no tier means anything. Generate the declarations into the workspace before
-you arm the guard, such as with `tsc --emitDeclarationOnly`. Put them where the import specifier
+you launch the explorer, such as with `tsc --emitDeclarationOnly`. Put them where the import specifier
 resolves. This is a build step. It is not an edit of the source. If the toolchain cannot generate
 them, say in the report that the run held diagnostics only, and rate documentation N/A.
 
@@ -97,10 +116,10 @@ library. These subjects still work with two substitutions. At `general`, allow w
 exposes for inspection: docstrings through `help()`, signature reflection, published stubs, and the
 completions that the editor can infer. The explorer still never gets the implementation.
 
-Runtime inspection carries a route to the source that no file guard can see. In Python,
+Runtime inspection carries a route to the source that leaves no trace in the filesystem. In Python,
 `inspect.getsource`, `inspect.getsourcelines`, `module.__file__`, and `dis` all return the
 implementation from inside the process. The brief names these calls and forbids them. Step 7 greps
-the transcript for them, because the guard cannot stop them. Second, drop the dimensions that depend
+the record for them, because nothing else can see them. Second, drop the dimensions that depend
 on types. A rating of 1 for type guidance measures the language, not the subject. Rate the runtime
 equivalent instead. Ask one question. Does the subject reject bad input at the boundary with a clear
 error, or does it fail deep with a stack trace through the internals? Mark a dimension N/A when the
@@ -172,9 +191,9 @@ ${CLAUDE_SKILL_DIR}/scripts/setup_audit.sh <subject-path> <mode> <tier> [workspa
 
 The script puts the workspace in `$TMPDIR` by default. It copies the subject without changes. It
 excludes `.git` and the build caches. It records the source commit. It writes a `findings.md`
-skeleton with the setup block filled in. It also writes the configuration for the blind guard, in
-the disarmed state. Read the header comment of the script for the list of exclusions and the reason
-for each one.
+skeleton with the setup block filled in. It also writes the ignore files that keep a search away from
+`subject/` and `infra/`. Read the header comment of the script for the list of exclusions and the
+reason for each one.
 
 Scratch space is the default for one reason. The audit makes a project, dependency trees, and build
 output. This content does not belong in the working tree of the user. It pollutes `git status` and
@@ -197,25 +216,23 @@ $TMPDIR/<name>-audit/
 Copy the subject exactly. Never rewrite it. Never copy only the public parts. The explorer must meet
 the real artifact. The reviewer needs ground truth that matches what the explorer got.
 
-Prefer an install that links. A path dependency and a workspace alias both leave a symlink, so every
-read lands back in `subject/` and the guard applies. An install from a packed tarball copies
-instead. That copy holds every file that the package ships, and a package with no `files` field
-ships the source. The copy sits in `project/`, which no rule closes.
+Prefer an install that links. A path dependency and a workspace alias both leave a symlink, so the
+dependency directory holds no second copy of the source. An install from a packed tarball copies
+instead. That copy holds every file that the package ships, and a package with no `files` field ships
+the source. The copy sits in `project/`, where the explorer works.
 
-If the install copies, close the copy. Add its path to the guard configuration, one path for each
-line after the tier.
+If the install copies, record that in the report. The copy is a second readable tree, and the brief
+is the only thing that closes it. Check what the copy holds before you launch, so that you know what
+sat within reach.
 
 ```bash
-echo "$WORKSPACE/project/node_modules/<package>" >> ${TMPDIR:-/tmp}/test-library-guard.conf
+ls -R "$WORKSPACE/project/node_modules/<package>"
 ```
 
-Each extra line follows the same tier rules as `subject/`. Check the result before you launch. Read
-one implementation file in the copy and confirm that the guard blocks it.
-
-The explorer must stay free to search its own code, so the guard does not block a search of
-`project/`. The setup script writes `.gitignore` and `.rgignore` in `project/` instead. Search tools
-honor those files and stay out of the dependency directories. Keep both files if you rewrite the
-project layout.
+The explorer must stay free to search its own code, so nothing closes `project/`. The setup script
+writes `.gitignore` and `.rgignore` there instead, and `.rgignore` with `.ignore` at the root of the
+workspace. Search tools honor those files, so a search stays out of the dependency directories,
+`subject/`, and `infra/`. Keep the files if you rewrite the project layout.
 
 Then connect `project/` to `subject/` in the way that a real consumer does. Build inside `subject/`
 if the subject ships compiled artifacts. A missing `dist/` or a missing `.d.ts` gives findings about
@@ -251,8 +268,9 @@ address. The explorer finds the call.
 Keep all infrastructure in `infra/`. Never put it in `project/`. Compose files, env files, and seed
 scripts often carry schema definitions and fixture data. That data mirrors the expected model of the
 subject. The comments often explain the intended use. All of this answers the milestones in advance.
-The blind guard blocks `infra/` at every tier while armed, so a stray read stops instead of spoiling
-the run in silence.
+The brief closes `infra/` at every tier, and the ignore files keep a search out of it. A named read
+still reaches it, so keep the directory outside `project/` and give the explorer no reason to look
+there. Every coordinate that a milestone needs belongs in the brief.
 
 You may reuse the harness or the compose file of the subject. You are not blind. Run the harness
 from `subject/`, or copy it into `infra/`. The explorer must not read it.
@@ -263,7 +281,7 @@ explorer starts. The same trap applies to sample files, queue contents, and cach
 by hand in domain terms when a milestone needs existing data. Never seed from the test fixtures of
 the subject.
 
-Verify each resource before you arm the guard. Use a command that does not touch the subject: a
+Verify each resource before you launch the explorer. Use a command that does not touch the subject: a
 one-line native client call, a raw HTTP request, a port check, or a directory listing. The command
 must prove that the resource answers without the code under test. Record the command in
 `findings.md`. If a resource stops during the run, mark that milestone as infra-failed. Do not count
@@ -287,32 +305,13 @@ Run this gate before you launch. A brief that leaks makes every later step usele
    option shapes, and no call order from the subject.
 5. Fix the problems and check again. Launch only when all four checks pass.
 
-### 6. Arm the guard, then run the explorer
+### 6. Run the explorer
 
-The build, the wiring, and the packing all need access to the subject, so the guard starts in the
-disarmed state. Arm it now that the setup is complete.
+The setup is complete, so the run starts now. Nothing mechanical holds the explorer to the tier. Read
+the section on instructed blindness again if you have not.
 
-```bash
-touch ${TMPDIR:-/tmp}/test-library-guard.armed
-```
-
-While armed, `scripts/blind_guard.py` runs as a PreToolUse hook. It blocks reads inside `subject/`
-that the tier does not allow. It blocks every read inside `infra/`. It closes each extra root from
-the configuration. It blocks a search that walks into a closed root, including a search with no path
-argument. It also catches read commands that pass through bash. Do not skip the guard. Do not disarm
-it early.
-
-The guard covers the common routes and no more. It allows the action when anything is unclear. Three
-routes stay open by design. A bash command can name a closed path in relative form. An interpreter
-can read a file inside its own process. A copy can move a closed file into open space. So the guard
-is not proof that the run held. The manual gate in step 7 is the proof, and the guard writes the log
-that the gate reads.
-
-```
-${TMPDIR:-/tmp}/test-library-guard.log
-```
-
-Each line holds a verdict, a tool name, and a target. The log starts empty at setup.
+One choice decides how much the record is worth. Take the explorer that leaves the fullest record of
+its own actions, because the gate in step 7 reads that record and has nothing else to read.
 
 If you can start a subagent, start one. Give it `brief.md` without changes. Point it at `project/`
 and `journal.md`. One explorer runs every milestone in order. The curve across the milestones
@@ -335,24 +334,32 @@ appear only after things work, stop, state the requirement again, and run that m
 
 Do not start phase 2 until this gate passes.
 
-Start with the guard log, because it is the one record that the explorer does not write.
+The record of the run is the only evidence. Name the record before you read it, and say in the report
+which of these you had.
 
-```bash
-grep '^block' ${TMPDIR:-/tmp}/test-library-guard.log
-```
+- The tool calls of the explorer, if you can read them. This is the strongest record, because the
+  explorer does not choose what goes in it.
+- The journal, and the list of opened paths that the brief asks the explorer to close with. This is a
+  self-report. It is honest work by a cooperative agent, and it is not proof.
 
-1. Read every blocked line. A block is an attempt, not a breach. Record the attempts. A blocked
-   attempt shows what the explorer believed it needed.
-2. Search the allowed lines for the three open routes. Look for a bash command with a relative path.
-   Look for `python3 -c`, `node -e`, `inspect.getsource`, `__file__`, and `dis`. Look for a `cp` or
-   an `mv` out of a closed root. An allowed read of a copy is still a breach.
-3. Look for web searches and registry lookups. The hook does not see those tools, so read the
-   transcript of the explorer and its own journal.
-4. In module mode, look for reads of other call sites, of the module tests, or of the git history.
-5. Read the journal for statements about prior knowledge of this subject.
+Then run these checks against whatever you hold.
 
-An empty log is a failure of the setup, not a clean run. It means that the guard never ran. Check
-that the workspace trust dialog accepted the hooks, and that `$TMPDIR` holds the armed sentinel.
+1. Look for a read inside `subject/` that the tier does not allow. Read the closing list of paths
+   first, then the tool calls. A read that the explorer records itself still counts as a breach, and
+   it also counts as honesty. Say both.
+2. Look for a search that reached a closed tree. A named path defeats the ignore files, and so does
+   `--no-ignore`. A search at the workspace root with neither is the case that the ignore files stop.
+3. Look for the routes that leave no file access. Look for `python3 -c`, `node -e`,
+   `inspect.getsource`, `inspect.getsourcelines`, `__file__`, `dis`, `require.resolve`, and a read
+   through `fs`. Look for a `cp` or an `mv` out of `subject/`, then a read of the copy.
+4. Look for a read of the dependency copy in `project/`, when the install copied instead of linking.
+5. Look for web searches and registry lookups.
+6. In module mode, look for reads of other call sites, of the module tests, or of the git history.
+7. Read the journal for statements about prior knowledge of this subject.
+
+An empty result means one of two things, and you cannot tell them apart. Either the run held, or the
+record is too thin to show a breach. Rate your confidence in the report on that basis. A run where you
+could read the tool calls supports a stronger claim than a run where you could not.
 
 If you find a violation, take one of two paths. Run the audit again clean, or continue and mark the
 report as contaminated with the violation named. Silent contamination is the one failure that makes
@@ -360,14 +367,8 @@ the whole report misleading instead of incomplete.
 
 ### 8. Review with full access
 
-Disarm the guard first. Otherwise it blocks every read in this phase.
-
-```bash
-rm -f ${TMPDIR:-/tmp}/test-library-guard.armed
-```
-
-Then read `subject/`. This is the snapshot that the explorer met, not the current state of the
-working tree.
+Read `subject/` now. This is the snapshot that the explorer met, not the current state of the working
+tree.
 
 Run the code of the explorer. Compile it, run it, and inspect what it did. Run it against the live
 resources. This is the reason that removal of the resources waits for the report. Code that
@@ -422,17 +423,10 @@ Record what you provisioned and at what fidelity. A run against a real service a
 stub support different conclusions. A reader cannot tell the two apart unless you state which one
 you did.
 
-Remove the resources after you write the report. Then clear the guard state, so that the next run
-starts clean.
+Remove the resources after you write the report.
 
-```bash
-rm -f ${TMPDIR:-/tmp}/test-library-guard.armed \
-      ${TMPDIR:-/tmp}/test-library-guard.conf
-```
-
-Keep the log until the report is final. Copy it next to `findings.md` if you want the evidence to
-outlive the temp directory. An abandoned run leaves the sentinel behind, and the guard then blocks
-reads of that old workspace. The same two lines fix that.
+Keep the record until the report is final. Copy the journal and the closing list of opened paths next
+to `findings.md` if you want the evidence to outlive the temp directory.
 
 Then start your reply to the user with the two or three findings that change the first hour of a
 newcomer the most. Do not make the user find the headline in a table.
@@ -441,6 +435,10 @@ newcomer the most. Do not make the user find the headline in a table.
 
 - **Silent contamination.** Worse than a failed run, because the report still looks valid. The gate
   in step 7 exists for this.
+- **A claim that the tier was enforced.** Nothing enforces it. Write that the explorer worked under
+  the tier, and name the record that supports the claim.
+- **A gate run against the journal alone.** The journal holds what the explorer chose to write. Read
+  the tool calls when you can reach them, and say in the report when you could not.
 - **Journaling after the fact.** The most common failure. It gives a useless report without any
   warning.
 - **Review of the code instead of the experience.** The project of the explorer is evidence, not a
@@ -455,12 +453,11 @@ newcomer the most. Do not make the user find the headline in a table.
 
 ## Bundled files
 
-- `scripts/setup_audit.sh`. Run it. It scaffolds the workspace in step 3.
-- `scripts/blind_guard.py`. The PreToolUse hook runs it. You do not. It writes the decision log that
-  step 7 reads. Read the script itself only if the guard blocks the wrong thing.
+- `scripts/setup_audit.sh`. Run it. It scaffolds the workspace in step 3, and it writes the ignore
+  files that keep a search out of `subject/` and `infra/`.
 - `references/explorer-brief.md`. Fill it and give it to the explorer in step 5.
 - `references/finding-taxonomy.md`. Read it before you write the findings in step 8.
 - `references/report-template.md`. The structure for `findings.md` in step 9.
 
-The guard holds the state of one audit, at a fixed path in the temp directory. Complete or abandon a
-run before you start another one.
+Each run holds its own workspace, so two audits can run at the same time. Give the second one an
+explicit workspace path.

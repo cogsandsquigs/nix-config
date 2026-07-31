@@ -12,7 +12,7 @@
         "Copies the subject into subject/ without rewriting it or copying only part of it",
         "Writes three milestones in domain language, none of which names an identifier that the fixture exports",
         "Runs the leakage gate on brief.md before launching the explorer",
-        "Arms the blind guard before the explorer starts",
+        "States that the blind constraint is instructed and not enforced, and does not claim that the tier was enforced",
         "The journal contains entries recorded before resolution, in GUESS/BASIS/TRIED/RESULT shape, not only a summary written afterward",
         "Runs the contamination gate and states whether the blind constraint held, before starting the review",
         "Compiles and runs the explorer's project during the review instead of reasoning from the journal alone",
@@ -20,7 +20,7 @@
         "Recovers at least four of the eight planted defects in test-library-eval/fixtures/EXPECTED-FINDINGS.md",
         "findings.md cites journal lines and source locations for each finding",
         "Reports the dimension ratings separately, without averaging them into one number",
-        "Reads the guard decision log at $TMPDIR/test-library-guard.log during the contamination gate, and treats an empty log as a setup failure rather than a clean run"
+        "Names the record the contamination gate read, either the explorer's tool calls or the journal with its self-reported list of opened paths, and states that an empty result cannot distinguish a clean run from a thin record"
       ]
     },
     {
