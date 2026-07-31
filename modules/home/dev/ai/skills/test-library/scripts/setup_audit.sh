@@ -28,7 +28,10 @@
 
 set -euo pipefail
 
-die() { printf 'error: %s\n' "$1" >&2; exit 1; }
+die() {
+    printf 'error: %s\n' "$1" >&2
+    exit 1
+}
 
 usage() {
     sed -n '3,10p' "$0" | sed 's/^# \?//'
@@ -44,12 +47,12 @@ TIER="$3"
 [ -d "$SUBJECT_PATH" ] || die "subject path is not a directory: $SUBJECT_PATH"
 
 case "$MODE" in
-    library|module) ;;
+    library | module) ;;
     *) die "mode must be 'library' or 'module', got: $MODE" ;;
 esac
 
 case "$TIER" in
-    strict|general|lenient) ;;
+    strict | general | lenient) ;;
     *) die "tier must be 'strict', 'general' or 'lenient', got: $TIER" ;;
 esac
 
@@ -58,15 +61,15 @@ SUBJECT_NAME="$(basename "$SUBJECT_PATH")"
 WORKSPACE="${4:-${TMPDIR:-/tmp}/${SUBJECT_NAME}-audit}"
 WORKSPACE="${WORKSPACE%/}"
 
-if [ -e "$WORKSPACE" ] && [ -n "$(ls -A "$WORKSPACE" 2>/dev/null)" ]; then
+if [ -e "$WORKSPACE" ] && [ -n "$(ls -A "$WORKSPACE" 2> /dev/null)" ]; then
     die "workspace exists and is not empty: $WORKSPACE
        Remove it, or pass a different path. A reused workspace can mix the
        journals of two runs. Nobody can then read the report."
 fi
 
 # The commit hash is metadata only. A subject outside a repository still works.
-if COMMIT="$(git -C "$SUBJECT_PATH" rev-parse --short HEAD 2>/dev/null)"; then
-    if ! git -C "$SUBJECT_PATH" diff --quiet HEAD 2>/dev/null; then
+if COMMIT="$(git -C "$SUBJECT_PATH" rev-parse --short HEAD 2> /dev/null)"; then
+    if ! git -C "$SUBJECT_PATH" diff --quiet HEAD 2> /dev/null; then
         COMMIT="$COMMIT (dirty working tree)"
     fi
 else
@@ -79,7 +82,7 @@ mkdir -p "$WORKSPACE/project" "$WORKSPACE/infra"
 
 EXCLUDES=(.git node_modules target .venv __pycache__ .pytest_cache)
 
-if command -v rsync >/dev/null 2>&1; then
+if command -v rsync > /dev/null 2>&1; then
     RSYNC_ARGS=()
     for e in "${EXCLUDES[@]}"; do RSYNC_ARGS+=(--exclude "$e"); done
     rsync -a "${RSYNC_ARGS[@]}" "$SUBJECT_PATH/" "$WORKSPACE/subject/"
@@ -87,7 +90,7 @@ else
     # Without rsync, copy everything and then prune. Slower, same result.
     cp -R "$SUBJECT_PATH" "$WORKSPACE/subject"
     for e in "${EXCLUDES[@]}"; do
-        find "$WORKSPACE/subject" -name "$e" -prune -exec rm -rf {} + 2>/dev/null || true
+        find "$WORKSPACE/subject" -name "$e" -prune -exec rm -rf {} + 2> /dev/null || true
     done
 fi
 
@@ -116,7 +119,7 @@ printf '%s\n' "$PROJECT_IGNORE" > "$WORKSPACE/project/.gitignore"
 cp "$WORKSPACE/project/.gitignore" "$WORKSPACE/project/.rgignore"
 cp "$WORKSPACE/project/.gitignore" "$WORKSPACE/project/.ignore"
 
-cat > "$WORKSPACE/findings.md" <<EOF
+cat > "$WORKSPACE/findings.md" << EOF
 # \`$SUBJECT_NAME\` — blind usability audit
 
 **Setup**
@@ -131,7 +134,7 @@ cat > "$WORKSPACE/findings.md" <<EOF
 - Language server available: (fill in; if not, note that strict collapses to general)
 EOF
 
-cat <<EOF
+cat << EOF
 Workspace ready: $WORKSPACE
   subject/   verbatim copy at $COMMIT — off-limits to the explorer per tier '$TIER'
   project/   empty; wire it to subject/ the way a real consumer would
