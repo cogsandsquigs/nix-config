@@ -44,7 +44,7 @@ secrets, and [import-tree] for module discovery.
   - `checks.nix` — the five gates.
   - `opt.nix` — option constructors. `secrets.nix` — sops wiring.
   - `_fixtures/` — module trees and host stubs for `tools-tests`.
-- **`modules/`** — every feature. One file per feature per class. See
+- **`modules/`** — every feature. One file per feature, keyed by class. See
   [Module layout](#module-layout).
 - **`hosts/`** — per-machine identity and host-only settings.
 - **`users/`** — per-user home configuration and system account.
@@ -55,10 +55,8 @@ secrets, and [import-tree] for module discovery.
 
 ## Module layout
 
-Every `.nix` file under `modules/` is one feature. The path names the feature. The file name gives
-the module its class.
-
-A file that covers more than one class is an attribute set, keyed by class:
+Every `.nix` file under `modules/` is one feature. The path names the feature. The file is an
+attribute set, keyed by the classes the feature covers:
 
 ```nix
 # modules/apps/games.nix
@@ -69,19 +67,37 @@ A file that covers more than one class is an attribute set, keyed by class:
 }
 ```
 
+A feature that covers one class has one key. Every file is keyed the same way, so a feature that
+gains a class later gains a key. No file is renamed for it, and no reader has to know which form a
+given feature uses.
+
 The classes share one `let` block, so a value two of them need is written once. This is why
 `modules/sys/nix.nix` states the substituter list one time instead of once per system class.
 
-A file that covers one class is a plain module and names its class in the file name:
+The key `options` is reserved. It declares the options that **every** class in the file declares, so
+a feature states them one time:
 
+```nix
+{
+    options = { tools, ... }: { my.sys.net.tailscale.enable = tools.opt.mkDisabled "Tailscale"; };
+
+    nixos = { lib, config, ... }: { config = lib.mkIf ... ; };
+    darwin = { lib, config, ... }: { config = lib.mkIf ... ; };
+}
 ```
-modules/cli/git.nix         a home-manager module
-modules/nixos/security.nix   a NixOS module
-modules/darwin/fuse.nix      a nix-darwin module
-```
+
+A class may still declare options of its own, and the two sets merge. They must not overlap: one
+option declared twice is an error from the module system, and the message names the file twice.
+
+Options shared by some classes but not all stay in a `let` block instead. `modules/secrets.nix`
+declares `my.sys.secrets.enable` in its two system halves only. As a shared `options` block it would
+reach the home evaluation as well, where nothing reads `my.sys` and nothing should.
 
 A directory adds a level to the feature name. `modules/dev/ai/mcp/gerrit.nix` is the feature
-`dev.ai.mcp.gerrit`, and that feature owns the option path `my.user.dev.ai.mcp.gerrit`.
+`dev.ai.mcp.gerrit`, and that feature owns the option path `my.user.dev.ai.mcp.gerrit`. A grouping
+folder is therefore a real namespace: `modules/cli/git.nix` owns `my.user.cli.git`, not
+`my.user.git`. `modules/sys/` is the exception in reverse — it holds the plumbing that declares no
+options at all, because `my.sys.sys` would stutter.
 
 A name that starts with `_` is not a module. Use it for shared values, package definitions, and data
 tables. The loader skips these files. `modules/dev/_langs/` holds the language tables, and
@@ -98,14 +114,15 @@ mirrors its option path and those options were already camelCase.
 ## The registry
 
 `import-tree` walks `modules/` and passes each path to `tools/registry.nix`. The registry reads the
-class and the feature name from the path, then wraps the file:
+feature name from the path and the classes from the file's own keys, then wraps each class:
 
 ```nix
-{ _class = "nixos"; _file = <path>; imports = [ <the file> ]; }
+{ _class = "nixos"; _file = <path>; imports = [ <the shared options> <the class key> ]; }
 ```
 
 `_class` makes the module system reject the module if it reaches an evaluation of another class, and
-the error names the file. The class comes from the path, so no other file has to agree.
+the error names the file. `_file` stays the bare path, which is what `feature-paths` compares each
+option's declaration against.
 
 The registry collects these entries in a module evaluation with three options, one per class. Each
 option has the type `attrsOf deferredModule`. An unknown class key fails as "option does not exist".
@@ -215,9 +232,10 @@ own and not only as part of a host.
 
 1. Choose the option path the feature owns, for example `my.user.dev.rust`.
 2. Create the file at the matching path, for example `modules/dev/rust.nix`.
-3. Declare the `enable` option with a `tools.opt` constructor.
-4. Put the rest of the module under `lib.mkIf cfg.enable`.
-5. Run `nix flake check`.
+3. Key the file by the classes the feature covers, one key even for one class.
+4. Declare the `enable` option with a `tools.opt` constructor.
+5. Put the rest of the module under `lib.mkIf cfg.enable`.
+6. Run `nix flake check`.
 
 Do not edit any other file. The loader finds the new file.
 
