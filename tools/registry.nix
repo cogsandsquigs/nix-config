@@ -18,6 +18,12 @@
 #                   it groups.
 #   _<anything>     not a module. Shared values, package definitions, data tables, drafts.
 #
+# Either form of a feature file may be a FUNCTION of the classify-time arguments, so a file that needs
+# `tools` for its option constructors states that once at the top instead of once per class key:
+# `{ tools, ... }: { nixos = ...; darwin = ...; }`. Only `lib` and `tools` exist there. The
+# evaluation-time arguments -- config, pkgs, host, inputs -- do not: classify runs while the registry is
+# being built, before any host is evaluated, so a module that needs them opens under its class key.
+#
 # The reserved key `options` is not a class. It declares the options that EVERY class in the file
 # declares, so a feature states them once; it merges with any `options` a class key declares itself.
 # The two must be disjoint, which the module system enforces on its own: declaring one option in both
@@ -33,6 +39,7 @@
     lib,
     importTree,
     root,
+    tools,
 }:
 let
     # Class key -> the module system's own name for that class.
@@ -75,22 +82,43 @@ let
     asModule =
         value: if lib.isFunction value then args: { options = value args; } else { options = value; };
 
+    # What a feature file gets when it is written as a function. `tools` is the reason the form exists;
+    # `lib` comes along because an option constructor usually needs both.
+    featureArgs = { inherit lib tools; };
+
+    # callPackage-style application, so `{ tools }:` is as legal as `{ tools, ... }:`. An argument that
+    # only exists during host evaluation is the trap this form sets, so it is named as such rather than
+    # left to the module system's "called without required argument".
+    #
+    # `functionArgs` is `{ }` for both `{ ... }:` and `x:`, which is why that case takes the whole set.
+    apply =
+        path: f:
+        let
+            wanted = lib.functionArgs f;
+            unknown = lib.attrNames (removeAttrs wanted (lib.attrNames featureArgs));
+        in
+        if unknown != [ ] then
+            throw ''
+                ${toString path}
+                A feature function takes ${lib.concatStringsSep ", " (lib.attrNames featureArgs)}; this one asks for ${lib.concatStringsSep ", " unknown}.
+                The evaluation-time arguments (config, pkgs, host, inputs) belong to a module under a class
+                key -- this runs while the registry is built, before any host exists.
+            ''
+        else if wanted == { } then
+            f featureArgs
+        else
+            f (builtins.intersectAttrs wanted featureArgs);
+
     classify =
         path:
         let
-            raw = import path;
+            imported = import path;
+            raw = if lib.isFunction imported then apply path imported else imported;
             name = feature path;
             byClass = removeAttrs raw [ "options" ];
             shared = lib.optional (raw ? options) (asModule raw.options);
         in
-        if lib.isFunction raw then
-            throw ''
-                ${toString path}
-                A feature is an attrset keyed by class, not a module function. Put this module under the
-                class it belongs to ({ home = { pkgs, ... }: { ... }; }), or prefix the filename with "_"
-                if it is not a module at all.
-            ''
-        else if byClass == { } then
+        if byClass == { } then
             throw ''
                 ${toString path}
                 A feature declares at least one class key (${lib.concatStringsSep ", " (lib.attrNames classes)}).
@@ -105,6 +133,9 @@ let
                             classes.${key} or (throw ''
                                 ${toString path}
                                 Unknown class key "${key}". Expected any of ${lib.concatStringsSep ", " (lib.attrNames classes)}, or the reserved key "options".
+                                A plain module lands here too: put its body under the class it belongs to
+                                ({ home = { pkgs, ... }: { ... }; }), or prefix the filename with "_" if it is
+                                not a module at all.
                             '');
                     in
                     lib.nameValuePair class { ${name} = entry path class (shared ++ [ module ]); }

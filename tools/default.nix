@@ -16,7 +16,7 @@ let
     fleet = import ./fleet.nix { inherit lib root; };
 
     registry = import ./registry.nix {
-        inherit lib root;
+        inherit lib root tools;
         importTree = inputs.import-tree;
     };
 
