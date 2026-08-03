@@ -88,6 +88,23 @@ let
             expected = "cli.utils.gpg";
         };
 
+        # A folder's own feature is its default.nix, and that segment names no level -- so this and
+        # `cli/utils.nix` would collide, which is why the registry types the feature set as `uniq`.
+        testFeatureNameFromFolderDefault = {
+            expr = featureOf "dev/ai/default.nix";
+            expected = "dev.ai";
+        };
+
+        testFeatureNameFromNestedFolderDefault = {
+            expr = featureOf "cli/utils/default.nix";
+            expected = "cli.utils";
+        };
+
+        testFeatureNameRejectsRootDefault = {
+            expr = (builtins.tryEval (featureOf "default.nix")).success;
+            expected = false;
+        };
+
         # -- tools/opt.nix -------------------------------------------------------------------------
 
         testOptFollowsUsersReadsAPath = {

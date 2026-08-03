@@ -12,7 +12,7 @@
             inherit (lib.strings) concatMapStrings;
             inherit (lib.attrsets) mapAttrsToList;
 
-            # Declared by the `shell` feature that owns this directory -- see ../shell.nix.
+            # Declared by the `shell` feature that owns this directory -- see ./default.nix.
             flakeDir = config.my.user.shell.flakeDir;
 
             aliases = {

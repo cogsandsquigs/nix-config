@@ -99,6 +99,21 @@ folder is therefore a real namespace: `modules/cli/git.nix` owns `my.user.cli.gi
 `my.user.git`. `modules/sys/` is the exception in reverse — it holds the plumbing that declares no
 options at all, because `my.sys.sys` would stutter.
 
+A folder's own feature is its `default.nix`, which names no extra level:
+`modules/dev/ai/default.nix` is the feature `dev.ai`, and it owns `my.user.dev.ai`. This is the same
+thing `default.nix` already means in `hosts/<host>/` and in `tools/` — the thing the folder _is_ —
+and it keeps a group beside the children it groups, so `ls modules/dev/ai/` is the whole feature. A
+leaf feature is `<name>.nix`; give it a folder and the file becomes `<name>/default.nix`, with no
+option renamed. `import-tree` hands the loader the file path, so Nix's own folder-resolves-to-
+`default.nix` rule never comes into it — `tools/feature.nix` drops the segment itself.
+
+That makes `modules/cli/utils.nix` and `modules/cli/utils/default.nix` two paths for one feature, so
+`tools/registry.nix` types the registry as `attrsOf (uniq deferredModule)`. Two files claiming one
+feature is then "is defined multiple times while it's expected to be unique", naming the feature,
+instead of a silent merge that would leave `feature-paths` comparing against whichever file it saw
+first. The error surfaces as soon as a host evaluates, so `fleet-eval` catches it under
+`nix flake check`.
+
 A name that starts with `_` is not a module. Use it for shared values, package definitions, and data
 tables. The loader skips these files. `modules/dev/_langs/` holds the language tables, and
 `modules/dev/ai/mcp/_gerrit-package.nix` holds a package definition.
@@ -344,7 +359,8 @@ multi-user is the modern default:
 Use single-user **only** without root.
 
 Either way the flake is **install-method-agnostic**: `hosts/work-desktop` and the home modules make
-no single/multi-user assumption. The `shell.nix` nix-env sourcing and the scripts handle both, and
+no single/multi-user assumption. The `modules/shell/env.nix` nix-env sourcing and the scripts handle
+both, and
 no alias uses `sudo` here.
 
 #### Recommended -- multi-user + Determinate Nix

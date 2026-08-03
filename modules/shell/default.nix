@@ -1,4 +1,4 @@
-# The shell group: this file owns the flag and the values, the files under ./shell/ do the work.
+# The shell group: this file owns the flag and the values, the files beside it do the work.
 #
 # `flakeDir` lives here because the shell aliases and the .env loader are its only readers, so it
 # belongs to this feature rather than to a central options file.

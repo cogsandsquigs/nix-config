@@ -1,4 +1,4 @@
-# gpg-agent OS-specific tweaks. Gated by `my.user.cli.utils.enable` (../utils.nix)
+# gpg-agent OS-specific tweaks. Gated by `my.user.cli.utils.enable` (./default.nix)
 # alongside the rest of gpg (./gpg.nix enables the agent itself). Self-gates on OS: the macOS branch
 # adds mac-native pinentry; the Linux branch just picks a pinentry.
 {

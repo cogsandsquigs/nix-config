@@ -13,6 +13,9 @@
 #   <feature>.nix   a feature, as an attrset keyed by class: nixos, darwin, home. Every file is keyed,
 #                   single-class ones included, so adding a class later adds a key and never renames a
 #                   file. A `let` above the keys shares a body between them.
+#   <ns>/default.nix  the feature that owns the folder `<ns>`, keyed the same way. Its own segment names
+#                   no level, so `dev/ai/default.nix` is the feature `dev.ai` and sits with the children
+#                   it groups.
 #   _<anything>     not a module. Shared values, package definitions, data tables, drafts.
 #
 # The reserved key `options` is not a class. It declares the options that EVERY class in the file
@@ -41,10 +44,19 @@ let
 
     feature = import ./feature.nix { inherit lib root; };
 
+    # `uniq`, because two paths CAN name one feature: `cli/utils.nix` and `cli/utils/default.nix` both
+    # resolve to "cli.utils" (see tools/feature.nix). Plain `deferredModule` merges same-key definitions
+    # into one module without complaint, which would leave the feature owned by two files and
+    # `feature-paths` comparing against whichever `_file` it saw. `uniq` makes that
+    # "is defined multiple times while it's expected to be unique", naming the feature.
+    #
+    # It fires when a feature's module is DEMANDED, so any host evaluation trips it -- which is what
+    # `fleet-eval` does, so `nix flake check` catches it. `nix flake show` does not: listing the
+    # registry only forces the attribute names.
     mkFeatureOption =
         what:
         lib.mkOption {
-            type = lib.types.attrsOf lib.types.deferredModule;
+            type = lib.types.attrsOf (lib.types.uniq lib.types.deferredModule);
             default = { };
             description = "Features contributing ${what} modules, keyed by feature name.";
         };

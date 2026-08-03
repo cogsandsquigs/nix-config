@@ -21,8 +21,8 @@
 
                 programs.claude-code = {
                     enable = true;
-                    context = ./ai/context.md;
-                    skills = ./ai/skills;
+                    context = ./context.md;
+                    skills = ./skills;
                 };
             };
         };
