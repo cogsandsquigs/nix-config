@@ -111,9 +111,10 @@ let
                 ) byClass;
             };
 in
-# The registry is a module evaluation whose only options are the three classes, so the module system --
-# not this file -- rejects an unknown class ("option does not exist") and a value that is not a module
-# (a type error). This is dendritic's `flake.modules.<class>.<name>` without flake-parts: that
+# The registry is a module evaluation whose only options are the three classes, so a value that is not
+# a module fails as a type error from the module system rather than from hand-written validation. An
+# unknown class key never reaches it -- `classify` above throws first, naming the file, which is the
+# better message. This is dendritic's `flake.modules.<class>.<name>` without flake-parts: that
 # attribute is a flake-parts option, and this is the same thing declared locally.
 (lib.evalModules {
     class = "fleet";
