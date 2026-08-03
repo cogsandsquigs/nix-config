@@ -55,6 +55,9 @@ in
                 autohide-delay = 0.0;
                 autohide-time-modifier = 0.5;
 
+                # A bare /Applications path means the app comes from a Homebrew cask (see
+                # modules/apps/desktopApps.nix), so there is no store path to point at. Everything
+                # else is either a nix package or ships with macOS.
                 persistent-apps = [
                     "${pkgs.kitty}/Applications/kitty.app"
                     "/System/Applications/System Settings.app"
@@ -62,7 +65,7 @@ in
                     "${pkgs.obsidian}/Applications/Obsidian.app"
                     "${pkgs.discord}/Applications/Discord.app"
                     "/System/Applications/Messages.app"
-                    "/Applications/WhatsApp.app" # "${pkgs.whatsapp-for-mac}/Applications/WhatsApp.app"
+                    "/Applications/WhatsApp.app"
                     "/System/Applications/Calendar.app"
                     "/System/Applications/Reminders.app"
                     "/System/Applications/Photos.app"
