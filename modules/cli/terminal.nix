@@ -27,6 +27,11 @@
                         }
                     ];
 
+                    home.packages = [
+                        ghostty-pkg
+                        pkgs.ncurses # GhosTTY XTerm info
+                    ];
+
                     programs.ghostty = {
                         enable = true;
                         package = ghostty-pkg;
