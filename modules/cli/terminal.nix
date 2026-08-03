@@ -27,10 +27,7 @@
                         }
                     ];
 
-                    home.packages = [
-                        ghostty-pkg
-                        pkgs.ncurses # GhosTTY XTerm info
-                    ];
+                    home.packages = [ ghostty-pkg ];
 
                     programs.ghostty = {
                         enable = true;
@@ -57,8 +54,8 @@
 
                             cursor-style = "bar";
 
-                            # Close a surface even mid-process: zellij owns the session, so asking is
-                            # pointless.
+                            # Close a surface even mid-process: zellij owns the session, so asking
+                            # is pointless.
                             confirm-close-surface = false;
 
                             quit-after-last-window-closed = true;
