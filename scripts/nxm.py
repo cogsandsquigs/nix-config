@@ -48,8 +48,7 @@ Extending
 ---------
 To add a subcommand:
   1. Write a cmd_* function (signature: (args: argparse.Namespace) -> None).
-  2. Add a sub.add_parser(...) entry in main().
-  3. Add it to the dispatch dict in main().
+  2. Add a sub.add_parser(...).set_defaults(func=...) line in main().
 
 To add a new step inside an existing command, use:
   with step("description"):
@@ -419,29 +418,28 @@ def main() -> None:
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    sub = p.add_subparsers(dest="cmd", required=True, metavar="COMMAND")
-    sub.add_parser("rebuild", aliases=["r"], help="stage all changes, rebuild, commit")
-    sub.add_parser("upgrade", aliases=["u"], help="update flake inputs then rebuild")
-    sub.add_parser("clean", aliases=["c"], help="GC old nix generations")
-    sub.add_parser("edit", aliases=["e"], help="open $EDITOR then rebuild")
+    sub = p.add_subparsers(required=True, metavar="COMMAND")
+
+    # `set_defaults` on the subparser rather than a name -> function dict. An alias resolves to the
+    # same subparser as its full name, so the handler comes back on `args.func` whichever one was
+    # typed. A dict keyed by name needs an entry per alias, and drops a subcommand the moment a new
+    # alias forgets one.
+    sub.add_parser(
+        "rebuild", aliases=["r"], help="stage all changes, rebuild, commit"
+    ).set_defaults(func=cmd_rebuild)
+    sub.add_parser(
+        "upgrade", aliases=["u"], help="update flake inputs then rebuild"
+    ).set_defaults(func=cmd_upgrade)
+    sub.add_parser("clean", aliases=["c"], help="GC old nix generations").set_defaults(
+        func=cmd_clean
+    )
+    sub.add_parser("edit", aliases=["e"], help="open $EDITOR then rebuild").set_defaults(
+        func=cmd_edit
+    )
 
     args = p.parse_args()
-    dispatch = {
-        # NOTE: each alias has to also have it's entry since argparse doesn't resolve aliases back
-        # to the original parent command name. This kinda sucks.
-        #
-        # TODO: Force alias resolve or just find way to not have this (fragile code!)
-        "rebuild": cmd_rebuild,
-        "r": cmd_rebuild,
-        "upgrade": cmd_upgrade,
-        "u": cmd_upgrade,
-        "clean": cmd_clean,
-        "c": cmd_clean,
-        "edit": cmd_edit,
-        "e": cmd_edit,
-    }
     try:
-        dispatch[args.cmd](args)
+        args.func(args)
     except subprocess.CalledProcessError as e:
         _w(f"\n  {_R}command failed (exit {e.returncode}){_X}\n")
         sys.exit(e.returncode)
