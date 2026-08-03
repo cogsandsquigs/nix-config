@@ -12,7 +12,7 @@ description:
     given. The skill finds the change itself, so a missing CL number is never a reason to skip it.
     Also trigger on Gerrit, CL, Change-Id, refs/for, patchset, /aireview, /aino, a question about
     whether a reviewer is wrong, and a request to resume a fix plan. Do not use it to write a fresh
-    review of somebody else''s change.'
+    review of somebody else''s change — that is gerrit-review.'
 argument-hint: "[audit|fix|full] [change|plan-path]"
 arguments: mode target
 ---

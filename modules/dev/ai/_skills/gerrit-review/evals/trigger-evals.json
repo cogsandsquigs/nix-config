@@ -1,0 +1,86 @@
+[
+    { "query": "review 35206", "should_trigger": true },
+    { "query": "code review CL 40122, I'm the reviewer on it", "should_trigger": true },
+    {
+        "query": "can you look over priya's change 35210 before I sign off on it",
+        "should_trigger": true
+    },
+    {
+        "query": "am I ok to +2 35210? its a 900 line refactor of the auth middleware and I don't want to rubber stamp it",
+        "should_trigger": true
+    },
+    {
+        "query": "sanity check jules' migration CL before I approve it — mainly worried about the rollout ordering",
+        "should_trigger": true
+    },
+    {
+        "query": "they pushed patchset 5 on 35206 after my review, did they actually fix what I raised",
+        "should_trigger": true
+    },
+    {
+        "query": "someone pasted commit a3f91c2 in chat and asked for my thoughts, pull it up and tell me if its sane",
+        "should_trigger": true
+    },
+    {
+        "query": "go through 35213 and tell me if there's anything real the bot missed",
+        "should_trigger": true
+    },
+    {
+        "query": "-1 35212 for me, the polling approach is wrong and they should be using the event bus",
+        "should_trigger": true
+    },
+    {
+        "query": "refs/changes/06/35206/4 — give me feedback on it, focus on the concurrency around the sweeper",
+        "should_trigger": true
+    },
+    {
+        "query": "critique 35211 but don't post anything yet, I want to read it first",
+        "should_trigger": true
+    },
+    {
+        "query": "fix the reviewbot comments on my change and push a new patchset",
+        "should_trigger": false
+    },
+    {
+        "query": "address the review feedback on my CL, priya left about six threads",
+        "should_trigger": false
+    },
+    {
+        "query": "what does priya actually want changed on my CL 35190, I can't tell from her comments",
+        "should_trigger": false
+    },
+    {
+        "query": "audit the ldapper repo for dead code and weak types, its been vibe coded for months",
+        "should_trigger": false
+    },
+    {
+        "query": "review my diff before I push it to gerrit, focus on the type modeling",
+        "should_trigger": false
+    },
+    {
+        "query": "summarise what 35206 actually changes, I just want to understand it before standup",
+        "should_trigger": false
+    },
+    {
+        "query": "review the comments on my github PR #402 in arcticlake/ldapper and address them",
+        "should_trigger": false
+    },
+    {
+        "query": "add priya and sam as reviewers on 35190 and set the topic to ldapper-migrations",
+        "should_trigger": false
+    },
+    {
+        "query": "help me get the gerrit mcp server into my mcp.json, the http password bit keeps failing",
+        "should_trigger": false
+    },
+    { "query": "the build is red on CL 35206, figure out what broke", "should_trigger": false },
+    { "query": "abandon 35188, its superseded by 35206", "should_trigger": false },
+    {
+        "query": "who should I add as reviewers on this change, I don't know who owns the sweeper code",
+        "should_trigger": false
+    },
+    {
+        "query": "cherry pick 35206 onto stable-3.9 and push it, we need it in the release",
+        "should_trigger": false
+    }
+]

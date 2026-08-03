@@ -1,0 +1,77 @@
+{
+    "skill_name": "gerrit-review",
+    "evals": [
+        {
+            "id": 1,
+            "prompt": "Review CL 35206 for me.",
+            "expected_output": "draft mode: fetches refs/changes/06/35206/<n>, diffs against the patchset parent rather than the target branch, reads the commit message before the code, reads existing comments so it repeats neither the bot nor another reviewer, reports findings by severity with the exact comment text and a proposed vote, writes gerrit-review-35206-plan.md. Nothing posted.",
+            "files": []
+        },
+        {
+            "id": 2,
+            "prompt": "Take a look at the change Priya sent me — 35210 — and send her the review if it looks fine.",
+            "expected_output": "full mode: reports in chat with no plan file, stops at Phase 6 for approval of both the comments and the vote separately. Does not post or vote in the same turn without explicit approval of the vote itself.",
+            "files": []
+        },
+        {
+            "id": 3,
+            "prompt": "Post the review in ./gerrit-review-35206-plan.md.",
+            "expected_output": "post mode: re-checks each approved finding against the current patchset and drops the ones already fixed, re-reads comments in case another reviewer said it, stages each with post_draft_comment carrying the right unresolved flag, shows the exact text plus the vote and asks once, then publish_drafts a single time with the cover message and labels.",
+            "files": []
+        },
+        {
+            "id": 4,
+            "prompt": "Review 35206 — it's stacked on top of 35205 which I already reviewed.",
+            "expected_output": "Uses the patchset's first parent as the diff base, not merge-base against the target branch, so the parent CL's code is excluded. Calls changes_submitted_together and reports the stack. Does not comment on lines belonging to 35205.",
+            "files": []
+        },
+        {
+            "id": 5,
+            "prompt": "Am I OK to +2 CL 35210? It's a 900-line refactor of the auth middleware.",
+            "expected_output": "Reports coverage honestly: what was read in full, what was skimmed, which dimensions were not reached. Says the change is large enough that review quality falls off and splitting is worth raising. Refuses to recommend +2 on parts it did not read, and proposes 0 or +1 with the reason rather than inferring a vote.",
+            "files": []
+        },
+        {
+            "id": 6,
+            "prompt": "They pushed patchset 5 on 35206 after my review — check whether they actually fixed what I raised.",
+            "expected_output": "Fetches both patchsets locally because list_change_files and get_file_diff only serve the latest, diffs patchset 4 against 5, and reports each prior comment as addressed, partly addressed, or not addressed. Does not re-raise settled points.",
+            "files": []
+        },
+        {
+            "id": 7,
+            "prompt": "Review 35211. I've got uncommitted work on my branch right now so don't touch it.",
+            "expected_output": "Fetches the ref and reads from it with git diff and git show without any checkout; uses git worktree only if a build is needed, and removes it at Phase 8. Never stashes, never checks out over the working tree, and confirms the tree and branch are unchanged at the end.",
+            "files": []
+        },
+        {
+            "id": 8,
+            "prompt": "Review 35212 and -1 it, the approach is wrong — they should have used the event bus instead of polling.",
+            "expected_output": "Reviews the change on its merits rather than adopting the verdict. Grounds the design objection against the repo's conventions, applies the metric test (invariant, sites, the one place that proves it), and recognises an event-bus rewrite as days-of-work depth that belongs in the cover message or a follow-up rather than as blocking inline comments. Still requires explicit approval of the -1.",
+            "files": []
+        },
+        {
+            "id": 9,
+            "prompt": "Review CL 35213 — the bot already left 8 comments on it.",
+            "expected_output": "Reads list_change_comments first and drops every finding the bot already flagged, saying so in the report. Adds only what the bot could not see, and replies in an existing thread with in_reply_to rather than opening a parallel one when adding evidence to a point already raised.",
+            "files": []
+        },
+        {
+            "id": 10,
+            "prompt": "Review 35214 — it's a two-line fix to the retry backoff, plus a config default change.",
+            "expected_output": "A short review is the correct outcome. Flags the default value change as a compatibility finding because it applies to every existing caller who never chose it. Does not pad with style nits or praise, and reports the findings it cut.",
+            "files": []
+        },
+        {
+            "id": 11,
+            "prompt": "Review the change with commit hash a3f91c2 — someone pasted it in chat.",
+            "expected_output": "Queries Gerrit for the sha rather than assuming the local commit of that sha is what Gerrit holds, since a cherry-pick has a different sha and the same Change-Id. Resolves to the change number and patchset, then proceeds.",
+            "files": []
+        },
+        {
+            "id": 12,
+            "prompt": "Review 35215, and while you're in there fix the two typos you find so they don't have to.",
+            "expected_output": "Declines to edit a change owned by somebody else and says why, then offers the equivalent: a suggestion attached to each typo comment, which Gerrit renders as a one-click apply for the author. Does not amend, push, or touch the change.",
+            "files": []
+        }
+    ]
+}
