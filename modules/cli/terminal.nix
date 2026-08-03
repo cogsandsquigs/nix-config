@@ -12,7 +12,11 @@
             options.my.user.cli.terminal.enable = tools.opt.mkEnabled "ghostty terminal";
 
             config = lib.mkIf config.my.user.cli.terminal.enable {
-                home.packages = with pkgs; [ ghostty ];
+                home.packages = with pkgs; [
+                    # For some reason `ghostty` pkg is linux only, but `ghostty-bin` is macos-only
+                    # (binary release)
+                    (if pkgs.stdenv.isDarwin then ghostty-bin else ghostty)
+                ];
 
                 programs.ghostty = {
                     enable = true;
