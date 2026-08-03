@@ -11,8 +11,6 @@ in
 {
     _class = "darwin";
 
-    imports = [ ./launchd.nix ];
-
     nixpkgs.hostPlatform = host.system;
 
     # `games` and `desktopApps` follow the users on this host, so only the genuinely host-level
