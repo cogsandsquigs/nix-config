@@ -22,7 +22,7 @@
                 home.packages = with pkgs; [
                     # Productivity
                     discord # currently on macos gets stuck on launch, keeps trying 2 upd (???) ptb and canary don't fix issue
-                    obsidian
+                    # obsidian # Broken for now -- check for new release in a few days.
                     zoom-us
                     qbittorrent
 
