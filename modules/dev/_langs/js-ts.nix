@@ -2,7 +2,12 @@
 let
     eslintTool = [
         {
-            lint-command = "npx -y eslint --stdin --stdin-filename \${INPUT}";
+            # `npx --no-install`, never `-y`: eslint is a PROJECT dependency, so it lives in
+            # ./node_modules/.bin and is not on PATH. `-y` would fetch it from the network mid-lint
+            # instead of failing, and `lint-ignore-exit-code` below would swallow the difference,
+            # leaving diagnostics silently empty. `--no-install` fails fast when the project has no
+            # eslint, which is the honest answer.
+            lint-command = "npx --no-install eslint --stdin --stdin-filename \${INPUT}";
             lint-ignore-exit-code = true;
             lint-stdin = true;
             lint-after-open = true;
