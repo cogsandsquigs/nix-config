@@ -346,13 +346,16 @@ def sync() -> Generator[None, None, None]:
     """
     Generator / context manager for a sync.
 
-    Synchronizes down before calling any action, and then synchronizes up if necessary
+    Synchronizes down before calling any action, and then synchronizes up if the action succeeded.
+
+    There is deliberately no `try`: a rebuild that fails must not publish the commit that failed,
+    and an exception raised in the `with` body propagates through the `yield`, so the push below is
+    skipped. A `finally` here pushed a broken tree upstream instead, and the other machine's next
+    pull then fed `darwin-rebuild` a file Nix cannot parse.
     """
-    try:
-        did_sync = _sync_down()
-        yield
-    finally:
-        _sync_up(did_sync)
+    did_sync = _sync_down()
+    yield
+    _sync_up(did_sync)
 
 
 # -- Subcommands ---------------------------------------------------------------
