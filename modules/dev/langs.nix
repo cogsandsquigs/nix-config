@@ -51,6 +51,21 @@
                         '';
                         default = { };
                     };
+
+                    # -- derived by `resolve` below; a lang file never sets these ----------------------
+                    command = lib.mkOption {
+                        type = lib.types.str;
+                        description = "`cmd`'s head: the executable, split out for clients that take the two apart.";
+                        internal = true;
+                        default = "";
+                    };
+
+                    args = lib.mkOption {
+                        type = lib.types.listOf lib.types.str;
+                        description = "`cmd`'s tail: the arguments, split out for clients that take the two apart.";
+                        internal = true;
+                        default = [ ];
+                    };
                     only-features = lib.mkOption {
                         type = lib.types.listOf lib.types.str;
                         description = ''
@@ -143,6 +158,53 @@
                         '';
                         default = null;
                     };
+
+                    # -- derived by `resolve` below; a lang file never sets these ----------------------
+                    servers = lib.mkOption {
+                        type = lib.types.listOf lspSpec;
+                        description = ''
+                            The servers that actually serve this language: the toolchain's `lsp`, narrowed
+                            by this language's own `lsp`. Ordered primary-first, as the toolchain lists
+                            them. Read this instead of re-applying the null-means-all rule.
+                        '';
+                        internal = true;
+                        default = [ ];
+                    };
+
+                    formatter = lib.mkOption {
+                        type = lib.types.nullOr (
+                            lib.types.submodule {
+                                options = {
+                                    command = lib.mkOption {
+                                        type = lib.types.str;
+                                        description = "The formatter executable.";
+                                    };
+                                    args = lib.mkOption {
+                                        type = lib.types.listOf lib.types.str;
+                                        description = "Arguments passed to it.";
+                                        default = [ ];
+                                    };
+                                };
+                            }
+                        );
+                        description = ''
+                            This language's formatter, already split into command and arguments, with the
+                            toolchain fallback applied. Null means "no formatter", whether because the
+                            language opted out with `[ ]` or the toolchain never had one.
+                        '';
+                        internal = true;
+                        default = null;
+                    };
+
+                    id = lib.mkOption {
+                        type = lib.types.str;
+                        description = ''
+                            The identifier a client reports over LSP: `language-id` when set, otherwise the
+                            language's own name. Resolved so a consumer never repeats the fallback.
+                        '';
+                        internal = true;
+                        default = "";
+                    };
                 };
             };
 
@@ -217,6 +279,56 @@
             allResults = lib.mapAttrsToList (n: _: import (dir + "/${n}") { inherit pkgs lib config; }) files;
             dataToolchains = lib.concatMap (m: if builtins.isList m then m else [ m ]) allResults;
 
+            # The one resolution of this table. Three rules used to be re-derived by every consumer --
+            # helix and Claude each had their own copy of the server narrowing, and the command split
+            # appeared three times between them. A second consumer that got any of them subtly wrong
+            # would have disagreed with the first in silence, since nothing compares the two outputs.
+            #
+            #   servers    the toolchain's `lsp`, narrowed by the language's own (null = all of them)
+            #   formatter  the language's `fmt`, falling back to the toolchain's (`[ ]` = none)
+            #   command/args   a cmd list is a head and a tail
+            #
+            # Consumers translate shape from here on, and derive nothing.
+            #
+            # This runs over `toolchains`, NOT over the raw imports: the module system has to apply the
+            # option defaults first, or an omitted key (`languages.nix` names no `lsp`) is a missing
+            # attribute rather than the null the rules are written against. Hence two options -- the
+            # validated input, then what is derived from it.
+            splitCmd = cmd: {
+                command = lib.head cmd;
+                args = lib.tail cmd;
+            };
+
+            resolveLsp = l: l // splitCmd l.cmd;
+
+            resolveLang =
+                t: name: def:
+                let
+                    fmt =
+                        if def.fmt == null then
+                            t.fmt
+                        else if def.fmt == [ ] then
+                            null
+                        else
+                            def.fmt;
+                in
+                def
+                // {
+                    servers = map resolveLsp (
+                        if def.lsp == null then t.lsp else lib.filter (l: lib.elem l.name def.lsp) t.lsp
+                    );
+                    formatter = if fmt == null then null else splitCmd fmt;
+                    id = if def.language-id == null then name else def.language-id;
+                };
+
+            resolve =
+                t:
+                t
+                // {
+                    lsp = map resolveLsp t.lsp;
+                    languages = lib.mapAttrs (resolveLang t) t.languages;
+                };
+
             allPkgs = lib.concatMap (t: t.pkgs or [ ]) dataToolchains;
         in
         {
@@ -225,9 +337,22 @@
                 toolchains = lib.mkOption {
                     type = lib.types.listOf toolchain;
                     description = ''
-                        Every toolchain in this directory, flattened and validated. Internal: the read side
-                        of the contract between the lang files and the editor modules that translate them.
-                        Nothing outside `modules/dev` should set or read it.
+                        Every toolchain in this directory, flattened and validated -- the raw input, exactly
+                        as the lang files wrote it, with the option defaults applied. The assertions below
+                        read this. Editor modules read `resolved` instead.
+                    '';
+                    default = [ ];
+                    internal = true;
+                };
+
+                resolved = lib.mkOption {
+                    type = lib.types.listOf toolchain;
+                    description = ''
+                        `toolchains` with every derived field filled in: each language's `servers`,
+                        `formatter` and `id`, and each server's `command` and `args`. Internal: the read
+                        side of the contract between the lang files and the editor modules that translate
+                        them. An editor module reads this and translates shape only -- the fallback rules
+                        are applied once, here, not once per editor.
                     '';
                     default = [ ];
                     internal = true;
@@ -283,6 +408,7 @@
 
                 home.packages = allPkgs;
                 my.user.dev.langs.toolchains = dataToolchains;
+                my.user.dev.langs.resolved = map resolve config.my.user.dev.langs.toolchains;
             };
         };
 }

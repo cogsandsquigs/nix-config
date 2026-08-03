@@ -7,40 +7,25 @@
             ...
         }:
         let
-            # Translate lang toolchains -> Helix language config
-            toolchains = config.my.user.dev.langs.toolchains;
-
-            toCmd = list: {
-                command = lib.head list;
-                args = lib.tail list;
-            };
+            # Translate lang toolchains -> Helix language config. Every fallback rule (which servers serve
+            # a language, which formatter it ends up with, where a cmd list splits) is already applied in
+            # modules/dev/langs.nix -- this file only reshapes the result into helix's schema.
+            toolchains = config.my.user.dev.langs.resolved;
 
             toLsp =
                 lsp:
                 lib.nameValuePair lsp.name (
                     {
-                        command = lib.head lsp.cmd;
+                        inherit (lsp) command;
                     }
-                    // lib.optionalAttrs (builtins.length lsp.cmd > 1) { args = lib.tail lsp.cmd; }
+                    // lib.optionalAttrs (lsp.args != [ ]) { inherit (lsp) args; }
                     // lib.optionalAttrs (lsp.config != { }) { inherit (lsp) config; }
                 );
-
-            # Both fall back to the toolchain's value; an explicit [ ] on the language opts out.
-            langLsps = t: def: if def.lsp == null then t.lsp else lib.filter (l: lib.elem l.name def.lsp) t.lsp;
-            langFmt =
-                t: def:
-                if def.fmt == null then
-                    t.fmt
-                else if def.fmt == [ ] then
-                    null
-                else
-                    def.fmt;
 
             toLang =
                 t: langName: def:
                 let
-                    lsps = langLsps t def;
-                    fmt = langFmt t def;
+                    lsps = def.servers;
                 in
                 {
                     name = langName;
@@ -77,7 +62,7 @@
                         in
                         map toEntry lsps;
                 }
-                // lib.optionalAttrs (fmt != null) { formatter = toCmd fmt; }
+                // lib.optionalAttrs (def.formatter != null) { inherit (def) formatter; }
                 // lib.optionalAttrs (def.roots != [ ]) { inherit (def) roots; };
 
             specLsps = lib.listToAttrs (lib.concatMap (t: map toLsp t.lsp) toolchains);

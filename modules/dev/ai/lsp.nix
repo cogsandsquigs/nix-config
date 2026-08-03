@@ -13,15 +13,13 @@
         }:
         let
             cfg = config.my.user.dev.ai.lsp;
-            toolchains = config.my.user.dev.langs.toolchains;
+
+            # Already resolved in modules/dev/langs.nix: which servers serve a language, and where each
+            # command splits. This file only reshapes that into Claude's schema.
+            toolchains = config.my.user.dev.langs.resolved;
 
             startupTimeout = 30000;
             maxRestarts = 3;
-
-            # Claude binds one server per extension: the first registered wins and the rest never start.
-            # The `lsp` lists are already ordered primary-first, so its head is the one worth declaring.
-            langServers =
-                t: def: if def.lsp == null then t.lsp else lib.filter (l: lib.elem l.name def.lsp) t.lsp;
 
             bindings = lib.concatMap (
                 t:
@@ -29,7 +27,10 @@
                     name:
                     let
                         def = t.languages.${name};
-                        servers = langServers t def;
+                        # Claude binds one server per extension: the first registered wins and the rest
+                        # never start. `servers` is ordered primary-first, so its head is the one worth
+                        # declaring.
+                        inherit (def) servers;
                         # Extensions only, and whole filenames are not an option, measured not assumed: a
                         # dotless key (go.mod) rejects the entire .lsp.json and every server in it, while a
                         # dot-led one (.bashrc) is accepted but never matches, since Claude reads an empty
@@ -38,7 +39,7 @@
                     in
                     lib.optional (servers != [ ] && keys != [ ]) {
                         server = lib.head servers;
-                        id = if def.language-id == null then name else def.language-id;
+                        inherit (def) id;
                         inherit keys;
                     }
                 ) (lib.attrNames t.languages)
@@ -52,13 +53,13 @@
                 in
                 lib.nameValuePair name (
                     {
-                        command = lib.head srv.cmd;
+                        inherit (srv) command;
                         extensionToLanguage = lib.listToAttrs (
                             lib.concatMap (b: map (k: lib.nameValuePair k b.id) b.keys) mine
                         );
                         inherit startupTimeout maxRestarts;
                     }
-                    // lib.optionalAttrs (builtins.length srv.cmd > 1) { args = lib.tail srv.cmd; }
+                    // lib.optionalAttrs (srv.args != [ ]) { inherit (srv) args; }
                     # Servers disagree on which channel carries settings: rust-analyzer reads
                     # initializationOptions, gopls answers workspace/configuration, jdtls only the latter.
                     # Sending both matches what helix does with one `config`.

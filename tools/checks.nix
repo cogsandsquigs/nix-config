@@ -112,9 +112,16 @@ let
     # Options that are free-form on purpose. Enumerated, so the exceptions stay finite and visible.
     # Each of these is a foreign schema: the value is handed verbatim to a tool that defines its own
     # keys, so declaring a type here would mean tracking someone else's config format.
-    allowedLoose = [
-        "my.user.dev.langs.toolchains.lsp.config" # a language server's own settings
-        "my.user.dev.langs.toolchains.editor-specific.helix" # helix's own language settings
+    #
+    # Matched on the option path's TAIL, because being foreign is a property of the field, not of where it
+    # sits. `dev.langs` exposes its table twice -- the raw `toolchains` and the derived `resolved` -- and
+    # nests a server list inside each language, so one exception surfaces at four paths. Listing all four
+    # would grow this list without adding one new reason to it. The leaf names are ours, so a tail stays
+    # specific: nothing matches a bare `.config`.
+    allowedLooseTails = [
+        "lsp.config" # a language server's own settings
+        "servers.config" # the same servers, reached through a language's resolved list
+        "editor-specific.helix" # helix's own language settings
     ];
 
     # A loose type anywhere inside a type expression counts: `attrsOf attrs` checks its keys and nothing
@@ -125,13 +132,15 @@ let
         lib.elem type.name looseTypes
         || (depth > 0 && lib.any (looseType (depth - 1)) (lib.attrValues (type.nestedTypes or { })));
 
+    allowedLoose = shown: lib.any (tail: lib.hasSuffix ".${tail}" shown) allowedLooseTails;
+
     untyped = lib.concatMap (
         o:
         let
             shown = lib.showOption o.loc;
         in
         lib.optional (
-            !(lib.elem shown allowedLoose) && (looseType 8 o.opt.type || (o.opt.description or null) == null)
+            !(allowedLoose shown) && (looseType 8 o.opt.type || (o.opt.description or null) == null)
         ) shown
     ) allOptions;
 
