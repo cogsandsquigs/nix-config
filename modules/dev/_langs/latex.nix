@@ -18,15 +18,11 @@
         {
             name = "texlab";
             cmd = [ "texlab" ];
+            # No `forwardSearch`: it names a PDF viewer to jump to the cursor's page, and no viewer here
+            # is set up for it. `build.forwardSearchAfter` is therefore off too -- the two are only
+            # meaningful as a pair, and asking texlab to run a viewer it has no path for did nothing.
             config.texlab = {
-                build = {
-                    onSave = true;
-                    forwardSearchAfter = true;
-                };
-                forwardSearch = {
-                    executable = "???"; # TODO
-                    args = [ ]; # TODO: synctex args
-                };
+                build.onSave = true;
                 chktex.onEdit = true;
             };
         }
