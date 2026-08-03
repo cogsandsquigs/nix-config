@@ -27,10 +27,7 @@
                         }
                     ];
 
-                    home.packages = [
-                        ghostty-pkg
-                        (lib.hiPrio pkgs.ncurses) # Install GhosTTY Terminfo
-                    ];
+                    home.packages = [ ghostty-pkg ];
 
                     programs.ghostty = {
                         enable = true;
