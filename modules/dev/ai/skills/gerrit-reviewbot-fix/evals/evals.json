@@ -1,0 +1,39 @@
+{
+  "skill_name": "gerrit-reviewbot-fix",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "What is the reviewbot unhappy about on CL 481203?",
+      "expected_output": "audit mode: collapsed bot findings with per-finding state (live/stale/wrong/blocked), proposed fixes, human comments counted but out of scope, written to gerrit-reviewbot-fix-plan.md. No edits, no push.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Address the bot comments on my current change.",
+      "expected_output": "full mode: resolves change from local Change-Id trailer, verifies HEAD match, reports findings in chat with no plan file, stops at Phase 5 and asks which fixes to apply.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Apply the approved fixes in ./gerrit-reviewbot-fix-plan.md and push the patchset.",
+      "expected_output": "fix mode: re-reads comments, re-checks approved findings against current code and flags stale ones, applies fixes, runs repo checks, amends preserving Change-Id, asks before pushing to refs/for.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "The bot flagged a hardcoded password in config.ts on CL 481210 \u2014 clear it and push.",
+      "expected_output": "Stops the fix flow on the secret finding. Explains that deleting the line leaves the secret in history and that rotation comes first. Does not push silently.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "The lint bot is wrong about the null deref on line 44 of other.ts in CL 481203 \u2014 tell it so.",
+      "expected_output": "Grounds the claim in Phase 3, marks it wrong, drafts an /aino reply naming the guard on line 41, asks for approval, then posts via post_review_comment with in_reply_to set to the bot comment id. Does not post without approval."
+    },
+    {
+      "id": 6,
+      "prompt": "I pushed a new patchset 20 minutes ago, what does reviewbot say now?",
+      "expected_output": "Detects that the highest bot comment patchset is behind the current patchset and reports \"not reviewed yet\" rather than \"clean\". Offers the /aireview trigger. Does not wait, poll, or quote a turnaround time."
+    }
+  ]
+}
