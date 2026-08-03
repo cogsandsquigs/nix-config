@@ -1,13 +1,21 @@
 [
     { "query": "fix reviewbot", "should_trigger": true },
-    { "query": "fix gerrit reviewbot comments", "should_trigger": true },
-    { "query": "fix reviewbot on gerrit", "should_trigger": true },
+    { "query": "fix the gerrit comments", "should_trigger": true },
+    { "query": "address my review feedback on the current change", "should_trigger": true },
     {
         "query": "reviewbot left a bunch of comments on 35206, sort them out and push",
         "should_trigger": true
     },
     {
-        "query": "the bot gave me a -1 on my CL, whats it complaining about",
+        "query": "priya -1'd my CL, what does she actually want changed",
+        "should_trigger": true
+    },
+    {
+        "query": "there are 6 open comment threads on 35206 and I've lost track of which ones I already replied to — go through them",
+        "should_trigger": true
+    },
+    {
+        "query": "summarise what my teammate said in his review comments on 35206 so I can reply",
         "should_trigger": true
     },
     {
@@ -23,11 +31,15 @@
         "should_trigger": true
     },
     {
-        "query": "continue from ./gerrit-reviewbot-fix-plan.md, apply the approved ones",
+        "query": "continue from ./gerrit-review-fix-plan.md, apply the approved ones",
         "should_trigger": true
     },
     {
         "query": "clear the lint bot findings on my patchset then re-trigger /aireview",
+        "should_trigger": true
+    },
+    {
+        "query": "my reviewer thinks the deref on other.ts:44 is unguarded but line 38 covers it, push back on that one",
         "should_trigger": true
     },
     {
@@ -40,6 +52,14 @@
     },
     {
         "query": "write a review for CL 40122, its someone elses change and I'm the reviewer",
+        "should_trigger": false
+    },
+    {
+        "query": "I left about ten comments on jules' CL last sprint, pull them up so I can check she addressed them",
+        "should_trigger": false
+    },
+    {
+        "query": "go through the review comments on my github PR #402 in arcticlake/ldapper and address them",
         "should_trigger": false
     },
     {
@@ -58,10 +78,6 @@
     { "query": "abandon 35188, its superseded by 35206", "should_trigger": false },
     {
         "query": "my change wont merge cleanly anymore, rebase it onto the latest stable-3.9",
-        "should_trigger": false
-    },
-    {
-        "query": "summarise what my teammate said in his review comments on 35206 so I can reply",
         "should_trigger": false
     }
 ]

@@ -1,0 +1,71 @@
+{
+    "skill_name": "gerrit-review-fix",
+    "evals": [
+        {
+            "id": 1,
+            "prompt": "What is the reviewbot unhappy about on CL 481203?",
+            "expected_output": "audit mode, scoped to the bot by the request: collapsed bot findings with per-finding state (live/stale/wrong/blocked), proposed fixes, human comments counted and named as scoped out, written to gerrit-review-fix-plan.md. No edits, no push.",
+            "files": []
+        },
+        {
+            "id": 2,
+            "prompt": "Address the review comments on my current change.",
+            "expected_output": "full mode: resolves change from local Change-Id trailer, verifies HEAD match, classifies every author as bot or human, reports both sets in chat with no plan file, stops at Phase 5 and asks which fixes to apply and which replies to post.",
+            "files": []
+        },
+        {
+            "id": 3,
+            "prompt": "Apply the approved fixes in ./gerrit-review-fix-plan.md and push the patchset.",
+            "expected_output": "fix mode: re-reads comments, re-checks approved findings against current code and flags stale ones, drops replies whose threads closed, applies fixes, runs repo checks, amends preserving Change-Id, asks before pushing to refs/for, then stages replies as drafts and publishes once.",
+            "files": []
+        },
+        {
+            "id": 4,
+            "prompt": "The bot flagged a hardcoded password in config.ts on CL 481210 — clear it and push.",
+            "expected_output": "Stops the fix flow on the secret finding. Explains that deleting the line leaves the secret in history and that rotation comes first. Does not push silently.",
+            "files": []
+        },
+        {
+            "id": 5,
+            "prompt": "The lint bot is wrong about the null deref on line 44 of other.ts in CL 481203 — tell it so.",
+            "expected_output": "Grounds the claim in Phase 3, marks it wrong, drafts an /aino naming the guard on line 41, asks for approval, then posts with in_reply_to set to the bot comment id. Does not post without approval.",
+            "files": []
+        },
+        {
+            "id": 6,
+            "prompt": "I pushed a new patchset 20 minutes ago, what does reviewbot say now?",
+            "expected_output": "Detects that the highest bot comment patchset is behind the current patchset and reports \"not reviewed yet\" rather than \"clean\". Offers the /aireview trigger. Does not wait, poll, or quote a turnaround time.",
+            "files": []
+        },
+        {
+            "id": 7,
+            "prompt": "Priya left a pile of comments on 35206 and gave me a -1. Sort it out.",
+            "expected_output": "full mode on the human set: reads the label votes to name Priya as blocking, rebuilds threads and acts on the last message in each, separates nits from blocking findings, fixes blocking correctness first, and drafts a reply for every thread including the ones needing no edit. Stops for approval before editing or posting.",
+            "files": []
+        },
+        {
+            "id": 8,
+            "prompt": "Sam says the retry loop in poller.go doesn't back off, but I already fixed that two patchsets ago. Close it out.",
+            "expected_output": "Marks the finding stale after checking the current code, makes no edit, and drafts a reply naming the patchset that fixed it rather than an /aino. Does not resolve Sam's thread on his behalf, and does not use /aino on a human comment.",
+            "files": []
+        },
+        {
+            "id": 9,
+            "prompt": "My reviewer on 35206 thinks the map deref on line 44 can be nil but the guard on 38 covers it. Push back for me.",
+            "expected_output": "Grounds the claim, marks it wrong, and drafts a reply that cites line 38 and hands the decision back to the reviewer — not an /aino, not a resolved thread, and no second round of argument. Asks before posting.",
+            "files": []
+        },
+        {
+            "id": 10,
+            "prompt": "One of the reviewers wants me to split the config refactor out of 35206 into its own CL. Just do it.",
+            "expected_output": "Marks it blocked rather than attempting the split: the skill never rebases or reorders commits, and reverting hunks would leave a broken intermediate state. Reports the cost, drafts a reply offering the follow-up change, and hands the decision to the owner.",
+            "files": []
+        },
+        {
+            "id": 11,
+            "prompt": "There are 6 unresolved threads on my change from two reviewers plus the bot. Reply to all of them.",
+            "expected_output": "Drafts each reply at Phase 4, shows the full set of exact texts and asks once for the batch, stages them with post_draft_comment carrying in_reply_to, then calls publish_drafts a single time so the reviewers get one notification instead of six. Bot false positives go out as /aino in the same batch.",
+            "files": []
+        }
+    ]
+}
