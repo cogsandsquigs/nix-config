@@ -29,7 +29,7 @@
 
                     home.packages = [
                         ghostty-pkg
-                        (lib.highPrio pkgs.ncurses) # Install GhosTTY Terminfo
+                        (lib.hiPrio pkgs.ncurses) # Install GhosTTY Terminfo
                     ];
 
                     programs.ghostty = {
