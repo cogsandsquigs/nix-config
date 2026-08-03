@@ -12,14 +12,8 @@
             options.my.user.dev.ldap.enable = tools.opt.mkDisabled "LDAP Tools";
 
             config = lib.mkIf config.my.user.dev.ldap.enable {
-                home.packages =
-                    if
-                        # Restriction necessary since apache-directory-studio only works on linux (for nix builds) :/
-                        pkgs.stdenv.isLinux
-                    then
-                        with pkgs; [ apache-directory-studio ]
-                    else
-                        [ ];
+                # Linux only: apache-directory-studio has no darwin build in nixpkgs.
+                home.packages = lib.optionals pkgs.stdenv.isLinux [ pkgs.apache-directory-studio ];
             };
 
         };
