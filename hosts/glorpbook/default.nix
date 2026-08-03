@@ -57,10 +57,10 @@ in
                 # modules/apps/desktopApps.nix), so there is no store path to point at. Everything
                 # else is either a nix package or ships with macOS.
                 persistent-apps = [
-                    "${pkgs.kitty}/Applications/kitty.app"
+                    "${pkgs.ghostty-bin}/Applications/Ghostty.app"
                     "/System/Applications/System Settings.app"
                     "/Applications/Firefox.app"
-                    "${pkgs.obsidian}/Applications/Obsidian.app"
+                    # "${pkgs.obsidian}/Applications/Obsidian.app" # See desktop-apps
                     "${pkgs.discord}/Applications/Discord.app"
                     "/System/Applications/Messages.app"
                     "/Applications/WhatsApp.app"
