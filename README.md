@@ -49,7 +49,7 @@ secrets, and [import-tree] for module discovery.
 - **`hosts/`** — per-machine identity and host-only settings.
 - **`users/`** — per-user home configuration and system account.
 - **`secrets/`** — sops-encrypted material and the rules that address it. See [Secrets](#secrets).
-- **`scripts/`** — `nxm` and the older shell wrappers.
+- **`scripts/`** — `nxm`, the one rebuild/upgrade/clean/edit entry point.
 - **`treefmt.toml`**, **`.prettierrc.json`**, **`statix.toml`** — formatting and lint configuration.
 - **`nix.conf`** — Nix daemon settings.
 
@@ -309,7 +309,7 @@ is built. It overrides anything the `variables` set in `modules/shell/env.nix` d
 overridden `JAVA_HOME` still feeds `$JAVA_HOME/bin`. A missing file is a no-op.
 
 - **No rebuild to change values.** The shells re-read `.env` on every startup, so editing a value
-  there takes effect in the next shell -- no `rebuild`. (Adding the _mechanism_ needed a rebuild;
+  there takes effect in the next shell -- no `nxm rebuild`. (Adding the _mechanism_ needed a rebuild;
   changing values in `.env` does not.)
 - **One parser.** bash/zsh source it directly (`set -a; . .env; set +a`); fish reuses bash via the
   `bass` plugin -- so bash quoting rules apply everywhere (quote values with spaces).
@@ -323,10 +323,14 @@ overridden `JAVA_HOME` still feeds `$JAVA_HOME/bin`. A missing file is a no-op.
 
 ## Common tasks
 
+`nxm` (`scripts/nxm.py`, aliased in every shell) is the one entry point. Each subcommand has a
+one-letter alias.
+
 ```sh
-rebuild   # ./scripts/rebuild.sh -- rebuild / switch the current machine
-upgrade   # ./scripts/upgrade.sh -- bump flake.lock + rebuild
-cleanup   # ./scripts/cleanup.sh -- garbage-collect old generations
+nxm rebuild   # r -- stage, commit, pull, rebuild / switch the current machine, push
+nxm upgrade   # u -- bump flake.lock, then rebuild
+nxm clean     # c -- garbage-collect old generations
+nxm edit      # e -- open $EDITOR, then rebuild
 ```
 
 > [!note]
@@ -359,7 +363,7 @@ multi-user is the modern default:
 Use single-user **only** without root.
 
 Either way the flake is **install-method-agnostic**: `hosts/work-desktop` and the home modules make
-no single/multi-user assumption. The `modules/shell/env.nix` nix-env sourcing and the scripts handle
+no single/multi-user assumption. The `modules/shell/env.nix` nix-env sourcing and `nxm` handle
 both, and
 no alias uses `sudo` here.
 
@@ -398,15 +402,15 @@ echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
 nix run home-manager/release-26.05 -- switch -b bak --flake ~/.config/nix#ipratt@work-desktop
 ```
 
-After the first switch, `home-manager` is on `PATH`, so the usual aliases work (`rebuild` /
-`upgrade` / `cleanup`, all sudo-free on this box).
+After the first switch, `home-manager` is on `PATH`, so `nxm rebuild` / `upgrade` / `clean` all work,
+sudo-free on this box.
 
 > [!note]
 >
 > **The work-box name is a single source of truth** -- the `hosts/work-desktop/` directory name,
 > plus `primaryUser` from its `id.nix` (see [Host and user data](#host-and-user-data)). The
 > `homeConfigurations` attribute and `home.username` both derive from it, so renaming the box is a
-> one-file edit. `rebuild` auto-discovers the flake's sole `homeConfigurations` entry (falling back
+> one-file edit. `nxm` auto-discovers the flake's sole `homeConfigurations` entry (falling back
 > to `$(whoami)@$(hostname)`, or an explicit `HM_TARGET`).
 
 > [!note]
@@ -500,10 +504,10 @@ environment is declarative and rebuilt from this flake.
    `users/ipratt`'s `my.user.shell.flakeDir` expect):
    `sudo mkdir -p /etc/nix && sudo chown
 "$(id -u):$(id -g)" /etc/nix && mv ~/.config/nix/* ~/.config/nix/.git /etc/nix/`.
-5. Re-apply: `home-manager switch -b bak --flake /etc/nix#ipratt@work-desktop` (or `rebuild`).
+5. Re-apply: `home-manager switch -b bak --flake /etc/nix#ipratt@work-desktop` (or `nxm rebuild`).
 
-No repo changes needed beyond moving it. `rebuild`/`upgrade`/`cleanup` keep working sudo-free on
-your home-manager profile; `cleanup` never escalates on a standalone box (collects only your
+No repo changes needed beyond moving it. `nxm rebuild`/`upgrade`/`clean` keep working sudo-free on
+your home-manager profile; `clean` never escalates on a standalone box (collects only your
 generations). On Determinate, its daemon manages `/etc/nix/nix.conf`.
 
 ### `/etc/nix` vs `/etc/nixos` vs `~/.config/nix`
@@ -519,7 +523,7 @@ Three easily-conflated things (the old scripts did):
 None means "where my flake repo lives" -- that's incidental. On the Mac and work box this repo sits
 at `/etc/nix` (so repo-root and the nix.conf dir coincide; on the work box `/etc/nix` is user-owned,
 not root, since Nix is per-user). The single-user install path uses `~/.config/nix`, since a
-rootless machine can't write `/etc`. So the scripts **derive the flake dir from their own location**
+rootless machine can't write `/etc`. So `nxm` **derives the flake dir from its own location**
 and never set `NIX_CONF_DIR` (which would tell Nix to read `nix.conf` from the repo -- wrong on
 Ubuntu). `nix.conf`/`*.crt` are gitignored, so cloning to `~/.config/nix` carries no stray Nix
 config there.

@@ -229,10 +229,6 @@ def _hm_target() -> str:
 
 def _rebuild() -> None:
     """Core rebuild sequence shared by `rebuild` and `upgrade`."""
-    # with step("stage"):
-    #     run(["git", "fetch"], check=False)  # best-effort; offline is fine
-    #     run(["git", "add", "."])
-
     if sys.platform == "darwin":
         with step("darwin-rebuild switch"):
             run(

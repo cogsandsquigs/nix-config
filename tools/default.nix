@@ -49,7 +49,6 @@ let
             args = {
                 inherit
                     inputs
-                    fleet
                     registry
                     host
                     tools

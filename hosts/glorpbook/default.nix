@@ -58,8 +58,7 @@ in
                 persistent-apps = [
                     "${pkgs.kitty}/Applications/kitty.app"
                     "/System/Applications/System Settings.app"
-                    # "${pkgs.firefox-unwrapped}/Applications/Firefox.app" # NOTE: See homebrew.nix for why it's `firefox-unwrapped`
-                    "/Applications/Firefox.app" # NOTE: See homebrew.nix for why it's `firefox-unwrapped`
+                    "/Applications/Firefox.app"
                     "${pkgs.obsidian}/Applications/Obsidian.app"
                     "${pkgs.discord}/Applications/Discord.app"
                     "/System/Applications/Messages.app"
@@ -85,10 +84,5 @@ in
         };
 
         taps = [ "homebrew/services" ];
-
-        #masApps = [ ];
-        #brews = [ ];
-        #casks = [ "tailscale-app" ];
-        # TODO: Get rid of the above one-by-one, turning into nix pkgs.
     };
 }

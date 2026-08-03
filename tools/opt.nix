@@ -63,15 +63,6 @@ in
             defaultText = lib.literalMD "true when any user on this host sets `my.user.${lib.concatStringsSep "." path}.enable`";
         };
 
-    mkRequired =
-        # no default -> eval errors if a host/user forgets to choose. Reserve for features where a
-        # forgotten value would be a *silent* bug (most core fails loudly, so rarely needed).
-        description:
-        lib.mkOption {
-            inherit description;
-            type = t.bool;
-        };
-
     ## typed value options (for the "only what varies" settings)
     mkStr =
         default: description:
@@ -87,20 +78,6 @@ in
             inherit default description;
             type = t.nonEmptyStr;
         };
-    mkNullStr =
-        description:
-        lib.mkOption {
-            inherit description;
-            type = t.nullOr t.str;
-            default = null;
-        };
-    mkEnum =
-        values: default: description:
-        lib.mkOption {
-            inherit default description;
-            type = t.enum values;
-        };
-
     ## the agnostic secret path-hole a feature exposes (e.g.
     ## `git.signingKeyFile = tools.opt.mkSecretPath "..."`). It's an option constructor, so it lives
     ## here; the unit fills it via the secret-wiring helpers below.

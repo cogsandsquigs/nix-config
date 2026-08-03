@@ -10,16 +10,6 @@ let
     # than a nested attr. The `.sops` file path above stays nested; only this runtime key is flat.
     keyOf = location: name: builtins.replaceStrings [ "/" ] [ "-" ] "${location}/${name}";
 
-    # Build a `sops.secrets` fragment. `format = "binary"` means "the decrypted payload is the raw
-    # file bytes" (an exported GPG key, a certificate) -- not a value looked up inside a YAML document.
-    # In `let` so `declare` below can reuse it.
-    mkSecret = location: name: attrs: {
-        "${keyOf location name}" = {
-            sopsFile = secretFile location name;
-            format = "binary";
-        }
-        // attrs;
-    };
 in
 {
 
@@ -31,9 +21,15 @@ in
     # a bare "<user>" is that user on all their machines (see secrets/.sops.yaml for how each folder
     # resolves to recipients).
     # register with sops:  sops.secrets = tools.secrets.declare "cogs@glorpbook" "gpg";
-    declare = location: name: mkSecret location name { };
-    # same, with extra sops attrs (owner/mode) when a secret needs them
-    inherit mkSecret;
+    #
+    # `format = "binary"` means "the decrypted payload is the raw file bytes" (an exported GPG key, a
+    # certificate) -- not a value looked up inside a YAML document.
+    declare = location: name: {
+        "${keyOf location name}" = {
+            sopsFile = secretFile location name;
+            format = "binary";
+        };
+    };
     # read the decrypted runtime path:  tools.secrets.path config "cogs@glorpbook" "gpg"
     path =
         config: location: name:

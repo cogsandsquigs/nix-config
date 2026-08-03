@@ -10,7 +10,6 @@
 #   - a `name` that disagrees with the directory (it is read-only, set from the directory)
 #
 # Exposes:
-#   fleet.users            -- every user unit name found under users/
 #   fleet.hosts.<name>     -- { name; class; system; users; primaryUser; }
 { lib, root }:
 let
@@ -84,8 +83,6 @@ let
     };
 in
 {
-    users = userNames;
-
     hosts =
         (lib.evalModules {
             modules = [

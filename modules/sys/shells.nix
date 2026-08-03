@@ -19,7 +19,6 @@ let
         programs.fish.enable = true;
         programs.zsh.enable = true;
         programs.bash.enable = true;
-        # programs.nushell.enable = true;
     };
 in
 {

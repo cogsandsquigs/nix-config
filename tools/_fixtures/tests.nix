@@ -41,14 +41,6 @@ let
     results = lib.runTests {
         # -- tools/fleet.nix, accepting a valid declaration ---------------------------------------
 
-        testFleetFindsUsers = {
-            expr = ok.users;
-            expected = [
-                "other"
-                "someone"
-            ];
-        };
-
         testFleetNameFromDirectory = {
             expr = ok.hosts.alpha.name;
             expected = "alpha";
