@@ -1,4 +1,4 @@
-# Our own helpers, exposed to every module as the `tools` specialArg (wired in lib/default.nix).
+# Our own helpers, exposed to every module as the `tools` specialArg (wired in tools/default.nix).
 # Kept OUT of `lib` on purpose: home-manager owns its modules' `lib` (rebuilt as pkgs.lib + its own
 # `lib.hm.*`), so injecting our helpers via `lib` either clobbers `lib.hm` or is ignored. A dedicated
 # `tools` arg composes cleanly and reads uniformly in system + home modules.
