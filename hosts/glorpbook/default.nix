@@ -17,7 +17,10 @@ in
     # opt-ins are named here.
     my.sys = {
         darwin.fuse.enable = true;
-        net.tailscale.enable = true;
+        net = {
+            tailscale.enable = true;
+            openvpn.enable = true;
+        };
     };
 
     networking.hostName = hostName;
