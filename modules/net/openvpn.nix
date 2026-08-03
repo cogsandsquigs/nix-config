@@ -2,7 +2,7 @@
     options.my.sys.net.openvpn.enable = tools.opt.mkDisabled "OpenVPN";
 
     darwin = { lib, config, ... }: {
-        config = lib.mkIf config.my.sys.net.openvpn.enable { homebrew.casks = [ "openvpn" ]; };
+        config = lib.mkIf config.my.sys.net.openvpn.enable { homebrew.casks = [ "openvpn-connect" ]; };
     };
 
     nixos =
