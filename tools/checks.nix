@@ -226,7 +226,7 @@ in
                 fail=""
                 clean=""
 
-                for f in $(find modules hosts users -name '*.nix' | grep -v '/skills/' | sort); do
+                for f in $(find modules hosts users -name '*.nix' | grep -v '/_skills/' | sort); do
                     rel="''${f#./}"
                     total=$(wc -l < "$f")
                     [ "$total" -lt "$floor" ] && continue

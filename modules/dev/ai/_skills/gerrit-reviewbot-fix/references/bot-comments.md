@@ -1,7 +1,7 @@
 # Bot comment classes
 
-Each class gives the usual fix and the usual false positive. The false-positive column is
-the reason Phase 3 exists: the bot is often right about the rule and wrong about this line.
+Each class gives the usual fix and the usual false positive. The false-positive column is the reason
+Phase 3 exists: the bot is often right about the rule and wrong about this line.
 
 ## Formatter and style
 
@@ -16,15 +16,15 @@ Examples: gofmt, clang-format, prettier, black, ktlint.
 Examples: eslint, golangci-lint, pylint, SpotBugs, clang-tidy, Coverity.
 
 - Fix: change the code so the rule passes. Keep behavior identical.
-- False positive: the analyzer cannot see a guarantee that the code holds. A nullness
-  warning after a checked branch is the common case.
-- When the finding is a true positive but the fix is large, mark it `blocked` and say what
-  the real fix costs. Do not paper over it with a cast.
+- False positive: the analyzer cannot see a guarantee that the code holds. A nullness warning after
+  a checked branch is the common case.
+- When the finding is a true positive but the fix is large, mark it `blocked` and say what the real
+  fix costs. Do not paper over it with a cast.
 
 ## Commit message policy
 
-The comment sits on `/COMMIT_MSG`. Examples: subject too long, missing bug reference,
-missing sign-off, wrong prefix, body line over 72 columns.
+The comment sits on `/COMMIT_MSG`. Examples: subject too long, missing bug reference, missing
+sign-off, wrong prefix, body line over 72 columns.
 
 - Fix: `git commit --amend` on the message. Keep the `Change-Id` trailer byte for byte.
 - False positive: a bot that wants a bug ID for a change that has no bug. Ask the owner.
@@ -33,10 +33,10 @@ missing sign-off, wrong prefix, body line over 72 columns.
 
 Examples: a bot that reports uncovered new lines.
 
-- Fix: add a test for the uncovered branch. A test that only touches the line to raise the
-  number is waste. Write the test that would catch a real fault.
-- False positive: coverage on generated code, on a type-only file, or on a branch that the
-  test harness cannot reach. Say which.
+- Fix: add a test for the uncovered branch. A test that only touches the line to raise the number is
+  waste. Write the test that would catch a real fault.
+- False positive: coverage on generated code, on a type-only file, or on a branch that the test
+  harness cannot reach. Say which.
 
 ## Header, licence, and metadata
 
@@ -50,18 +50,18 @@ Examples: missing licence header, wrong year, missing owner file entry.
 Examples: codespell, a docs linter.
 
 - Fix: correct the word.
-- False positive: a domain term, an identifier inside prose, or a deliberate abbreviation.
-  Add it to the repo dictionary file when the repo has one. Do not silence the whole rule.
+- False positive: a domain term, an identifier inside prose, or a deliberate abbreviation. Add it to
+  the repo dictionary file when the repo has one. Do not silence the whole rule.
 
 ## Security and dependency scans
 
 Examples: a secret scanner, a dependency CVE bot, a licence scanner.
 
-- A secret finding is different from every other class. Stop the fix flow and tell the
-  owner first. A committed secret needs rotation, not a delete. Removing the line leaves
-  the secret in the history and in every clone.
-- A CVE finding usually needs a version bump plus a lockfile update. That is a separate
-  change more often than not. Mark it `blocked` and say so.
+- A secret finding is different from every other class. Stop the fix flow and tell the owner first.
+  A committed secret needs rotation, not a delete. Removing the line leaves the secret in the
+  history and in every clone.
+- A CVE finding usually needs a version bump plus a lockfile update. That is a separate change more
+  often than not. Mark it `blocked` and say so.
 
 ## Merge conflict and rebase bots
 

@@ -22,7 +22,11 @@
                 programs.claude-code = {
                     enable = true;
                     context = ./context.md;
-                    skills = ./skills;
+
+                    # `_skills`, not `skills`: this is payload, not a namespace level. The loader skips
+                    # a `_` name, so the directory cannot be mistaken for the feature `dev.ai.skills`
+                    # -- which it would have become the moment a skill shipped a `.nix` file.
+                    skills = ./_skills;
                 };
             };
         };
