@@ -41,7 +41,7 @@ secrets, and [import-tree] for module discovery.
   - `fleet.nix` — the typed schema for `hosts/` and `users/`.
   - `registry.nix` — turns `modules/` into per-class module sets.
   - `feature.nix` — path to feature name, shared by the registry and the `feature-paths` check.
-  - `checks.nix` — the five gates.
+  - `checks.nix` — the gates.
   - `opt.nix` — option constructors. `secrets.nix` — sops wiring.
   - `_fixtures/` — module trees and host stubs for `tools-tests`.
 - **`modules/`** — every feature. One file per feature, keyed by class. See
@@ -223,13 +223,14 @@ Run every check from any machine in the fleet:
 nix flake check
 ```
 
-| Check           | It fails when                                                                   |
-| --------------- | ------------------------------------------------------------------------------- |
-| `fleet-eval`    | A host stops evaluating, including a host this machine cannot build.            |
-| `feature-paths` | A file declares a `my.*` option outside the feature its path owns.              |
-| `typed-options` | A `my.*` option has no description, or uses a type that carries no information. |
-| `tools-tests`   | A unit test over `tools/` fails.                                                |
-| `lint`          | `statix` reports a finding.                                                     |
+| Check              | It fails when                                                                   |
+| ------------------ | ------------------------------------------------------------------------------- |
+| `fleet-eval`       | A host stops evaluating, including a host this machine cannot build.            |
+| `feature-paths`    | A file declares a `my.*` option outside the feature its path owns.              |
+| `typed-options`    | A `my.*` option has no description, or uses a type that carries no information. |
+| `tools-tests`      | A unit test over `tools/` fails.                                                |
+| `lint`             | `statix` reports a finding.                                                     |
+| `comment-density`  | A module body is more than 20% comment.                                         |
 
 `fleet-eval` forces the derivation path of every host and then discards the string context. The
 check therefore never builds a derivation for another platform. One command on the work desktop
@@ -239,6 +240,11 @@ proves that the MacBook configuration still evaluates.
 composite types inward, so `attrsOf attrs` is caught too. A few values are free-form because they
 belong to a foreign schema, such as a language server's own settings. `tools/checks.nix` lists those
 exceptions by name, so the list stays short and visible.
+
+`comment-density` caps comments at 20% of a file, counting only the body: a file's leading comment
+block is its documentation and is exempt, as is any file under 40 lines, where the ratio says nothing.
+`tools/` is out of scope, since its doc comments are unrestricted. Four files are recorded exceptions
+with their reasons, and the check also fails when one of them stops needing its exception.
 
 `nix flake check` also builds every feature in the registry, which proves each one evaluates on its
 own and not only as part of a host.
