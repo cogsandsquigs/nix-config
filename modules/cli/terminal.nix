@@ -48,7 +48,7 @@
                                 "+ss07"
                             ];
 
-                            theme = "catppuccin-mocha";
+                            theme = "Catppuccin Mocha";
 
                             cursor-style = "bar";
 
