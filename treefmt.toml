@@ -7,8 +7,9 @@
 # modules/dev/langs.nix (4-space indent, 100-column width), so formatting from the editor and
 # from the CLI agree.
 #
-# NOTE: the flake's `nix fmt` output (see flake.nix `formatter`) is a *separate*, bare
-# nixfmt-rfc-style (2-space default) -- prefer `treefmt` for the repo's real 4-space style.
+# `nix fmt` runs THIS file: the flake's `formatter` output (see flake.nix) is a treefmt wrapper with
+# nixfmt/shfmt/prettier on PATH. So `nix fmt` and a bare `treefmt` produce identical output, and either
+# is fine.
 
 [formatter.nixfmt]
     command  = "nixfmt"
