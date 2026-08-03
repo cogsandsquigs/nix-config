@@ -1,12 +1,12 @@
 ---
 name: gooddoc
 description: >-
-  Rewrites prose -- docs, READMEs, PR descriptions, error messages, release notes, comments, agent
-  instructions -- into ASD-STE100 Simplified Technical English, which removes the padding, hedging,
-  and marketing register that read as "AI slop". Never applies to code, identifiers, or command
-  syntax. Use when writing or cleaning up documentation in or for a codebase, manuals, technical
-  documents, or agent instructions, and when the user asks for text "without AI slop". Two modes:
-  strict for procedures, runbooks, and safety text, and STE-flavored for general prose.
+    Rewrites prose -- docs, READMEs, PR descriptions, error messages, release notes, comments, agent
+    instructions -- into ASD-STE100 Simplified Technical English, which removes the padding,
+    hedging, and marketing register that read as "AI slop". Never applies to code, identifiers, or
+    command syntax. Use when writing or cleaning up documentation in or for a codebase, manuals,
+    technical documents, or agent instructions, and when the user asks for text "without AI slop".
+    Two modes: strict for procedures, runbooks, and safety text, and STE-flavored for general prose.
 argument-hint: "<text or file to rewrite>"
 ---
 

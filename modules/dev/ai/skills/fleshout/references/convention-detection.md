@@ -14,15 +14,15 @@ style. This is the pass to run before writing new code into an existing project.
 
 1. **Formatter and linter config.** The fastest and most authoritative signal, because it is
    enforced mechanically rather than remembered.
-   - Rust: `rustfmt.toml`, `.rustfmt.toml`, `clippy.toml` -- check `edition`, `max_width`, and denied
-     lints. `#![deny(...)]` in `lib.rs` or `main.rs` is worth reading directly.
-   - TypeScript and JavaScript: `.eslintrc*`, `.prettierrc*`, `tsconfig.json`. `strict` and
-     `noImplicitAny` tell you how tight the typing culture is.
-   - Go: `.golangci.yml`. `gofmt` removes most style variance, so the remaining opinions live in the
-     linter config.
-   - Haskell: `.hlint.yaml`, `stylish-haskell.yaml`, or format hints in `*.cabal` / `package.yaml`
-     (the `ghc-options` extension list tells you whether `OverloadedStrings` or `LambdaCase` are on
-     by default).
+    - Rust: `rustfmt.toml`, `.rustfmt.toml`, `clippy.toml` -- check `edition`, `max_width`, and
+      denied lints. `#![deny(...)]` in `lib.rs` or `main.rs` is worth reading directly.
+    - TypeScript and JavaScript: `.eslintrc*`, `.prettierrc*`, `tsconfig.json`. `strict` and
+      `noImplicitAny` tell you how tight the typing culture is.
+    - Go: `.golangci.yml`. `gofmt` removes most style variance, so the remaining opinions live in
+      the linter config.
+    - Haskell: `.hlint.yaml`, `stylish-haskell.yaml`, or format hints in `*.cabal` / `package.yaml`
+      (the `ghc-options` extension list tells you whether `OverloadedStrings` or `LambdaCase` are on
+      by default).
 
 2. **A representative existing feature, not the nearest file.** Pick something structurally similar
    to what you are adding -- another handler, another parser, another CLI subcommand. The nearest
@@ -30,16 +30,16 @@ style. This is the pass to run before writing new code into an existing project.
 
 3. **The error-handling idiom.** This varies more than almost anything else and is highly visible
    when mismatched.
-   - Rust: `Result<T, E>` with `?` and a custom error enum (often `thiserror`), against
-     `anyhow::Error` for application code. `panic!` and `.unwrap()` usually appear only in tests and
-     genuinely impossible branches. Check which the codebase picked.
-   - Go: sentinel errors with `errors.Is`, wrapped errors via `fmt.Errorf("...: %w", err)`, or a
-     custom error type. Go codebases are inconsistent across the ecosystem, so check locally.
-   - TypeScript: exceptions, against `Result`-style returns
-     (`{ ok: true, value } | { ok: false, error }`). Common in codebases that value explicitness,
-     far from universal.
-   - Haskell: `Either e a`, `ExceptT` stacks, or exceptions via `throwIO`. This tells you how pure
-     the codebase's error philosophy is.
+    - Rust: `Result<T, E>` with `?` and a custom error enum (often `thiserror`), against
+      `anyhow::Error` for application code. `panic!` and `.unwrap()` usually appear only in tests
+      and genuinely impossible branches. Check which the codebase picked.
+    - Go: sentinel errors with `errors.Is`, wrapped errors via `fmt.Errorf("...: %w", err)`, or a
+      custom error type. Go codebases are inconsistent across the ecosystem, so check locally.
+    - TypeScript: exceptions, against `Result`-style returns
+      (`{ ok: true, value } | { ok: false, error }`). Common in codebases that value explicitness,
+      far from universal.
+    - Haskell: `Either e a`, `ExceptT` stacks, or exceptions via `throwIO`. This tells you how pure
+      the codebase's error philosophy is.
 
 4. **Module and file layout.** Does the project group by layer (`handlers/`, `models/`, `services/`)
    or by feature (`orders/`, `users/`, each holding its own handler, model, and service)? Follow

@@ -1,16 +1,16 @@
 ---
 name: fleshout
 description: >-
-  Turns rough material -- a code sample, a git diff, scratch-pad notes, half-formed guidance -- into
-  a complete, production-quality feature written in the codebase's own style. Use when the user
-  hands over a stub, a TODO-riddled diff, or a "here's roughly what I'm thinking" note, even when
-  they never say "flesh this out". Trigger signals: a match/switch handles one case and the rest
-  fall through, a diff introduces a partial abstraction that is not carried through the codebase,
-  notes describe a workflow larger than the code shown, or guidance gestures at a feature while
-  supplying only fragments. Also triggers on "turn this into a feature", "make this a real
-  implementation", "flesh this out", "build this out properly". Does not apply to small
-  self-contained requests -- a single bug fix, a one-off script, "add a null check here" -- where no
-  larger feature is lurking. Do those directly.
+    Turns rough material -- a code sample, a git diff, scratch-pad notes, half-formed guidance --
+    into a complete, production-quality feature written in the codebase's own style. Use when the
+    user hands over a stub, a TODO-riddled diff, or a "here's roughly what I'm thinking" note, even
+    when they never say "flesh this out". Trigger signals: a match/switch handles one case and the
+    rest fall through, a diff introduces a partial abstraction that is not carried through the
+    codebase, notes describe a workflow larger than the code shown, or guidance gestures at a
+    feature while supplying only fragments. Also triggers on "turn this into a feature", "make this
+    a real implementation", "flesh this out", "build this out properly". Does not apply to small
+    self-contained requests -- a single bug fix, a one-off script, "add a null check here" -- where
+    no larger feature is lurking. Do those directly.
 argument-hint: "<sketch, diff, or notes to build out>"
 ---
 
@@ -29,9 +29,9 @@ requirement wearing a hedge.
 **Under-building** -- implementing only what the sketch literally shows and leaving `TODO` for the
 rest.
 
-**Over-building** -- inventing scope nobody asked for: an abstraction layer with one caller, a config
-knob with no second use, a refactor of surrounding code that was not part of the request, defensive
-handling for states the domain cannot produce.
+**Over-building** -- inventing scope nobody asked for: an abstraction layer with one caller, a
+config knob with no second use, a refactor of surrounding code that was not part of the request,
+defensive handling for states the domain cannot produce.
 
 Over-building is the likelier failure here, because this skill's premise is "there is more than what
 is shown". Step 4 is the brake. Use it instead of guessing outward.

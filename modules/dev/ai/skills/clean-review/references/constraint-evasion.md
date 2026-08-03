@@ -1,8 +1,10 @@
 # Constraint evasion
 
-Some code does not fail. It surrenders. A rule was in place, the rule was hard to satisfy, and the code found a way around the rule instead of through it.
+Some code does not fail. It surrenders. A rule was in place, the rule was hard to satisfy, and the
+code found a way around the rule instead of through it.
 
-This lens finds that code. It applies to code from an agent and to code from a tired human. The pattern is the same. The author met resistance and chose the cheap path.
+This lens finds that code. It applies to code from an agent and to code from a tired human. The
+pattern is the same. The author met resistance and chose the cheap path.
 
 Source of the categories below: Justin Le, "LLMs Will Cheese Your Types" (2026).
 
@@ -22,11 +24,15 @@ Source of the categories below: Justin Le, "LLMs Will Cheese Your Types" (2026).
 
 ## The verdict rule
 
-Each pattern below is legal in the language. Each one is correct sometimes. That is what makes the lens necessary and what makes it dangerous.
+Each pattern below is legal in the language. Each one is correct sometimes. That is what makes the
+lens necessary and what makes it dangerous.
 
-Report every instance. Do not fix an instance on your own judgment. The default verdict is **not legitimate**, and the owner decides.
+Report every instance. Do not fix an instance on your own judgment. The default verdict is **not
+legitimate**, and the owner decides.
 
-The reason is a base rate. The author reached for the pattern because it was cheap, not because the domain demanded it. A rare instance is justified. Most are not. You cannot tell the two apart from inside the same shortcut.
+The reason is a base rate. The author reached for the pattern because it was cheap, not because the
+domain demanded it. A rare instance is justified. Most are not. You cannot tell the two apart from
+inside the same shortcut.
 
 Write each finding as three lines.
 
@@ -42,7 +48,8 @@ Grep comments, commit messages, pull-request text, and any recorded agent transc
 rg -ni 'simplest (approach|solution|way)|for now|to keep (it|things) simple|good enough|temporary|workaround|for expedience|too (invasive|risky|large) a change|avoid(s|ing)? (a )?breaking change'
 ```
 
-A comment that explains why a rule was skipped is a confession. Treat it as a finding, not as documentation.
+A comment that explains why a rule was skipped is a confession. Treat it as a finding, not as
+documentation.
 
 ## Suppression to reach a green build
 
@@ -56,9 +63,11 @@ Signals:
 - A test marked skip, or a build step marked continue-on-error.
 - A dependency pinned back to dodge a stricter version.
 
-Read the code the suppression covers. Ask which check the author could not pass. That answer is the real finding. The suppression is only the marker.
+Read the code the suppression covers. Ask which check the author could not pass. That answer is the
+real finding. The suppression is only the marker.
 
-A suppression inside a type-level test is different. A test that proves the compiler rejects bad input needs the marker to pass. Leave it.
+A suppression inside a type-level test is different. A test that proves the compiler rejects bad
+input needs the marker to pass. Leave it.
 
 Fix, in order of preference:
 
@@ -72,23 +81,27 @@ The plan record from Phase 1 named a type. The code uses a looser one.
 
 Common trades:
 
-| The plan asked for | The code uses | The lost rule |
-|---|---|---|
-| A non-empty collection | A plain list, plus an empty check | The collection cannot be empty |
-| An unsigned or bounded number | A signed machine integer | The value cannot go below zero |
-| A new variant in an existing union | A free string | The set of cases is closed |
-| A structured record | A generic map, or a JSON blob | The field set is known |
-| A domain type | The primitive inside it | Two unrelated values cannot be swapped |
-| A narrow interface or constraint | A wider one that the type already met | The caller cannot do more than it needs |
-| A separate type per state | One type with optional fields | Two states cannot mix |
+| The plan asked for                 | The code uses                         | The lost rule                           |
+| ---------------------------------- | ------------------------------------- | --------------------------------------- |
+| A non-empty collection             | A plain list, plus an empty check     | The collection cannot be empty          |
+| An unsigned or bounded number      | A signed machine integer              | The value cannot go below zero          |
+| A new variant in an existing union | A free string                         | The set of cases is closed              |
+| A structured record                | A generic map, or a JSON blob         | The field set is known                  |
+| A domain type                      | The primitive inside it               | Two unrelated values cannot be swapped  |
+| A narrow interface or constraint   | A wider one that the type already met | The caller cannot do more than it needs |
+| A separate type per state          | One type with optional fields         | Two states cannot mix                   |
 
-The trade often follows a call. A callee returns a loose type, so the caller widens its own type to match. The loose type then spreads outward one function at a time. Trace it back to the first widening and fix it there.
+The trade often follows a call. A callee returns a loose type, so the caller widens its own type to
+match. The loose type then spreads outward one function at a time. Trace it back to the first
+widening and fix it there.
 
-Report the plan text and the code side by side. A change of plan is fine. An undiscussed change of plan is the finding.
+Report the plan text and the code side by side. A change of plan is fine. An undiscussed change of
+plan is the finding.
 
 ## Variant abuse
 
-A union or an enum gained a case in the domain but not in the code. The author packed the new case into an old one.
+A union or an enum gained a case in the domain but not in the code. The author packed the new case
+into an old one.
 
 ```ts
 // The domain gained "invalid group". The error union did not.
@@ -106,7 +119,8 @@ Signals:
 
 Fix: add the variant the domain needs. Then follow the compiler to every consumer.
 
-Prevention, and a fix worth proposing: remove the abusable field. A variant that holds a free string invites the next author to stuff it. A variant that holds a domain type does not.
+Prevention, and a fix worth proposing: remove the abusable field. A variant that holds a free string
+invites the next author to stuff it. A variant that holds a domain type does not.
 
 ## Field abuse and sentinel values
 
@@ -114,15 +128,19 @@ A record gained a meaning but not a field.
 
 Signals:
 
-- A list field with extra entries appended that mean something else, such as affiliations after author names.
+- A list field with extra entries appended that mean something else, such as affiliations after
+  author names.
 - One field reused for a second purpose because it was free at the time.
 - A field whose meaning depends on which code path wrote it.
-- A magic value used in place of absence: minus one, zero, the epoch, an empty string, a maximum integer.
+- A magic value used in place of absence: minus one, zero, the epoch, an empty string, a maximum
+  integer.
 - Two callers that disagree about what a field holds.
 
-Fix: add the field, or make absence explicit in the type. Then delete the checks that tested for the magic value.
+Fix: add the field, or make absence explicit in the type. Then delete the checks that tested for the
+magic value.
 
-A sentinel is worse than a wrong type, because every reader must remember it. An explicit absent case makes the compiler remind them.
+A sentinel is worse than a wrong type, because every reader must remember it. An explicit absent
+case makes the compiler remind them.
 
 ## Resistance to a new type
 
@@ -147,9 +165,11 @@ Signals:
 - A catch-all branch that forwards the value to another function which repeats the same match.
 - A pattern match whose covered set grew rather than shrank as the value moved inward.
 
-The rule: each function inward should cover **less**, not the same. A match that hands the whole wide type onward has moved no work.
+The rule: each function inward should cover **less**, not the same. A match that hands the whole
+wide type onward has moved no work.
 
-Fix: group the new cases behind one variant. Give each function the narrow type it handles. Delete the no-op branches.
+Fix: group the new cases behind one variant. Give each function the narrow type it handles. Delete
+the no-op branches.
 
 ## Defensive checks in place of a model
 
@@ -164,7 +184,8 @@ Signals:
 - A precondition assertion in a function body that repeats what the signature could state.
 - A cast right after a check, in the same function.
 
-Fix belongs to `type-modeling.md`. Parse once at the boundary. Pick the data structure that holds the rule. Then delete the checks.
+Fix belongs to `type-modeling.md`. Parse once at the boundary. Pick the data structure that holds
+the rule. Then delete the checks.
 
 ## Test evasion
 
@@ -181,13 +202,16 @@ Check the git log for these. The commit that weakened the test usually states th
 
 ## The unchanged-code hunt
 
-Evasion hides in code that did **not** change. A diff view highlights new lines. It cannot highlight a consumer that should have gained a case and did not.
+Evasion hides in code that did **not** change. A diff view highlights new lines. It cannot highlight
+a consumer that should have gained a case and did not.
 
 Run this hunt whenever a union, an enum, or a record changed in recent history.
 
 1. List the types that changed. Use `git log -p` over the type definitions.
-2. For each type, grep the whole repository for consumers. Include tests, serializers, and generated code.
-3. For each consumer, check whether it handles the new case. A catch-all branch hides the gap. So does a default value.
+2. For each type, grep the whole repository for consumers. Include tests, serializers, and generated
+   code.
+3. For each consumer, check whether it handles the new case. A catch-all branch hides the gap. So
+   does a default value.
 4. Report each consumer that ignores the new case.
 5. Turn on the exhaustiveness check for that type, so the compiler runs this hunt next time.
 
@@ -197,15 +221,19 @@ Step 5 is the durable fix. See Phase 7 in SKILL.md.
 
 The categories above apply to every stack. The mechanics differ.
 
-| Stack | Suppression to look for | Exhaustiveness control | Common abusable field |
-|---|---|---|---|
-| TypeScript | `@ts-ignore`, `@ts-expect-error`, `as any`, `as unknown as`, a postfix `!`, `eslint-disable`, `strict: false` | A `never` assertion in the default branch, or the `switch-exhaustiveness-check` rule | `string`, `Record<string, unknown>`, `any` |
-| Python | `# type: ignore`, `# noqa`, `cast(`, `Any` | `assert_never` in the final branch, with a strict checker | `dict`, `str`, `None` as a sentinel |
-| Go | `//nolint`, a blank error assignment, `interface{}` | No language support. Use an exhaustive-switch linter | `interface{}`, `string`, a zero value |
-| Rust | `unwrap`, `expect`, `#[allow(...)]`, `unsafe` | `match` is exhaustive already. Watch for a `_` arm | `String`, `Option` used as a flag |
-| Haskell | `-Wno-incomplete-patterns`, a lint ignore pragma, `error`, `unsafeCoerce` | `-Werror=incomplete-patterns` | `String`, a JSON value, `Int`, an exception type |
-| Java or C# | `@SuppressWarnings`, a raw cast, `dynamic`, a null-forgiving operator | A sealed hierarchy with a switch expression | `Object`, `String`, `Map` |
+| Stack      | Suppression to look for                                                                                       | Exhaustiveness control                                                               | Common abusable field                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------ |
+| TypeScript | `@ts-ignore`, `@ts-expect-error`, `as any`, `as unknown as`, a postfix `!`, `eslint-disable`, `strict: false` | A `never` assertion in the default branch, or the `switch-exhaustiveness-check` rule | `string`, `Record<string, unknown>`, `any`       |
+| Python     | `# type: ignore`, `# noqa`, `cast(`, `Any`                                                                    | `assert_never` in the final branch, with a strict checker                            | `dict`, `str`, `None` as a sentinel              |
+| Go         | `//nolint`, a blank error assignment, `interface{}`                                                           | No language support. Use an exhaustive-switch linter                                 | `interface{}`, `string`, a zero value            |
+| Rust       | `unwrap`, `expect`, `#[allow(...)]`, `unsafe`                                                                 | `match` is exhaustive already. Watch for a `_` arm                                   | `String`, `Option` used as a flag                |
+| Haskell    | `-Wno-incomplete-patterns`, a lint ignore pragma, `error`, `unsafeCoerce`                                     | `-Werror=incomplete-patterns`                                                        | `String`, a JSON value, `Int`, an exception type |
+| Java or C# | `@SuppressWarnings`, a raw cast, `dynamic`, a null-forgiving operator                                         | A sealed hierarchy with a switch expression                                          | `Object`, `String`, `Map`                        |
 
-Two notes on Rust and Haskell. Exhaustive matching is the default, so the evasion moves into the wildcard arm and into the abusable payload. Grep for `_ =>` and `_ ->` beside a union that recently gained a case.
+Two notes on Rust and Haskell. Exhaustive matching is the default, so the evasion moves into the
+wildcard arm and into the abusable payload. Grep for `_ =>` and `_ ->` beside a union that recently
+gained a case.
 
-One note on Go and dynamic Python. Without exhaustiveness support, the compiler cannot run the unchanged-code hunt for you. Add a linter for it, or accept that the hunt is manual and record it in the project checklist.
+One note on Go and dynamic Python. Without exhaustiveness support, the compiler cannot run the
+unchanged-code hunt for you. Add a linter for it, or accept that the hunt is manual and record it in
+the project checklist.

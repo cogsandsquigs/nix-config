@@ -10,6 +10,7 @@
 #   tools-tests    -- unit tests over tools/, via lib.runTests
 #   lint           -- statix reports nothing (see ../statix.toml)
 #   comment-density -- no module body is more than 20% comment
+#   fmt            -- the tree is already formatted (treefmt, see ../treefmt.toml)
 { self, tools }:
 pkgs:
 let
@@ -249,6 +250,37 @@ in
 
                 if [ -n "$clean" ]; then
                     printf 'comment-density: an exemption is no longer needed\n%b\n\nDrop it from `exempt` in tools/checks.nix.\n' "$clean" >&2
+                    exit 1
+                fi
+
+                touch $out
+            '';
+
+    # Formatting, enforced rather than remembered. `nix fmt` was not clean at the commit this gate was
+    # added on: five files nobody had touched in months reformatted on every run, because nothing ever
+    # checked. Markdown was worse -- it had no treefmt entry at all, so the largest files in the repo were
+    # formatted only when someone happened to save them in the editor.
+    #
+    # Runs the same treefmt.toml `nix fmt` does, so the three ways to format (editor, CLI, gate) cannot
+    # disagree. `$self` is read-only in the store, hence the copy; `--no-cache` because the cache lives in
+    # $HOME, which a sandbox does not have.
+    fmt =
+        pkgs.runCommand "fmt"
+            {
+                nativeBuildInputs = [
+                    pkgs.treefmt
+                    pkgs.nixfmt
+                    pkgs.shfmt
+                    pkgs.prettier
+                ];
+            }
+            ''
+                cp -r --no-preserve=mode,ownership ${self} tree
+                cd tree
+
+                if ! treefmt --no-cache --fail-on-change --tree-root . 2>&1; then
+                    echo >&2
+                    echo "fmt: the tree is not formatted. Run \`nix fmt\` and commit the result." >&2
                     exit 1
                 fi
 

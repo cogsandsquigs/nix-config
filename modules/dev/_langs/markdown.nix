@@ -1,29 +1,16 @@
-{ pkgs, ... }:
-let
-    # See: https://dprint.dev/config/
-    dprint-config = builtins.toFile "dprint.json" (
-        builtins.toJSON {
-            lineWidth = 100;
-            markdown = {
-                lineWidth = 100;
-                textWrap = "always";
-            };
-            plugins = [ "https://plugins.dprint.dev/markdown-0.22.0.wasm" ];
-        }
-    );
-in
-{
+{ pkgs, ... }: {
     pkgs = with pkgs; [
         # marksman # Markdown LSP -- heavy package, excluded for now
         mdbook
-        dprint
+        prettierd
     ];
 
+    # prettier, not dprint: the `fmt` gate has to run the same formatter the editor does, and dprint
+    # fetches its markdown plugin from the network, which the Nix sandbox has no access to. Options come
+    # from the repo's .prettierrc.json (printWidth 100, proseWrap "always") -- the same file treefmt
+    # reads, so saving in the editor and running `nix fmt` cannot disagree.
     fmt = [
-        "dprint"
-        "fmt"
-        "--config=${dprint-config}"
-        "--stdin"
+        "prettierd"
         "%{buffer_name}"
     ];
 

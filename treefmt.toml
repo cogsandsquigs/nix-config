@@ -27,7 +27,14 @@
         "--write",
     ]
 
-# prettier reads .prettierrc.json in this repo for its options (tabWidth 4, printWidth 100).
+# prettier reads .prettierrc.json in this repo for its options (tabWidth 4, printWidth 100, and
+# proseWrap "always" for markdown).
+#
+# `*.md` is in here deliberately. Markdown used to be formatted only by the editor, via dprint, so the
+# repo's largest files drifted by hand -- and `nix fmt` was not even clean at the commit the audit ran
+# on. prettier owns markdown in BOTH places now (see modules/dev/_langs/markdown.nix): dprint's plugin
+# is fetched over the network, which a Nix sandbox has no access to, so a dprint gate is impossible and
+# two formatters would have disagreed.
 [formatter.prettier]
     command = "prettier"
     excludes = ["flake.lock"]
@@ -41,5 +48,6 @@
         "*.html",
         "*.js",
         "*.ts",
+        "*.md",
     ]
     options = ["--write"]

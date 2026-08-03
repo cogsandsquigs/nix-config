@@ -1,100 +1,100 @@
 {
-  "skill_name": "test-library",
-  "evals": [
-    {
-      "id": 1,
-      "prompt": "Is my library any good? It's at ./test-library-eval/fixtures/query-builder — I want to know whether someone who's never seen it could actually use it.",
-      "expected_output": "A findings.md report in a scratch workspace, produced by a blind explorer run followed by an informed review. Should recover most of the planted defects in test-library-eval/fixtures/EXPECTED-FINDINGS.md.",
-      "files": [],
-      "expectations": [
-        "Resolves to mode 'library' and tier 'general' and shows both before starting",
-        "Puts the workspace under $TMPDIR, not inside the fixture directory, and leaves the fixture working tree clean",
-        "Copies the subject into subject/ without rewriting it or copying only part of it",
-        "Writes three milestones in domain language, none of which names an identifier that the fixture exports",
-        "Runs the leakage gate on brief.md before launching the explorer",
-        "States that the blind constraint is instructed and not enforced, and does not claim that the tier was enforced",
-        "The journal contains entries recorded before resolution, in GUESS/BASIS/TRIED/RESULT shape, not only a summary written afterward",
-        "Runs the contamination gate and states whether the blind constraint held, before starting the review",
-        "Compiles and runs the explorer's project during the review instead of reasoning from the journal alone",
-        "Recovers the permissive where() key typo defect (D1 in the answer key)",
-        "Recovers at least four of the eight planted defects in test-library-eval/fixtures/EXPECTED-FINDINGS.md",
-        "findings.md cites journal lines and source locations for each finding",
-        "Reports the dimension ratings separately, without averaging them into one number",
-        "Names the record the contamination gate read, either the explorer's tool calls or the journal with its self-reported list of opened paths, and states that an empty result cannot distinguish a clean run from a thin record"
-      ]
-    },
-    {
-      "id": 2,
-      "prompt": "test-library module strict — audit packages/pricing in ./test-library-eval/fixtures/monorepo. The apps import it as @app/pricing.",
-      "expected_output": "A module-mode audit at strict tier that never reads the existing call sites, and that reports where the explorer's usage diverges from them.",
-      "files": [],
-      "expectations": [
-        "Resolves to mode 'module' and tier 'strict'",
-        "States the module-mode prohibition on reading call sites elsewhere in the repository, and puts it in the explorer brief",
-        "At strict tier, prohibits the explorer from reading any file inside subject/, declaration files included",
-        "States whether a language server is available, and says strict became general if there is none, rather than claiming strict held",
-        "Draws milestones from work the module's real consumers do rather than inventing an exercise",
-        "Reproduces the @app/pricing import specifier instead of using a relative path into the module",
-        "During the review, compares the explorer's usage against the real call sites in apps/ and reports the differences",
-        "Flags the helper that the explorer wrote again although the module already provides it",
-        "Generates declarations into the workspace for a module that ships none, or states in the report that the run held diagnostics only and rates documentation N/A"
-      ]
-    },
-    {
-      "id": 3,
-      "prompt": "test-library lenient ./test-library-eval/fixtures/query-builder",
-      "expected_output": "A library-mode audit at lenient tier, with the mode defaulted rather than queried.",
-      "files": [],
-      "expectations": [
-        "Resolves the lone argument to tier 'lenient' with mode defaulting to 'library'",
-        "Shows the resolved mode and tier before doing any work",
-        "At lenient tier, allows the README but still prohibits the implementation and the tests",
-        "Does not ask the user to restate the mode, because the default resolution is unambiguous"
-      ]
-    },
-    {
-      "id": 4,
-      "prompt": "Audit ./test-library-eval/fixtures/query-builder and fix whatever you find while you're in there.",
-      "expected_output": "A completed audit and a report, with the repairs deferred rather than done during the audit.",
-      "files": [],
-      "expectations": [
-        "Completes the audit and produces findings.md",
-        "Does not modify the subject during the audit",
-        "Explains that repair during the audit destroys the record of the fault",
-        "Offers the repairs as a separate follow-up after the report exists"
-      ]
-    },
-    {
-      "id": 5,
-      "prompt": "test-library ./test-library-eval/fixtures/query-builder — I want the milestones to include one that talks to a real Postgres, there's a docker-compose in the fixture.",
-      "expected_output": "An audit where the orchestrator provisions the database, keeps provisioning detail out of the explorer's reach, and tears down after the report.",
-      "files": [],
-      "expectations": [
-        "Provisions the database itself rather than asking the explorer to do it",
-        "Keeps compose files, env files and seed scripts in the workspace infra/ directory, never in project/",
-        "Verifies the database answers with a command that does not involve the library, and records that command in findings.md",
-        "Gives the explorer connection coordinates only, with no library function names, option shapes or call order",
-        "Includes at least one milestone that needs no external resource, so a provisioning failure does not void the audit",
-        "Does not seed the database from the library's own test fixtures in a way that answers the modeling milestone in advance",
-        "Removes the service after the report is written, not before the reviewer runs the explorer's code",
-        "Marks any milestone that failed because the database was unreachable as infra-failed, and leaves it out of the dimension ratings"
-      ]
-    },
-    {
-      "id": 6,
-      "prompt": "test-library ./test-library-eval/fixtures/textwrap-ext-pkg — it's plain Python, no type stubs. Does it hold up for someone new?",
-      "expected_output": "An audit that substitutes runtime introspection for declaration files and marks type-dependent dimensions N/A instead of scoring them low.",
-      "files": [],
-      "expectations": [
-        "Proceeds rather than declining because there is no type surface",
-        "Substitutes runtime introspection for declaration files at general tier: docstrings, signature reflection, editor-inferred completions",
-        "Still prohibits reading the implementation",
-        "Marks type-dependent dimensions N/A with a reason, or rates the runtime boundary-validation equivalent, instead of giving a low score for the absence of static types",
-        "Reads permissive TYPE-SAFETY findings at run time: input accepted and carried deep before failing, rather than rejected at the boundary",
-        "Recovers the caller-owned list mutation defect (P3 in the answer key)",
-        "Names inspect.getsource, module.__file__ and dis as prohibited in the brief, because the file guard cannot block a read from inside the process"
-      ]
-    }
-  ],
-  "cwd": "The bundle root, which holds both test-library/ and test-library-eval/. Every path in a prompt resolves from there."
+    "skill_name": "test-library",
+    "evals": [
+        {
+            "id": 1,
+            "prompt": "Is my library any good? It's at ./test-library-eval/fixtures/query-builder — I want to know whether someone who's never seen it could actually use it.",
+            "expected_output": "A findings.md report in a scratch workspace, produced by a blind explorer run followed by an informed review. Should recover most of the planted defects in test-library-eval/fixtures/EXPECTED-FINDINGS.md.",
+            "files": [],
+            "expectations": [
+                "Resolves to mode 'library' and tier 'general' and shows both before starting",
+                "Puts the workspace under $TMPDIR, not inside the fixture directory, and leaves the fixture working tree clean",
+                "Copies the subject into subject/ without rewriting it or copying only part of it",
+                "Writes three milestones in domain language, none of which names an identifier that the fixture exports",
+                "Runs the leakage gate on brief.md before launching the explorer",
+                "States that the blind constraint is instructed and not enforced, and does not claim that the tier was enforced",
+                "The journal contains entries recorded before resolution, in GUESS/BASIS/TRIED/RESULT shape, not only a summary written afterward",
+                "Runs the contamination gate and states whether the blind constraint held, before starting the review",
+                "Compiles and runs the explorer's project during the review instead of reasoning from the journal alone",
+                "Recovers the permissive where() key typo defect (D1 in the answer key)",
+                "Recovers at least four of the eight planted defects in test-library-eval/fixtures/EXPECTED-FINDINGS.md",
+                "findings.md cites journal lines and source locations for each finding",
+                "Reports the dimension ratings separately, without averaging them into one number",
+                "Names the record the contamination gate read, either the explorer's tool calls or the journal with its self-reported list of opened paths, and states that an empty result cannot distinguish a clean run from a thin record"
+            ]
+        },
+        {
+            "id": 2,
+            "prompt": "test-library module strict — audit packages/pricing in ./test-library-eval/fixtures/monorepo. The apps import it as @app/pricing.",
+            "expected_output": "A module-mode audit at strict tier that never reads the existing call sites, and that reports where the explorer's usage diverges from them.",
+            "files": [],
+            "expectations": [
+                "Resolves to mode 'module' and tier 'strict'",
+                "States the module-mode prohibition on reading call sites elsewhere in the repository, and puts it in the explorer brief",
+                "At strict tier, prohibits the explorer from reading any file inside subject/, declaration files included",
+                "States whether a language server is available, and says strict became general if there is none, rather than claiming strict held",
+                "Draws milestones from work the module's real consumers do rather than inventing an exercise",
+                "Reproduces the @app/pricing import specifier instead of using a relative path into the module",
+                "During the review, compares the explorer's usage against the real call sites in apps/ and reports the differences",
+                "Flags the helper that the explorer wrote again although the module already provides it",
+                "Generates declarations into the workspace for a module that ships none, or states in the report that the run held diagnostics only and rates documentation N/A"
+            ]
+        },
+        {
+            "id": 3,
+            "prompt": "test-library lenient ./test-library-eval/fixtures/query-builder",
+            "expected_output": "A library-mode audit at lenient tier, with the mode defaulted rather than queried.",
+            "files": [],
+            "expectations": [
+                "Resolves the lone argument to tier 'lenient' with mode defaulting to 'library'",
+                "Shows the resolved mode and tier before doing any work",
+                "At lenient tier, allows the README but still prohibits the implementation and the tests",
+                "Does not ask the user to restate the mode, because the default resolution is unambiguous"
+            ]
+        },
+        {
+            "id": 4,
+            "prompt": "Audit ./test-library-eval/fixtures/query-builder and fix whatever you find while you're in there.",
+            "expected_output": "A completed audit and a report, with the repairs deferred rather than done during the audit.",
+            "files": [],
+            "expectations": [
+                "Completes the audit and produces findings.md",
+                "Does not modify the subject during the audit",
+                "Explains that repair during the audit destroys the record of the fault",
+                "Offers the repairs as a separate follow-up after the report exists"
+            ]
+        },
+        {
+            "id": 5,
+            "prompt": "test-library ./test-library-eval/fixtures/query-builder — I want the milestones to include one that talks to a real Postgres, there's a docker-compose in the fixture.",
+            "expected_output": "An audit where the orchestrator provisions the database, keeps provisioning detail out of the explorer's reach, and tears down after the report.",
+            "files": [],
+            "expectations": [
+                "Provisions the database itself rather than asking the explorer to do it",
+                "Keeps compose files, env files and seed scripts in the workspace infra/ directory, never in project/",
+                "Verifies the database answers with a command that does not involve the library, and records that command in findings.md",
+                "Gives the explorer connection coordinates only, with no library function names, option shapes or call order",
+                "Includes at least one milestone that needs no external resource, so a provisioning failure does not void the audit",
+                "Does not seed the database from the library's own test fixtures in a way that answers the modeling milestone in advance",
+                "Removes the service after the report is written, not before the reviewer runs the explorer's code",
+                "Marks any milestone that failed because the database was unreachable as infra-failed, and leaves it out of the dimension ratings"
+            ]
+        },
+        {
+            "id": 6,
+            "prompt": "test-library ./test-library-eval/fixtures/textwrap-ext-pkg — it's plain Python, no type stubs. Does it hold up for someone new?",
+            "expected_output": "An audit that substitutes runtime introspection for declaration files and marks type-dependent dimensions N/A instead of scoring them low.",
+            "files": [],
+            "expectations": [
+                "Proceeds rather than declining because there is no type surface",
+                "Substitutes runtime introspection for declaration files at general tier: docstrings, signature reflection, editor-inferred completions",
+                "Still prohibits reading the implementation",
+                "Marks type-dependent dimensions N/A with a reason, or rates the runtime boundary-validation equivalent, instead of giving a low score for the absence of static types",
+                "Reads permissive TYPE-SAFETY findings at run time: input accepted and carried deep before failing, rather than rejected at the boundary",
+                "Recovers the caller-owned list mutation defect (P3 in the answer key)",
+                "Names inspect.getsource, module.__file__ and dis as prohibited in the brief, because the file guard cannot block a read from inside the process"
+            ]
+        }
+    ],
+    "cwd": "The bundle root, which holds both test-library/ and test-library-eval/. Every path in a prompt resolves from there."
 }

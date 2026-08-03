@@ -15,8 +15,8 @@ down.
 
 ## Planning
 
-Plan mode: draft -> check for issues -> revise -> repeat until stable. Report all issues + mitigations
-to user.
+Plan mode: draft -> check for issues -> revise -> repeat until stable. Report all issues +
+mitigations to user.
 
 ## Git: never push changes, ask
 
@@ -37,9 +37,9 @@ Only when:
 - Exported/external -> JSDoc/TSDoc, for end-user
 
 Hard cap: <=20% of total lines, per file, counting only NON-doc comments. External API docs
-(JSDoc/TSDoc on exported symbols, written for the library's consumers) are exempt -- as many as the API
-needs. Everything else -- internal notes, rationale, section headers -- is capped. Over cap -> delete the
-weakest, don't reword. Keep the *why*, cut restatement of the code.
+(JSDoc/TSDoc on exported symbols, written for the library's consumers) are exempt -- as many as the
+API needs. Everything else -- internal notes, rationale, section headers -- is capped. Over cap ->
+delete the weakest, don't reword. Keep the _why_, cut restatement of the code.
 
 ## Files: <=500 lines or 6 kB (whichever first)
 
@@ -53,8 +53,8 @@ Hand user decisions needing codebase understanding, never data entry.
   (brand/pinning, filter/DN builders, schema diff/emit, migrations -- algorithm not caller);
   cross-cutting (2+ parts); real trade-offs (pick + justify).
 - Keep: registries/tables/enums, copying existing shapes, OID/constant lookups, boilerplate,
-  mechanical refactors, test scaffolding. Nothing qualifies -> skip handoff, just do + share insight.
-  One meaty decision > several trivial.
+  mechanical refactors, test scaffolding. Nothing qualifies -> skip handoff, just do + share
+  insight. One meaty decision > several trivial.
 
 ## Catch-up: CONTEXT.local.md
 

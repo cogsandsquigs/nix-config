@@ -37,13 +37,13 @@ secrets, and [import-tree] for module discovery.
 
 - **`flake.nix`** — inputs, and outputs derived from the fleet. It names no machine.
 - **`tools/`** — the only code that knows how a host is assembled.
-  - `default.nix` — the three builders and the module-argument contract.
-  - `fleet.nix` — the typed schema for `hosts/` and `users/`.
-  - `registry.nix` — turns `modules/` into per-class module sets.
-  - `feature.nix` — path to feature name, shared by the registry and the `feature-paths` check.
-  - `checks.nix` — the gates.
-  - `opt.nix` — option constructors. `secrets.nix` — sops wiring.
-  - `_fixtures/` — module trees and host stubs for `tools-tests`.
+    - `default.nix` — the three builders and the module-argument contract.
+    - `fleet.nix` — the typed schema for `hosts/` and `users/`.
+    - `registry.nix` — turns `modules/` into per-class module sets.
+    - `feature.nix` — path to feature name, shared by the registry and the `feature-paths` check.
+    - `checks.nix` — the gates.
+    - `opt.nix` — option constructors. `secrets.nix` — sops wiring.
+    - `_fixtures/` — module trees and host stubs for `tools-tests`.
 - **`modules/`** — every feature. One file per feature, keyed by class. See
   [Module layout](#module-layout).
 - **`hosts/`** — per-machine identity and host-only settings.
@@ -191,12 +191,12 @@ evaluation, so two users on one machine can differ.
 
 Every feature has an `enable`. Only the default differs.
 
-| Class        | Default                    | Constructor                | Example                              |
-| ------------ | -------------------------- | -------------------------- | ------------------------------------ |
-| **plumbing** | none; always on            | —                          | `base`, `nixpkgs`, `users`           |
-| **core**     | `true`, on unless disabled | `tools.opt.mkEnabled`      | `git`, `shell`, `fonts`, `secrets`   |
-| **optional** | `false`, opt-in            | `tools.opt.mkDisabled`     | `dev.editors.vscode`, `fuse`         |
-| **ride**     | follows its parent group   | `tools.opt.mkRiding p`     | `dev.direnv`, `dev.editors.helix`    |
+| Class        | Default                    | Constructor                | Example                                        |
+| ------------ | -------------------------- | -------------------------- | ---------------------------------------------- |
+| **plumbing** | none; always on            | —                          | `base`, `nixpkgs`, `users`                     |
+| **core**     | `true`, on unless disabled | `tools.opt.mkEnabled`      | `git`, `shell`, `fonts`, `secrets`             |
+| **optional** | `false`, opt-in            | `tools.opt.mkDisabled`     | `dev.editors.vscode`, `fuse`                   |
+| **ride**     | follows its parent group   | `tools.opt.mkRiding p`     | `dev.direnv`, `dev.editors.helix`              |
 | **follows**  | follows this host's users  | `tools.opt.mkFollowsUsers` | `my.sys.apps.games`, `my.sys.apps.desktopApps` |
 
 A group such as `dev` is a namespace: a master `my.user.dev.enable` plus sub-features whose default
@@ -204,8 +204,8 @@ rides it. Flip the master and the whole group follows. Override any sub-feature 
 
 `mkFollowsUsers` removes a double flip. A machine needs Steam at the system level only because a
 user on it plays games, so `my.sys.apps.games.enable` defaults to "some user on this host enabled
-`my.user.apps.games`". This works because home-manager runs as a submodule of the system evaluation. It
-is one-directional: a home feature must never read `my.sys.*` back, or the two evaluations would
+`my.user.apps.games`". This works because home-manager runs as a submodule of the system evaluation.
+It is one-directional: a home feature must never read `my.sys.*` back, or the two evaluations would
 deadlock.
 
 Value options exist only for settings that differ between hosts or users, such as
@@ -223,14 +223,15 @@ Run every check from any machine in the fleet:
 nix flake check
 ```
 
-| Check              | It fails when                                                                   |
-| ------------------ | ------------------------------------------------------------------------------- |
-| `fleet-eval`       | A host stops evaluating, including a host this machine cannot build.            |
-| `feature-paths`    | A file declares a `my.*` option outside the feature its path owns.              |
-| `typed-options`    | A `my.*` option has no description, or uses a type that carries no information. |
-| `tools-tests`      | A unit test over `tools/` fails.                                                |
-| `lint`             | `statix` reports a finding.                                                     |
-| `comment-density`  | A module body is more than 20% comment.                                         |
+| Check             | It fails when                                                                   |
+| ----------------- | ------------------------------------------------------------------------------- |
+| `fleet-eval`      | A host stops evaluating, including a host this machine cannot build.            |
+| `feature-paths`   | A file declares a `my.*` option outside the feature its path owns.              |
+| `typed-options`   | A `my.*` option has no description, or uses a type that carries no information. |
+| `tools-tests`     | A unit test over `tools/` fails.                                                |
+| `lint`            | `statix` reports a finding.                                                     |
+| `comment-density` | A module body is more than 20% comment.                                         |
+| `fmt`             | The tree is not formatted, markdown included.                                   |
 
 `fleet-eval` forces the derivation path of every host and then discards the string context. The
 check therefore never builds a derivation for another platform. One command on the work desktop
@@ -242,9 +243,15 @@ belong to a foreign schema, such as a language server's own settings. `tools/che
 exceptions by name, so the list stays short and visible.
 
 `comment-density` caps comments at 20% of a file, counting only the body: a file's leading comment
-block is its documentation and is exempt, as is any file under 40 lines, where the ratio says nothing.
-`tools/` is out of scope, since its doc comments are unrestricted. Four files are recorded exceptions
-with their reasons, and the check also fails when one of them stops needing its exception.
+block is its documentation and is exempt, as is any file under 40 lines, where the ratio says
+nothing. `tools/` is out of scope, since its doc comments are unrestricted. Four files are recorded
+exceptions with their reasons, and the check also fails when one of them stops needing its
+exception.
+
+`fmt` runs the same `treefmt.toml` that `nix fmt` and a bare `treefmt` do, so the editor, the CLI
+and the gate cannot disagree about formatting. Markdown is included, and prettier owns `.md` in both
+the gate and the editor: dprint fetches its markdown plugin over the network, which a Nix sandbox
+has no access to.
 
 `nix flake check` also builds every feature in the registry, which proves each one evaluates on its
 own and not only as part of a host.
@@ -315,8 +322,8 @@ is built. It overrides anything the `variables` set in `modules/shell/env.nix` d
 overridden `JAVA_HOME` still feeds `$JAVA_HOME/bin`. A missing file is a no-op.
 
 - **No rebuild to change values.** The shells re-read `.env` on every startup, so editing a value
-  there takes effect in the next shell -- no `nxm rebuild`. (Adding the _mechanism_ needed a rebuild;
-  changing values in `.env` does not.)
+  there takes effect in the next shell -- no `nxm rebuild`. (Adding the _mechanism_ needed a
+  rebuild; changing values in `.env` does not.)
 - **One parser.** bash/zsh source it directly (`set -a; . .env; set +a`); fish reuses bash via the
   `bass` plugin -- so bash quoting rules apply everywhere (quote values with spaces).
 - **Typical use:** the work box sets `JAVA_HOME=/usr/lib/jdk-21` to prefer a locally-installed JDK
@@ -369,9 +376,8 @@ multi-user is the modern default:
 Use single-user **only** without root.
 
 Either way the flake is **install-method-agnostic**: `hosts/work-desktop` and the home modules make
-no single/multi-user assumption. The `modules/shell/env.nix` nix-env sourcing and `nxm` handle
-both, and
-no alias uses `sudo` here.
+no single/multi-user assumption. The `modules/shell/env.nix` nix-env sourcing and `nxm` handle both,
+and no alias uses `sudo` here.
 
 #### Recommended -- multi-user + Determinate Nix
 
@@ -408,16 +414,16 @@ echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
 nix run home-manager/release-26.05 -- switch -b bak --flake ~/.config/nix#ipratt@work-desktop
 ```
 
-After the first switch, `home-manager` is on `PATH`, so `nxm rebuild` / `upgrade` / `clean` all work,
-sudo-free on this box.
+After the first switch, `home-manager` is on `PATH`, so `nxm rebuild` / `upgrade` / `clean` all
+work, sudo-free on this box.
 
 > [!note]
 >
 > **The work-box name is a single source of truth** -- the `hosts/work-desktop/` directory name,
 > plus `primaryUser` from its `id.nix` (see [Host and user data](#host-and-user-data)). The
 > `homeConfigurations` attribute and `home.username` both derive from it, so renaming the box is a
-> one-file edit. `nxm` auto-discovers the flake's sole `homeConfigurations` entry (falling back
-> to `$(whoami)@$(hostname)`, or an explicit `HM_TARGET`).
+> one-file edit. `nxm` auto-discovers the flake's sole `homeConfigurations` entry (falling back to
+> `$(whoami)@$(hostname)`, or an explicit `HM_TARGET`).
 
 > [!note]
 >
@@ -508,8 +514,7 @@ environment is declarative and rebuilt from this flake.
    `curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install`.
 4. Move the repo from `~/.config/nix` to `/etc/nix` (the path the multi-user setup and
    `users/ipratt`'s `my.user.shell.flakeDir` expect):
-   `sudo mkdir -p /etc/nix && sudo chown
-"$(id -u):$(id -g)" /etc/nix && mv ~/.config/nix/* ~/.config/nix/.git /etc/nix/`.
+   `sudo mkdir -p /etc/nix && sudo chown "$(id -u):$(id -g)" /etc/nix && mv ~/.config/nix/* ~/.config/nix/.git /etc/nix/`.
 5. Re-apply: `home-manager switch -b bak --flake /etc/nix#ipratt@work-desktop` (or `nxm rebuild`).
 
 No repo changes needed beyond moving it. `nxm rebuild`/`upgrade`/`clean` keep working sudo-free on
@@ -529,10 +534,9 @@ Three easily-conflated things (the old scripts did):
 None means "where my flake repo lives" -- that's incidental. On the Mac and work box this repo sits
 at `/etc/nix` (so repo-root and the nix.conf dir coincide; on the work box `/etc/nix` is user-owned,
 not root, since Nix is per-user). The single-user install path uses `~/.config/nix`, since a
-rootless machine can't write `/etc`. So `nxm` **derives the flake dir from its own location**
-and never set `NIX_CONF_DIR` (which would tell Nix to read `nix.conf` from the repo -- wrong on
-Ubuntu). `nix.conf`/`*.crt` are gitignored, so cloning to `~/.config/nix` carries no stray Nix
-config there.
+rootless machine can't write `/etc`. So `nxm` **derives the flake dir from its own location** and
+never set `NIX_CONF_DIR` (which would tell Nix to read `nix.conf` from the repo -- wrong on Ubuntu).
+`nix.conf`/`*.crt` are gitignored, so cloning to `~/.config/nix` carries no stray Nix config there.
 
 ## Resources
 

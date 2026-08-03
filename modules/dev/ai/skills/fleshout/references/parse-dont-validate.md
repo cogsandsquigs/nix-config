@@ -40,14 +40,14 @@ enum FetchState<T> {
 
 ```typescript
 type FetchState<T> =
-  | { status: "idle" }
-  | { status: "loading" }
-  | { status: "loaded"; data: T }
-  | { status: "failed"; error: Error };
+    | { status: "idle" }
+    | { status: "loading" }
+    | { status: "loaded"; data: T }
+    | { status: "failed"; error: Error };
 ```
 
-**Go** -- Go has no sum types. Approximate with an interface plus a sealed set of implementers, using
-an unexported marker method:
+**Go** -- Go has no sum types. Approximate with an interface plus a sealed set of implementers,
+using an unexported marker method:
 
 ```go
 type FetchState interface{ isFetchState() }
@@ -103,8 +103,8 @@ impl Email {
 type Email = string & { readonly __brand: "Email" };
 
 function parseEmail(raw: string): Email | { error: string } {
-  if (!raw.includes("@")) return { error: "invalid email" };
-  return raw as Email;
+    if (!raw.includes("@")) return { error: "invalid email" };
+    return raw as Email;
 }
 ```
 
@@ -140,8 +140,8 @@ parseEmail raw
 **Anti-pattern:** `items: T[]` plus a function that throws when it is empty, called defensively at
 every use site.
 
-**Rust:** use a `NonEmpty<T>` -- the `nonempty` crate, or hand-rolled `struct NonEmpty<T> { head: T,
-tail: Vec<T> }` -- so `.first()` returns `T`, not `Option<T>`.
+**Rust:** use a `NonEmpty<T>` -- the `nonempty` crate, or hand-rolled
+`struct NonEmpty<T> { head: T, tail: Vec<T> }` -- so `.first()` returns `T`, not `Option<T>`.
 
 **Haskell:** `Data.List.NonEmpty`, the same idea: `NonEmpty a = a :| [a]`.
 
@@ -166,7 +166,7 @@ only when you genuinely mean "everything else", never as a safety net.
 
 ```typescript
 function assertNever(x: never): never {
-  throw new Error(`Unhandled case: ${JSON.stringify(x)}`);
+    throw new Error(`Unhandled case: ${JSON.stringify(x)}`);
 }
 ```
 

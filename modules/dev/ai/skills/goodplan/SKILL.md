@@ -1,12 +1,12 @@
 ---
 name: goodplan
 description: >-
-  Produces a thorough, red-teamed implementation plan for a codebase change before any code is
-  written: files edited, files created, tech choices, and steps ordered by surface area, plus the
-  open decisions and the risks found while attacking the draft. Use whenever the user asks for a
-  plan, enters plan mode, or asks "how should I build X" or "how should I approach X", especially
-  for large, multi-step, or cross-cutting changes. This skill plans only. It never edits the
-  codebase.
+    Produces a thorough, red-teamed implementation plan for a codebase change before any code is
+    written: files edited, files created, tech choices, and steps ordered by surface area, plus the
+    open decisions and the risks found while attacking the draft. Use whenever the user asks for a
+    plan, enters plan mode, or asks "how should I build X" or "how should I approach X", especially
+    for large, multi-step, or cross-cutting changes. This skill plans only. It never edits the
+    codebase.
 argument-hint: "<goal to plan>"
 ---
 

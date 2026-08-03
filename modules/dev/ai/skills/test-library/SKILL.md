@@ -1,7 +1,25 @@
 ---
 name: test-library
-description: Blind usability audit of a library, or of an internal module in a monorepo. An explorer agent builds a small project against the subject. The agent knows nothing about the subject. It cannot read the source and it cannot look anything up. It uses only compiler diagnostics, editor signals, and shipped doc comments such as TSDoc, rustdoc, or docstrings. It records each confusion at the moment the confusion happens. A reviewer with full access then compares that record against the implementation. The comparison finds misconceptions, type-safety holes, silent wrong behavior, edge cases, ergonomic friction, and comprehension gaps. The result is a findings report with severities, evidence, and one rating for each dimension. The result is not a patch.
-when_to_use: Use this skill when the user asks if a library or module is high quality, usable, well-designed, or intuitive. Use it for a DX review, an API-ergonomics review, or a developer-experience review. Use it when the user asks how a newcomer, a teammate, or an agent would experience the code. Use it when the user wants to know if the docs and the types are sufficient without help from a maintainer. Use it when the user wants to find where users get stuck, or mentions zero-to-hero onboarding. Loose phrasing also applies, such as review my library, is this API any good, can anyone else use this package, or test my docs. The subject must be code that the user owns and holds locally. Do not use this skill to choose between third-party packages, to review code for defects, to write a README, to add doc comments, or to fix a type error.
+description:
+    Blind usability audit of a library, or of an internal module in a monorepo. An explorer agent
+    builds a small project against the subject. The agent knows nothing about the subject. It cannot
+    read the source and it cannot look anything up. It uses only compiler diagnostics, editor
+    signals, and shipped doc comments such as TSDoc, rustdoc, or docstrings. It records each
+    confusion at the moment the confusion happens. A reviewer with full access then compares that
+    record against the implementation. The comparison finds misconceptions, type-safety holes,
+    silent wrong behavior, edge cases, ergonomic friction, and comprehension gaps. The result is a
+    findings report with severities, evidence, and one rating for each dimension. The result is not
+    a patch.
+when_to_use:
+    Use this skill when the user asks if a library or module is high quality, usable, well-designed,
+    or intuitive. Use it for a DX review, an API-ergonomics review, or a developer-experience
+    review. Use it when the user asks how a newcomer, a teammate, or an agent would experience the
+    code. Use it when the user wants to know if the docs and the types are sufficient without help
+    from a maintainer. Use it when the user wants to find where users get stuck, or mentions
+    zero-to-hero onboarding. Loose phrasing also applies, such as review my library, is this API any
+    good, can anyone else use this package, or test my docs. The subject must be code that the user
+    owns and holds locally. Do not use this skill to choose between third-party packages, to review
+    code for defects, to write a README, to add doc comments, or to fix a type error.
 argument-hint: "[library|module] [strict|general|lenient]"
 arguments: mode tier
 allowed-tools: Bash(${CLAUDE_SKILL_DIR}/scripts/setup_audit.sh *)
@@ -49,13 +67,13 @@ as follows. Then show the result before you start.
 Nothing blocks the explorer from opening the source. The constraint rests on three things, and each
 one has a limit that you must know before you read a report.
 
-- **The brief.** It states the allowances and the prohibitions of the tier. It also asks the explorer
-  to record the wish to read the source instead of acting on it. This holds for a cooperative agent.
-  It holds for nothing else.
+- **The brief.** It states the allowances and the prohibitions of the tier. It also asks the
+  explorer to record the wish to read the source instead of acting on it. This holds for a
+  cooperative agent. It holds for nothing else.
 - **The ignore files.** `setup_audit.sh` writes `.rgignore` and `.ignore` at the root of the
   workspace, and the same pair inside `project/`. A search tool honors them, so a search that starts
-  at the workspace root stays out of `subject/` and `infra/`. This catches the accident, which is the
-  common case. It does not survive an explicit path, and it does not survive `--no-ignore`.
+  at the workspace root stays out of `subject/` and `infra/`. This catches the accident, which is
+  the common case. It does not survive an explicit path, and it does not survive `--no-ignore`.
 - **The gate in step 7.** It reads the record of the run after the fact. This is the only check that
   can find a breach, and it finds one only when the record shows it.
 
@@ -107,9 +125,9 @@ in watch mode and the declaration files instead. This substitution makes `strict
 A module often ships no declarations at all. It resolves straight to source through a path alias,
 and the repository builds it with the application. Without a language server the explorer then holds
 only diagnostics, and no tier means anything. Generate the declarations into the workspace before
-you launch the explorer, such as with `tsc --emitDeclarationOnly`. Put them where the import specifier
-resolves. This is a build step. It is not an edit of the source. If the toolchain cannot generate
-them, say in the report that the run held diagnostics only, and rate documentation N/A.
+you launch the explorer, such as with `tsc --emitDeclarationOnly`. Put them where the import
+specifier resolves. This is a build step. It is not an edit of the source. If the toolchain cannot
+generate them, say in the report that the run held diagnostics only, and rate documentation N/A.
 
 Some subjects have no static type surface. Examples: an untyped Python, Ruby, JavaScript, or Elixir
 library. These subjects still work with two substitutions. At `general`, allow what the runtime
@@ -119,8 +137,8 @@ completions that the editor can infer. The explorer still never gets the impleme
 Runtime inspection carries a route to the source that leaves no trace in the filesystem. In Python,
 `inspect.getsource`, `inspect.getsourcelines`, `module.__file__`, and `dis` all return the
 implementation from inside the process. The brief names these calls and forbids them. Step 7 greps
-the record for them, because nothing else can see them. Second, drop the dimensions that depend
-on types. A rating of 1 for type guidance measures the language, not the subject. Rate the runtime
+the record for them, because nothing else can see them. Second, drop the dimensions that depend on
+types. A rating of 1 for type guidance measures the language, not the subject. Rate the runtime
 equivalent instead. Ask one question. Does the subject reject bad input at the boundary with a clear
 error, or does it fail deep with a stack trace through the internals? Mark a dimension N/A when the
 dimension does not apply, and give the reason.
@@ -191,9 +209,9 @@ ${CLAUDE_SKILL_DIR}/scripts/setup_audit.sh <subject-path> <mode> <tier> [workspa
 
 The script puts the workspace in `$TMPDIR` by default. It copies the subject without changes. It
 excludes `.git` and the build caches. It records the source commit. It writes a `findings.md`
-skeleton with the setup block filled in. It also writes the ignore files that keep a search away from
-`subject/` and `infra/`. Read the header comment of the script for the list of exclusions and the
-reason for each one.
+skeleton with the setup block filled in. It also writes the ignore files that keep a search away
+from `subject/` and `infra/`. Read the header comment of the script for the list of exclusions and
+the reason for each one.
 
 Scratch space is the default for one reason. The audit makes a project, dependency trees, and build
 output. This content does not belong in the working tree of the user. It pollutes `git status` and
@@ -218,8 +236,8 @@ the real artifact. The reviewer needs ground truth that matches what the explore
 
 Prefer an install that links. A path dependency and a workspace alias both leave a symlink, so the
 dependency directory holds no second copy of the source. An install from a packed tarball copies
-instead. That copy holds every file that the package ships, and a package with no `files` field ships
-the source. The copy sits in `project/`, where the explorer works.
+instead. That copy holds every file that the package ships, and a package with no `files` field
+ships the source. The copy sits in `project/`, where the explorer works.
 
 If the install copies, record that in the report. The copy is a second readable tree, and the brief
 is the only thing that closes it. Check what the copy holds before you launch, so that you know what
@@ -281,8 +299,8 @@ explorer starts. The same trap applies to sample files, queue contents, and cach
 by hand in domain terms when a milestone needs existing data. Never seed from the test fixtures of
 the subject.
 
-Verify each resource before you launch the explorer. Use a command that does not touch the subject: a
-one-line native client call, a raw HTTP request, a port check, or a directory listing. The command
+Verify each resource before you launch the explorer. Use a command that does not touch the subject:
+a one-line native client call, a raw HTTP request, a port check, or a directory listing. The command
 must prove that the resource answers without the code under test. Record the command in
 `findings.md`. If a resource stops during the run, mark that milestone as infra-failed. Do not count
 it against the subject.
@@ -307,8 +325,8 @@ Run this gate before you launch. A brief that leaks makes every later step usele
 
 ### 6. Run the explorer
 
-The setup is complete, so the run starts now. Nothing mechanical holds the explorer to the tier. Read
-the section on instructed blindness again if you have not.
+The setup is complete, so the run starts now. Nothing mechanical holds the explorer to the tier.
+Read the section on instructed blindness again if you have not.
 
 One choice decides how much the record is worth. Take the explorer that leaves the fullest record of
 its own actions, because the gate in step 7 reads that record and has nothing else to read.
@@ -334,13 +352,13 @@ appear only after things work, stop, state the requirement again, and run that m
 
 Do not start phase 2 until this gate passes.
 
-The record of the run is the only evidence. Name the record before you read it, and say in the report
-which of these you had.
+The record of the run is the only evidence. Name the record before you read it, and say in the
+report which of these you had.
 
 - The tool calls of the explorer, if you can read them. This is the strongest record, because the
   explorer does not choose what goes in it.
-- The journal, and the list of opened paths that the brief asks the explorer to close with. This is a
-  self-report. It is honest work by a cooperative agent, and it is not proof.
+- The journal, and the list of opened paths that the brief asks the explorer to close with. This is
+  a self-report. It is honest work by a cooperative agent, and it is not proof.
 
 Then run these checks against whatever you hold.
 
@@ -348,7 +366,8 @@ Then run these checks against whatever you hold.
    first, then the tool calls. A read that the explorer records itself still counts as a breach, and
    it also counts as honesty. Say both.
 2. Look for a search that reached a closed tree. A named path defeats the ignore files, and so does
-   `--no-ignore`. A search at the workspace root with neither is the case that the ignore files stop.
+   `--no-ignore`. A search at the workspace root with neither is the case that the ignore files
+   stop.
 3. Look for the routes that leave no file access. Look for `python3 -c`, `node -e`,
    `inspect.getsource`, `inspect.getsourcelines`, `__file__`, `dis`, `require.resolve`, and a read
    through `fs`. Look for a `cp` or an `mv` out of `subject/`, then a read of the copy.
@@ -358,8 +377,8 @@ Then run these checks against whatever you hold.
 7. Read the journal for statements about prior knowledge of this subject.
 
 An empty result means one of two things, and you cannot tell them apart. Either the run held, or the
-record is too thin to show a breach. Rate your confidence in the report on that basis. A run where you
-could read the tool calls supports a stronger claim than a run where you could not.
+record is too thin to show a breach. Rate your confidence in the report on that basis. A run where
+you could read the tool calls supports a stronger claim than a run where you could not.
 
 If you find a violation, take one of two paths. Run the audit again clean, or continue and mark the
 report as contaminated with the violation named. Silent contamination is the one failure that makes
@@ -367,8 +386,8 @@ the whole report misleading instead of incomplete.
 
 ### 8. Review with full access
 
-Read `subject/` now. This is the snapshot that the explorer met, not the current state of the working
-tree.
+Read `subject/` now. This is the snapshot that the explorer met, not the current state of the
+working tree.
 
 Run the code of the explorer. Compile it, run it, and inspect what it did. Run it against the live
 resources. This is the reason that removal of the resources waits for the report. Code that
@@ -425,8 +444,8 @@ you did.
 
 Remove the resources after you write the report.
 
-Keep the record until the report is final. Copy the journal and the closing list of opened paths next
-to `findings.md` if you want the evidence to outlive the temp directory.
+Keep the record until the report is final. Copy the journal and the closing list of opened paths
+next to `findings.md` if you want the evidence to outlive the temp directory.
 
 Then start your reply to the user with the two or three findings that change the first hour of a
 newcomer the most. Do not make the user find the headline in a table.

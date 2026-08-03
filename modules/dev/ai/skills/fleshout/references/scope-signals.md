@@ -25,8 +25,8 @@ feature nobody asked for. This is the calibration checklist, with worked example
 - **A diff touches a schema, config shape, or public signature** without touching the call sites
   that must change to stay consistent. Either the diff is deliberately partial (ask) or the rest was
   not gathered yet (go find it).
-- **The user's guidance describes a workflow** -- "when a user submits an order, we should..." -- while
-  the code shown implements one step of it.
+- **The user's guidance describes a workflow** -- "when a user submits an order, we should..." --
+  while the code shown implements one step of it.
 
 ## Signals that the request really is small
 
