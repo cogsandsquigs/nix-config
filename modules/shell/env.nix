@@ -15,7 +15,7 @@
             flakeDir = config.my.user.shell.flakeDir;
 
             aliases = {
-                ls = "eza --icons";
+                ls = "eza --icons auto";
                 du = "dust";
                 cat = "bat"; # Better cat via `bat`
                 cd = "z"; # Better cd via `zoxide`
@@ -55,6 +55,8 @@
                 "${pkgs.llvmPackages_21.clang-tools}/bin"
                 "$HOME/.local/bin"
                 "$HOME/.nix-profile/bin"
+                "$HOME/miniconda3/bin" # Conda binaries
+                "$HOME/miniconda3/condabin" # Conda binaries
                 "/nix/var/nix/profiles/default/bin"
                 "/etc/profiles/per-user/${config.home.username}/bin"
                 "/run/current-system/sw/bin"
