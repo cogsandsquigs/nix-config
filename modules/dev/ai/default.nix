@@ -41,7 +41,7 @@
                     # Each loads as a personal plugin at ~/.claude/skills/<name> next session. Not a
                     # marketplace: Claude auto-installs only from the trust dialog, so that route needs a
                     # manual `/plugin install` per machine. Names may not collide with ./_skills entries.
-                    plugins = lib.genAttrs [ "hookify" "claude-md-management" "ralph-loop" "skill-creator" ] (
+                    plugins = lib.genAttrs [ "claude-md-management" "ralph-loop" "skill-creator" ] (
                         name: "${officialPlugins}/plugins/${name}"
                     );
                 };
