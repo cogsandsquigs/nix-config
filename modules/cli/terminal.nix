@@ -81,9 +81,12 @@
                                 "+ss07"
                             ];
 
-                            # Fix for offset symbols
-                            adjust-underline-position = 1;
-                            font-width-override = 2;
+                            # Corrects cell spacing without altering the global font scale
+                            adjust-cell-width = 0;
+                            adjust-cell-height = 0;
+
+                            # Prevents the glyph atlas from altering cell sizing dynamically
+                            font-thicken = false;
 
                             theme = "Catppuccin Mocha";
 
