@@ -122,6 +122,9 @@
 
                             window-colorspace = "display-p3"; # macOS only
                             window-padding-balance = true; # Buffer top of window a little bit.
+
+                            ## MACOS SPECIFIC OPTIONS ##
+                            macos-titlebar-style = "native";
                         }
                         // lib.optionalAttrs pkgs.stdenv.isLinux {
                             # ghostty's GTK path counts every high-resolution wheel event as a full
