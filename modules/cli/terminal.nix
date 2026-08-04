@@ -103,9 +103,8 @@
                                 "+ss07"
                             ];
 
-                            # Corrects cell spacing without altering the global font scale
-                            adjust-cell-width = 0;
-                            adjust-cell-height = 0;
+                            adjust-cell-width = 0; # Default
+                            adjust-cell-height = 1; # More height - what MacOS Terminal uses (I like!)
 
                             # Prevents the glyph atlas from altering cell sizing dynamically
                             font-thicken = false;
