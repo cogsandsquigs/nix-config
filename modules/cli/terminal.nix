@@ -21,6 +21,13 @@
                     (`nixGL.defaultWrapper`); an Nvidia one also needs `--impure`.
                 '';
 
+                localInstall.enable = tools.opt.mkDisabled ''
+                    Whether ghostty comes from the host's own package manager, leaving only its config
+                    managed here. The escape hatch for a desktop the store build cannot satisfy: a
+                    GTK >= 4.16 client hands cursor sizing to the compositor, and mutter 46 on Ubuntu
+                    24.04 answers with an oversized pointer for every such client.
+                '';
+
                 # Per-platform because the units differ, not because taste does: GTK resolves a point
                 # at 96 dpi and macOS at 72, so one number renders 4/3 larger on Linux. Overridable
                 # per host, since the display scale multiplies on top of it.
@@ -50,17 +57,25 @@
                             assertion = config.my.user.fonts.enable;
                             message = "my.user.cli.terminal.enable requires my.user.fonts.enable (FiraCode Nerd Font Mono)";
                         }
+                        {
+                            assertion = !(cfg.localInstall.enable && cfg.nixGL.enable);
+                            message = "my.user.cli.terminal.nixGL.enable wraps the nixpkgs ghostty, which localInstall.enable does not install";
+                        }
                     ];
 
                     # Empty by default, which makes `lib.nixGL.wrap` the identity function, so the
                     # wrapper set is fetched only where the option is on.
                     targets.genericLinux.nixGL.packages = lib.mkIf cfg.nixGL.enable inputs.nixGL.packages;
 
-                    home.packages = [ ghostty-pkg ];
+                    home.packages = lib.optionals (!cfg.localInstall.enable) [ ghostty-pkg ];
 
                     programs.ghostty = {
                         enable = true;
-                        package = ghostty-pkg;
+                        package = if cfg.localInstall.enable then null else ghostty-pkg;
+
+                        # The unit's ExecStart is a store path, so there is nothing to point it at.
+                        # mkIf rather than a plain bool, to leave the platform default alone otherwise.
+                        systemd.enable = lib.mkIf cfg.localInstall.enable false;
 
                         clearDefaultKeybinds = false;
 

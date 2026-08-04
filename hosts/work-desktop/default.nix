@@ -11,9 +11,11 @@
 _: {
     _class = "homeManager";
 
-    # Ubuntu owns the OpenGL driver, so the store-built ghostty needs nixGL to find it. Intel iGPU,
-    # hence the default Mesa wrapper.
-    my.user.cli.terminal.nixGL.enable = true;
+    # ghostty comes from apt here. Its GTK is 4.14, which predates `wp_cursor_shape_v1` and so keeps
+    # drawing its own pointer; every nix-built GTK4 client (4.22) instead defers to mutter 46, which
+    # sizes it wrong. Verified against gnome-calculator, so this is the toolkit, not the terminal.
+    # Installing it locally also drops the need for nixGL -- there is no store binary to wrap.
+    my.user.cli.terminal.localInstall.enable = true;
 
     # Store-built GUI apps get none of Ubuntu's data dirs, so ghostty could not load the Yaru cursor
     # theme and drew an oversized fallback pointer over its own window. This is the module that owns

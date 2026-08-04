@@ -54,10 +54,6 @@
                         format = "[$path]($style)[$read_only]($read_only_style) ";
                         style = "bold bright-cyan";
 
-                        ###########
-                        # SYMBOLS #
-                        ###########
-
                         truncation_symbol = "…/";
                         read_only = " ";
                         home_symbol = "~";
