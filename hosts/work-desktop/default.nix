@@ -17,6 +17,10 @@ _: {
     # Installing it locally also drops the need for nixGL -- there is no store binary to wrap.
     my.user.cli.terminal.localInstall.enable = true;
 
+    # Ubuntu ships the FHS loader nvm's prebuilt node binaries need, which is what makes this feature
+    # sound here and not on a NixOS host.
+    my.user.dev.nvm.enable = true;
+
     # Store-built GUI apps get none of Ubuntu's data dirs, so ghostty could not load the Yaru cursor
     # theme and drew an oversized fallback pointer over its own window. This is the module that owns
     # that glue -- XCURSOR_PATH, XDG_DATA_DIRS, distro terminfo -- and whose nixGL half is already in

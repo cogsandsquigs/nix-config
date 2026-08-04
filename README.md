@@ -360,6 +360,11 @@ The work box runs Ubuntu 24, **not** NixOS: only the home-manager layer
 (`homeConfigurations."ipratt@work-desktop"`) is applied, so nothing here manages the OS. Ubuntu
 stays as-is; Nix lives alongside it under `/nix`.
 
+Being a distro Linux is also what lets `my.user.dev.nvm.enable` work here: nvm downloads prebuilt
+glibc node binaries, and Ubuntu provides the FHS loader they need. The `nvm.sh` script is pinned in
+the store by `modules/dev/nvm.nix`; only the node versions it installs are imperative, under
+`~/.nvm`. `node` stays the nixpkgs one until `nvm use` says otherwise.
+
 ### Which Nix install: multi-user (recommended) vs single-user
 
 **Recommended: multi-user (daemon) via Determinate Nix.** On a machine you administer with `sudo`,

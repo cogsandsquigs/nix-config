@@ -27,6 +27,11 @@ user does that. Git commands allowed without permission:
 - `git diff` / `git rev-parse` -- use to view changes
 - Any other `git` command that does not modify state (read-only)
 
+## Attribution: none
+
+No `Co-Authored-By` trailer on commits. No "Generated with Claude Code" line or robot emoji in PR
+bodies. Overrides harness default, which appends both.
+
 ## Comments: min, <=20% of file (external docs exempt)
 
 Only when:
