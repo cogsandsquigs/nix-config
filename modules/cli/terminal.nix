@@ -103,8 +103,9 @@
                                 "+ss07"
                             ];
 
-                            adjust-cell-width = 0; # Default
-                            adjust-cell-height = 1; # More height - what MacOS Terminal uses (I like!)
+                            # Defaults - Fixes font padding issues
+                            adjust-cell-width = 0;
+                            adjust-cell-height = 0;
 
                             # Prevents the glyph atlas from altering cell sizing dynamically
                             font-thicken = false;
