@@ -1,5 +1,5 @@
 ---
-name: clean-review
+name: goodreview
 description:
     "Audit a codebase and fix it. Finds dead code, cruft, scope creep, weak types, leaky boundaries,
     and shortcuts that evade a stated design. Use this skill when the user asks to clean up, audit,
@@ -17,7 +17,7 @@ arguments: mode plan
 allowed-tools: Bash(${CLAUDE_SKILL_DIR}/scripts/scan.sh *)
 ---
 
-# clean-review
+# goodreview
 
 Cleanup answers three questions, in this order.
 
@@ -75,7 +75,7 @@ Copy this list into your reply and mark each item as you finish it. The list is 
 the run stands. This matters because the phases span several turns.
 
 ```
-clean-review progress
+goodreview progress
 - [ ] Phase 0: baseline recorded
 - [ ] Phase 1: intent and plan record read
 - [ ] Phase 2: scan counted
@@ -184,13 +184,13 @@ need tests and owner agreement.
 Report before you plan and before you edit.
 
 Write the report to a file, not only to the chat. A later session, or another agent, reads that file
-to do the fix work. Put it at `clean-review-plan.md` in the repository root, unless the owner names
+to do the fix work. Put it at `goodreview-plan.md` in the repository root, unless the owner names
 another path. Show a short summary in the chat and give the path.
 
 Use this template. Keep the field names, because Phase 5b reads them.
 
 ```markdown
-# clean-review audit: <project>
+# goodreview audit: <project>
 
 ## Provenance
 
@@ -262,8 +262,8 @@ or rejected. Set the document status to approved when the owner agrees a scope.
 Enter here when a plan file already exists. The plan may come from an earlier session, from another
 agent, or from a different machine. Do not trust it. Check it against the code first.
 
-1. Read the plan file. If the owner named no file, look for `clean-review-plan.md`, then for any
-   file whose first line names a clean-review audit.
+1. Read the plan file. If the owner named no file, look for `goodreview-plan.md`, then for any file
+   whose first line names a goodreview audit.
 2. Read the provenance block. Compare the recorded commit with the current commit. Run
    `git diff --stat <recorded SHA>..HEAD` to see what moved.
 3. Run Phase 0 again. Record the numbers beside the numbers in the plan. A different baseline means

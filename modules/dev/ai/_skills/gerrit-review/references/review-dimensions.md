@@ -12,7 +12,7 @@ saying only the ones that pay.
 - [3. Contracts and compatibility](#3-contracts-and-compatibility) ·
   [4. Concurrency and lifetime](#4-concurrency-and-lifetime)
 - [5. Error handling](#5-error-handling) · [6. Tests](#6-tests)
-- [7. Scope and intent](#7-scope-and-intent) · [8. Design](#8-design-borrow-clean-reviews-lenses)
+- [7. Scope and intent](#7-scope-and-intent) · [8. Design](#8-design-borrow-goodreviews-lenses)
 - [9. Performance](#9-performance) · [10. Readability and style](#10-readability-and-style)
 
 ## 1. Correctness
@@ -113,16 +113,16 @@ whole, and one clear sentence there lands better than three inline comments circ
 roughly 400 changed lines, "this wants splitting" is itself the most useful thing you can say, and
 saying it early costs the author less than saying it after thirty comments.
 
-## 8. Design — borrow clean-review's lenses
+## 8. Design — borrow goodreview's lenses
 
-The sibling `clean-review` skill already holds the deep lenses for design defects, so read them
-rather than reinventing them. They live at:
+The sibling `goodreview` skill already holds the deep lenses for design defects, so read them rather
+than reinventing them. They live at:
 
 ```text
-~/.claude/skills/clean-review/references/type-modeling.md
-~/.claude/skills/clean-review/references/purity-and-effects.md
-~/.claude/skills/clean-review/references/architecture.md
-~/.claude/skills/clean-review/references/constraint-evasion.md
+~/.claude/skills/goodreview/references/type-modeling.md
+~/.claude/skills/goodreview/references/purity-and-effects.md
+~/.claude/skills/goodreview/references/architecture.md
+~/.claude/skills/goodreview/references/constraint-evasion.md
 ```
 
 Read the one that matches what the change shows. Skip this dimension entirely if none of it applies
@@ -135,10 +135,10 @@ Read the one that matches what the change shows. Skip this dimension entirely if
 | A new import cycle, a layer that only forwards, an interface with one implementer, drift from the documented structure            | `architecture.md`       |
 | A new `any`, `@ts-ignore`, `unwrap()`, `//nolint`, a disabled warning, a type weaker than the design says                         | `constraint-evasion.md` |
 
-Those files are missing if `clean-review` is not installed on this machine. That is not a blocker —
+Those files are missing if `goodreview` is not installed on this machine. That is not a blocker —
 review the dimension from first principles and say you did.
 
-**The bar, borrowed from clean-review's metric test.** A design finding must name three things:
+**The bar, borrowed from goodreview's metric test.** A design finding must name three things:
 
 1. **The invariant** — the rule the code assumes today.
 2. **The sites** that re-check that rule, or the code that breaks it.
@@ -148,10 +148,10 @@ Name all three and you have a finding the author can act on in one step. Name fe
 taste, which is not worth a colleague's time. This test is what separates a useful design comment
 from "consider refactoring this", and it is the reason this dimension sits at 8 rather than 2.
 
-**The tier guardrail, and it matters more here than in clean-review.** That skill classifies work
-into T1 safe deletes, T2 local fixes, T3 focused remodeling (days), and T4 structural change
-(weeks). Those tiers were written for a codebase its owner chose to clean, on their own schedule.
-This is somebody else's change, already in flight:
+**The tier guardrail, and it matters more here than in goodreview.** That skill classifies work into
+T1 safe deletes, T2 local fixes, T3 focused remodeling (days), and T4 structural change (weeks).
+Those tiers were written for a codebase its owner chose to clean, on their own schedule. This is
+somebody else's change, already in flight:
 
 | Tier      | On a change under review                                                    |
 | --------- | --------------------------------------------------------------------------- |

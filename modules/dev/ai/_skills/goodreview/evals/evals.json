@@ -1,5 +1,5 @@
 {
-    "skill_name": "clean-review",
+    "skill_name": "goodreview",
     "notes": "Run each prompt in a fresh session, once with the skill and once with it disabled, then compare. Test on Haiku, Sonnet, and Opus. Evals 1 to 3 test audit behavior. Eval 4 tests the audit-to-fix break. Eval 5 tests the resume path.",
     "evals": [
         {
@@ -64,7 +64,7 @@
                 "Executes only findings marked approved",
                 "Builds and tests after each finding rather than once at the end"
             ],
-            "files": ["test-files/clean-review-plan.md"]
+            "files": ["test-files/goodreview-plan.md"]
         }
     ]
 }

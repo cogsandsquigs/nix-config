@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# clean-review mechanical census. Read-only. Prints a markdown table.
+# goodreview mechanical census. Read-only. Prints a markdown table.
 #
 # Covers the countable half of Phase 0 and Phase 2. It does not run the build,
 # the tests, or the linter, because those commands are project-specific. Fill

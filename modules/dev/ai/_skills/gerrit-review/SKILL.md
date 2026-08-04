@@ -11,7 +11,7 @@ description:
     +2 this", or "review my teammate''s change before I sign off". Also trigger when asked to
     re-review after a new patchset, to check whether earlier review comments were addressed, or to
     resume a review plan. Do not use it to address comments left on the owner''s own change — that
-    is gerrit-review-fix — and do not use it to audit a whole codebase, which is clean-review.'
+    is gerrit-review-fix — and do not use it to audit a whole codebase, which is goodreview.'
 argument-hint: "[draft|post|full] [change|commit|plan-path]"
 arguments: mode target
 ---
@@ -220,7 +220,7 @@ Work through the dimensions in `references/review-dimensions.md`, in the order t
 which runs from what breaks in production down to what only offends. Stop descending when the budget
 runs out — an unfinished pass over correctness beats a complete pass over formatting.
 
-For design defects that file hands off to the `clean-review` skill's lenses rather than restating
+For design defects that file hands off to the `goodreview` skill's lenses rather than restating
 them, along with the one thing that keeps a design comment useful on a change already in flight: its
 tiers of work were written for a codebase whose owner chose to clean it, and days-of-work findings
 do not belong on somebody else's open change. The dimensions file gives the mapping.
@@ -371,9 +371,9 @@ Close with: comments posted by severity, comments cut and why, the vote, anythin
 ## Files
 
 - `references/review-dimensions.md` — what to look for, in priority order, with the bar for
-  commenting on each. Read it at Phase 4. Its design dimension reads the `clean-review` skill's lens
-  files (`~/.claude/skills/clean-review/references/`) rather than duplicating them, and adds the
-  rule for what depth of design finding an in-flight change can carry.
+  commenting on each. Read it at Phase 4. Its design dimension reads the `goodreview` skill's lens
+  files (`~/.claude/skills/goodreview/references/`) rather than duplicating them, and adds the rule
+  for what depth of design finding an in-flight change can carry.
 - `references/comment-drafting.md` — how to word an inline comment and a cover message, with worked
   examples. Read it at Phase 6.
 - `references/report-template.md` — the Phase 6 output shape. Read it at Phase 6.
