@@ -37,7 +37,6 @@ in
 {
     pkgs = with pkgs; [
         nodejs
-        nvm
         aube
         deno
 
