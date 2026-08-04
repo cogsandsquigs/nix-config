@@ -20,6 +20,16 @@
                     store-built ghostty cannot see the distro's OpenGL driver. Assumes a Mesa GPU
                     (`nixGL.defaultWrapper`); an Nvidia one also needs `--impure`.
                 '';
+
+                # Per-platform because the units differ, not because taste does: GTK resolves a point
+                # at 96 dpi and macOS at 72, so one number renders 4/3 larger on Linux. Overridable
+                # per host, since the display scale multiplies on top of it.
+                fontSize = lib.mkOption {
+                    type = lib.types.numbers.positive;
+                    default = if pkgs.stdenv.isDarwin then 13 else 10;
+                    defaultText = lib.literalMD "`13` on darwin, `10` on Linux";
+                    description = "ghostty font size in points (non-integer allowed).";
+                };
             };
 
             config =
@@ -60,7 +70,7 @@
 
                         settings = {
                             font-family = "FiraCode Nerd Font Mono";
-                            font-size = 13;
+                            font-size = cfg.fontSize;
 
                             # Applies to every weight: ghostty has no per-weight scoping.
                             font-feature = [
