@@ -69,11 +69,13 @@
                         enableFishIntegration = true;
 
                         settings = {
-                            font-family = "FiraCode Nerd Font";
+                            font-family = "FiraCode Nerd Font Mono";
                             font-size = cfg.fontSize;
 
                             # Applies to every weight: ghostty has no per-weight scoping.
                             font-feature = [
+                                "+calt"
+                                "+liga" # More ligatures
                                 "+ss02"
                                 "+ss09"
                                 "+ss07"
