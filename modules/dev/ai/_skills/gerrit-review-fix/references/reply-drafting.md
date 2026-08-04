@@ -86,6 +86,10 @@ Good  The lock is on the map rather than the entry because two goroutines can in
 - Answer the comment that was written, not the one that was easiest to answer.
 - Cite code by file and line, or by the patchset that changed it. An assertion with no reference
   makes the reviewer do the work twice.
+- Name a change by its number or its `Change-Id`, never by a commit sha. A rebase or a cherry-pick
+  gives the change a new sha and keeps the `Change-Id`, so a sha in a reply stops resolving. Use a
+  patchset number when you do mean one specific revision — that is the only case a revision belongs
+  in the text at all.
 - Never say a fix landed before the push actually lands it. Phase 8 runs after Phase 7 for this
   reason.
 - Do not thank, apologise, or narrate your reasoning. The reviewer wants the state of the code.

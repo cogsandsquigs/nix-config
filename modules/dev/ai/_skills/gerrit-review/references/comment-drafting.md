@@ -137,3 +137,7 @@ marks its own gaps, and ties the vote to a specific finding the author can go an
   and it goes first.
 - Tie the vote to named findings. "-1" with no finding attached is unactionable, and a `+2` with
   unreviewed parts is a claim you cannot support.
+- Name a change by its number or its `Change-Id`, never by a commit sha. A rebase or a cherry-pick
+  gives the change a new sha and keeps the `Change-Id`, so a sha in a comment stops resolving. Use a
+  patchset number when you do mean one specific revision — that is the only case a revision belongs
+  in the text at all.
