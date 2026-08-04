@@ -75,16 +75,6 @@
                         unloaded_msg = " (!)";
                     };
 
-                    # Conda environment
-                    conda = {
-                        disabled = false;
-                        format = "[$symbol$environment]($style) ";
-                        symbol = " "; # NOTE: nerd font, like the OS symbols above
-                        style = "bold green";
-                        ignore_base = true; # `base` is always active, so it says nothing
-                        truncation_length = 1;
-                    };
-
                     # Command duration
                     cmd_duration = {
                         disabled = false;
