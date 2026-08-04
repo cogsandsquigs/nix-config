@@ -81,7 +81,9 @@
                                 "+ss07"
                             ];
 
-                            adjust-underline-position = 1; # Fix for offset symbols
+                            # Fix for offset symbols
+                            adjust-underline-position = 1;
+                            font-width-override = 2;
 
                             theme = "Catppuccin Mocha";
 
