@@ -5,8 +5,13 @@
 # "home" (see ./id.nix), so it does not go through the system-class features --
 # tools/default.nix builds it directly from the user unit.
 #
-# There is nothing host-specific left here: identity, the home feature set, git identity, and the
-# flake checkout path all live in the portable user unit (users/ipratt/), and home.username + platform
-# come from ./id.nix. This file remains the host module, and is the place for any genuinely
-# work-box-only home overrides if they ever arise.
-_: { _class = "homeManager"; }
+# Identity, the home feature set, git identity, and the flake checkout path all live in the portable
+# user unit (users/ipratt/), and home.username + platform come from ./id.nix. What is left here is
+# what belongs to the MACHINE rather than the user: Ubuntu's own graphics stack.
+_: {
+    _class = "homeManager";
+
+    # Ubuntu owns the OpenGL driver, so the store-built ghostty needs nixGL to find it. Intel iGPU,
+    # hence the default Mesa wrapper.
+    my.user.cli.terminal.nixGL.enable = true;
+}

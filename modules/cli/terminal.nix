@@ -5,19 +5,34 @@
             pkgs,
             lib,
             config,
+            inputs,
             tools,
             ...
         }:
+        let
+            cfg = config.my.user.cli.terminal;
+        in
         {
-            options.my.user.cli.terminal.enable = tools.opt.mkEnabled "ghostty terminal";
+            options.my.user.cli.terminal = {
+                enable = tools.opt.mkEnabled "ghostty terminal";
+                nixGL.enable = tools.opt.mkDisabled ''
+                    Whether to run ghostty through nixGL. Needed on a non-NixOS Linux host, where the
+                    store-built ghostty cannot see the distro's OpenGL driver. Assumes a Mesa GPU
+                    (`nixGL.defaultWrapper`); an Nvidia one also needs `--impure`.
+                '';
+            };
 
             config =
                 let
                     # For some reason `ghostty` pkg is linux only, but `ghostty-bin` is macos-only
                     # (binary release)
-                    ghostty-pkg = if pkgs.stdenv.isDarwin then pkgs.ghostty-bin else pkgs.ghostty;
+                    base = if pkgs.stdenv.isDarwin then pkgs.ghostty-bin else pkgs.ghostty;
+
+                    # The wrapper preserves every output and repoints the .desktop files, so shell
+                    # integration and the app entry still resolve.
+                    ghostty-pkg = if cfg.nixGL.enable then config.lib.nixGL.wrap base else base;
                 in
-                lib.mkIf config.my.user.cli.terminal.enable {
+                lib.mkIf cfg.enable {
                     # ghostty resolves `font-family` at runtime, so a missing FiraCode falls back
                     # silently rather than failing the build.
                     assertions = [
@@ -26,6 +41,10 @@
                             message = "my.user.cli.terminal.enable requires my.user.fonts.enable (FiraCode Nerd Font Mono)";
                         }
                     ];
+
+                    # Empty by default, which makes `lib.nixGL.wrap` the identity function, so the
+                    # wrapper set is fetched only where the option is on.
+                    targets.genericLinux.nixGL.packages = lib.mkIf cfg.nixGL.enable inputs.nixGL.packages;
 
                     home.packages = [ ghostty-pkg ];
 
