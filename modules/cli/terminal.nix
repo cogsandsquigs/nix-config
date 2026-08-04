@@ -134,6 +134,7 @@
                             ## MACOS SPECIFIC OPTIONS ##
 
                             macos-titlebar-style = "transparent";
+                            macos-non-native-fullscreen = "padded-notch"; # true;
                         }
                         // lib.optionalAttrs pkgs.stdenv.isLinux {
                             # ghostty's GTK path counts every high-resolution wheel event as a full
