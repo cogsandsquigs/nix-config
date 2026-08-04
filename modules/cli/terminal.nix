@@ -81,6 +81,8 @@
                                 "+ss07"
                             ];
 
+                            adjust-underline-position = 1; # Fix for offset symbols
+
                             theme = "Catppuccin Mocha";
 
                             cursor-style = "bar";
