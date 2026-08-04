@@ -59,6 +59,10 @@ run() accepts check=False to ignore a non-zero exit (useful for best-effort
 commands like `git fetch` that should never abort the whole script).
 """
 
+# Annotations stay unevaluated, so the `#!/usr/bin/env python3` path works on whatever interpreter it
+# lands on. Without this, `re.Pattern[str]` below is evaluated at import and dies on Python < 3.9.
+from __future__ import annotations
+
 import argparse
 import collections
 import contextlib

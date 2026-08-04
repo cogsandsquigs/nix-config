@@ -22,7 +22,10 @@
                 nv = "nvim";
                 lg = "lazygit";
                 neofetch = "fastfetch"; # Neofetch via fastfetch
-                nxm = "${flakeDir}/scripts/nxm.py";
+                # Named interpreter, not the shebang's `env python3`: a devshell on $PATH otherwise
+                # decides which python runs the script. Still points at the working tree, so editing
+                # the script takes effect without a rebuild.
+                nxm = "${pkgs.python3}/bin/python3 ${flakeDir}/scripts/nxm.py";
             };
 
             editor = "hx";
@@ -124,6 +127,11 @@
                                                                     # `save` forces a prompt, which is annoying,
                                                                     # even though `choose` doesn't make it
                                                                     # "permanent".
+
+                        # Source miniconda if it exists
+                        if test -f $HOME/miniconda3/etc/fish/conf.d/conda.fish
+                            source $HOME/miniconda3/etc/fish/conf.d/conda.fish
+                        end
                     '';
 
                     shellInit = ''

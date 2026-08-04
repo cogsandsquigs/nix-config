@@ -215,7 +215,6 @@ in
                 "modules/base.nix" = "an upstream issue link and an infinite-recursion trap";
                 "modules/cli/utils/gpg-agent.nix" = "a macOS `grab` bug";
                 "modules/secrets.nix" = "a sops-nix ordering bug";
-                "modules/shell/prompt.nix" = "section headers over a 200-line table";
             };
         in
         pkgs.runCommand "comment-density" { exemptList = lib.concatStringsSep "\n" (lib.attrNames exempt); }

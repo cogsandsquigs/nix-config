@@ -14,4 +14,10 @@ _: {
     # Ubuntu owns the OpenGL driver, so the store-built ghostty needs nixGL to find it. Intel iGPU,
     # hence the default Mesa wrapper.
     my.user.cli.terminal.nixGL.enable = true;
+
+    # Store-built GUI apps get none of Ubuntu's data dirs, so ghostty could not load the Yaru cursor
+    # theme and drew an oversized fallback pointer over its own window. This is the module that owns
+    # that glue -- XCURSOR_PATH, XDG_DATA_DIRS, distro terminfo -- and whose nixGL half is already in
+    # use above.
+    targets.genericLinux.enable = true;
 }

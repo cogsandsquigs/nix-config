@@ -69,7 +69,14 @@
                         enableFishIntegration = true;
 
                         settings = {
-                            font-family = "FiraCode Nerd Font Mono";
+                            # Named fallback, repeated in order. Without one, every glyph FiraCode
+                            # lacks resolves independently -- Claude Code's six spinner frames landed
+                            # in four different faces, so the animation jittered. Emoji are exempt:
+                            # ghostty always routes those to the platform emoji font.
+                            font-family = [
+                                "FiraCode Nerd Font Mono"
+                                "DejaVu Sans Mono"
+                            ];
                             font-size = cfg.fontSize;
 
                             # Applies to every weight: ghostty has no per-weight scoping.
@@ -99,6 +106,12 @@
                             quit-after-last-window-closed = true;
 
                             window-colorspace = "display-p3"; # macOS only
+                        }
+                        // lib.optionalAttrs pkgs.stdenv.isLinux {
+                            # ghostty's GTK path counts every high-resolution wheel event as a full
+                            # click, so a free-spinning wheel scrolls ~10 notches at once in any
+                            # mouse-reporting app (helix, less, lazygit). Upstream bug, no fix in 1.3.1.
+                            mouse-scroll-multiplier = "discrete:0.3";
                         };
                     };
                 };
