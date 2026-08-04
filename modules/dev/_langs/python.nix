@@ -1,6 +1,7 @@
 { pkgs, ... }: {
     pkgs = with pkgs; [
         python3
+        conda
         uv # Project manager
         ty # LSP, typechecker
         ruff # Formatter, linter
