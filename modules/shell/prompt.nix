@@ -75,6 +75,12 @@
                         unloaded_msg = " (!)";
                     };
 
+                    # Conda
+                    conda = {
+                        disabled = false;
+                        symbol = "🅒  ";
+                    };
+
                     # Command duration
                     cmd_duration = {
                         disabled = false;
