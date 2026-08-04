@@ -123,8 +123,17 @@
                             window-colorspace = "display-p3"; # macOS only
                             window-padding-balance = true; # Buffer top of window a little bit.
 
+                            shell-integration-features = [
+                                "cursor"
+                                "sudo"
+                                "title"
+                                "ssh-terminfo" # Install terminfo on remote hosts...
+                                "ssh-env" # ...and if it fails, fall back to 'xterm-256color'
+                            ];
+
                             ## MACOS SPECIFIC OPTIONS ##
-                            macos-titlebar-style = "native";
+
+                            macos-titlebar-style = "transparent";
                         }
                         // lib.optionalAttrs pkgs.stdenv.isLinux {
                             # ghostty's GTK path counts every high-resolution wheel event as a full
