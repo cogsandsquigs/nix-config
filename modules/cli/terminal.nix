@@ -69,7 +69,7 @@
                         enableFishIntegration = true;
 
                         settings = {
-                            font-family = "FiraCode Nerd Font Mono";
+                            font-family = "FiraCode Nerd Font";
                             font-size = cfg.fontSize;
 
                             # Applies to every weight: ghostty has no per-weight scoping.
