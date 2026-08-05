@@ -1,6 +1,36 @@
-{ pkgs, ... }: {
+{ lib, pkgs, ... }:
+let
+    markdownlintTool = [
+        {
+            lint-command = "markdownlint -s";
+            lint-stdin = true;
+            lint-formats = [
+                "%f:%l %m"
+                "%f:%l:%c %m"
+                "%f: %l: %m"
+            ];
+        }
+    ];
+
+    efmConfig = builtins.toFile "efm-config.yaml" (
+        lib.generators.toYAML { } {
+            version = 2;
+            root-markers = [
+                ".git/"
+                "package.json"
+            ];
+            lint-debounce = "1s";
+            languages = lib.genAttrs [ "markdown" ] (_: markdownlintTool);
+        }
+    );
+
+in
+{
     pkgs = with pkgs; [
-        # marksman # Markdown LSP -- heavy package, excluded for now
+        marksman
+        markdown-oxide
+        markdownlint-cli
+        efm-langserver
         mdbook
         prettierd
     ];
@@ -14,6 +44,31 @@
         "%{buffer_name}"
     ];
 
+    lsp = [
+        {
+            name = "marksman";
+            cmd = [
+                "marksman"
+                "server"
+            ];
+        }
+        {
+            name = "markdown-oxide";
+            cmd = [ "markdown-oxide" ];
+        }
+        {
+            name = "efm-langserver";
+            cmd = [
+                "efm-langserver"
+                "-c"
+                "${efmConfig}"
+            ];
+            only-features = [ "diagnostics" ];
+        }
+    ];
+
     # No extensions: nothing to bind without an `lsp`.
-    languages.markdown = { };
+    languages.markdown = {
+        extensions = [ ".md" ];
+    };
 }
