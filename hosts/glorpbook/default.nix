@@ -1,6 +1,6 @@
 # glorpbook -- aarch64-darwin MacBook.
 # This file owns the machine's identity and host-only tweaks; every shared feature lives under modules/.
-{ pkgs, host, ... }:
+{ host, ... }:
 let
     # Host identity comes from ./id.nix via the `host` specialArg, checked by tools/fleet.nix. The
     # hostname is the directory name; `primaryUser` owns host-level singletons (system.primaryUser,
@@ -38,42 +38,8 @@ in
     system = {
         inherit primaryUser;
 
-        # activationScripts are executed every time you boot the system or run `darwin-rebuild`.
-        activationScripts = {
-            postActivation.text = ''
-                # activateSettings -u will reload the settings from the database and apply them
-                # to the current session, so we do not need to logout and login again to make
-                # the changes take effect. We do `sudo -u ${primaryUser}` to run the command as
-                # the user.
-                sudo -u ${primaryUser} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
-            '';
-        };
-
         defaults = {
             smb.NetBIOSName = hostName;
-            dock = {
-                autohide = true;
-                autohide-delay = 0.0;
-                autohide-time-modifier = 0.5;
-
-                # A bare /Applications path means the app comes from a Homebrew cask (see
-                # modules/apps/desktopApps.nix), so there is no store path to point at. Everything
-                # else is either a nix package or ships with macOS.
-                persistent-apps = [
-                    "${pkgs.ghostty-bin}/Applications/Ghostty.app"
-                    "/System/Applications/System Settings.app"
-                    "/Applications/Firefox.app"
-                    # "${pkgs.obsidian}/Applications/Obsidian.app" # See desktop-apps
-                    "${pkgs.discord}/Applications/Discord.app"
-                    "/System/Applications/Messages.app"
-                    "/Applications/WhatsApp.app"
-                    "/System/Applications/Calendar.app"
-                    "/System/Applications/Reminders.app"
-                    "/System/Applications/Photos.app"
-                ];
-
-            };
-
         };
     };
 

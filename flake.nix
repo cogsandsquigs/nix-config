@@ -88,7 +88,7 @@
             # fleet like everything else, so this still names no machine; a platform with no NixOS
             # host of its own simply gets an empty set. `nix flake check` evaluates these and skips
             # building them, so the gates stay cheap.
-            packages = tools.forAllSystems (pkgs: tools.vmPackages pkgs.system);
+            packages = tools.forAllSystems (pkgs: tools.vmPackages pkgs.stdenv.hostPlatform.system);
 
             # `nix flake check` -> the gates in ./tools/checks.nix. Runnable from any machine in the
             # fleet, including the checks that cover the machines it cannot build.
