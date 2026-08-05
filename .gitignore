@@ -18,5 +18,9 @@ registry.json
 # whatever is untracked -- so an unignored image gets committed and pushed.
 *.qcow2
 
+# `nix build` Outputs
+result
+result-*
+
 # Misc.
 *.local.md

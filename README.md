@@ -20,6 +20,9 @@ Three machines:
 The first two are system configurations, applied with `*-rebuild`. The third is standalone
 home-manager on Ubuntu: Nix per user, no system layer, applied with `home-manager switch`.
 
+`glorpbox` has no hardware yet. It runs a sway/Wayland session and exists for now as a QEMU VM — see
+[Virtual machines](#virtual-machines).
+
 Selection happens at two levels, and neither one touches a feature's own code. A host picks which
 users live on it. A user picks which home features it wants.
 
@@ -97,8 +100,9 @@ A directory adds a level to the feature name. `modules/dev/ai/mcp/gerrit.nix` is
 `dev.ai.mcp.gerrit`, and that feature owns the option path `my.user.dev.ai.mcp.gerrit`. A grouping
 folder is therefore a real namespace: `modules/cli/git.nix` owns `my.user.cli.git`, not
 `my.user.git`, and `modules/os/darwin/fuse.nix` owns `my.sys.os.darwin.fuse`. A folder need not own
-a feature at its own level — `apps/`, `cli/`, `net/` and `os/` do not — and `modules/os/` also holds
-plumbing (`nix.nix`, `users.nix`, `home-manager.nix`) that declares no option anywhere.
+a feature at its own level — `apps/`, `cli/`, `desktop/`, `net/` and `os/` do not — and
+`modules/os/` also holds plumbing (`nix.nix`, `users.nix`, `home-manager.nix`) that declares no
+option anywhere.
 
 A folder's own feature is its `default.nix`, which names no extra level:
 `modules/dev/ai/default.nix` is the feature `dev.ai`, and it owns `my.user.dev.ai`. This is the same
@@ -192,13 +196,13 @@ evaluation, so two users on one machine can differ.
 
 Every feature has an `enable`. Only the default differs.
 
-| Class        | Default                    | Constructor                | Example                                        |
-| ------------ | -------------------------- | -------------------------- | ---------------------------------------------- |
-| **plumbing** | none; always on            | —                          | `base`, `nixpkgs`, `users`                     |
-| **core**     | `true`, on unless disabled | `tools.opt.mkEnabled`      | `git`, `shell`, `fonts`, `secrets`             |
-| **optional** | `false`, opt-in            | `tools.opt.mkDisabled`     | `dev.editors.vscode`, `fuse`                   |
-| **ride**     | follows its parent group   | `tools.opt.mkRiding p`     | `dev.direnv`, `dev.editors.helix`              |
-| **follows**  | follows this host's users  | `tools.opt.mkFollowsUsers` | `my.sys.apps.games`, `my.sys.apps.desktopApps` |
+| Class        | Default                    | Constructor                | Example                                    |
+| ------------ | -------------------------- | -------------------------- | ------------------------------------------ |
+| **plumbing** | none; always on            | —                          | `base`, `nixpkgs`, `users`                 |
+| **core**     | `true`, on unless disabled | `tools.opt.mkEnabled`      | `git`, `shell`, `fonts`, `secrets`         |
+| **optional** | `false`, opt-in            | `tools.opt.mkDisabled`     | `dev.editors.vscode`, `fuse`               |
+| **ride**     | follows its parent group   | `tools.opt.mkRiding p`     | `dev.direnv`, `dev.editors.helix`          |
+| **follows**  | follows this host's users  | `tools.opt.mkFollowsUsers` | `my.sys.apps.games`, `my.sys.desktop.sway` |
 
 A group such as `dev` is a namespace: a master `my.user.dev.enable` plus sub-features whose default
 rides it. Flip the master and the whole group follows. Override any sub-feature to carve it out.
@@ -256,6 +260,35 @@ has no access to.
 
 `nix flake check` also builds every feature in the registry, which proves each one evaluates on its
 own and not only as part of a host.
+
+## Virtual machines
+
+Every NixOS host is also a bootable QEMU VM, so a machine can be exercised before its hardware
+exists:
+
+```sh
+nix build .#glorpbox-vm
+NIX_DISK_IMAGE=/tmp/glorpbox.qcow2 nix run .#glorpbox-vm
+```
+
+Log in as `cogs` / `cogs`. `Mod4+Return` opens ghostty, `Mod4+d` opens fuzzel.
+
+The attribute is `<host>-vm`, and it exists only on the platform that host targets. Ask the Mac for
+an `x86_64-linux` VM and the answer is "attribute not found" rather than a cross-build that cannot
+work. `nix flake check` evaluates these and skips building them, so the gates stay cheap.
+
+Set `NIX_DISK_IMAGE`. Without it the run script writes `glorpbox.qcow2` into the working directory,
+and `nxm rebuild` stages whatever is untracked. `*.qcow2` is gitignored as the second line of
+defence.
+
+VM-only settings live in `hosts/<host>/vm.nix`, under `virtualisation.vmVariant` — the whole host
+config re-evaluated with `qemu-vm.nix` on top, so nothing there can reach `system.build.toplevel`.
+For `glorpbox` that means 8 GB and four cores, a virtio GPU because QEMU's default VGA exposes no
+DRM node and wlroots cannot drive an output without one, software rendering in place of host GL, a
+throwaway password, and `apps.games` and `apps.desktopApps` forced off — gigabytes of downloads the
+session does not need. The placeholder root filesystem and bootloader in `default.nix` need no
+override: `qemu-vm.nix` replaces `fileSystems` at `mkVMOverride` priority and boots the kernel
+directly.
 
 ## Add a feature
 
