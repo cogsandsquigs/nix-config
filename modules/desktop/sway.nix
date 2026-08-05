@@ -65,8 +65,19 @@
             cfg = config.my.user.desktop.sway;
         in
         {
-            options.my.user.desktop.sway.enable =
-                tools.opt.mkDisabled "sway, configured for this user (ghostty, fuzzel, Mod4)";
+            options.my.user.desktop.sway = {
+                enable = tools.opt.mkDisabled "sway, configured for this user (ghostty, fuzzel, Mod4)";
+
+                # Taken as an argument rather than pushed in by the wallpaper feature, so the photo
+                # library stays ignorant of compositors and this file stays the only one that knows
+                # how sway draws a background.
+                background = lib.mkOption {
+                    type = lib.types.nullOr lib.types.path;
+                    default = config.my.user.desktop.wallpaper.path;
+                    defaultText = lib.literalMD "`my.user.desktop.wallpaper.path`";
+                    description = "Image to draw on every output, or `null` to leave the background bare.";
+                };
+            };
 
             config = lib.mkIf cfg.enable {
                 assertions = [
@@ -96,6 +107,10 @@
                         modifier = "Mod4";
                         terminal = "ghostty";
                         menu = "fuzzel";
+                    }
+                    // lib.optionalAttrs (cfg.background != null) {
+                        # `fill` crops to the output's aspect rather than letterboxing it.
+                        output."*".bg = "${cfg.background} fill";
                     };
                 };
             };
