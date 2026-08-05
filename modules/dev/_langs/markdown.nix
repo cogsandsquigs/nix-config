@@ -70,5 +70,12 @@ in
     # No extensions: nothing to bind without an `lsp`.
     languages.markdown = {
         extensions = [ ".md" ];
+
+    };
+
+    editor-specific = {
+        helix = {
+            soft-wrap = true;
+        };
     };
 }
