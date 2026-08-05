@@ -17,7 +17,7 @@
             appleLanguage = builtins.replaceStrings [ "_" ] [ "-" ] appleLocale;
         in
         {
-            options.my.sys.darwin.os.systemDefaults.enable =
+            options.my.sys.os.darwin.systemDefaults.enable =
                 tools.opt.mkEnabled "macOS system defaults + nix-darwin base pkgs";
 
             # stateVersion is plumbing (identifies the config generation) -- keep it unconditional so the
