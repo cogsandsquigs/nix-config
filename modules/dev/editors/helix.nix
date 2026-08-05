@@ -180,6 +180,7 @@
                             mouse = true; # Allow use of the mouse
 
                             rulers = [ 100 ]; # Vertical line columns
+                            text-width = 100;
 
                             gutters = [
                                 "diagnostics"
