@@ -10,6 +10,10 @@
 { host, ... }: {
     _class = "nixos";
 
+    # VM-only knobs, so `nix build .#glorpbox-vm` boots something usable. Everything it sets is
+    # under `virtualisation.vmVariant`, so it cannot reach the real machine.
+    imports = [ ./vm.nix ];
+
     nixpkgs.hostPlatform = host.system;
 
     # Hostname is the host directory's name -- see tools/fleet.nix.

@@ -14,5 +14,9 @@ registry.json
 # Machine-local runtime env overrides, sourced at shell startup. Never commit.
 .env
 
+# VM disk images. `run-<host>-vm` writes one into the working directory, and `nxm rebuild` stages
+# whatever is untracked -- so an unignored image gets committed and pushed.
+*.qcow2
+
 # Misc.
 *.local.md
