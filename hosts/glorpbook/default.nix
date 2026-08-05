@@ -16,7 +16,7 @@ in
     # `games` and `desktopApps` follow the users on this host, so only the genuinely host-level
     # opt-ins are named here.
     my.sys = {
-        darwin.fuse.enable = true;
+        os.darwin.fuse.enable = true;
         net = {
             tailscale.enable = true;
             openvpn.enable = true;

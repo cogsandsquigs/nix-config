@@ -17,14 +17,14 @@
             appleLanguage = builtins.replaceStrings [ "_" ] [ "-" ] appleLocale;
         in
         {
-            options.my.sys.darwin.systemDefaults.enable =
+            options.my.sys.darwin.os.systemDefaults.enable =
                 tools.opt.mkEnabled "macOS system defaults + nix-darwin base pkgs";
 
             # stateVersion is plumbing (identifies the config generation) -- keep it unconditional so the
             # toggle only governs the actual defaults/packages, never the version marker.
             config = lib.mkMerge [
                 { system.stateVersion = 6; }
-                (lib.mkIf config.my.sys.darwin.systemDefaults.enable {
+                (lib.mkIf config.my.sys.os.darwin.systemDefaults.enable {
                     system.defaults = {
                         menuExtraClock.Show24Hour = false; # show 24 hour clock
                         SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
