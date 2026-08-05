@@ -8,6 +8,7 @@
 #   fleet, registry, root              -- the typed fleet, the feature registry, the flake root
 #   forAllSystems                      -- map over every platform the fleet uses (per-system outputs)
 #   {nixos,darwin,home}Configurations  -- one entry per host of that class
+#   vmPackages                         -- `<host>-vm` for every NixOS host on one platform
 { inputs, root }:
 let
     inherit (inputs) nixpkgs nix-darwin home-manager;
@@ -103,9 +104,17 @@ let
         };
 
     ofClass = class: lib.filterAttrs (_: h: h.class == class) fleet.hosts;
+
+    # Hoisted out of the output set because `vmPackages` reads it back.
+    nixosConfigurations = lib.mapAttrs (_: mkNixos) (ofClass "nixos");
 in
 {
-    inherit fleet registry root;
+    inherit
+        fleet
+        registry
+        root
+        nixosConfigurations
+        ;
 
     # Map a function over every platform the fleet actually uses (per-system outputs such as the
     # formatter and the checks). Replaces flake-parts' `perSystem`.
@@ -115,11 +124,31 @@ in
             system: f nixpkgs.legacyPackages.${system}
         );
 
-    nixosConfigurations = lib.mapAttrs (_: mkNixos) (ofClass "nixos");
     darwinConfigurations = lib.mapAttrs (_: mkDarwin) (ofClass "darwin");
 
     # Keyed "<user>@<host>" -- scripts/nxm discovers the standalone target from this name.
     homeConfigurations = lib.mapAttrs' (
         name: host: lib.nameValuePair "${host.primaryUser}@${name}" (mkHome host)
     ) (ofClass "home");
+
+    # Every NixOS host as a bootable QEMU VM, so a machine is testable before its hardware exists.
+    # `system.build.vm` is what `nixos-rebuild build-vm` produces; this only gives it a name.
+    #
+    # Filtered by platform, because a VM has to be built by the machine it targets -- ask the Mac
+    # for a `x86_64-linux` one and the honest answer is that the attribute is not there.
+    #
+    # `meta` never enters a derivation, so pinning `mainProgram` moves no store path; it is what
+    # lets `nix run` find the run script inside the output.
+    vmPackages =
+        system:
+        lib.mapAttrs' (
+            name: cfg:
+            lib.nameValuePair "${name}-vm" (
+                cfg.config.system.build.vm.overrideAttrs (old: {
+                    meta = (old.meta or { }) // {
+                        mainProgram = "run-${name}-vm";
+                    };
+                })
+            )
+        ) (lib.filterAttrs (name: _: fleet.hosts.${name}.system == system) nixosConfigurations);
 }
