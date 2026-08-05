@@ -41,7 +41,7 @@ let
     # The complete module-argument contract, in one place, for all three builders.
     #
     # `moduleArgs` carries the set itself, so the home-manager sub-evaluation can be handed exactly
-    # these args (see modules/sys/home-manager.nix) instead of a hand-copied list that drifts out of step.
+    # these args (see modules/os/home-manager.nix) instead of a hand-copied list that drifts out of step.
     # That drift was a real bug: `isHomeOnly` reached the top-level evaluation but never the sub-eval.
     argsFor =
         host:
@@ -84,7 +84,7 @@ let
     # builder, owns the feature set, so a standalone box is just "this user, no system layer".
     #
     # Unlike the system hosts (which get their nixpkgs config through useGlobalPkgs) a standalone config
-    # owns its own `pkgs`, so it reads the same shared config attribute modules/sys/nixpkgs.nix does.
+    # owns its own `pkgs`, so it reads the same shared config attribute modules/os/nixpkgs.nix does.
     mkHome =
         host:
         home-manager.lib.homeManagerConfiguration {

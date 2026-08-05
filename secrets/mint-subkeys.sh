@@ -19,12 +19,12 @@
 #
 # Usage:  ./mint-machine-subkeys.sh <master-secret.asc> <host> [expire]
 #   <master-secret.asc>  armored master secret key from your offline backup
-#   <host>               the machine identity's host (e.g. home-desktop) -> secret cogs@<host>/gpg
+#   <host>               the machine identity's host (e.g. glorpbox) -> secret cogs@<host>/gpg
 #   [expire]             gpg expire spec; default 0 (never)
 set -euo pipefail
 
 MASTER_ASC="${1:?path to master-secret.asc}"
-HOST="${2:?host, e.g. home-desktop}"
+HOST="${2:?host, e.g. glorpbox}"
 EXPIRE="${3:-0}" # 0 = never
 NAME="cogs@${HOST}/gpg"
 DIR="$(cd "$(dirname "$0")" && pwd)" # this secrets/ dir (sops rules -- .sops.yaml -- live here)

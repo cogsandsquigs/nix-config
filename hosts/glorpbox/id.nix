@@ -1,4 +1,4 @@
-# Host identity for home-desktop (the personal NixOS tower) -- see hosts/glorpbook/id.nix for the
+# Host identity for glorpbox (the personal NixOS tower) -- see hosts/glorpbook/id.nix for the
 # convention. Checked against the schema in tools/fleet.nix.
 {
     class = "nixos";

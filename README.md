@@ -11,11 +11,11 @@ of every option.
 
 Three machines:
 
-| Host           | Class        | Platform         | Output                                     | User(s)           |
-| -------------- | ------------ | ---------------- | ------------------------------------------ | ----------------- |
-| `glorpbook`    | nix-darwin   | `aarch64-darwin` | `darwinConfigurations.glorpbook`           | `cogs` (personal) |
-| `home-desktop` | NixOS        | `x86_64-linux`   | `nixosConfigurations.home-desktop`         | `cogs` (personal) |
-| `work-desktop` | home-manager | `x86_64-linux`   | `homeConfigurations."ipratt@work-desktop"` | `ipratt` (work)   |
+| Host         | Class        | Platform         | Output                                   | User(s)           |
+| ------------ | ------------ | ---------------- | ---------------------------------------- | ----------------- |
+| `glorpbook`  | nix-darwin   | `aarch64-darwin` | `darwinConfigurations.glorpbook`         | `cogs` (personal) |
+| `glorpbox`   | NixOS        | `x86_64-linux`   | `nixosConfigurations.glorpbox`           | `cogs` (personal) |
+| `ip-workbox` | home-manager | `x86_64-linux`   | `homeConfigurations."ipratt@ip-workbox"` | `ipratt` (work)   |
 
 The first two are system configurations, applied with `*-rebuild`. The third is standalone
 home-manager on Ubuntu: Nix per user, no system layer, applied with `home-manager switch`.
@@ -72,7 +72,7 @@ gains a class later gains a key. No file is renamed for it, and no reader has to
 given feature uses.
 
 The classes share one `let` block, so a value two of them need is written once. This is why
-`modules/sys/nix.nix` states the substituter list one time instead of once per system class.
+`modules/os/nix.nix` states the substituter list one time instead of once per system class.
 
 The key `options` is reserved. It declares the options that **every** class in the file declares, so
 a feature states them one time:
@@ -96,8 +96,9 @@ reach the home evaluation as well, where nothing reads `my.sys` and nothing shou
 A directory adds a level to the feature name. `modules/dev/ai/mcp/gerrit.nix` is the feature
 `dev.ai.mcp.gerrit`, and that feature owns the option path `my.user.dev.ai.mcp.gerrit`. A grouping
 folder is therefore a real namespace: `modules/cli/git.nix` owns `my.user.cli.git`, not
-`my.user.git`. `modules/sys/` is the exception in reverse — it holds the plumbing that declares no
-options at all, because `my.sys.sys` would stutter.
+`my.user.git`, and `modules/os/darwin/fuse.nix` owns `my.sys.os.darwin.fuse`. A folder need not own
+a feature at its own level — `apps/`, `cli/`, `net/` and `os/` do not — and `modules/os/` also holds
+plumbing (`nix.nix`, `users.nix`, `home-manager.nix`) that declares no option anywhere.
 
 A folder's own feature is its `default.nix`, which names no extra level:
 `modules/dev/ai/default.nix` is the feature `dev.ai`, and it owns `my.user.dev.ai`. This is the same
@@ -310,8 +311,8 @@ decrypts them. Full workflow (create/edit/rotate, bootstrapping, the GPG ceremon
 
 ```nix
 # users/cogs/home.nix -- git's signing key on a box provisioned via sops
-sops.secrets               = tools.secrets.declare "cogs@home-desktop" "gpg";
-my.user.cli.git.signingKeyFile = tools.secrets.path config "cogs@home-desktop" "gpg";
+sops.secrets               = tools.secrets.declare "cogs@glorpbox" "gpg";
+my.user.cli.git.signingKeyFile = tools.secrets.path config "cogs@glorpbox" "gpg";
 ```
 
 ## Local env overrides (`.env`)
@@ -357,8 +358,8 @@ nxm edit      # e -- open $EDITOR, then rebuild
 ## Work desktop -- standalone home-manager on Ubuntu
 
 The work box runs Ubuntu 24, **not** NixOS: only the home-manager layer
-(`homeConfigurations."ipratt@work-desktop"`) is applied, so nothing here manages the OS. Ubuntu
-stays as-is; Nix lives alongside it under `/nix`.
+(`homeConfigurations."ipratt@ip-workbox"`) is applied, so nothing here manages the OS. Ubuntu stays
+as-is; Nix lives alongside it under `/nix`.
 
 Being a distro Linux is also what lets `my.user.dev.nvm.enable` work here: nvm downloads prebuilt
 glibc node binaries, and Ubuntu provides the FHS loader they need. The `nvm.sh` script is pinned in
@@ -380,8 +381,8 @@ multi-user is the modern default:
 
 Use single-user **only** without root.
 
-Either way the flake is **install-method-agnostic**: `hosts/work-desktop` and the home modules make
-no single/multi-user assumption. The `modules/shell/env.nix` nix-env sourcing and `nxm` handle both,
+Either way the flake is **install-method-agnostic**: `hosts/ip-workbox` and the home modules make no
+single/multi-user assumption. The `modules/shell/env.nix` nix-env sourcing and `nxm` handle both,
 and no alias uses `sudo` here.
 
 #### Recommended -- multi-user + Determinate Nix
@@ -391,14 +392,14 @@ and no alias uses `sudo` here.
 #    installer always installs Determinate Nix -- no flag needed.
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 
-# 2. Clone to /etc/nix (the path hosts/work-desktop expects -- same as the system hosts, but owned by
+# 2. Clone to /etc/nix (the path hosts/ip-workbox expects -- same as the system hosts, but owned by
 #    you rather than root, since Nix here is a per-user install).
 sudo mkdir -p /etc/nix && sudo chown "$(id -u):$(id -g)" /etc/nix
 git clone <this-repo> /etc/nix
 
-# 3. Apply. The attribute is <primaryUser>@<directory name> -- see hosts/work-desktop/. On a fresh box
+# 3. Apply. The attribute is <primaryUser>@<directory name> -- see hosts/ip-workbox/. On a fresh box
 #    `home-manager` isn't on PATH yet, so bootstrap the first switch via `nix run`:
-nix run home-manager/release-26.05 -- switch -b bak --flake /etc/nix#ipratt@work-desktop \
+nix run home-manager/release-26.05 -- switch -b bak --flake /etc/nix#ipratt@ip-workbox \
     --print-build-logs
 ```
 
@@ -416,7 +417,7 @@ git clone <this-repo> ~/.config/nix
 echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
 
 # 4. Apply.
-nix run home-manager/release-26.05 -- switch -b bak --flake ~/.config/nix#ipratt@work-desktop
+nix run home-manager/release-26.05 -- switch -b bak --flake ~/.config/nix#ipratt@ip-workbox
 ```
 
 After the first switch, `home-manager` is on `PATH`, so `nxm rebuild` / `upgrade` / `clean` all
@@ -424,8 +425,8 @@ work, sudo-free on this box.
 
 > [!note]
 >
-> **The work-box name is a single source of truth** -- the `hosts/work-desktop/` directory name,
-> plus `primaryUser` from its `id.nix` (see [Host and user data](#host-and-user-data)). The
+> **The work-box name is a single source of truth** -- the `hosts/ip-workbox/` directory name, plus
+> `primaryUser` from its `id.nix` (see [Host and user data](#host-and-user-data)). The
 > `homeConfigurations` attribute and `home.username` both derive from it, so renaming the box is a
 > one-file edit. `nxm` auto-discovers the flake's sole `homeConfigurations` entry (falling back to
 > `$(whoami)@$(hostname)`, or an explicit `HM_TARGET`).
@@ -520,7 +521,7 @@ environment is declarative and rebuilt from this flake.
 4. Move the repo from `~/.config/nix` to `/etc/nix` (the path the multi-user setup and
    `users/ipratt`'s `my.user.shell.flakeDir` expect):
    `sudo mkdir -p /etc/nix && sudo chown "$(id -u):$(id -g)" /etc/nix && mv ~/.config/nix/* ~/.config/nix/.git /etc/nix/`.
-5. Re-apply: `home-manager switch -b bak --flake /etc/nix#ipratt@work-desktop` (or `nxm rebuild`).
+5. Re-apply: `home-manager switch -b bak --flake /etc/nix#ipratt@ip-workbox` (or `nxm rebuild`).
 
 No repo changes needed beyond moving it. `nxm rebuild`/`upgrade`/`clean` keep working sudo-free on
 your home-manager profile; `clean` never escalates on a standalone box (collects only your

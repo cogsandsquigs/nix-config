@@ -1,4 +1,4 @@
-# home-desktop -- x86_64-linux NixOS tower (personal daily-driver desktop).
+# glorpbox -- x86_64-linux NixOS tower (personal daily-driver desktop).
 #
 # STUB: this machine doesn't exist yet. It already inherits every feature under
 # modules/ (the full personal profile: games, desktopApps, ...), so
@@ -6,7 +6,7 @@
 # filesystem / bootloader keep the config evaluable.
 #
 # NOTE: this is the *personal* Linux box. The work machine is a separate, leaner standalone
-# home-manager config -- see hosts/work-desktop.
+# home-manager config -- see hosts/ip-workbox.
 { host, ... }: {
     _class = "nixos";
 

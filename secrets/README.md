@@ -10,12 +10,12 @@ Two things live in this folder:
 
 - **`.sops.yaml`** -- the `creation_rules`: a list of `path_regex -> age public key(s)`. This is the
   "who's allowed to read what" list. The `sops` CLI reads it when you create/edit/re-key a secret.
-- **the `*.sops` files** -- each under an **audience folder**: an identity (`cogs@home-desktop/...`
-  -> that machine only) or a bare user (`cogs/...` -> all of your machines). Which key a secret is
+- **the `*.sops` files** -- each under an **audience folder**: an identity (`cogs@glorpbox/...` ->
+  that machine only) or a bare user (`cogs/...` -> all of your machines). Which key a secret is
   encrypted to is decided by the first `path_regex` in `.sops.yaml` that matches its folder.
 
-A secret is addressed by its folder + leaf: `cogs@home-desktop/gpg` is the file
-`cogs@home-desktop/gpg.sops`.
+A secret is addressed by its folder + leaf: `cogs@glorpbox/gpg` is the file
+`cogs@glorpbox/gpg.sops`.
 
 > Running the CLI:
 >
@@ -83,8 +83,8 @@ needs its own subkey -- stash it here, encrypted to just that machine, and it im
 
 > WARNING: Export the **subkey only**, never the master secret. Back up `~/.gnupg` first anyway.
 
-Add a `creation_rule` matching `cogs@home-desktop/` in `.sops.yaml` first (encrypted to that
-machine's key). Then:
+Add a `creation_rule` matching `cogs@glorpbox/` in `.sops.yaml` first (encrypted to that machine's
+key). Then:
 
 ```sh
 cp -a ~/.gnupg ~/.gnupg.backup
@@ -92,7 +92,7 @@ cp -a ~/.gnupg ~/.gnupg.backup
 gpg --list-secret-keys --keyid-format=long        # note your PRIMARY fingerprint + the signing subkey id
 
 gpg --export-secret-subkeys --armor <SUBKEY>! > /tmp/sub.asc   # the trailing ! pins that one subkey
-./sops-stash.sh /tmp/sub.asc cogs@home-desktop/gpg             # -> secrets/cogs@home-desktop/gpg.sops
+./sops-stash.sh /tmp/sub.asc cogs@glorpbox/gpg             # -> secrets/cogs@glorpbox/gpg.sops
 rm -P /tmp/sub.asc                                             # wipe the temp copy (Linux: shred -u)
 ```
 
