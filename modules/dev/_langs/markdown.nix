@@ -51,10 +51,12 @@ in
                 "marksman"
                 "server"
             ];
+            except-features = [ "format" ];
         }
         {
             name = "markdown-oxide";
             cmd = [ "markdown-oxide" ];
+            except-features = [ "format" ];
         }
         {
             name = "efm-langserver";
