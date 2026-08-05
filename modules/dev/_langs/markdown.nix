@@ -75,7 +75,10 @@ in
 
     editor-specific = {
         helix = {
-            soft-wrap = true;
+            soft-wrap = {
+                enable = true;
+                wrap-at-text-width = true;
+            };
         };
     };
 }
