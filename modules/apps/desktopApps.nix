@@ -19,16 +19,19 @@
                 tools.opt.mkDisabled "personal GUI apps (Discord, Obsidian, Zoom, ...)";
 
             config = lib.mkIf config.my.user.apps.desktopApps.enable {
-                home.packages = with pkgs; [
-                    # Productivity
-                    discord # currently on macos gets stuck on launch, keeps trying 2 upd (???) ptb and canary don't fix issue
-                    # obsidian # Broken for now -- check for new release in a few days.
-                    zoom-us
-                    qbittorrent
+                home.packages =
+                    with pkgs;
+                    [
+                        # Productivity
+                        # obsidian # Currently fails to extract on build -- try a few days later?
+                        zoom-us
+                        qbittorrent
 
-                    # Fun
-                    #spotify
-                ];
+                        # Fun
+                        #spotify
+                    ]
+                    ++ (if pkgs.stdenv.isLinux then with pkgs; [ discord ] else [ ]);
+
             };
         };
 
@@ -51,7 +54,10 @@
                         "whatsapp" # Updated more freq. than whatsapp-for-mac nix
                         "firefox"
                         "ungoogled-chromium"
-                        #"google-drive" # Google drive GUI client
+
+                        # currently on macos the nix pkg gets stuck on launch, keeps trying 2 upd
+                        # (???); ptb and canary don't fix issue
+                        "discord"
                     ];
                 };
             };
