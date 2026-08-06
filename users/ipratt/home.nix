@@ -13,7 +13,7 @@ _: {
         signByDefault = false;
     };
 
-    my.user.dev.editors.vscode.enable = true;
+    # my.user.dev.editors.vscode.enable = true;
 
     # Credentials come from GERRIT_* / YOUTRACK_* in ${flakeDir}/.env, expanded by Claude Code at
     # launch (see modules/dev/ai/mcp).
