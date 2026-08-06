@@ -9,22 +9,32 @@
         }:
         let
             cfg = config.my.user.cli.git;
+
+            catppuccinDeltaTheme = pkgs.fetchFromGitHub {
+                owner = "catppuccin";
+                repo = "delta";
+                rev = "011516f5d14f66b771b3e716f29c77231e008c74";
+                hash = "sha256-lztkxX9O41YossvRzpR7tqxMhDNT1Efy2JvkCwtsiXQ=";
+            };
         in
         {
             options.my.user.cli.git = {
                 enable = tools.opt.mkEnabled "git + delta + lazygit (identity/signing via my.user.cli.git.*)";
                 userName = tools.opt.mkStr "Ian Pratt" "Value for git user.name.";
                 email = tools.opt.mkStr "ianjdpratt@gmail.com" "Value for git user.email.";
+
                 signingKey = lib.mkOption {
                     type = lib.types.nullOr lib.types.str;
                     default = "E0DB58169CA551AA!";
                     description = "GPG signing key id (null to leave unset).";
                 };
+
                 signByDefault = lib.mkOption {
                     type = lib.types.bool;
                     default = true;
                     description = "Whether to GPG-sign every commit by default.";
                 };
+
                 # Decrypted GPG key to import at activation; null = key already in keyring. See secrets/README.md.
                 signingKeyFile = tools.opt.mkSecretPath "Path to a decrypted exported GPG secret key to import at activation.";
             };
@@ -52,6 +62,10 @@
                     package = pkgs.gitFull;
 
                     settings = {
+                        include = {
+                            path = "${catppuccinDeltaTheme}/catppuccin.gitconfig";
+                        };
+
                         user = {
                             name = cfg.userName;
                             inherit (cfg) email;
@@ -66,6 +80,7 @@
                         core.autocrlf = "input";
                         init.defaultBranch = "main";
                         pull.rebase = false;
+                        merge.conflictStyle = "zdiff3";
 
                         # libsecret ships inside the git package on Linux (not a separate package).
                         credential.helper =
@@ -73,6 +88,7 @@
 
                         # signing.signer doesn't wire gpg.program -- set it here.
                         gpg.program = "${pkgs.gnupg}/bin/gpg";
+
                     };
 
                     signing = {
@@ -89,6 +105,20 @@
 
                     options = {
                         diff-highlight = true;
+                        features = "catppuccin-mocha";
+                    };
+                };
+
+                # Git TUI
+                programs.lazygit = {
+                    enable = true;
+
+                    enableBashIntegration = true;
+                    enableZshIntegration = true;
+                    enableFishIntegration = true;
+
+                    settings = {
+                        git.diffRenderers = [ { command = "delta --dark --paging=never"; } ];
                     };
                 };
             };
