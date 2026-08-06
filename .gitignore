@@ -22,5 +22,9 @@ registry.json
 result
 result-*
 
+# Python bytecode, written whenever scripts/test_nxm.py imports nxm. `nxm rebuild` stages whatever is
+# untracked, so an unignored cache gets committed.
+__pycache__/
+
 # Misc.
 *.local.md

@@ -26,10 +26,9 @@
                     # current language.
                     # NOTE: We need to use `''` in front of any `${<...snip...>}` since that's how nix string interpolation is
                     # escaped. See: https://nix.dev/manual/nix/2.25/language/string-interpolation
-                    # format = ''
-                    #     [╭─](bright-black) $os$username$hostname$directory$git_branch$git_commit$git_state$git_metrics$git_status$c$cpp$rust$nodejs$bun$python$go$java$kotlin$scala$package$conda$direnv$fill $cmd_duration$time''${custom.zellij}
-                    #     [╰─](bright-black) $character
-                    # '';
+                    #
+                    # Only what is named here renders: a module left out of `format` is inert however it
+                    # is configured, so nothing below configures one that is missing.
                     format = ''
                         [╭─](bright-black) $os$username$hostname$directory$git_branch$git_commit$git_state$git_metrics$git_status$c$cpp$rust$nodejs$bun$python$go$java$kotlin$scala$package$conda$direnv$fill $cmd_duration''${custom.zellij}
                         [╰─](bright-black) $character
@@ -85,14 +84,6 @@
                         style = "bold yellow";
                     };
 
-                    # Time/terminal clock
-                    time = {
-                        disabled = false;
-                        format = "at [$time]($style) ";
-                        time_format = "%I:%M:%S %P";
-                        style = "bold purple";
-                    };
-
                     # Filler btwn prompts
                     fill = {
                         symbol = "·";
@@ -124,7 +115,6 @@
                         ssh_only = false;
                         ssh_symbol = " 🌐"; # NOTE: space in front to make room btwn it and hostname...
                         disabled = false;
-                        aliases = { }; # TODO: make module accessing all info (?) of all machines, put aliases for certain machines here.
                     };
 
                     # Username detection and symbols
@@ -174,16 +164,8 @@
                     # CUSTOM COMMANDS #
                     ###################
 
+                    # SSH visibility comes from `hostname.ssh_symbol` above, which `$hostname` renders.
                     custom = {
-                        # SSH checking, apart from hostname since we want ssh visibility BEFORE username AND
-                        # hostname
-                        ssh = {
-                            when = "test $SSH_TTY || test $SSH_CONNECTION || test $SSH_CLIENT";
-                            format = "🌐 ";
-                            description = "Displays if you're currently in an SSH session.";
-                            disabled = false;
-                        };
-
                         # Zellij integration
                         zellij = {
                             # NOTE: We need to do `\\` so it outputs the string `\(...\)` which then gets interpolated via Starship

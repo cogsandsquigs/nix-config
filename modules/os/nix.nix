@@ -1,9 +1,8 @@
 # Nix itself.
 #
-# On darwin, Determinate Nix owns the configuration and nix-darwin's own `nix.*` is switched off. On
-# NixOS, `nix.*` does the work. The two used to be separate files with the cache list, the public keys
-# and the trusted users copy-pasted between them, which is exactly the kind of pair that drifts. They
-# are stated once here.
+# On darwin, Determinate Nix owns the configuration and nix-darwin's own `nix.*` is switched off; on
+# NixOS, `nix.*` does the work. The caches, keys and trusted users are the same either way, so they are
+# stated once here rather than copy-pasted into two files that then drift.
 let
     # Substituters let us skip building by downloading prebuilt outputs.
     substituters = [

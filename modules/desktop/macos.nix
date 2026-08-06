@@ -1,8 +1,5 @@
-# MacOS Desktop
-#
-# Unlike other modules which share OS-specific config w/in one module, since sway is so different
-# from configuring than MacOS Desktop, it makes sense to split them. Especially since MacOS Desktop
-# configuration is... interesting.
+# The macOS desktop. Its own file rather than a class key beside sway: the two share no configuration
+# surface at all.
 {
 
     darwin =

@@ -15,7 +15,8 @@
             flakeDir = config.my.user.shell.flakeDir;
 
             aliases = {
-                ls = "eza --icons auto";
+                # `ls`, `ll`, `la`, `lt`, `lla` come from programs.eza (modules/cli/utils/default.nix),
+                # which carries the flags. Defining `ls` here would override the whole set with one entry.
                 du = "dust";
                 cat = "bat"; # Better cat via `bat`
                 cd = "z"; # Better cd via `zoxide`
@@ -64,17 +65,9 @@
                 "/run/current-system/sw/bin"
             ];
 
-            # Maps every variable in `variables` to a string for a specific shell.
-            # @param `f`: A function `f :: String -> Any -> String` that takes the variable name,
-            # then value, then returns a string that loads the variable in a specific shell the
-            # user wants.
-            # @returns the string of all variables to be loaded in a shell.
+            # Each takes the shell's own way of setting one variable (`f :: name -> value -> String`)
+            # or adding one path entry (`f :: path -> String`), and returns the whole block.
             variablesToString = f: (concatMapStrings (s: s + "\n") (mapAttrsToList f variables));
-
-            # Maps every path entry in `binPaths` to a string for a specific shell
-            # @param `f`: A function `f :: String -> String` that takes the path entry, then returns
-            # a command to add it to the path.
-            # @returns a string of commands to add things to path.
             pathsToString = f: (concatMapStrings (s: (f s) + "\n") binPaths);
 
             # Machine-local overrides: read ${flakeDir}/.env (KEY=VALUE, untracked) at shell startup and
@@ -96,11 +89,6 @@
         in
         {
             config = lib.mkIf config.my.user.shell.enable {
-                home.packages = with pkgs; [
-                    fish
-                    zsh
-                ];
-
                 programs.fish = {
                     enable = true;
                     generateCompletions = true;

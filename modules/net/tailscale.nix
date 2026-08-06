@@ -1,16 +1,11 @@
 # Tailscale, via the Homebrew cask.
 #
-# Its own feature rather than part of a "vpn" grouping. Tailscale is a mesh network for reaching one's
-# own machines, so it has a different lifetime from the OpenVPN profiles that used to sit beside it --
-# those were abandoned and removed, and bundling the two meant deleting one deleted the other.
-#
 # darwin only for now. NixOS has `services.tailscale.enable`; add a `nixos` key when the personal Linux
 # box exists.
 #
-# The cask and the login agent that opens it are ONE feature, under one `mkIf`. They used to be two: the
-# cask here, the agent in hosts/glorpbook/launchd.nix with no condition on it. Turning the feature off
-# then left an agent running `open` against an application `homebrew.onActivation.cleanup = "zap"` had
-# just uninstalled.
+# The cask and the login agent that opens it are ONE feature, under one `mkIf`. Split across two files,
+# turning the feature off left an agent running `open` against an application
+# `homebrew.onActivation.cleanup = "zap"` had just uninstalled.
 {
     darwin =
         {

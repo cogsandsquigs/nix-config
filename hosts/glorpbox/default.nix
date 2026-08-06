@@ -1,17 +1,15 @@
 # glorpbox -- x86_64-linux NixOS tower (personal daily-driver desktop).
 #
-# STUB: this machine doesn't exist yet. It already inherits every feature under
-# modules/ (the full personal profile: games, desktopApps, ...), so
-# filling it in mostly means adding the real hardware details below. The placeholder root
-# filesystem / bootloader keep the config evaluable.
+# STUB: this machine does not exist yet. It already inherits every feature under modules/ (the full
+# personal profile), so filling it in means adding the real hardware details below; the placeholder root
+# filesystem and bootloader are what keep it evaluable meanwhile.
 #
-# NOTE: this is the *personal* Linux box. The work machine is a separate, leaner standalone
-# home-manager config -- see hosts/ip-workbox.
+# The *personal* Linux box. The work machine is a leaner standalone home-manager config -- hosts/ip-workbox.
 { host, ... }: {
     _class = "nixos";
 
-    # VM-only knobs, so `nix build .#glorpbox-vm` boots something usable. Everything it sets is
-    # under `virtualisation.vmVariant`, so it cannot reach the real machine.
+    # VM-only knobs, so `nix build .#glorpbox-vm` boots something usable. All of it sits under
+    # `virtualisation.vmVariant`, so none can reach the real machine.
     imports = [ ./vm.nix ];
 
     nixpkgs.hostPlatform = host.system;

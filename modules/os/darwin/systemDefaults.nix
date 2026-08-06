@@ -86,13 +86,14 @@
                             darwin-uninstaller
 
                             # Regular, base pkgs
-                            mkalias # TODO: Why?
                             openssl # TODO: Why?
                         ];
 
                     homebrew = {
                         brews = [
-                            "ca-certificates" # TODO: Why? Needed when bun runs `bun install`... (???)
+                            # bun's bundled TLS wants a system cert bundle at a path macOS does not
+                            # provide, so `bun install` fails on certificate verification without this.
+                            "ca-certificates"
                         ];
                     };
 

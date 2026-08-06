@@ -13,6 +13,8 @@
                 tools.opt.mkEnabled "CLI utilities (gpg, yazi, zellij, fzf, ripgrep, eza, ...)";
 
             config = lib.mkIf config.my.user.cli.utils.enable {
+                # Only what nothing else installs: a `programs.<x>.enable` below already brings its own
+                # package, and `lazygit` comes with my.user.cli.git.
                 home.packages = with pkgs; [
                     fzf
                     ripgrep
@@ -22,18 +24,18 @@
                     magic-wormhole
                     fontconfig
                     inetutils
-                    eza
                     dust
-                    bat
-                    zoxide
-                    lazygit
                     fastfetch
                 ];
 
+                # `enable` is what makes any of this apply -- the settings alone are inert. It aliases
+                # `eza` to itself plus these flags and points `ls`/`ll`/`la`/`lt`/`lla` at that, so the
+                # flags reach every one of them through a single alias.
                 programs.eza = {
+                    enable = true;
+                    icons = "auto"; # a bool here is deprecated upstream
                     colors = "auto";
                     git = true;
-                    icons = true;
                 };
 
                 programs.zoxide = {

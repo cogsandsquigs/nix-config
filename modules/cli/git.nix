@@ -40,11 +40,8 @@
             };
 
             config = lib.mkIf cfg.enable {
-                home.packages = with pkgs; [
-                    gitFull # <3
-                    delta # Git diff highlighting
-                    lazygit # Awesome git TUI
-                ];
+                # No `home.packages`: the three `programs.*` blocks below install gitFull, delta and
+                # lazygit themselves.
 
                 # gpg --import is idempotent; kill the agent after so it picks up the new keygrip immediately
                 # (gpg-agent caches state and won't reflect the import until restarted).

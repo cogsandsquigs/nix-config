@@ -38,21 +38,18 @@
                         (mkIf stdenv.isDarwin "~/.colima/ssh_config")
                     ];
 
-                    # Per-host settings rules
+                    # Per-host settings rules. Only what differs from stock OpenSSH: `enableDefaultConfig
+                    # = false` means home-manager writes no `Host *` block of its own, so ssh's own
+                    # defaults stand and restating them here would be nine no-op lines.
                     settings = {
-                        # Default values!
-                        # See: https://home-manager-options.extranix.com/?query=programs.ssh&release=master
                         "*" = {
-                            ForwardAgent = false;
-                            Compression = false;
-                            ServerAliveInterval = 0;
-                            ServerAliveCountMax = 3;
+                            # NOT a default -- Ubuntu's /etc/ssh/ssh_config sets `HashKnownHosts yes`, and
+                            # ~/.ssh/config is read first, so this is what overrides it.
                             HashKnownHosts = false;
-                            UserKnownHostsFile = "~/.ssh/known_hosts";
-                            ControlMaster = "no";
-                            ControlPath = "~/.ssh/master-%r@%n:%p";
-                            ControlPersist = "no";
 
+                            # Tried in order, and a per-host block below prepends to this list rather
+                            # than replacing it -- so a host only needs an entry when its key is not the
+                            # first one here.
                             IdentityFile = [
                                 "~/.ssh/id_ed25519"
                                 "~/.ssh/homeserver_rsa"
@@ -66,25 +63,16 @@
                         "*.doc.ic.ac.uk" = {
                             User = "ip124";
                             IdentityFile = "~/.ssh/imperial_doc_ed25519";
-                            AddKeysToAgent = "yes";
                         };
 
                         "gitlab.doc.ic.ac.uk" = {
                             IdentityFile = "~/.ssh/imperial_gitlab_ed25519";
-                            AddKeysToAgent = "yes";
-                        };
-
-                        "github.com" = {
-                            IdentityFile = "~/.ssh/id_ed25519";
-                            AddKeysToAgent = "yes";
                         };
 
                         ## WORK MACHINE ##
                         "workbox" = {
                             User = "ipratt";
                             HostName = "172.24.20.25";
-                            IdentityFile = "~/.ssh/id_ed25519";
-                            AddKeysToAgent = "yes";
                         };
                     };
                 };

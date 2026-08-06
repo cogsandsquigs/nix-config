@@ -1,22 +1,21 @@
 # nvm -- Node Version Manager, for a project that pins a node version imperatively. Sits beside the
 # nixpkgs `nodejs` that `dev.langs` installs rather than replacing it.
 #
-# The tool is declarative and its payload is not: nvm.sh comes from the store, pinned below, while the
-# node versions it manages stay under $NVM_DIR in $HOME. Sourcing nvm.sh out of a read-only store path
-# works because it never reads its own script location and writes only under $NVM_DIR, which it creates
-# itself on the first install.
+# The tool is declarative, its payload is not: nvm.sh comes from the store, pinned below, while the node
+# versions it manages stay under $NVM_DIR in $HOME. Sourcing it from a read-only store path works because
+# it never reads its own location and writes only under $NVM_DIR, which it creates itself.
 #
 # Opt-in rather than riding `dev`: nvm downloads prebuilt glibc binaries from nodejs.org, so it is only
-# sound where the host provides an FHS loader -- a distro Linux or macOS, and NixOS only behind nix-ld.
+# sound where the host has an FHS loader -- a distro Linux or macOS, and NixOS only behind nix-ld.
 #
-# `--no-use` in all three shells. In bash and zsh it makes startup free (measured 0.00s, against 0.14s
-# for a full source) and leaves PATH alone, so `node` stays nixpkgs' until `nvm use` says otherwise. In
-# the fish wrapper it is load-bearing: without it every call re-applies the `default` alias and clobbers
-# a `nvm use` from earlier in the session.
+# `--no-use` in all three shells. In bash and zsh it makes startup free (measured 0.00s against 0.14s for
+# a full source) and leaves PATH alone, so `node` stays nixpkgs' until `nvm use` says otherwise. In the
+# fish wrapper it is load-bearing: without it every call re-applies the `default` alias and clobbers an
+# earlier `nvm use`.
 #
-# fish has no nvm support at all, so `nvm` there is a function that runs the real thing through `bass`
-# and imports the environment it leaves behind. Same reasoning as the .env loader in
-# modules/shell/env.nix -- one canonical bash implementation, not a second fish-shaped one.
+# fish has no nvm support, so `nvm` there is a function running the real thing through `bass`. Same
+# reasoning as the .env loader in modules/shell/env.nix -- one bash implementation, not a fish-shaped
+# second one.
 {
     home =
         {

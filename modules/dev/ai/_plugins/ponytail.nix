@@ -1,11 +1,10 @@
-# ponytail -- a minimalism ruleset (skip it, reuse it, stdlib, native, one line, only then write it)
-# that its own SessionStart and SubagentStart hooks inject into every session and every subagent.
-# Six skills come with it; `/ponytail lite|full|ultra|off` retunes or stops it at runtime, which is
-# why no option here does. Its `commands/` are Codex `.toml`, so Claude reads only the skills.
+# ponytail -- a minimalism ruleset its own SessionStart and SubagentStart hooks inject into every session
+# and subagent. `/ponytail lite|full|ultra|off` retunes it at runtime, which is why no option here does.
+# Its `commands/` are Codex `.toml`, so Claude reads only the skills, and its hooks run `node` -- hence
+# the `nodejs` next door.
 #
-# The whole repo IS the plugin -- its marketplace entry is `source: "./"` -- so the fetcher output
-# goes in whole, not a subdirectory of it. Pinned for the reason its neighbour is. 4.8.4 plus the
-# fixes since that tag; there is no newer one. The hooks run `node`, hence the `nodejs` next door.
+# The whole repo IS the plugin (marketplace entry `source: "./"`), so the fetcher output goes in whole
+# rather than a subdirectory. Pinned for the reason its neighbour is: 4.8.4 plus the fixes since that tag.
 { pkgs, ... }: {
     ponytail = pkgs.fetchFromGitHub {
         owner = "DietrichGebert";

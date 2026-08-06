@@ -43,17 +43,14 @@ in
             # "<user>@<host>".
             sops.age.keyFile = "/etc/nix/age/${config.home.username}";
 
-            # On darwin sops-nix's activation does its own early `launchctl bootout` (unload) then
-            # `bootstrap` (load) of its launchd-agent plist -- but home-manager only installs that plist
-            # later, in `setupLaunchAgents`. So on the FIRST activation the plist isn't in place yet and
-            # bootstrap dies with "Bootstrap failed: 5: Input/output error" (launchctl's generic error
-            # for a missing plist path). Install the plist up front so sops-nix's bootstrap finds it;
-            # setupLaunchAgents re-installs it later, harmlessly.
+            # On darwin sops-nix's activation boots out then bootstraps its own launchd plist, but
+            # home-manager installs that plist later, in `setupLaunchAgents`. On a FIRST activation the
+            # bootstrap therefore dies with "Bootstrap failed: 5: Input/output error" (launchctl's error
+            # for a missing plist). Installing it up front fixes that; setupLaunchAgents re-installs it
+            # later, harmlessly.
             #
-            # NOTE: the "Boot-out failed: 3: No such process" line printed just before is NOT this bug
-            # -- that's the bootout finding no agent loaded yet (normal whenever nothing is loaded: first
-            # run, or post-reboot pre-login). sops-nix ignores it on purpose; only the bootstrap failure
-            # aborts activation.
+            # The "Boot-out failed: 3: No such process" line just before is NOT this bug -- that is the
+            # bootout finding no agent loaded, normal on a first run or post-reboot, and ignored upstream.
             home.activation.sopsNixInstallAgent = lib.mkIf pkgs.stdenv.isDarwin (
                 lib.hm.dag.entryBefore [ "sops-nix" ] ''
                     $DRY_RUN_CMD install -Dm444 -T \

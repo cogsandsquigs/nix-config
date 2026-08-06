@@ -1,9 +1,9 @@
 {
     home =
         {
-            pkgs,
             lib,
             config,
+            tools,
             ...
         }:
         let
@@ -70,10 +70,11 @@
 
             floating_pane_size_percent = 80;
 
-            # Opens a Zellij floating pane of height and width
-            # `floating_pane_size_percent` percent of the screen.
-            # NOTE: Requires Zellij to be installed and configured.
-            # NOTE: The `\` is required at the end of each line because `:sh` is fundamentally a shell run.
+            # A centred Zellij floating pane, `floating_pane_size_percent` of the screen each way. The
+            # trailing `\` on every line is required: `:sh` is a shell run.
+            #
+            # `> /dev/null` swallows the pane ID `zellij run` prints -- helix shows it as hover-text that
+            # needs an <ESC> to dismiss. Do not drop it.
             make_zellij_floating_pane = cmd: ''
                 :sh zellij run --close-on-exit \
                                --height ${toString floating_pane_size_percent}%% \
@@ -84,26 +85,18 @@
                                -- ${cmd} \
                                > /dev/null
             '';
-
-            # NOTE: About the piping to /dev/null...
-            #
-            # If you use `zellij run`, it returns the name of the pane's ID. This is something like
-            # `terminal_<#>`. Now, on helix, this results in the cursor displaying hover-text with that ID.
-            # This is annoying, and requires an `<ESC>` key-hit to go away. So, by piping the output to
-            # `/dev/null`, we get rid of that hover-text.
-            #
-            # This didn't use to be the case, and at some point along the way zellij made `zellij run`
-            # return IDs. This confused me for the longest time.
-            #
-            # Now you know, future me! So, uh, don't delete that `> /dev/null`, unless you want hover-text
-            # of the new pane's ID.
         in
         {
             config = lib.mkIf config.my.user.dev.editors.helix.enable {
-                home.packages = with pkgs; [
-                    helix
-                    zellij # Requirement for the editor functionality...
-                    yazi # Requirement for the editor functionality...
+                # The keybinds below shell out to zellij and yazi, which `cli.utils` installs -- so
+                # depend on that feature rather than installing a second copy of each here. helix
+                # itself comes from `programs.helix` below.
+                assertions = [
+                    (tools.opt.requires {
+                        when = config.my.user.dev.editors.helix.enable;
+                        needs = config.my.user.cli.utils.enable;
+                        message = "my.user.dev.editors.helix.enable needs my.user.cli.utils.enable: the space-mode keybinds open zellij floating panes and the yazi file picker";
+                    })
                 ];
 
                 programs.helix = {

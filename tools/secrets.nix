@@ -1,29 +1,26 @@
 let
-    # A secret is addressed by (location, name): `location` is its audience folder under `secrets/`
-    # (an identity "<user>@<host>", or a bare "<user>" for that user on all machines); `name` is the
-    # leaf. The encrypted file is `secrets/<location>/<name>.sops`. `../secrets` resolves relative to
-    # THIS file (tools/) -- the repo-root `secrets/` -- regardless of caller.
+    # A secret is addressed by (location, name): `location` is its audience folder under `secrets/` -- an
+    # identity "<user>@<host>" for one machine, or a bare "<user>" for that user everywhere (see
+    # secrets/.sops.yaml for how a folder resolves to recipients). `../secrets` resolves relative to THIS
+    # file, so it is the repo-root `secrets/` regardless of caller.
     secretFile = location: name: ../secrets + "/${location}/${name}.sops";
 
-    # The `sops.secrets` identifier (and the decrypted runtime filename). FLATTENED -- `/` -> `-` -- so a
-    # nested location like "cogs@glorpbook" becomes a single flat key ("cogs@glorpbook-gpg") rather
-    # than a nested attr. The `.sops` file path above stays nested; only this runtime key is flat.
+    # The `sops.secrets` identifier, and so the decrypted runtime filename. FLATTENED (`/` -> `-`) so
+    # "cogs@glorpbook" + "gpg" is one key, not a nested attr. Only this key is flat; the `.sops` path
+    # above stays nested.
     keyOf = location: name: builtins.replaceStrings [ "/" ] [ "-" ] "${location}/${name}";
 
 in
 {
-
     # -- tools.secrets -- sops wiring (register + consume) -----------------------------------------
-    # A feature stays secret-AGNOSTIC: it only exposes an `opt.mkSecretPath` hole. The user/host unit
-    # does the two sops steps: `declare` registers the secret (so sops decrypts it at activation),
-    # `path` reads back where the plaintext lands -- which it feeds into the feature's hole. Scope is
-    # carried by `location`, not by a function name: an identity "<user>@<host>" is that machine only;
-    # a bare "<user>" is that user on all their machines (see secrets/.sops.yaml for how each folder
-    # resolves to recipients).
-    # register with sops:  sops.secrets = tools.secrets.declare "cogs@glorpbook" "gpg";
+    # A feature stays secret-AGNOSTIC: it exposes an `opt.mkSecretPath` hole and nothing more. The
+    # user/host unit does both sops steps -- `declare` registers the secret so sops decrypts it at
+    # activation, `path` reads back where the plaintext landed and feeds the feature's hole.
     #
-    # `format = "binary"` means "the decrypted payload is the raw file bytes" (an exported GPG key, a
-    # certificate) -- not a value looked up inside a YAML document.
+    #   sops.secrets = tools.secrets.declare "cogs@glorpbook" "gpg";
+    #
+    # `format = "binary"` means the decrypted payload is the raw file bytes (an exported GPG key, a
+    # certificate), not a value looked up inside a YAML document.
     declare = location: name: {
         "${keyOf location name}" = {
             sopsFile = secretFile location name;

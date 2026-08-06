@@ -14,36 +14,29 @@
             enabled = config.my.user.cli.utils.enable;
         in
         {
-            # mkMerge of per-OS mkIf (NOT a raw `if pkgs... then ...`): keeps the config structure static so it
-            # doesn't force `pkgs` -- which, in standalone home-manager, depends on `config` (config.nixpkgs)
-            # and would otherwise cause infinite recursion. launchd.agents is darwin-only, so it must only
-            # ever be defined on darwin.
+            # mkMerge of per-OS mkIf, NOT `if pkgs.stdenv.isDarwin then`: this keeps the config structure
+            # static, so it never forces `pkgs` -- which in standalone home-manager depends on `config`
+            # (config.nixpkgs) and would recurse infinitely.
             config = lib.mkMerge [
                 (lib.mkIf (enabled && isDarwin) {
-                    # Mac-native pinentry (also installed system-wide as pinentry_mac). Without this,
-                    # gpg-agent.conf has no `pinentry-program` line and GUI passphrase prompts fail.
-                    # pinentry_mac.meta.mainProgram = "pinentry-mac", so the program name resolves
-                    # automatically.
+                    # Without this, gpg-agent.conf has no `pinentry-program` line and GUI passphrase
+                    # prompts fail. `meta.mainProgram` resolves the binary name.
                     services.gpg-agent.pinentry.package = pkgs.pinentry_mac;
 
-                    # home-manager defaults grabKeyboardAndMouse to true, which writes `grab` into
-                    # gpg-agent.conf. On macOS, `grab` causes pinentry-mac to call a window-server grab
-                    # API on startup; after wake from sleep the window server is unsettled and this call
-                    # fails, making pinentry-mac exit immediately ("No pinentry"). Disabling grab lets
-                    # pinentry-mac retrieve the passphrase from the macOS Keychain silently -- no dialog,
-                    # no window-server interaction needed.
+                    # home-manager defaults this true, which writes `grab` into gpg-agent.conf. On macOS
+                    # `grab` makes pinentry-mac call a window-server grab API at startup; after wake from
+                    # sleep that call fails and pinentry-mac exits immediately ("No pinentry"). Off, it
+                    # reads the passphrase from the Keychain silently, with no window-server interaction.
                     services.gpg-agent.grabKeyboardAndMouse = false;
 
-                    # Cache the passphrase for up to 8 hours (default is 600s / 10 min). Combined with
-                    # Keychain-backed passphrase retrieval, this means pinentry is essentially never
-                    # called after the first successful unlock post-reboot.
+                    # 8 hours, against a 600s default. With Keychain-backed retrieval, pinentry is then
+                    # essentially never called after the first unlock post-reboot.
                     services.gpg-agent.defaultCacheTtl = 28800;
                     services.gpg-agent.maxCacheTtl = 86400;
                 })
 
-                # Linux/NixOS: home-manager runs gpg-agent as a systemd user service, so the macOS
-                # workarounds do not apply. Just pick a pinentry -- a headless default; a GUI host can
-                # override with e.g. pkgs.pinentry-gnome3.
+                # Linux: gpg-agent runs as a systemd user service, so none of the above applies. A
+                # headless pinentry; a GUI host can override with e.g. pkgs.pinentry-gnome3.
                 (lib.mkIf (enabled && !isDarwin) { services.gpg-agent.pinentry.package = pkgs.pinentry-curses; })
             ];
         };

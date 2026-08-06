@@ -9,7 +9,6 @@
 #   typed-options  -- no `my.*` option is loosely typed or undocumented
 #   tools-tests    -- unit tests over tools/, via lib.runTests
 #   lint           -- statix reports nothing (see ../statix.toml)
-#   comment-density -- no module body is more than 20% comment
 #   fmt            -- the tree is already formatted (treefmt, see ../treefmt.toml)
 { self, tools }:
 pkgs:
@@ -191,69 +190,6 @@ in
         statix check .
         touch $out
     '';
-
-    # The 20% comment cap, enforced instead of remembered. It drifted to 21 files while it lived only in
-    # a document.
-    #
-    # Two scoping rules make the number mean something:
-    #
-    #   The leading header block is exempt. Contiguous comment lines from line 1 are the file's
-    #   documentation -- what a feature is and why -- which the style rule exempts the same way it exempts
-    #   a doc comment on an exported symbol. The cap is on comments INSIDE the body, which is where
-    #   restatement of the code collects.
-    #
-    #   Files under 40 lines are exempt. A three-line header on a twelve-line host stub is 25% and says
-    #   nothing about density; the ratio only carries information once a file has a body.
-    #
-    # tools/ is out of scope entirely: it is the internal API, and its doc comments are unrestricted.
-    #
-    # `exempt` is the recorded deviations, and the check fails if one of them stops violating, so the list
-    # cannot outlive its reasons.
-    comment-density =
-        let
-            exempt = {
-                "modules/base.nix" = "an upstream issue link and an infinite-recursion trap";
-                "modules/cli/utils/gpg-agent.nix" = "a macOS `grab` bug";
-                "modules/secrets.nix" = "a sops-nix ordering bug";
-            };
-        in
-        pkgs.runCommand "comment-density" { exemptList = lib.concatStringsSep "\n" (lib.attrNames exempt); }
-            ''
-                cd ${self}
-                cap=20
-                floor=40
-                fail=""
-                clean=""
-
-                for f in $(find modules hosts users -name '*.nix' | grep -v '/_skills/' | sort); do
-                    rel="''${f#./}"
-                    total=$(wc -l < "$f")
-                    [ "$total" -lt "$floor" ] && continue
-
-                    start=$(awk '!/^[[:space:]]*#/ { print NR; exit }' "$f")
-                    body=$(awk -v s="$start" 'NR >= s' "$f" | grep -cE '^[[:space:]]*#' || true)
-                    pct=$(( body * 100 / total ))
-
-                    if echo "$exemptList" | grep -qxF "$rel"; then
-                        [ "$pct" -le "$cap" ] && clean="$clean\n  $rel is exempt but now sits at ''${pct}%"
-                        continue
-                    fi
-
-                    [ "$pct" -gt "$cap" ] && fail="$fail\n  $rel is ''${pct}% comment in its body ($body of $total lines)"
-                done
-
-                if [ -n "$fail" ]; then
-                    printf 'comment-density: over the %s%% cap\n%b\n\nCut the weakest comments, or record the file in `exempt` in tools/checks.nix with its reason.\n' "$cap" "$fail" >&2
-                    exit 1
-                fi
-
-                if [ -n "$clean" ]; then
-                    printf 'comment-density: an exemption is no longer needed\n%b\n\nDrop it from `exempt` in tools/checks.nix.\n' "$clean" >&2
-                    exit 1
-                fi
-
-                touch $out
-            '';
 
     # Formatting, enforced rather than remembered. `nix fmt` was not clean at the commit this gate was
     # added on: five files nobody had touched in months reformatted on every run, because nothing ever

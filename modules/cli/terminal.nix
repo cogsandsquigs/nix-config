@@ -5,7 +5,6 @@
             pkgs,
             lib,
             config,
-            inputs,
             tools,
             ...
         }:
@@ -15,11 +14,6 @@
         {
             options.my.user.cli.terminal = {
                 enable = tools.opt.mkEnabled "ghostty terminal";
-                nixGL.enable = tools.opt.mkDisabled ''
-                    Whether to run ghostty through nixGL. Needed on a non-NixOS Linux host, where the
-                    store-built ghostty cannot see the distro's OpenGL driver. Assumes a Mesa GPU
-                    (`nixGL.defaultWrapper`); an Nvidia one also needs `--impure`.
-                '';
 
                 localInstall.enable = tools.opt.mkDisabled ''
                     Whether ghostty comes from the host's own package manager, leaving only its config
@@ -43,11 +37,7 @@
                 let
                     # For some reason `ghostty` pkg is linux only, but `ghostty-bin` is macos-only
                     # (binary release)
-                    base = if pkgs.stdenv.isDarwin then pkgs.ghostty-bin else pkgs.ghostty;
-
-                    # The wrapper preserves every output and repoints the .desktop files, so shell
-                    # integration and the app entry still resolve.
-                    ghostty-pkg = if cfg.nixGL.enable then config.lib.nixGL.wrap base else base;
+                    ghostty-pkg = if pkgs.stdenv.isDarwin then pkgs.ghostty-bin else pkgs.ghostty;
                 in
                 lib.mkIf cfg.enable {
                     # ghostty resolves `font-family` at runtime, so a missing FiraCode falls back
@@ -57,15 +47,7 @@
                             assertion = config.my.user.fonts.enable;
                             message = "my.user.cli.terminal.enable requires my.user.fonts.enable (FiraCode Nerd Font Mono)";
                         }
-                        {
-                            assertion = !(cfg.localInstall.enable && cfg.nixGL.enable);
-                            message = "my.user.cli.terminal.nixGL.enable wraps the nixpkgs ghostty, which localInstall.enable does not install";
-                        }
                     ];
-
-                    # Empty by default, which makes `lib.nixGL.wrap` the identity function, so the
-                    # wrapper set is fetched only where the option is on.
-                    targets.genericLinux.nixGL.packages = lib.mkIf cfg.nixGL.enable inputs.nixGL.packages;
 
                     home.packages = lib.optionals (!cfg.localInstall.enable) [ ghostty-pkg ];
 

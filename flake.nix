@@ -35,12 +35,6 @@
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
-        # OpenGL/Vulkan wrappers for non-NixOS Linux, needed by ghostty (see modules/cli/terminal.nix).
-        nixGL = {
-            url = "github:nix-community/nixGL";
-            inputs.nixpkgs.follows = "nixpkgs";
-        };
-
         # Recursive module discovery, so `modules/` needs no hand-written import lists. Deliberately
         # the only framework-ish dependency here: its own flake.nix is `{ outputs = _: import ./.; }`,
         # so it has no inputs of its own and no nixpkgs dependency (pure builtins). flake.lock grows

@@ -279,21 +279,18 @@
             allResults = lib.mapAttrsToList (n: _: import (dir + "/${n}") { inherit pkgs lib config; }) files;
             dataToolchains = lib.concatMap (m: if builtins.isList m then m else [ m ]) allResults;
 
-            # The one resolution of this table. Three rules used to be re-derived by every consumer --
-            # helix and Claude each had their own copy of the server narrowing, and the command split
-            # appeared three times between them. A second consumer that got any of them subtly wrong
-            # would have disagreed with the first in silence, since nothing compares the two outputs.
+            # The one resolution of this table. Every consumer used to re-derive these rules, so a second
+            # one getting any of them subtly wrong would have disagreed with the first in silence:
             #
-            #   servers    the toolchain's `lsp`, narrowed by the language's own (null = all of them)
-            #   formatter  the language's `fmt`, falling back to the toolchain's (`[ ]` = none)
+            #   servers        the toolchain's `lsp`, narrowed by the language's own (null = all of them)
+            #   formatter      the language's `fmt`, falling back to the toolchain's (`[ ]` = none)
             #   command/args   a cmd list is a head and a tail
             #
             # Consumers translate shape from here on, and derive nothing.
             #
-            # This runs over `toolchains`, NOT over the raw imports: the module system has to apply the
-            # option defaults first, or an omitted key (`languages.nix` names no `lsp`) is a missing
-            # attribute rather than the null the rules are written against. Hence two options -- the
-            # validated input, then what is derived from it.
+            # Runs over `toolchains`, NOT the raw imports: the module system has to apply the option
+            # defaults first, or an omitted key is a missing attribute rather than the null these rules are
+            # written against. Hence two options -- the validated input, then what is derived from it.
             splitCmd = cmd: {
                 command = lib.head cmd;
                 args = lib.tail cmd;

@@ -7,8 +7,8 @@
 # No shared `options` block: the home half owns `my.user.apps.games` and the system halves own
 # `my.sys.apps.games`, so a shared block would declare each scope's option on classes that cannot read it.
 let
-    # Both system halves declare the same option, so they describe it identically. Declared twice with
-    # two descriptions, the class you happened to evaluate decided the documentation.
+    # Both system halves declare this one option, so they describe it identically -- declared twice, the
+    # class you happened to evaluate would decide the documentation.
     sysEnable =
         config: tools:
         tools.opt.mkFollowsUsers config [

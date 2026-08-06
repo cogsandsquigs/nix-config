@@ -1,9 +1,6 @@
-# Our own helpers, exposed to every module as the `tools` specialArg (wired in tools/default.nix).
-# Kept OUT of `lib` on purpose: home-manager owns its modules' `lib` (rebuilt as pkgs.lib + its own
-# `lib.hm.*`), so injecting our helpers via `lib` either clobbers `lib.hm` or is ignored. A dedicated
-# `tools` arg composes cleanly and reads uniformly in system + home modules.
+# Our own helpers, exposed to every module as the `tools` specialArg (wired in tools/default.nix, which
+# records why they are not in `lib`).
 #
-# Grouped by what a helper DOES:
 #   tools.opt.*      -- option & module-authoring helpers (constructors + assertions).
 #   tools.secrets.*  -- sops secret wiring (register a secret + read its decrypted path).
 { lib }:
@@ -28,22 +25,17 @@ in
     mkDisabled = mkBoolOpt false; # optional feature: opt-in
     mkRiding = mkBoolOpt; # sub-feature: default follows its parent group's value
 
-    ## A SYSTEM feature whose default is "some user on this host wants the matching home feature".
-    ##
-    ## A machine needs Steam at the system level only because a user on it plays games, so saying that
-    ## twice -- once in the host, once in the user unit -- is bookkeeping the host should not have to
-    ## do. Usage, from a nixos or darwin half:
+    ## A SYSTEM feature whose default is "some user on this host wants the matching home feature", so a
+    ## host need not repeat what its user unit already says. From a nixos or darwin half:
     ##
     ##   options.my.sys.apps.games.enable =
     ##       tools.opt.mkFollowsUsers config [ "apps" "games" ] "Steam ...";
     ##
-    ## This works only because home-manager runs as a submodule of the system evaluation, so the system
-    ## can read the home config. It is one-directional on purpose: a home feature must never read
-    ## `my.sys.*` back, or the two evaluations would deadlock.
+    ## Works only because home-manager runs as a submodule of the system evaluation. One-directional on
+    ## purpose: a home feature reading `my.sys.*` back would deadlock the two evaluations.
     ##
-    ## `path` is the option path under `my.user` as a LIST, because a name misses once the feature moves
-    ## into a namespace folder and a missed lookup is a silent `false` -- it uninstalls rather than
-    ## errors.
+    ## `path` is a LIST, not a name: a name misses once the feature moves into a namespace folder, and a
+    ## missed lookup defaults to `false`, which uninstalls rather than errors.
     mkFollowsUsers =
         config: path: description:
         lib.mkOption {
@@ -78,9 +70,8 @@ in
             inherit default description;
             type = t.nonEmptyStr;
         };
-    ## the agnostic secret path-hole a feature exposes (e.g.
-    ## `git.signingKeyFile = tools.opt.mkSecretPath "..."`). It's an option constructor, so it lives
-    ## here; the unit fills it via the secret-wiring helpers below.
+    ## the secret path-hole a feature exposes (e.g. `git.signingKeyFile = tools.opt.mkSecretPath "..."`);
+    ## a unit fills it with `tools.secrets.path`.
     mkSecretPath =
         description:
         lib.mkOption {
