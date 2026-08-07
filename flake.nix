@@ -6,8 +6,8 @@
 
     inputs = {
         # Main packages repo
-        nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable"; # Unstable
-        # nixpkgs.url = "github:NixOS/nixpkgs/release-26.05"; # Stable
+        nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; # Unstable
+        # nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05"; # Stable
 
         # MacOS config
         nix-darwin = {

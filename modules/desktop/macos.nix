@@ -27,7 +27,7 @@
                         "${pkgs.ghostty-bin}/Applications/Ghostty.app"
                         "/System/Applications/System Settings.app"
                         "/Applications/Firefox.app"
-                        # "${pkgs.obsidian}/Applications/Obsidian.app" # See desktop-apps
+                        "${pkgs.obsidian}/Applications/Obsidian.app" # See desktop-apps
                         "/Applications/Discord.app"
                         "/System/Applications/Messages.app"
                         "/Applications/WhatsApp.app"

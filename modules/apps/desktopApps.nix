@@ -23,7 +23,7 @@
                     with pkgs;
                     [
                         # Productivity
-                        # obsidian # Currently fails to extract on build -- try a few days later?
+                        obsidian
                         zoom-us
                         qbittorrent
 
