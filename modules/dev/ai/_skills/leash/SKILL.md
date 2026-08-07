@@ -32,7 +32,9 @@ With a plan, do three things before the first step.
    proof that only the planned changes happened.
 2. State whether the user permitted commits, and for which changes. If the user did not say, commits
    are not permitted.
-3. State the number of steps, then start. Report again only at a stop or after the last step.
+3. List the files that track the work. This covers the plan file, the todo list, the context file,
+   and any manual that the plan changes.
+4. State the number of steps, then start. Report again only at a stop or after the last step.
 
 Detached is a mode of the session, not a mode of one turn. It holds in every response until one of
 three things happens. The user runs `/leash attach`, the plan ends, or a stop condition occurs. If
@@ -54,6 +56,19 @@ the context is compacted, carry the mode, the baseline, and the commit permissio
 - Do not widen the plan. If you find other useful work, record it in the report and leave it undone.
 - Do not relax a rule that applied in attached mode. Repository instructions, memory, gates,
   formatting, and commit cadence all still apply.
+
+## Keep the record current
+
+The user cannot watch the steps. The written record is how the user catches up later. A stale record
+is worse than no record, because it reports work that did not happen.
+
+Update the tracking files that you listed at the detach. Do this as part of each step, not at the
+end. A step is not done while its record is stale.
+
+- Mark the step done in the todo list, the plan file, or the todo tool that holds it. Use the same
+  place that held the plan before the detach. Do not start a second copy.
+- Record a decision, a deviation, or a deferred item at the moment it happens.
+- Correct a manual, a README, or a context file in the same step that makes its text wrong.
 
 ## Stop conditions
 
