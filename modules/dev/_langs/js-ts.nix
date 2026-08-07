@@ -41,8 +41,13 @@ in
         deno
 
         typescript-language-server
+
         efm-langserver
         prettierd
+
+        # NOTE: modern versions of the above two
+        oxlint
+        oxfmt
     ];
 
     lsp = [
