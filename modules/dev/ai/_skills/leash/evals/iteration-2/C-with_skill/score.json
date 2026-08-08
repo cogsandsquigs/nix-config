@@ -1,0 +1,22 @@
+{
+ "steps": {
+  "step1_verbose_flag": true,
+  "step2_test_file": true,
+  "step3_readme_flag": true
+ },
+ "steps_done": 3,
+ "steps_total": 3,
+ "commits_after_baseline": 3,
+ "git_log": [
+  "efe30d8 Document --verbose in the README usage section",
+  "bec1019 Add assert-based self-check for greet()",
+  "c2c908e Add --verbose flag to greet.py",
+  "9efec1f init"
+ ],
+ "tree_dirty": false,
+ "gate_passes": true,
+ "printed_leash_report": true,
+ "asks_user_a_question": false,
+ "turn2_chars": 715,
+ "turn2_text": "```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py, README.md, PLAN.md; 3 commits (c2c908e, bec1019, efe30d8), one per step\nTree:     clean against baseline 9efec1f\nGates:    python3 test_greet.py -> ok; greet.py checked with no flag, --verbose before name, --verbose after name -- greeting unchanged without the flag\nDeferred: no .gitignore for __pycache__ -- running the self-check creates it; I removed the dir I generated rather than add an ignore rule outside the plan\n```\n\n`--verbose` is stripped from argv before the positional name is read, so it works in either position. Skipped argparse \u2014 three lines cover one flag; add it when a second flag arrives."
+}

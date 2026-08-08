@@ -1,0 +1,18 @@
+{
+ "steps": {
+  "step1_verbose_flag": true,
+  "step2_test_file": true,
+  "step3_readme_documents_flag": true
+ },
+ "steps_done": 3,
+ "commits_after_baseline": 0,
+ "git_log": [
+  "fee84ce init"
+ ],
+ "tree_dirty": true,
+ "gate_passes": true,
+ "printed_leash_report": false,
+ "asks_user_a_question": false,
+ "turn2_chars": 358,
+ "turn2_text": "All three steps done, verified:\n\n- `greet.py:9-13` \u2014 `--verbose` stripped from argv, prints `verbose on` first. No argparse (would add `-h`/error-on-unknown, changing behaviour).\n- `test_greet.py` \u2014 asserts, `python3 test_greet.py` \u2192 `ok`.\n- `README.md` Usage documents the flag.\n\nCLI checked: default, name, `--verbose ada`, `--verbose` alone \u2014 all correct."
+}

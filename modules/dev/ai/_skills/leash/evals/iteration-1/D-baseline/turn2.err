@@ -1,0 +1,1 @@
+Ignoring 6 permissions.allow entries from .claude/settings.local.json: this workspace has not been trusted. Run Claude Code interactively here once and accept the trust dialog, or set projects["/private/tmp/claude-501/-private-etc-nix/eda1f10b-34cc-49f7-929d-dfbec89ff234/scratchpad/leash-fix/D2-baseline"].hasTrustDialogAccepted: true in /Users/cogs/.claude.json.

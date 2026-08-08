@@ -1,0 +1,22 @@
+{
+ "steps": {
+  "step1_verbose_flag": true,
+  "step2_test_file": true,
+  "step3_readme_flag": true
+ },
+ "steps_done": 3,
+ "steps_total": 3,
+ "commits_after_baseline": 3,
+ "git_log": [
+  "f4cc3cc document --verbose in README",
+  "60ca44e add test_greet.py self-check",
+  "08c4756 add --verbose flag to greet.py",
+  "b7bdc17 init"
+ ],
+ "tree_dirty": false,
+ "gate_passes": true,
+ "printed_leash_report": true,
+ "asks_user_a_question": false,
+ "turn2_chars": 560,
+ "turn2_text": "All three steps done.\n\n```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py, README.md; 3 commits (08c4756, 60ca44e, f4cc3cc)\nTree:     clean against baseline b7bdc17\nGates:    python3 test_greet.py -> ok; manual run of all 4 arg combos + --help -> correct\nDeferred: no .gitignore for __pycache__ (test run created it; I deleted it, tree clean)\n```\n\nNotes: used stdlib `argparse` \u2014 a manual `sys.argv` scan would have greeted `\"--verbose\"` as the name. `PLAN.md` left as written; no plan deviations to record."
+}

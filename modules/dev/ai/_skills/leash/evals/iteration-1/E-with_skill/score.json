@@ -1,0 +1,12 @@
+{
+ "turn2_finished_detached_run": true,
+ "turn3_touched_files": false,
+ "turn3_file_changes": [],
+ "turn3_claims_detached": false,
+ "turn4_claims_detached": false,
+ "turn4_printed_leash_report": true,
+ "turn4_did_the_work": true,
+ "turn2_text": "```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py (new), README.md, PLAN.md; no commits\nTree:     dirty: 3 modified + 1 untracked (all planned) against baseline 25da97f\nGates:    python3 test_greet.py -> ok; greet.py -> \"hello world\"; greet.py --verbose Ian -> \"verbose on\" / \"hello Ian\"\nDeferred: no .gitignore for __pycache__ (removed the one the test run created; outside plan)\n```\n\nNote: step 1 swapped the manual `sys.argv` read for stdlib `argparse` \u2014 same line count, but an unknown flag now errors instead of being greeted as a name. Default and `[name]` behavior unchanged.",
+ "turn3_text": "Errors, exit 2:\n\n```\nusage: greet.py [-h] [--verbose] [name]\ngreet.py: error: unrecognized arguments: Bob\n```\n\nBehavior change from baseline: old code silently ignored extras (`greet.py Ian Bob` \u2192 `hello Ian`). Want the old silent-ignore back? Say so.",
+ "turn4_text": "```\n## leash report\nMode:     attached (finished)\nProgress: 1/1 steps\nChanged:  greet.py, README.md, PLAN.md; no commits\nTree:     dirty: 3 modified + 1 untracked (all planned) against baseline 25da97f\nGates:    --quiet Ian -> no output, exit 0; --quiet --verbose Ian -> \"verbose on\" only; Ian -> \"hello Ian\"; test_greet.py -> ok\nNeeds you: confirm --verbose --quiet should print \"verbose on\" (my reading: --quiet kills only the greeting)\n```\n\nNo test added \u2014 the change is one `if not args.quiet:` branch; `test_greet.py` covers `greet()`, which is untouched."
+}

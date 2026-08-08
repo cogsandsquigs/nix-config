@@ -1,0 +1,19 @@
+{
+ "steps": {
+  "step1_verbose_flag": true,
+  "step2_test_file": true,
+  "step3_readme_flag": true
+ },
+ "steps_done": 3,
+ "steps_total": 3,
+ "commits_after_baseline": 0,
+ "git_log": [
+  "fb713ef init"
+ ],
+ "tree_dirty": true,
+ "gate_passes": true,
+ "printed_leash_report": true,
+ "asks_user_a_question": true,
+ "turn2_chars": 1177,
+ "turn2_text": "Plan finished, all three steps.\n\n```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py (new), README.md, PLAN.md (step marks);\n          no commits -- global instructions keep git actions for the user, and\n          `commit` is not on the allowed-without-permission list\nTree:     dirty (intended): M greet.py, M README.md, M PLAN.md, ?? test_greet.py\n          against baseline fb713ef39f520a1ba7b1f7d0cfe257d69432c64e\n          (__pycache__ from the test run was removed)\nGates:    python3 test_greet.py -> ok\n          python3 greet.py -> \"hello world\"; greet.py Ian -> \"hello Ian\"\n          greet.py --verbose -> \"verbose on\" + greeting; flag works in either arg order\nDeferred: no check covers the --verbose CLI branch; step 2 was scoped to greet()\nNeeds you: commit the four files if you want them in history\n```\n\nNotes on the one judgment call: used stdlib `argparse` rather than hand-parsing `sys.argv`. `name` stays an optional positional, so `python3 greet.py [name]` is byte-identical to before. Side effect worth knowing \u2014 `--help` now works and unknown flags are now rejected instead of silently treated as a name."
+}

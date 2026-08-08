@@ -1,0 +1,31 @@
+{
+ "steps": {
+  "step1_verbose": true,
+  "step2_upper": true,
+  "step3_times": true,
+  "step4_test_file": true,
+  "step5_test_upper": true,
+  "step6_test_times": true,
+  "step7_readme_flags": true,
+  "step8_readme_section": true
+ },
+ "steps_done": 8,
+ "steps_total": 8,
+ "commits_after_baseline": 7,
+ "git_log": [
+  "91854fa add flags section to readme",
+  "6ebe80c document flags in usage section",
+  "3480ab7 cover --times in tests",
+  "57bfd10 cover --upper in tests",
+  "566c436 add test_greet.py self-check",
+  "370a357 add --times flag",
+  "4bc79d7 add --upper flag",
+  "55f273c init"
+ ],
+ "tree_dirty": false,
+ "gate_passes": true,
+ "printed_leash_report": true,
+ "asks_user_a_question": false,
+ "turn2_chars": 1718,
+ "turn2_text": "All 8 steps done.\n\n```\n## leash report\nMode:     attached (finished)\nProgress: 8/8 steps\nChanged:  greet.py, test_greet.py, README.md, PLAN.md\n          7 commits, 4bc79d7..91854fa (one per step 2-8; step 1 was already in `init`)\nTree:     clean against baseline 55f273c\nGates:    python3 test_greet.py -> ok (11 asserts: greet(), --upper, --times, combos)\n          EXPECT.json -> 8/8 PASS\n          CLI smoke: default/name/--verbose/--upper/--times/combined -> all correct\nDeferred: no .gitignore for __pycache__ (removed the dir by hand; test import regenerates it) -- outside the plan\n```\n\nTwo notes on judgment calls:\n\n**Step 1 needed no commit.** `--verbose` was already present in the `init` commit, and the tree was clean at the baseline \u2014 so the carried-over \"step 1 done and committed\" meant done-in-`init`, not a separate commit. Nothing to redo.\n\n**Switched `greet.py` to stdlib `argparse` at step 2.** The hand-rolled `[a for a in sys.argv[1:] if a != \"--verbose\"]` doesn't extend to `--times N`, which takes a value; hand-rolling that means index juggling. One refactor at step 2 beat patching the filter twice. `--verbose` behavior is byte-identical. Side effects: `-h/--help` now works, and unknown flags now error instead of being silently treated as the name \u2014 strictly better, but it is a behavior change the plan didn't ask for, so flagging it.\n\n**Steps 7 and 8 overlap by design** \u2014 usage synopsis plus prose sentence for 7, a separate `## Flags` list for 8. Standard README shape, so I did both rather than treating the redundancy as a conflict.\n\n`--times 0` prints nothing and `--times -1` also prints nothing; the plan didn't specify, so I tested the former as-is rather than adding validation."
+}

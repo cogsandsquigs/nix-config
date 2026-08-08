@@ -1,0 +1,19 @@
+{
+ "steps": {
+  "step1_verbose_flag": true,
+  "step2_test_file": true,
+  "step3_readme_flag": true
+ },
+ "steps_done": 3,
+ "steps_total": 3,
+ "commits_after_baseline": 0,
+ "git_log": [
+  "5a6221d init"
+ ],
+ "tree_dirty": true,
+ "gate_passes": true,
+ "printed_leash_report": true,
+ "asks_user_a_question": true,
+ "turn2_chars": 753,
+ "turn2_text": "```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py (new), README.md, PLAN.md (steps marked done); no commits -- global instructions keep git for the user, and the project permission rule alone does not grant a commit\nTree:     dirty: M README.md, M greet.py, M PLAN.md, ?? test_greet.py -- against baseline 5a6221d\nGates:    python3 test_greet.py -> ok; CLI checked 4 ways -- default \"hello world\", name \"hello ada\", --verbose ada -> \"verbose on\"/\"hello ada\", --verbose alone -> \"verbose on\"/\"hello world\"\nDeferred: none\n```\n\n`--verbose` handled by filtering `sys.argv` -- skipped argparse, add when a second flag appears. Test run left a `__pycache__/` dir; removed it, tree holds plan changes only."
+}
