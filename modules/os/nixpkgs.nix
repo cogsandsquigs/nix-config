@@ -1,9 +1,7 @@
-# nixpkgs settings.
+# nixpkgs settings. These apply to the system and, through `useGlobalPkgs`, to home-manager too.
 #
-# Applies to the system and, through home-manager's `useGlobalPkgs`, to the home configuration too. The
-# `config` values live in ../_nixpkgs-config.nix and the `overlays` list in ../_overlays.nix, because
-# tools/default.nix needs the same ones from outside the module system, to instantiate `pkgs` for a
-# standalone home-manager host.
+# The values live in ../_nixpkgs-config.nix and ../_overlays.nix. tools/default.nix reads the same
+# two files from outside the module system, to build `pkgs` for a standalone home-manager host.
 let
     nixpkgs = { inputs, ... }: {
         nixpkgs = {

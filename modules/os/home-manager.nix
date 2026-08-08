@@ -4,7 +4,7 @@
 # home registry to the sub-evaluation. The user unit decides the feature set, which is what keeps users
 # portable across hosts.
 #
-# A standalone home-manager host has no system layer and never reaches this file; tools/default.nix builds
+# A standalone home-manager host has no system layer and never reaches this file. tools/default.nix builds
 # it directly from the user unit.
 #
 # Identical on both system classes apart from which integration module to import, so the body is written

@@ -72,7 +72,7 @@
             servers = lib.listToAttrs (map toServer (lib.unique (map (b: b.server.name) bindings)));
 
             # extension/filename -> the distinct "<server> as <id>" claims on it. More than one is a real
-            # conflict; the same claim twice is not, since helix lists some names as both a type and a glob.
+            # conflict. The same claim twice is not, since helix lists some names as both a type and a glob.
             claims = lib.foldl' (
                 acc: b:
                 lib.foldl' (

@@ -8,7 +8,7 @@
 #
 #   <feature>.nix     a feature, as an attrset keyed by class: nixos, darwin, home. Single-class files
 #                     are keyed too, so adding a class later never renames a file.
-#   <ns>/default.nix  the feature that owns the folder `<ns>`; that segment names no level, so
+#   <ns>/default.nix  the feature that owns the folder `<ns>`. That segment names no level, so
 #                     `dev/ai/default.nix` is the feature `dev.ai`.
 #   _<anything>       not a module. Shared values, package definitions, data tables, drafts.
 #
@@ -17,7 +17,7 @@
 # key instead.
 #
 # The reserved key `options` declares what EVERY class in the file declares. It must be disjoint from any
-# `options` a class key declares; the module system enforces that itself ("already declared in"). A block
+# `options` a class key declares. The module system enforces that itself ("already declared in"). A block
 # shared by only SOME classes is a `let` above the keys, not this -- a shared block would declare
 # `my.sys.*` inside the home evaluation, where nothing can read it.
 #
@@ -41,7 +41,7 @@ let
 
     # `uniq`, because two paths CAN name one feature: `cli/utils.nix` and `cli/utils/default.nix` both
     # resolve to "cli.utils". Plain `deferredModule` would merge them silently, leaving the feature owned
-    # by two files; `uniq` makes it "is defined multiple times", naming the feature.
+    # by two files. `uniq` makes it "is defined multiple times", naming the feature.
     #
     # It fires when a feature's module is DEMANDED, so `fleet-eval` catches it but `nix flake show` does
     # not -- listing the registry only forces the attribute names.

@@ -108,7 +108,7 @@ A folder's own feature is its `default.nix`, which names no extra level:
 `modules/dev/ai/default.nix` is the feature `dev.ai`, and it owns `my.user.dev.ai`. This is the same
 thing `default.nix` already means in `hosts/<host>/` and in `tools/` — the thing the folder _is_ —
 and it keeps a group beside the children it groups, so `ls modules/dev/ai/` is the whole feature. A
-leaf feature is `<name>.nix`; give it a folder and the file becomes `<name>/default.nix`, with no
+leaf feature is `<name>.nix`. Give it a folder and the file becomes `<name>/default.nix`, with no
 option renamed. `import-tree` hands the loader the file path, so Nix's own folder-resolves-to-
 `default.nix` rule never comes into it — `tools/feature.nix` drops the segment itself.
 
@@ -122,8 +122,8 @@ first. The error surfaces as soon as a host evaluates, so `fleet-eval` catches i
 A name that starts with `_` is not a module. Use it for shared values, package definitions, and data
 tables. The loader skips these files. `modules/dev/_langs/` holds the language tables,
 `modules/dev/ai/mcp/_gerrit-package.nix` holds a package definition, and
-`modules/_nixpkgs-config.nix` and `modules/_overlays.nix` hold the two halves of the nixpkgs
-instantiation that `tools/default.nix` also has to read from outside the module system.
+`modules/_nixpkgs-config.nix` and `modules/_overlays.nix` hold what `tools/default.nix` must also
+read from outside the module system.
 
 The path is binding, not advisory. The `feature-paths` check reads the file that declares each
 `my.*` option and compares that file to the path. A file may only declare options under the feature
@@ -322,20 +322,20 @@ Step 1 without step 2 fails `feature-paths`. Step 2 without step 1 fails the sam
 ## Secrets
 
 Sensitive material (a GPG key, a token, a certificate) is encrypted with [sops-nix] and committed
-under `secrets/` -- the `*.sops` blobs are safe to push; only the matching **private age key**
-decrypts them. Full workflow (create/edit/rotate, bootstrapping, the GPG ceremony) is in
-**[`secrets/README.md`](secrets/README.md)**; in brief:
+under `secrets/`. The `*.sops` blobs are safe to push. Only the matching private age key decrypts
+them. [`secrets/README.md`](secrets/README.md) holds the full workflow: create, edit, rotate,
+bootstrap, and the GPG ceremony. In brief:
 
-- **Identities are per-(user, machine).** Each machine generates its own age key at
-  `/etc/nix/age/<user>` (never copied), registered in `secrets/.sops.yaml` as a rule's recipient. A
-  leaked key exposes only that machine's secrets.
-- **A secret's folder picks its audience** (via the `creation_rules` in `secrets/.sops.yaml`):
-  `cogs@glorpbook/...` -> that machine only; `cogs/...` -> all of that user's machines. "On all my
-  boxes" = encrypt to multiple recipients, never share a private key.
-- **Features stay secret-agnostic.** A feature exposes a `tools.opt.mkSecretPath` hole; the
-  user/host unit wires it -- `sops.secrets = tools.secrets.declare "<id>" "<name>"` to register,
-  `tools.secrets.path config "<id>" "<name>"` to feed the decrypted path in. So "which secret feeds
-  which feature" lives in one file, the unit.
+- **Identities are per (user, machine).** Each machine generates its own age key at
+  `/etc/nix/age/<user>` and never copies it. `secrets/.sops.yaml` registers the public key as a
+  rule's recipient. A leaked key exposes only that machine's secrets.
+- **A secret's folder picks its audience**, through the `creation_rules` in `secrets/.sops.yaml`.
+  `cogs@glorpbook/...` reaches that machine only. `cogs/...` reaches all of that user's machines.
+  "On all my boxes" means encrypt to several recipients. Never share a private key.
+- **Features stay secret-agnostic.** A feature exposes a `tools.opt.mkSecretPath` hole, and the user
+  or host unit wires it. `tools.secrets.declare "<id>" "<name>"` registers the secret.
+  `tools.secrets.path config "<id>" "<name>"` feeds the decrypted path in. So one file, the unit,
+  says which secret feeds which feature.
 
 ```nix
 # users/cogs/home.nix -- git's signing key on a box provisioned via sops
@@ -345,23 +345,22 @@ my.user.cli.git.signingKeyFile = tools.secrets.path config "cogs@glorpbox" "gpg"
 
 ## Local env overrides (`.env`)
 
-`${flakeDir}/.env` (i.e. `/etc/nix/.env` on every current host) is a machine-local, git-ignored
-`KEY=VALUE` file sourced at shell startup -- **after** the config sets its env vars, **before** PATH
-is built. It overrides anything the `variables` set in `modules/shell/env.nix` define, and an
-overridden `JAVA_HOME` still feeds `$JAVA_HOME/bin`. A missing file is a no-op.
+`${flakeDir}/.env` (that is, `/etc/nix/.env` on every current host) is a machine-local, git-ignored
+`KEY=VALUE` file. The shells source it at startup, after the config sets its env vars and before
+PATH is built. It overrides anything the `variables` set in `modules/shell/env.nix` defines, and an
+overridden `JAVA_HOME` still feeds `$JAVA_HOME/bin`. A missing file does nothing.
 
-- **No rebuild to change values.** The shells re-read `.env` on every startup, so editing a value
-  there takes effect in the next shell -- no `nxm rebuild`. (Adding the _mechanism_ needed a
-  rebuild; changing values in `.env` does not.)
-- **One parser.** bash/zsh source it directly (`set -a; . .env; set +a`); fish reuses bash via the
-  `bass` plugin -- so bash quoting rules apply everywhere (quote values with spaces).
-- **Typical use:** the work box sets `JAVA_HOME=/usr/lib/jdk-21` to prefer a locally-installed JDK
+- **No rebuild to change values.** The shells re-read `.env` at every startup, so a new value takes
+  effect in the next shell. Adding the _mechanism_ needed a rebuild. Changing a value does not.
+- **One parser.** bash and zsh source the file directly (`set -a; . .env; set +a`). fish reuses bash
+  through the `bass` plugin, so bash quoting rules apply everywhere. Quote values with spaces.
+- **Typical use:** the work box sets `JAVA_HOME=/usr/lib/jdk-21` to prefer a locally installed JDK
   over the Nix one, instead of hardcoding it in the flake.
 - **Credentials for MCP servers.** `my.user.dev.ai.mcp.*` defaults to `${GERRIT_HOST}`,
   `${GERRIT_USERNAME}`, `${GERRIT_PASSWORD}` (an HTTP password: Gerrit -> Settings -> HTTP
   Credentials) and `${YOUTRACK_HOST}`, `${YOUTRACK_AUTH_TOKEN}` (a permanent token, YouTrack scope).
   Claude Code expands them at launch, so they stay out of `/nix/store`. Only shells load `.env`, so
-  a `claude` started from a desktop launcher can't reach either server.
+  a `claude` started from a desktop launcher reaches neither server.
 
 ## Common tasks
 
@@ -385,33 +384,33 @@ nxm edit      # e -- open $EDITOR, then rebuild
 
 ## Work desktop -- standalone home-manager on Ubuntu
 
-The work box runs Ubuntu 24, **not** NixOS: only the home-manager layer
+The work box runs Ubuntu 24, **not** NixOS. Only the home-manager layer
 (`homeConfigurations."ipratt@ip-workbox"`) is applied, so nothing here manages the OS. Ubuntu stays
-as-is; Nix lives alongside it under `/nix`.
+as it is, and Nix lives alongside it under `/nix`.
 
 Being a distro Linux is also what lets `my.user.dev.nvm.enable` work here: nvm downloads prebuilt
-glibc node binaries, and Ubuntu provides the FHS loader they need. The `nvm.sh` script is pinned in
-the store by `modules/dev/nvm.nix`; only the node versions it installs are imperative, under
-`~/.nvm`. `node` stays the nixpkgs one until `nvm use` says otherwise.
+glibc node binaries, and Ubuntu provides the FHS loader they need. `modules/dev/nvm.nix` pins the
+`nvm.sh` script in the store. Only the node versions it installs are imperative, under `~/.nvm`.
+`node` stays the nixpkgs one until `nvm use` says otherwise.
 
 ### Which Nix install: multi-user (recommended) vs single-user
 
-**Recommended: multi-user (daemon) via Determinate Nix.** On a machine you administer with `sudo`,
-multi-user is the modern default:
+**Recommended: multi-user (daemon) through Determinate Nix.** On a machine you administer with
+`sudo`, multi-user is the modern default:
 
-- Builds run as unprivileged `nixbld` users, isolated from `$HOME` -- safer, the upstream norm.
-  Single-user (`--no-daemon`) is legacy (and unsupported on macOS).
-- **Determinate Nix** (Determinate Systems' distribution, same as this repo's MacBook) adds over
-  vanilla: flakes + `nix-command` on by default, faster eval (`lazy-trees` + parallel), the FlakeHub
-  cache, a robust installer **and uninstaller**, and a managed `/etc/nix/nix.conf`
-  (`determinate-nixd`). Multi-user only -- lines up with the recommendation.
-- Keeps the work box matching the rest of this config.
+- Builds run as unprivileged `nixbld` users, isolated from `$HOME`. This is safer and it is the
+  upstream norm. Single-user (`--no-daemon`) is legacy, and macOS does not support it.
+- **Determinate Nix** (Determinate Systems' distribution, the same one this repo's MacBook runs)
+  adds flakes and `nix-command` by default, faster eval (`lazy-trees` and parallel), the FlakeHub
+  cache, a one-command uninstaller, and a managed `/etc/nix/nix.conf` (`determinate-nixd`). It is
+  multi-user only, which lines up with the recommendation.
+- It keeps the work box matching the rest of this config.
 
 Use single-user **only** without root.
 
-Either way the flake is **install-method-agnostic**: `hosts/ip-workbox` and the home modules make no
-single/multi-user assumption. The `modules/shell/env.nix` nix-env sourcing and `nxm` handle both,
-and no alias uses `sudo` here.
+Either way the flake makes no assumption about the install method. `hosts/ip-workbox` and the home
+modules work under both. The `modules/shell/env.nix` nix-env sourcing and `nxm` handle both, and no
+alias here uses `sudo`.
 
 #### Recommended -- multi-user + Determinate Nix
 
@@ -426,7 +425,7 @@ sudo mkdir -p /etc/nix && sudo chown "$(id -u):$(id -g)" /etc/nix
 git clone <this-repo> /etc/nix
 
 # 3. Apply. The attribute is <primaryUser>@<directory name> -- see hosts/ip-workbox/. On a fresh box
-#    `home-manager` isn't on PATH yet, so bootstrap the first switch via `nix run`:
+#    `home-manager` is not on PATH yet, so bootstrap the first switch via `nix run`:
 nix run home-manager/release-26.05 -- switch -b bak --flake /etc/nix#ipratt@ip-workbox \
     --print-build-logs
 ```
@@ -441,7 +440,7 @@ sh <(curl -L https://nixos.org/nix/install) --no-daemon
 git clone <this-repo> ~/.config/nix
 
 # 3. Enable flakes for your user. ~/.config/nix/nix.conf sits inside the repo dir, but `nix.conf*`
-#    is gitignored so it's never committed.
+#    is gitignored, so it is never committed.
 echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
 
 # 4. Apply.
@@ -453,15 +452,15 @@ work, sudo-free on this box.
 
 > [!note]
 >
-> **The work-box name is a single source of truth** -- the `hosts/ip-workbox/` directory name, plus
+> **The work-box name is a single source of truth:** the `hosts/ip-workbox/` directory name, plus
 > `primaryUser` from its `id.nix` (see [Host and user data](#host-and-user-data)). The
 > `homeConfigurations` attribute and `home.username` both derive from it, so renaming the box is a
-> one-file edit. `nxm` auto-discovers the flake's sole `homeConfigurations` entry (falling back to
-> `$(whoami)@$(hostname)`, or an explicit `HM_TARGET`).
+> one-file edit. `nxm` finds the flake's sole `homeConfigurations` entry on its own. It falls back
+> to `$(whoami)@$(hostname)`, or to an explicit `HM_TARGET`.
 
 > [!note]
 >
-> home-manager can't set your login shell on non-NixOS. Make fish default (once):
+> home-manager cannot set your login shell on non-NixOS. Make fish the default (once):
 >
 > ```sh
 > chsh -s ~/.nix-profile/bin/fish
@@ -471,14 +470,14 @@ work, sudo-free on this box.
 >
 > **Git credentials on Linux use libsecret, shipped _inside_ the git package.** nixpkgs builds `git`
 > on Linux with libsecret support, so `${pkgs.git}/bin/git-credential-libsecret` exists with no
-> separate package. `git.nix` points `credential.helper` at it (not the plaintext `store` helper);
-> it talks to the running Secret Service (gnome-keyring / KWallet), which Ubuntu's GNOME session
-> provides. (git's old `git-credential-gnome-keyring` is deprecated in favour of libsecret.)
+> separate package. `git.nix` points `credential.helper` at it, not at the plaintext `store` helper.
+> It talks to the running Secret Service (gnome-keyring or KWallet), which Ubuntu's GNOME session
+> provides. libsecret replaces git's old and deprecated `git-credential-gnome-keyring`.
 
 ### Installing Nix on a non-NixOS machine (reference)
 
 On any non-NixOS host (Ubuntu, other distros, WSL, macOS) Nix installs into `/nix` and leaves the
-OS's package manager untouched. Two installers:
+package manager of the OS untouched. Two installers:
 
 |                | **Determinate Nix**                                       | **Regular (upstream) Nix**                       |
 | -------------- | --------------------------------------------------------- | ------------------------------------------------ |
@@ -488,8 +487,9 @@ OS's package manager untouched. Two installers:
 | Extras         | `lazy-trees`, FlakeHub cache, managed `/etc/nix/nix.conf` | --                                               |
 | Uninstall      | one command                                               | manual                                           |
 
-**Determinate Nix** (recommended; what this repo targets). As of early 2026 the installer always
-installs Determinate Nix (the old `--prefer-upstream-nix` opt-out was removed) -- no flag needed.
+**Determinate Nix** is the recommended installer, and the one this repo targets. As of early 2026 it
+always installs Determinate Nix, because the old `--prefer-upstream-nix` opt-out was removed. No
+flag is needed.
 
 ```sh
 # Install (multi-user; needs sudo)
@@ -499,8 +499,8 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
 /nix/nix-installer uninstall
 ```
 
-**Regular (upstream) Nix** -- official installer from nixos.org. Pick the mode explicitly; flakes
-are opt-in.
+**Regular (upstream) Nix** -- the official installer from nixos.org. Pick the mode explicitly.
+Flakes are opt-in.
 
 ```sh
 # Multi-user (daemon; recommended, needs sudo)
@@ -509,35 +509,20 @@ sh <(curl -L https://nixos.org/nix/install) --daemon
 # Single-user (no daemon, no root -- store owned by you)
 sh <(curl -L https://nixos.org/nix/install) --no-daemon
 
-# Enable flakes (upstream doesn't by default)
+# Enable flakes (upstream does not by default)
 mkdir -p ~/.config/nix && echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
 ```
 
-Uninstalling upstream Nix is manual:
-
-```sh
-# single-user: remove the store (plus the Nix line the installer added to your shell profile)
-rm -rf /nix
-
-# multi-user (Linux + systemd):
-sudo systemctl stop nix-daemon.service
-sudo systemctl disable nix-daemon.socket nix-daemon.service
-sudo systemctl daemon-reload
-sudo rm -rf /nix /etc/nix /etc/profile.d/nix.sh /etc/tmpfiles.d/nix-daemon.conf \
-    ~root/.nix-channels ~root/.nix-defexpr ~root/.nix-profile
-for i in $(seq 1 32); do sudo userdel "nixbld$i"; done
-sudo groupdel nixbld
-# then remove any Nix lines from /etc/bash.bashrc, /etc/bashrc, /etc/profile, /etc/zshrc
-# (the installer leaves *.backup-before-nix copies to restore).
-```
-
-That fiddly upstream uninstall vs Determinate's one-liner is much of why Determinate is recommended.
-See the [Determinate uninstall docs][det-uninstall] and [upstream uninstall docs][nix-uninstall].
+Uninstalling upstream Nix is manual, and on multi-user it means stopping the daemon, deleting `/nix`
+and `/etc/nix`, removing 32 `nixbld` users, and undoing the installer's edits to the shell profiles.
+That work, against Determinate's one command, is much of why Determinate is recommended. See the
+[Determinate uninstall docs][det-uninstall] and the [upstream uninstall docs][nix-uninstall] for the
+current steps.
 
 ### Migrating the work box from single-user to multi-user
 
-An in-place single->multi conversion isn't supported -- reinstall. Nothing of value is lost; the
-environment is declarative and rebuilt from this flake.
+Nix does not support an in-place single-to-multi conversion. Reinstall instead. Nothing of value is
+lost, because the environment is declarative and this flake rebuilds it.
 
 1. (Optional) note your current generation: `home-manager generations | head -1`.
 2. Uninstall single-user Nix: remove `/nix`, `~/.nix-profile`, `~/.nix-defexpr`, `~/.nix-channels`,
@@ -551,13 +536,13 @@ environment is declarative and rebuilt from this flake.
    `sudo mkdir -p /etc/nix && sudo chown "$(id -u):$(id -g)" /etc/nix && mv ~/.config/nix/* ~/.config/nix/.git /etc/nix/`.
 5. Re-apply: `home-manager switch -b bak --flake /etc/nix#ipratt@ip-workbox` (or `nxm rebuild`).
 
-No repo changes needed beyond moving it. `nxm rebuild`/`upgrade`/`clean` keep working sudo-free on
-your home-manager profile; `clean` never escalates on a standalone box (collects only your
-generations). On Determinate, its daemon manages `/etc/nix/nix.conf`.
+Moving the repo is the only change it needs. `nxm rebuild`, `upgrade`, and `clean` keep working
+without `sudo` on your home-manager profile. `clean` never escalates on a standalone box, and
+collects only your own generations. On Determinate, its daemon manages `/etc/nix/nix.conf`.
 
 ### `/etc/nix` vs `/etc/nixos` vs `~/.config/nix`
 
-Three easily-conflated things (the old scripts did):
+Three things that are easy to conflate, as the old scripts did:
 
 | Path             | What it is                                                                               |
 | ---------------- | ---------------------------------------------------------------------------------------- |
@@ -565,12 +550,13 @@ Three easily-conflated things (the old scripts did):
 | `/etc/nixos/`    | Where **NixOS** looks for `configuration.nix` / its flake (`nixos-rebuild`). NixOS-only. |
 | `~/.config/nix/` | The **per-user** Nix config dir (user-level `nix.conf`, XDG).                            |
 
-None means "where my flake repo lives" -- that's incidental. On the Mac and work box this repo sits
-at `/etc/nix` (so repo-root and the nix.conf dir coincide; on the work box `/etc/nix` is user-owned,
-not root, since Nix is per-user). The single-user install path uses `~/.config/nix`, since a
-rootless machine can't write `/etc`. So `nxm` **derives the flake dir from its own location** and
-never set `NIX_CONF_DIR` (which would tell Nix to read `nix.conf` from the repo -- wrong on Ubuntu).
-`nix.conf`/`*.crt` are gitignored, so cloning to `~/.config/nix` carries no stray Nix config there.
+None of them means "where my flake repo lives". That is incidental. On the Mac and the work box this
+repo sits at `/etc/nix`, so the repo root and the `nix.conf` dir coincide. On the work box the user
+owns `/etc/nix` rather than root, because Nix is per-user there. The single-user install path uses
+`~/.config/nix`, because a rootless machine cannot write `/etc`. So `nxm` **derives the flake dir
+from its own location** and never sets `NIX_CONF_DIR`, which would tell Nix to read `nix.conf` from
+the repo and is wrong on Ubuntu. `nix.conf` and `*.crt` are gitignored, so cloning to
+`~/.config/nix` carries no stray Nix config there.
 
 ## Resources
 

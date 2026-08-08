@@ -35,7 +35,7 @@
                             with pkgs;
                             [
                                 discord
-                                balena-etcher # ../_overlays.nix; no nixpkgs package
+                                balena-etcher # from ../_overlays.nix, not nixpkgs
                             ]
                         else
                             [ ]
@@ -64,10 +64,10 @@
                         "ungoogled-chromium"
 
                         # currently on macos the nix pkg gets stuck on launch, keeps trying 2 upd
-                        # (???); ptb and canary don't fix issue
+                        # (???). ptb and canary do not fix issue
                         "discord"
 
-                        # The balena-etcher overlay is linux-only upstream (:/)
+                        # The nix overlay is linux only (:/)
                         "balenaetcher"
                     ];
                 };

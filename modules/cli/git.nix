@@ -35,7 +35,7 @@
                     description = "Whether to GPG-sign every commit by default.";
                 };
 
-                # Decrypted GPG key to import at activation; null = key already in keyring. See secrets/README.md.
+                # Decrypted GPG key to import at activation. null = key already in keyring. See secrets/README.md.
                 signingKeyFile = tools.opt.mkSecretPath "Path to a decrypted exported GPG secret key to import at activation.";
             };
 
@@ -43,8 +43,8 @@
                 # No `home.packages`: the three `programs.*` blocks below install gitFull, delta and
                 # lazygit themselves.
 
-                # gpg --import is idempotent; kill the agent after so it picks up the new keygrip immediately
-                # (gpg-agent caches state and won't reflect the import until restarted).
+                # gpg --import is idempotent. Kill the agent after so it picks up the new keygrip immediately
+                # (gpg-agent caches state and does not reflect the import until restarted).
                 home.activation.importGpgSigningKey = lib.mkIf (cfg.signingKeyFile != null) (
                     lib.hm.dag.entryAfter [ "writeBoundary" "sops-nix" ] ''
                         if [ -r "${cfg.signingKeyFile}" ]; then
@@ -83,7 +83,7 @@
                         credential.helper =
                             if pkgs.stdenv.isDarwin then "osxkeychain" else "${pkgs.gitFull}/bin/git-credential-libsecret";
 
-                        # signing.signer doesn't wire gpg.program -- set it here.
+                        # signing.signer does not wire gpg.program -- set it here.
                         gpg.program = "${pkgs.gnupg}/bin/gpg";
 
                     };

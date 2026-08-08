@@ -44,6 +44,6 @@
         ];
     };
 
-    # A .clang-format config is waiting in ../_clang-format.yaml; the spec has no way to ship
+    # A .clang-format config is waiting in ../_clang-format.yaml. The spec has no way to ship
     # a file into $HOME yet.
 }

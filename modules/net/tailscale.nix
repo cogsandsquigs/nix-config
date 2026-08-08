@@ -1,6 +1,6 @@
 # Tailscale, via the Homebrew cask.
 #
-# darwin only for now. NixOS has `services.tailscale.enable`; add a `nixos` key when the personal Linux
+# darwin only for now. NixOS has `services.tailscale.enable`. Add a `nixos` key when the personal Linux
 # box exists.
 #
 # The cask and the login agent that opens it are ONE feature, under one `mkIf`. Split across two files,

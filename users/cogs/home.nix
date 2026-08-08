@@ -13,7 +13,7 @@
 let
     me = "cogs@${host.name}";
 
-    # presence of the .sops file is the switch -- no allowlist; every machine self-wires uniformly.
+    # presence of the .sops file is the switch -- no allowlist. Every machine self-wires uniformly.
     haveGpg = builtins.pathExists (../../secrets + "/${me}/gpg.sops");
 in
 {

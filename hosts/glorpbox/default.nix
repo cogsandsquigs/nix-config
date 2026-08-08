@@ -1,7 +1,7 @@
 # glorpbox -- x86_64-linux NixOS tower (personal daily-driver desktop).
 #
 # STUB: this machine does not exist yet. It already inherits every feature under modules/ (the full
-# personal profile), so filling it in means adding the real hardware details below; the placeholder root
+# personal profile), so filling it in means adding the real hardware details below. The placeholder root
 # filesystem and bootloader are what keep it evaluable meanwhile.
 #
 # The *personal* Linux box. The work machine is a leaner standalone home-manager config -- hosts/ip-workbox.

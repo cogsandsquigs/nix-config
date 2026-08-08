@@ -73,7 +73,7 @@
             # Machine-local overrides: read ${flakeDir}/.env (KEY=VALUE, untracked) at shell startup and
             # let it override anything `variables` set. Loaded AFTER variables but BEFORE paths, so an
             # overridden JAVA_HOME still feeds "$JAVA_HOME/bin" in binPaths. Missing file is a no-op.
-            # One canonical parser: bash sources the file directly; fish reuses it via `bass`.
+            # One canonical parser: bash sources the file directly. fish reuses it via `bass`.
             envFileLoaderPosix = ''
                 if [ -f "${flakeDir}/.env" ]; then
                     set -a
@@ -112,7 +112,7 @@
                         set fish_greeting # Disable fish greeting
                         fish_config theme choose "Catppuccin Mocha" # Set theme. We use `choose` since using
                                                                     # `save` forces a prompt, which is annoying,
-                                                                    # even though `choose` doesn't make it
+                                                                    # even though `choose` does not make it
                                                                     # "permanent".
 
                         # Source miniconda if it exists
@@ -127,7 +127,7 @@
                         ${pathsToString (path: "fish_add_path ${path}")}
                     '';
 
-                    # NOTE: Since Fisher isn't really supported thru Home-manager, we use
+                    # NOTE: Since Fisher is not really supported thru Home-manager, we use
                     # xdg to link the theme. See below
                 };
 
@@ -167,7 +167,7 @@
 
                     initContent = ''
                         # Source the nix environment. A multi-user (daemon) install exposes this at
-                        # /etc/profile.d/nix.sh; a single-user install exposes it under the user profile.
+                        # /etc/profile.d/nix.sh. A single-user install exposes it under the user profile.
                         # Guarded so a missing file never errors on shell startup, and works for both.
                         for __nix_sh in /etc/profile.d/nix.sh "$HOME/.nix-profile/etc/profile.d/nix.sh"; do
                             [ -e "$__nix_sh" ] && source "$__nix_sh" && break

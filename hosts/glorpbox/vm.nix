@@ -28,7 +28,7 @@
         # Throwaway, and it lands in the store -- hence VM-only.
         users.users.cogs.initialPassword = "cogs";
 
-        # The VM exercises the session, not the app set; these two cost gigabytes.
+        # The VM exercises the session, not the app set. These two cost gigabytes.
         home-manager.users.cogs.my.user.apps = {
             games.enable = lib.mkForce false;
             desktopApps.enable = lib.mkForce false;

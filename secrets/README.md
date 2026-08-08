@@ -1,28 +1,28 @@
 # secrets
 
-Anything sensitive -- a private key, a VPN profile, a token -- gets encrypted here with
-[sops](https://github.com/getsops/sops) (using [sops-nix](https://github.com/Mic92/sops-nix) to
-decrypt it at activation) so it can live in the repo safely. The encrypted `*.sops` files are fine
-to commit and push; the only thing that decrypts them is your private age key at
-`/etc/nix/age/<you>`, which is generated **per machine** and never leaves it (gitignored).
+Anything sensitive -- a private key, a VPN profile, a token -- is encrypted here with
+[sops](https://github.com/getsops/sops), so it can live in the repo safely.
+[sops-nix](https://github.com/Mic92/sops-nix) decrypts it at activation. The encrypted `*.sops`
+files are safe to commit and push. Only your private age key decrypts them. That key lives at
+`/etc/nix/age/<you>`, is generated **per machine**, and never leaves it (gitignored).
 
 Two things live in this folder:
 
-- **`.sops.yaml`** -- the `creation_rules`: a list of `path_regex -> age public key(s)`. This is the
-  "who's allowed to read what" list. The `sops` CLI reads it when you create/edit/re-key a secret.
-- **the `*.sops` files** -- each under an **audience folder**: an identity (`cogs@glorpbox/...` ->
-  that machine only) or a bare user (`cogs/...` -> all of your machines). Which key a secret is
-  encrypted to is decided by the first `path_regex` in `.sops.yaml` that matches its folder.
+- **`.sops.yaml`** -- the `creation_rules`, a list of `path_regex -> age public key(s)`. This is the
+  "who may read what" list. The `sops` CLI reads it when you create, edit, or re-key a secret.
+- **the `*.sops` files** -- each under an **audience folder**, either an identity
+  (`cogs@glorpbox/...` reaches that machine only) or a bare user (`cogs/...` reaches all of your
+  machines). The first `path_regex` in `.sops.yaml` that matches the folder picks the key.
 
 A secret is addressed by its folder + leaf: `cogs@glorpbox/gpg` is the file
 `cogs@glorpbox/gpg.sops`.
 
 > Running the CLI:
 >
-> - Your identity is an age key at `/etc/nix/age/<you>` (not in `~/.ssh`), so **decrypt / edit /
->   re-key need it**: `export SOPS_AGE_KEY_FILE=/etc/nix/age/<you>` first (or pass it inline).
-> - **Creating** a brand-new secret doesn't need your key (it only encrypts, to the recipient from
->   `.sops.yaml`).
+> - Your identity is an age key at `/etc/nix/age/<you>`, not in `~/.ssh`. **Decrypt, edit, and
+>   re-key need it.** Run `export SOPS_AGE_KEY_FILE=/etc/nix/age/<you>` first, or pass it inline.
+> - **Creating** a new secret does not need your key. It only encrypts, to the recipient that
+>   `.sops.yaml` names.
 
 ## Stash a new secret
 
@@ -33,8 +33,8 @@ Then encrypt a plaintext file into place with the helper:
 ./sops-stash.sh ~/api-token.txt cogs/api-token   # -> secrets/cogs/api-token.sops
 ```
 
-(`sops-stash.sh` is just a wrapper around `sops encrypt --input-type binary`; the recipient is
-picked from `.sops.yaml` by the `cogs/api-token` path.)
+(`sops-stash.sh` only wraps `sops encrypt --input-type binary`. The `cogs/api-token` path picks the
+recipient from `.sops.yaml`.)
 
 Use it from your config (`users/cogs/home.nix`):
 
@@ -46,8 +46,9 @@ Use it from your config (`users/cogs/home.nix`):
 }
 ```
 
-`rebuild`. `declare` registers it so sops decrypts it at activation; `path` is where the plaintext
-lands at runtime (`~/.config/sops-nix/secrets/<flattened-name>`), which you hand to the feature.
+`rebuild`. `declare` registers the secret, so sops decrypts it at activation. `path` is where the
+plaintext lands at runtime (`~/.config/sops-nix/secrets/<flattened-name>`). Hand that path to the
+feature.
 
 ## Change one later
 
@@ -78,8 +79,9 @@ included: `sops updatekeys <file>.sops` (needs `SOPS_AGE_KEY_FILE` set to an exi
 
 ## Keep your GPG signing key across machines
 
-You use an offline master key with a per-machine signing subkey (the secure setup). A new machine
-needs its own subkey -- stash it here, encrypted to just that machine, and it imports on activation.
+You use an offline master key with a per-machine signing subkey, which is the secure setup. A new
+machine needs its own subkey. Stash it here, encrypted to that machine alone, and it imports on
+activation.
 
 > WARNING: Export the **subkey only**, never the master secret. Back up `~/.gnupg` first anyway.
 
@@ -96,8 +98,9 @@ gpg --export-secret-subkeys --armor <SUBKEY>! > /tmp/sub.asc   # the trailing ! 
 rm -P /tmp/sub.asc                                             # wipe the temp copy (Linux: shred -u)
 ```
 
-Wire it per-machine in `users/cogs/home.nix` -- gated on whether the `.sops` file exists (so only
-provisioned machines import; the machine where the key was created already has it in its keyring):
+Wire it per machine in `users/cogs/home.nix`, gated on whether the `.sops` file exists. Only
+provisioned machines then import it. The machine where you created the key already holds it in its
+keyring.
 
 ```nix
 { config, lib, tools, hostId, ... }:
@@ -116,10 +119,10 @@ each box automatically uses whichever signing subkey it has locally.
 
 ### Minting a _fresh_ subkey per machine (stronger isolation)
 
-The steps above copy your existing subkeys to a new box. If you'd rather each machine have its
-**own** signing (+ encryption) subkey -- so you can revoke one box without touching the others --
-use [`./mint-subkeys.sh`](./mint-subkeys.sh). It mints them from your master and stashes them as the
-machine's secret in one go.
+The steps above copy your existing subkeys to a new box. To give each machine its **own** signing
+and encryption subkey, so you can revoke one box without touching the others, use
+[`./mint-subkeys.sh`](./mint-subkeys.sh). It mints them from your master and stashes them as the
+machine's secret in one step.
 
 > WARNING: It needs the master **secret**, so run it on your **air-gapped** box (where the master
 > lives), not a daily machine. See the header comment for the full flow and caveats.

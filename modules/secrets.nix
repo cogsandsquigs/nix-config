@@ -46,7 +46,7 @@ in
             # On darwin sops-nix's activation boots out then bootstraps its own launchd plist, but
             # home-manager installs that plist later, in `setupLaunchAgents`. On a FIRST activation the
             # bootstrap therefore dies with "Bootstrap failed: 5: Input/output error" (launchctl's error
-            # for a missing plist). Installing it up front fixes that; setupLaunchAgents re-installs it
+            # for a missing plist). Installing it up front fixes that. setupLaunchAgents re-installs it
             # later, harmlessly.
             #
             # The "Boot-out failed: 3: No such process" line just before is NOT this bug -- that is the

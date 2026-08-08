@@ -6,7 +6,7 @@
 # is left is the portal switch, realtime scheduling, and a way to log in.
 #
 # The home half owns `~/.config/sway/config` and nothing else. `package = null` leaves the binary to the
-# system wrapper, which carries the session commands and seat privileges; a second sway here would shadow
+# system wrapper, which carries the session commands and seat privileges. A second sway here would shadow
 # it. Hence the NixOS assertion too -- on a standalone box there is no system half, so this would write a
 # config for a compositor nobody installed.
 {
@@ -34,7 +34,7 @@
                 # them, but not the switch that turns the portal service on.
                 xdg.portal.enable = true;
 
-                # pipewire arrives with `services.graphical-desktop`; the realtime scheduling it
+                # pipewire arrives with `services.graphical-desktop`. The realtime scheduling it
                 # wants does not.
                 security.rtkit.enable = true;
 

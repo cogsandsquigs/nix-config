@@ -42,7 +42,7 @@
             ".bbx"
             ".cbx"
         ];
-        # latexindent is for .tex; texlab formats .bib itself over LSP.
+        # latexindent is for .tex. texlab formats .bib itself over LSP.
         bibtex = {
             extensions = [ ".bib" ];
             fmt = [ ];

@@ -24,7 +24,7 @@
 
                     # NOTE: $package should come after all language symbols as it displays the package manager + version for the
                     # current language.
-                    # NOTE: We need to use `''` in front of any `${<...snip...>}` since that's how nix string interpolation is
+                    # NOTE: We need to use `''` in front of any `${<...snip...>}` since that is how nix string interpolation is
                     # escaped. See: https://nix.dev/manual/nix/2.25/language/string-interpolation
                     #
                     # Only what is named here renders: a module left out of `format` is inert however it
@@ -100,7 +100,7 @@
                         # the default symbol.
                         #
                         # NOTE: These require nerd fonts to use!
-                        # NOTE: Need spaces since format doesn't have spaces, and spacing might be different
+                        # NOTE: Need spaces since format does not have spaces, and spacing might be different
                         # per-symbol (unicode weirdness).
                         symbols = {
                             Macos = " ";

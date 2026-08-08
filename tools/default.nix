@@ -77,8 +77,8 @@ let
     # A STANDALONE home-manager configuration: per-user Nix, no system layer (the work desktop on Ubuntu).
     # The user's home.nix owns the feature set, not this builder.
     #
-    # System hosts get their nixpkgs config and overlays through useGlobalPkgs; a standalone config owns
-    # its own `pkgs`, so it reads the same shared files modules/os/nixpkgs.nix does.
+    # System hosts get their nixpkgs config and overlays through useGlobalPkgs. A standalone config owns
+    # its own `pkgs`, so it reads the same two files modules/os/nixpkgs.nix does.
     mkHome =
         host:
         home-manager.lib.homeManagerConfiguration {
@@ -131,7 +131,7 @@ in
     # Filtered by platform: a VM has to be built by the machine it targets, so asking the Mac for an
     # `x86_64-linux` one finds no attribute rather than a build error.
     #
-    # `meta` never enters a derivation, so pinning `mainProgram` moves no store path; it is what lets
+    # `meta` never enters a derivation, so pinning `mainProgram` moves no store path. It is what lets
     # `nix run` find the run script inside the output.
     vmPackages =
         system:

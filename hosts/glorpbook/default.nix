@@ -1,9 +1,9 @@
 # glorpbook -- aarch64-darwin MacBook.
-# This file owns the machine's identity and host-only tweaks; every shared feature lives under modules/.
+# This file owns the machine's identity and host-only tweaks. Every shared feature lives under modules/.
 { host, ... }:
 let
     # Host identity comes from ./id.nix via the `host` specialArg, checked by tools/fleet.nix. The
-    # hostname is the directory name; `primaryUser` owns host-level singletons (system.primaryUser,
+    # hostname is the directory name. `primaryUser` owns host-level singletons (system.primaryUser,
     # the Homebrew prefix).
     hostName = host.name;
     inherit (host) primaryUser;

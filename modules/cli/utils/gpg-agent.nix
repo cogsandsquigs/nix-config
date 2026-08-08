@@ -1,6 +1,6 @@
 # gpg-agent OS-specific tweaks. Gated by `my.user.cli.utils.enable` (./default.nix)
 # alongside the rest of gpg (./gpg.nix enables the agent itself). Self-gates on OS: the macOS branch
-# adds mac-native pinentry; the Linux branch just picks a pinentry.
+# adds mac-native pinentry. The Linux branch just picks a pinentry.
 {
     home =
         {
@@ -24,7 +24,7 @@
                     services.gpg-agent.pinentry.package = pkgs.pinentry_mac;
 
                     # home-manager defaults this true, which writes `grab` into gpg-agent.conf. On macOS
-                    # `grab` makes pinentry-mac call a window-server grab API at startup; after wake from
+                    # `grab` makes pinentry-mac call a window-server grab API at startup. After wake from
                     # sleep that call fails and pinentry-mac exits immediately ("No pinentry"). Off, it
                     # reads the passphrase from the Keychain silently, with no window-server interaction.
                     services.gpg-agent.grabKeyboardAndMouse = false;
@@ -36,7 +36,7 @@
                 })
 
                 # Linux: gpg-agent runs as a systemd user service, so none of the above applies. A
-                # headless pinentry; a GUI host can override with e.g. pkgs.pinentry-gnome3.
+                # headless pinentry. A GUI host can override with e.g. pkgs.pinentry-gnome3.
                 (lib.mkIf (enabled && !isDarwin) { services.gpg-agent.pinentry.package = pkgs.pinentry-curses; })
             ];
         };

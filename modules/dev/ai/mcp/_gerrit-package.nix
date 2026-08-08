@@ -77,7 +77,7 @@ writeShellApplication {
         host="''${host%/}"
 
         # Both files hold credentials: private dir, 0600, tmpfs where available (cleared at logout).
-        # Written via mv so a concurrent client can't read a half-written file.
+        # Written via mv so a concurrent client cannot read a half-written file.
         runtime_dir="''${XDG_RUNTIME_DIR:-$(mktemp -d)}/gerrit-mcp"
         mkdir -p "$runtime_dir"
         chmod 700 "$runtime_dir"

@@ -1,6 +1,6 @@
 # Nix itself.
 #
-# On darwin, Determinate Nix owns the configuration and nix-darwin's own `nix.*` is switched off; on
+# On darwin, Determinate Nix owns the configuration and nix-darwin's own `nix.*` is switched off. On
 # NixOS, `nix.*` does the work. The caches, keys and trusted users are the same either way, so they are
 # stated once here rather than copy-pasted into two files that then drift.
 let

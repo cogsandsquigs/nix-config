@@ -20,7 +20,7 @@
     ];
 
     languages = {
-        # `.js.map` and friends are helix's own entries; a client matching on the last dot will
+        # `.js.map` and friends are helix's own entries. A client matching on the last dot will
         # see them as `.map`.
         json.extensions = [
             ".json"

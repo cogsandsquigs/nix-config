@@ -52,7 +52,7 @@
                         default = { };
                     };
 
-                    # -- derived by `resolve` below; a lang file never sets these ----------------------
+                    # -- derived by `resolve` below. A lang file never sets these ----------------------
                     command = lib.mkOption {
                         type = lib.types.str;
                         description = "`cmd`'s head: the executable, split out for clients that take the two apart.";
@@ -159,7 +159,7 @@
                         default = null;
                     };
 
-                    # -- derived by `resolve` below; a lang file never sets these ----------------------
+                    # -- derived by `resolve` below. A lang file never sets these ----------------------
                     servers = lib.mkOption {
                         type = lib.types.listOf lspSpec;
                         description = ''

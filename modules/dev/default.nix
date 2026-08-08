@@ -1,6 +1,6 @@
 # Development environments and languages tools (formatters, LSPs, etc.)
 #
-# `dev` is a GROUP: this file declares the master `my.user.dev.enable` (core, on today); each sub
+# `dev` is a GROUP: this file declares the master `my.user.dev.enable` (core, on today). Each sub
 # (ide/direnv/containers/langs/editors) owns its own leaf that defaults to the master's value
 # (`tools.opt.mkRiding`), so flipping the master flips the whole group, but any sub can be carved out.
 {

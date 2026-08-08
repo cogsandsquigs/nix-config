@@ -50,7 +50,7 @@
 
         ## Overlays ##
 
-        # (Balena) Etcher. Not in nixpkgs; applied as an overlay in modules/_overlays.nix.
+        # (Balena) Etcher. No nixpkgs package. Applied in modules/_overlays.nix.
         balena-etcher = {
             url = "github:sidharthify/balenaEtcher-flake";
             inputs.nixpkgs.follows = "nixpkgs";
@@ -87,7 +87,7 @@
             homeModules = tools.registry.homeManager;
 
             # `nix build .#<host>-vm` -> a bootable QEMU VM of that NixOS host. Derived from the
-            # fleet like everything else, so this still names no machine; a platform with no NixOS
+            # fleet like everything else, so this still names no machine. A platform with no NixOS
             # host of its own simply gets an empty set. `nix flake check` evaluates these and skips
             # building them, so the gates stay cheap.
             packages = tools.forAllSystems (pkgs: tools.vmPackages pkgs.stdenv.hostPlatform.system);

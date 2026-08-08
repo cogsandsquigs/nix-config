@@ -197,7 +197,7 @@ in
     # formatted only when someone happened to save them in the editor.
     #
     # Runs the same treefmt.toml `nix fmt` does, so the three ways to format (editor, CLI, gate) cannot
-    # disagree. `$self` is read-only in the store, hence the copy; `--no-cache` because the cache lives in
+    # disagree. `$self` is read-only in the store, hence the copy. `--no-cache` because the cache lives in
     # $HOME, which a sandbox does not have.
     fmt =
         pkgs.runCommand "fmt"

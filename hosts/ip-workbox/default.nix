@@ -4,13 +4,13 @@
 # (`home-manager switch --flake ...#ipratt@ip-workbox`). `class = "home"` (./id.nix), so tools/default.nix
 # builds it straight from the user unit, skipping the system-class features.
 #
-# The feature set, git identity and flake path live in the portable user unit (users/ipratt/); username
+# The feature set, git identity and flake path live in the portable user unit (users/ipratt/). Username
 # and platform come from ./id.nix. What is left here belongs to the MACHINE: Ubuntu's graphics stack.
 _: {
     _class = "homeManager";
 
     # ghostty comes from apt here. Its GTK is 4.14, which predates `wp_cursor_shape_v1` and so keeps
-    # drawing its own pointer; every nix-built GTK4 client (4.22) instead defers to mutter 46, which
+    # drawing its own pointer. Every nix-built GTK4 client (4.22) instead defers to mutter 46, which
     # sizes it wrong. Verified against gnome-calculator, so this is the toolkit, not the terminal.
     # Installing it locally also drops the need for an OpenGL wrapper -- there is no store binary to
     # wrap, which is why no host pulls nixGL in.

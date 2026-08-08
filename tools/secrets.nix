@@ -6,7 +6,7 @@ let
     secretFile = location: name: ../secrets + "/${location}/${name}.sops";
 
     # The `sops.secrets` identifier, and so the decrypted runtime filename. FLATTENED (`/` -> `-`) so
-    # "cogs@glorpbook" + "gpg" is one key, not a nested attr. Only this key is flat; the `.sops` path
+    # "cogs@glorpbook" + "gpg" is one key, not a nested attr. Only this key is flat. The `.sops` path
     # above stays nested.
     keyOf = location: name: builtins.replaceStrings [ "/" ] [ "-" ] "${location}/${name}";
 
