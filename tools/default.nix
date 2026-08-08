@@ -77,14 +77,15 @@ let
     # A STANDALONE home-manager configuration: per-user Nix, no system layer (the work desktop on Ubuntu).
     # The user's home.nix owns the feature set, not this builder.
     #
-    # System hosts get their nixpkgs config through useGlobalPkgs; a standalone config owns its own
-    # `pkgs`, so it reads the same shared attribute modules/os/nixpkgs.nix does.
+    # System hosts get their nixpkgs config and overlays through useGlobalPkgs; a standalone config owns
+    # its own `pkgs`, so it reads the same shared files modules/os/nixpkgs.nix does.
     mkHome =
         host:
         home-manager.lib.homeManagerConfiguration {
             pkgs = import nixpkgs {
                 inherit (host) system;
                 config = import (root + "/modules/_nixpkgs-config.nix");
+                overlays = import (root + "/modules/_overlays.nix") inputs;
             };
 
             extraSpecialArgs = argsFor host;

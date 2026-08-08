@@ -47,6 +47,14 @@
             url = "github:Mic92/sops-nix";
             inputs.nixpkgs.follows = "nixpkgs";
         };
+
+        ## Overlays ##
+
+        # (Balena) Etcher. Not in nixpkgs; applied as an overlay in modules/_overlays.nix.
+        balena-etcher = {
+            url = "github:sidharthify/balenaEtcher-flake";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
     };
 
     # Plain-flake composition: every file under ./modules is an ordinary NixOS / nix-darwin /

@@ -120,8 +120,10 @@ first. The error surfaces as soon as a host evaluates, so `fleet-eval` catches i
 `nix flake check`.
 
 A name that starts with `_` is not a module. Use it for shared values, package definitions, and data
-tables. The loader skips these files. `modules/dev/_langs/` holds the language tables, and
-`modules/dev/ai/mcp/_gerrit-package.nix` holds a package definition.
+tables. The loader skips these files. `modules/dev/_langs/` holds the language tables,
+`modules/dev/ai/mcp/_gerrit-package.nix` holds a package definition, and
+`modules/_nixpkgs-config.nix` and `modules/_overlays.nix` hold the two halves of the nixpkgs
+instantiation that `tools/default.nix` also has to read from outside the module system.
 
 The path is binding, not advisory. The `feature-paths` check reads the file that declares each
 `my.*` option and compares that file to the path. A file may only declare options under the feature

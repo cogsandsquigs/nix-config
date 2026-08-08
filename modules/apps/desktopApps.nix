@@ -30,8 +30,16 @@
                         # Fun
                         #spotify
                     ]
-                    ++ (if pkgs.stdenv.isLinux then with pkgs; [ discord ] else [ ]);
-
+                    ++ (
+                        if pkgs.stdenv.isLinux then
+                            with pkgs;
+                            [
+                                discord
+                                balena-etcher # ../_overlays.nix; no nixpkgs package
+                            ]
+                        else
+                            [ ]
+                    );
             };
         };
 
@@ -58,6 +66,9 @@
                         # currently on macos the nix pkg gets stuck on launch, keeps trying 2 upd
                         # (???); ptb and canary don't fix issue
                         "discord"
+
+                        # The balena-etcher overlay is linux-only upstream (:/)
+                        "balenaetcher"
                     ];
                 };
             };
