@@ -1,1 +1,59 @@
-{"is_error":false,"duration_api_ms":63593,"num_turns":9,"stop_reason":"end_turn","session_id":"ce828860-886b-4e01-8d9b-47b852805551","total_cost_usd":0.31839850000000003,"usage":{"input_tokens":17,"cache_creation_input_tokens":8208,"cache_read_input_tokens":306667,"output_tokens":3316,"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":8208,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":310,"cache_read_input_tokens":36801,"cache_creation_input_tokens":354,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":354},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-opus-5[1m]":{"inputTokens":17,"outputTokens":3316,"cacheReadInputTokens":306667,"cacheCreationInputTokens":8208,"webSearchRequests":0,"costUSD":0.31839850000000003,"contextWindow":1000000,"maxOutputTokens":64000,"canonicalModel":"claude-opus-5","provider":"firstParty"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subtype":"success","api_error_status":null,"result":"```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py (new), README.md, PLAN.md; no commits -- global CLAUDE.md keeps git actions for the user, and no memory or session grant permits them\nTree:     dirty (intended): M PLAN.md, M README.md, M greet.py, ?? test_greet.py -- against baseline d33b018\nGates:    python3 test_greet.py -> ok; manual runs -> no flag \"hello world\"/\"hello Ian\" unchanged, --verbose prints \"verbose on\" first in leading and trailing position\nDeferred: __pycache__/ appeared from the test import and was removed; no .gitignore added, that is outside the plan\n```\n\nFlag parsing is a `sys.argv` membership check, not argparse — 4 lines beat an import for one flag. Add argparse when a second option lands.","ttft_ms":6066,"ttft_stream_ms":1763,"time_to_request_ms":111,"type":"result","duration_ms":64285,"uuid":"816b439d-da05-424c-bb88-7e0cfd3da2c6"}
+{
+    "is_error": false,
+    "duration_api_ms": 63593,
+    "num_turns": 9,
+    "stop_reason": "end_turn",
+    "session_id": "ce828860-886b-4e01-8d9b-47b852805551",
+    "total_cost_usd": 0.31839850000000003,
+    "usage": {
+        "input_tokens": 17,
+        "cache_creation_input_tokens": 8208,
+        "cache_read_input_tokens": 306667,
+        "output_tokens": 3316,
+        "server_tool_use": { "web_search_requests": 0, "web_fetch_requests": 0 },
+        "service_tier": "standard",
+        "cache_creation": { "ephemeral_1h_input_tokens": 8208, "ephemeral_5m_input_tokens": 0 },
+        "inference_geo": "not_available",
+        "iterations": [
+            {
+                "input_tokens": 2,
+                "output_tokens": 310,
+                "cache_read_input_tokens": 36801,
+                "cache_creation_input_tokens": 354,
+                "cache_creation": {
+                    "ephemeral_5m_input_tokens": 0,
+                    "ephemeral_1h_input_tokens": 354
+                },
+                "type": "message"
+            }
+        ],
+        "speed": "standard"
+    },
+    "modelUsage": {
+        "claude-opus-5[1m]": {
+            "inputTokens": 17,
+            "outputTokens": 3316,
+            "cacheReadInputTokens": 306667,
+            "cacheCreationInputTokens": 8208,
+            "webSearchRequests": 0,
+            "costUSD": 0.31839850000000003,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "canonicalModel": "claude-opus-5",
+            "provider": "firstParty"
+        }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py (new), README.md, PLAN.md; no commits -- global CLAUDE.md keeps git actions for the user, and no memory or session grant permits them\nTree:     dirty (intended): M PLAN.md, M README.md, M greet.py, ?? test_greet.py -- against baseline d33b018\nGates:    python3 test_greet.py -> ok; manual runs -> no flag \"hello world\"/\"hello Ian\" unchanged, --verbose prints \"verbose on\" first in leading and trailing position\nDeferred: __pycache__/ appeared from the test import and was removed; no .gitignore added, that is outside the plan\n```\n\nFlag parsing is a `sys.argv` membership check, not argparse — 4 lines beat an import for one flag. Add argparse when a second option lands.",
+    "ttft_ms": 6066,
+    "ttft_stream_ms": 1763,
+    "time_to_request_ms": 111,
+    "type": "result",
+    "duration_ms": 64285,
+    "uuid": "816b439d-da05-424c-bb88-7e0cfd3da2c6"
+}

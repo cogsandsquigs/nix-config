@@ -1,1 +1,59 @@
-{"is_error":false,"duration_api_ms":11643,"num_turns":3,"stop_reason":"end_turn","session_id":"d10a0057-570e-4121-aaa0-c28b695a7d6a","total_cost_usd":0.18390849999999997,"usage":{"input_tokens":6,"cache_creation_input_tokens":13420,"cache_read_input_tokens":71307,"output_tokens":561,"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":13420,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":319,"cache_read_input_tokens":28001,"cache_creation_input_tokens":1016,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":1016},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-opus-5[1m]":{"inputTokens":6,"outputTokens":561,"cacheReadInputTokens":71307,"cacheCreationInputTokens":13420,"webSearchRequests":0,"costUSD":0.18390849999999997,"contextWindow":1000000,"maxOutputTokens":64000,"canonicalModel":"claude-opus-5","provider":"firstParty"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subtype":"success","api_error_status":null,"result":"Read. Plan understood, three steps, one commit each:\n\n1. `--verbose` flag in `greet.py` → prints `verbose on` before greeting; default unchanged.\n2. `test_greet.py` — assert self-check of `greet()`, runs via `python3 test_greet.py`.\n3. `README.md` Usage section documents `--verbose`.\n\nCurrent state: `greet.py` takes name from `sys.argv[1]`, no flag handling. Step 1 needs the flag stripped from argv so `--verbose` isn't swallowed as the name.\n\nStanding by. Say go.","ttft_ms":1949,"ttft_stream_ms":1239,"time_to_request_ms":92,"type":"result","duration_ms":12030,"uuid":"aa3f231d-3b1c-4b82-a79e-0aa511eed945"}
+{
+    "is_error": false,
+    "duration_api_ms": 11643,
+    "num_turns": 3,
+    "stop_reason": "end_turn",
+    "session_id": "d10a0057-570e-4121-aaa0-c28b695a7d6a",
+    "total_cost_usd": 0.18390849999999997,
+    "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 13420,
+        "cache_read_input_tokens": 71307,
+        "output_tokens": 561,
+        "server_tool_use": { "web_search_requests": 0, "web_fetch_requests": 0 },
+        "service_tier": "standard",
+        "cache_creation": { "ephemeral_1h_input_tokens": 13420, "ephemeral_5m_input_tokens": 0 },
+        "inference_geo": "not_available",
+        "iterations": [
+            {
+                "input_tokens": 2,
+                "output_tokens": 319,
+                "cache_read_input_tokens": 28001,
+                "cache_creation_input_tokens": 1016,
+                "cache_creation": {
+                    "ephemeral_5m_input_tokens": 0,
+                    "ephemeral_1h_input_tokens": 1016
+                },
+                "type": "message"
+            }
+        ],
+        "speed": "standard"
+    },
+    "modelUsage": {
+        "claude-opus-5[1m]": {
+            "inputTokens": 6,
+            "outputTokens": 561,
+            "cacheReadInputTokens": 71307,
+            "cacheCreationInputTokens": 13420,
+            "webSearchRequests": 0,
+            "costUSD": 0.18390849999999997,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "canonicalModel": "claude-opus-5",
+            "provider": "firstParty"
+        }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "Read. Plan understood, three steps, one commit each:\n\n1. `--verbose` flag in `greet.py` → prints `verbose on` before greeting; default unchanged.\n2. `test_greet.py` — assert self-check of `greet()`, runs via `python3 test_greet.py`.\n3. `README.md` Usage section documents `--verbose`.\n\nCurrent state: `greet.py` takes name from `sys.argv[1]`, no flag handling. Step 1 needs the flag stripped from argv so `--verbose` isn't swallowed as the name.\n\nStanding by. Say go.",
+    "ttft_ms": 1949,
+    "ttft_stream_ms": 1239,
+    "time_to_request_ms": 92,
+    "type": "result",
+    "duration_ms": 12030,
+    "uuid": "aa3f231d-3b1c-4b82-a79e-0aa511eed945"
+}

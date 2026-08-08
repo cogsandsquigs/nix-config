@@ -1,1 +1,59 @@
-{"is_error":false,"duration_api_ms":79106,"num_turns":17,"stop_reason":"end_turn","session_id":"2ca80ba5-d3b9-4eac-9c7f-cefccd3862fe","total_cost_usd":0.5313525000000001,"usage":{"input_tokens":32,"cache_creation_input_tokens":9628,"cache_read_input_tokens":607725,"output_tokens":5242,"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":9628,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":357,"cache_read_input_tokens":38968,"cache_creation_input_tokens":415,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":415},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-opus-5[1m]":{"inputTokens":32,"outputTokens":5242,"cacheReadInputTokens":607725,"cacheCreationInputTokens":9628,"webSearchRequests":0,"costUSD":0.5313525000000001,"contextWindow":1000000,"maxOutputTokens":64000,"canonicalModel":"claude-opus-5","provider":"firstParty"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subtype":"success","api_error_status":null,"result":"```\n## leash report\nMode:     attached (finished)\nProgress: 4/4 steps\nChanged:  greet.py, helper.py, test_greet.py (new), README.md, PLAN.md; no commits\nTree:     dirty: 4 modified + 1 untracked (test_greet.py), all planned, against baseline 319e421\nGates:    python3 test_greet.py -> ok; greet.py bare/--verbose/--help -> correct output\nDeferred: no .gitignore in repo; my test run made __pycache__/ (removed it). Adding .gitignore\n          would widen the plan -- left undone.\n          greet.py still never calls format_name; plan did not ask to wire it up.\n```\n\nDeviation, one: plan said `helpers.py`, repo has `helper.py`. Applied there — only file, only `format_name`, no other callers. Recorded in PLAN.md step 3. Flagged this before the detach.\n\n`--verbose` via stdlib `argparse` — replaced the manual `sys.argv` indexing, so `--help` and the default `world` come free.","ttft_ms":5579,"ttft_stream_ms":1267,"time_to_request_ms":128,"type":"result","duration_ms":80045,"uuid":"3c340bf0-ea4f-4d9a-8206-16be1be8476f"}
+{
+    "is_error": false,
+    "duration_api_ms": 79106,
+    "num_turns": 17,
+    "stop_reason": "end_turn",
+    "session_id": "2ca80ba5-d3b9-4eac-9c7f-cefccd3862fe",
+    "total_cost_usd": 0.5313525000000001,
+    "usage": {
+        "input_tokens": 32,
+        "cache_creation_input_tokens": 9628,
+        "cache_read_input_tokens": 607725,
+        "output_tokens": 5242,
+        "server_tool_use": { "web_search_requests": 0, "web_fetch_requests": 0 },
+        "service_tier": "standard",
+        "cache_creation": { "ephemeral_1h_input_tokens": 9628, "ephemeral_5m_input_tokens": 0 },
+        "inference_geo": "not_available",
+        "iterations": [
+            {
+                "input_tokens": 2,
+                "output_tokens": 357,
+                "cache_read_input_tokens": 38968,
+                "cache_creation_input_tokens": 415,
+                "cache_creation": {
+                    "ephemeral_5m_input_tokens": 0,
+                    "ephemeral_1h_input_tokens": 415
+                },
+                "type": "message"
+            }
+        ],
+        "speed": "standard"
+    },
+    "modelUsage": {
+        "claude-opus-5[1m]": {
+            "inputTokens": 32,
+            "outputTokens": 5242,
+            "cacheReadInputTokens": 607725,
+            "cacheCreationInputTokens": 9628,
+            "webSearchRequests": 0,
+            "costUSD": 0.5313525000000001,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "canonicalModel": "claude-opus-5",
+            "provider": "firstParty"
+        }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "```\n## leash report\nMode:     attached (finished)\nProgress: 4/4 steps\nChanged:  greet.py, helper.py, test_greet.py (new), README.md, PLAN.md; no commits\nTree:     dirty: 4 modified + 1 untracked (test_greet.py), all planned, against baseline 319e421\nGates:    python3 test_greet.py -> ok; greet.py bare/--verbose/--help -> correct output\nDeferred: no .gitignore in repo; my test run made __pycache__/ (removed it). Adding .gitignore\n          would widen the plan -- left undone.\n          greet.py still never calls format_name; plan did not ask to wire it up.\n```\n\nDeviation, one: plan said `helpers.py`, repo has `helper.py`. Applied there — only file, only `format_name`, no other callers. Recorded in PLAN.md step 3. Flagged this before the detach.\n\n`--verbose` via stdlib `argparse` — replaced the manual `sys.argv` indexing, so `--help` and the default `world` come free.",
+    "ttft_ms": 5579,
+    "ttft_stream_ms": 1267,
+    "time_to_request_ms": 128,
+    "type": "result",
+    "duration_ms": 80045,
+    "uuid": "3c340bf0-ea4f-4d9a-8206-16be1be8476f"
+}

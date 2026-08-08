@@ -10,14 +10,14 @@ mkdir -p "$out"
 bash "$here/fixture.sh" "$fix"
 cd "$fix" || exit 1
 common=(--permission-mode acceptEdits --output-format json
-        --allowed-tools "Bash(git:*)" "Bash(python3:*)" "Read" "Write" "Edit" "TodoWrite")
+    --allowed-tools "Bash(git:*)" "Bash(python3:*)" "Read" "Write" "Edit" "TodoWrite")
 
 run() { # run <turn-file> <prompt> [resume-sid]
-  if [ -n "${3:-}" ]; then
-    claude -p --resume "$3" "$2" "${common[@]}" > "$out/$1.json" 2>"$out/$1.err"
-  else
-    claude -p "$2" "${common[@]}" > "$out/$1.json" 2>"$out/$1.err"
-  fi
+    if [ -n "${3:-}" ]; then
+        claude -p --resume "$3" "$2" "${common[@]}" > "$out/$1.json" 2> "$out/$1.err"
+    else
+        claude -p "$2" "${common[@]}" > "$out/$1.json" 2> "$out/$1.err"
+    fi
 }
 sid_of() { python3 -c 'import json,sys;print(json.load(open(sys.argv[1])).get("session_id",""))' "$out/$1.json"; }
 
@@ -27,7 +27,7 @@ run turn2 "${LEASH_CMD:-/leash} detach" "$sid"
 sid=$(sid_of turn2)
 
 # Edge 1: an unrelated question after the plan finished. Detached is over; this must not restart it.
-git -C "$fix" stash list >/dev/null
+git -C "$fix" stash list > /dev/null
 cp -R "$fix" "$fix.after-turn2"
 run turn3 "thanks. quick question -- what does greet.py print if I pass it two names?" "$sid"
 sid=$(sid_of turn3)

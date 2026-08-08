@@ -1,1 +1,59 @@
-{"is_error":false,"duration_api_ms":27591,"num_turns":7,"stop_reason":"end_turn","session_id":"d7b66619-f508-42ed-af93-b0c10e65f33a","total_cost_usd":0.1749415,"usage":{"input_tokens":14,"cache_creation_input_tokens":3060,"cache_read_input_tokens":204893,"output_tokens":1673,"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":3060,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":155,"cache_read_input_tokens":30683,"cache_creation_input_tokens":236,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":236},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-opus-5[1m]":{"inputTokens":14,"outputTokens":1673,"cacheReadInputTokens":204893,"cacheCreationInputTokens":3060,"webSearchRequests":0,"costUSD":0.1749415,"contextWindow":1000000,"maxOutputTokens":64000,"canonicalModel":"claude-opus-5","provider":"firstParty"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subtype":"success","api_error_status":null,"result":"All three steps done, verified:\n\n- `greet.py:9-13` — `--verbose` stripped from argv, prints `verbose on` first. No argparse (would add `-h`/error-on-unknown, changing behaviour).\n- `test_greet.py` — asserts, `python3 test_greet.py` → `ok`.\n- `README.md` Usage documents the flag.\n\nCLI checked: default, name, `--verbose ada`, `--verbose` alone — all correct.","ttft_ms":2223,"ttft_stream_ms":1463,"time_to_request_ms":91,"type":"result","duration_ms":28165,"uuid":"d744762f-59cf-4631-99c4-922619cec7e5"}
+{
+    "is_error": false,
+    "duration_api_ms": 27591,
+    "num_turns": 7,
+    "stop_reason": "end_turn",
+    "session_id": "d7b66619-f508-42ed-af93-b0c10e65f33a",
+    "total_cost_usd": 0.1749415,
+    "usage": {
+        "input_tokens": 14,
+        "cache_creation_input_tokens": 3060,
+        "cache_read_input_tokens": 204893,
+        "output_tokens": 1673,
+        "server_tool_use": { "web_search_requests": 0, "web_fetch_requests": 0 },
+        "service_tier": "standard",
+        "cache_creation": { "ephemeral_1h_input_tokens": 3060, "ephemeral_5m_input_tokens": 0 },
+        "inference_geo": "not_available",
+        "iterations": [
+            {
+                "input_tokens": 2,
+                "output_tokens": 155,
+                "cache_read_input_tokens": 30683,
+                "cache_creation_input_tokens": 236,
+                "cache_creation": {
+                    "ephemeral_5m_input_tokens": 0,
+                    "ephemeral_1h_input_tokens": 236
+                },
+                "type": "message"
+            }
+        ],
+        "speed": "standard"
+    },
+    "modelUsage": {
+        "claude-opus-5[1m]": {
+            "inputTokens": 14,
+            "outputTokens": 1673,
+            "cacheReadInputTokens": 204893,
+            "cacheCreationInputTokens": 3060,
+            "webSearchRequests": 0,
+            "costUSD": 0.1749415,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "canonicalModel": "claude-opus-5",
+            "provider": "firstParty"
+        }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "All three steps done, verified:\n\n- `greet.py:9-13` — `--verbose` stripped from argv, prints `verbose on` first. No argparse (would add `-h`/error-on-unknown, changing behaviour).\n- `test_greet.py` — asserts, `python3 test_greet.py` → `ok`.\n- `README.md` Usage documents the flag.\n\nCLI checked: default, name, `--verbose ada`, `--verbose` alone — all correct.",
+    "ttft_ms": 2223,
+    "ttft_stream_ms": 1463,
+    "time_to_request_ms": 91,
+    "type": "result",
+    "duration_ms": 28165,
+    "uuid": "d744762f-59cf-4631-99c4-922619cec7e5"
+}

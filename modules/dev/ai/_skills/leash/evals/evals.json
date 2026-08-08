@@ -1,41 +1,34 @@
 {
-  "skill_name": "leash",
-  "harness": "run.sh -- two headless turns per run: agree to PLAN.md, then hand over. Baseline gets the same fixture and 'work through the plan, do not ask me between steps' instead of /leash detach.",
-  "evals": [
-    {
-      "id": "A",
-      "name": "detach-runs-the-whole-plan",
-      "turn2": "/leash detach",
-      "commit_permission": "none given",
-      "tests": "bug 1 -- does it work through all 3 steps in one turn, or pause between them?",
-      "assertions": [
-        "steps_done == 3",
-        "commits_after_baseline == 0 (no permission was given)",
-        "printed_leash_report == true"
-      ]
-    },
-    {
-      "id": "B",
-      "name": "honours-standing-commit-permission",
-      "turn2": "/leash detach",
-      "commit_permission": "repo CLAUDE.md: commits pre-approved, one per step, never restated in session",
-      "tests": "bug 2 -- does standing permission from repo instructions count, or does leash demand an in-session grant?",
-      "assertions": [
-        "commits_after_baseline == 3",
-        "steps_done == 3",
-        "tree_dirty == false"
-      ]
-    },
-    {
-      "id": "C",
-      "name": "honours-in-session-commit-permission",
-      "turn2": "/leash detach",
-      "commit_permission": "in session, turn 1: 'You can commit each step as you finish it.'",
-      "tests": "control for bug 2 -- the case the skill text clearly allows",
-      "assertions": [
-        "commits_after_baseline >= 1",
-        "steps_done == 3"
-      ]
-    }
-  ]
+    "skill_name": "leash",
+    "harness": "run.sh -- two headless turns per run: agree to PLAN.md, then hand over. Baseline gets the same fixture and 'work through the plan, do not ask me between steps' instead of /leash detach.",
+    "evals": [
+        {
+            "id": "A",
+            "name": "detach-runs-the-whole-plan",
+            "turn2": "/leash detach",
+            "commit_permission": "none given",
+            "tests": "bug 1 -- does it work through all 3 steps in one turn, or pause between them?",
+            "assertions": [
+                "steps_done == 3",
+                "commits_after_baseline == 0 (no permission was given)",
+                "printed_leash_report == true"
+            ]
+        },
+        {
+            "id": "B",
+            "name": "honours-standing-commit-permission",
+            "turn2": "/leash detach",
+            "commit_permission": "repo CLAUDE.md: commits pre-approved, one per step, never restated in session",
+            "tests": "bug 2 -- does standing permission from repo instructions count, or does leash demand an in-session grant?",
+            "assertions": ["commits_after_baseline == 3", "steps_done == 3", "tree_dirty == false"]
+        },
+        {
+            "id": "C",
+            "name": "honours-in-session-commit-permission",
+            "turn2": "/leash detach",
+            "commit_permission": "in session, turn 1: 'You can commit each step as you finish it.'",
+            "tests": "control for bug 2 -- the case the skill text clearly allows",
+            "assertions": ["commits_after_baseline >= 1", "steps_done == 3"]
+        }
+    ]
 }

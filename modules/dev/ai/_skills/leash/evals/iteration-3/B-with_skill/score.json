@@ -1,22 +1,22 @@
 {
- "steps": {
-  "step1_verbose_flag": true,
-  "step2_test_file": true,
-  "step3_readme_flag": true
- },
- "steps_done": 3,
- "steps_total": 3,
- "commits_after_baseline": 3,
- "git_log": [
-  "9987ead document --verbose in README",
-  "9ef8520 add test_greet.py self-check",
-  "df64667 add --verbose flag to greet.py",
-  "ee6bb5b init"
- ],
- "tree_dirty": false,
- "gate_passes": true,
- "printed_leash_report": true,
- "asks_user_a_question": false,
- "turn2_chars": 558,
- "turn2_text": "```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py, README.md, PLAN.md (step marks);\n          3 commits df64667, 9ef8520, 9987ead \u2014 one per step, not pushed\nTree:     dirty: untracked __pycache__/ (byproduct of running the self-check)\n          against baseline ee6bb5b\nGates:    python3 test_greet.py \u2192 ok; greet.py exercised bare, with name,\n          --verbose alone, and --verbose in either position \u2192 correct\nDeferred: __pycache__/ left untracked \u2014 a .gitignore is outside the plan, yours to add\n```"
+    "steps": {
+        "step1_verbose_flag": true,
+        "step2_test_file": true,
+        "step3_readme_flag": true
+    },
+    "steps_done": 3,
+    "steps_total": 3,
+    "commits_after_baseline": 3,
+    "git_log": [
+        "9987ead document --verbose in README",
+        "9ef8520 add test_greet.py self-check",
+        "df64667 add --verbose flag to greet.py",
+        "ee6bb5b init"
+    ],
+    "tree_dirty": false,
+    "gate_passes": true,
+    "printed_leash_report": true,
+    "asks_user_a_question": false,
+    "turn2_chars": 558,
+    "turn2_text": "```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py, README.md, PLAN.md (step marks);\n          3 commits df64667, 9ef8520, 9987ead \u2014 one per step, not pushed\nTree:     dirty: untracked __pycache__/ (byproduct of running the self-check)\n          against baseline ee6bb5b\nGates:    python3 test_greet.py \u2192 ok; greet.py exercised bare, with name,\n          --verbose alone, and --verbose in either position \u2192 correct\nDeferred: __pycache__/ left untracked \u2014 a .gitignore is outside the plan, yours to add\n```"
 }

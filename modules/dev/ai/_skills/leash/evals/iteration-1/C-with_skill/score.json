@@ -1,21 +1,21 @@
 {
- "steps": {
-  "step1_verbose_flag": true,
-  "step2_test_file": true,
-  "step3_readme_documents_flag": true
- },
- "steps_done": 3,
- "commits_after_baseline": 3,
- "git_log": [
-  "9ad4014 Document --verbose in the README usage section",
-  "386deb9 Add assert-based self-check for greet()",
-  "950ae69 Add --verbose flag to greet.py",
-  "fee84ce init"
- ],
- "tree_dirty": false,
- "gate_passes": true,
- "printed_leash_report": true,
- "asks_user_a_question": false,
- "turn2_chars": 849,
- "turn2_text": "All three steps done. `__pycache__/` appeared from running the self-check \u2014 left in place; adding a `.gitignore` would widen the plan.\n\n```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py, README.md, PLAN.md\n          commits: 950ae69, 386deb9, 9ad4014\nTree:     dirty: untracked __pycache__/ (from running test_greet.py) against baseline fee84ce\nGates:    python3 test_greet.py -> ok\n          python3 greet.py -> \"hello world\" (unchanged)\n          python3 greet.py --verbose Ian -> \"verbose on\" + \"hello Ian\"\nDeferred: .gitignore for __pycache__/ -- outside plan, not added\n```\n\nFlag parsing is a manual `--verbose` check, not argparse \u2014 argparse would add `--help` and reject a name starting with `-`, changing default behavior the plan said to leave alone. Say so if you want argparse anyway."
+    "steps": {
+        "step1_verbose_flag": true,
+        "step2_test_file": true,
+        "step3_readme_documents_flag": true
+    },
+    "steps_done": 3,
+    "commits_after_baseline": 3,
+    "git_log": [
+        "9ad4014 Document --verbose in the README usage section",
+        "386deb9 Add assert-based self-check for greet()",
+        "950ae69 Add --verbose flag to greet.py",
+        "fee84ce init"
+    ],
+    "tree_dirty": false,
+    "gate_passes": true,
+    "printed_leash_report": true,
+    "asks_user_a_question": false,
+    "turn2_chars": 849,
+    "turn2_text": "All three steps done. `__pycache__/` appeared from running the self-check \u2014 left in place; adding a `.gitignore` would widen the plan.\n\n```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py, README.md, PLAN.md\n          commits: 950ae69, 386deb9, 9ad4014\nTree:     dirty: untracked __pycache__/ (from running test_greet.py) against baseline fee84ce\nGates:    python3 test_greet.py -> ok\n          python3 greet.py -> \"hello world\" (unchanged)\n          python3 greet.py --verbose Ian -> \"verbose on\" + \"hello Ian\"\nDeferred: .gitignore for __pycache__/ -- outside plan, not added\n```\n\nFlag parsing is a manual `--verbose` check, not argparse \u2014 argparse would add `--help` and reject a name starting with `-`, changing default behavior the plan said to leave alone. Say so if you want argparse anyway."
 }

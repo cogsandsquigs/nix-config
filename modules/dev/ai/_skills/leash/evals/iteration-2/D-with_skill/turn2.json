@@ -1,1 +1,59 @@
-{"is_error":false,"duration_api_ms":45654,"num_turns":10,"stop_reason":"end_turn","session_id":"78c002f3-cc77-4369-85af-aff04632f45c","total_cost_usd":0.2878925,"usage":{"input_tokens":13,"cache_creation_input_tokens":8580,"cache_read_input_tokens":237605,"output_tokens":3329,"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":8580,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":418,"cache_read_input_tokens":36702,"cache_creation_input_tokens":823,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":823},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-opus-5[1m]":{"inputTokens":13,"outputTokens":3329,"cacheReadInputTokens":237605,"cacheCreationInputTokens":8580,"webSearchRequests":0,"costUSD":0.2878925,"contextWindow":1000000,"maxOutputTokens":64000,"canonicalModel":"claude-opus-5","provider":"firstParty"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subtype":"success","api_error_status":null,"result":"```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py (new), README.md, PLAN.md (step marks); no commits -- global\n          instructions reserve git actions for you, nothing granted commits\nTree:     dirty (expected) against baseline 2100510512ad0debe1dbd3eebad84a31a1d24141:\n          M PLAN.md, M README.md, M greet.py, ?? test_greet.py, ?? __pycache__/\nGates:    python3 test_greet.py -> ok; CLI checked all four paths: bare, name, --verbose name,\n          --verbose alone. Flag position free; without flag output identical to baseline\nDeferred: __pycache__/ untracked, side effect of test importing greet. .gitignore entry not in\n          plan, left undone\n```\n\nSkipped: argparse — `--verbose` in `sys.argv[1:]` is 4 lines and keeps the existing arg handling. Add argparse when a second flag lands.","ttft_ms":5068,"ttft_stream_ms":1994,"time_to_request_ms":103,"type":"result","duration_ms":46239,"uuid":"7be0a9bd-77c3-4974-b26d-4d1339e2b561"}
+{
+    "is_error": false,
+    "duration_api_ms": 45654,
+    "num_turns": 10,
+    "stop_reason": "end_turn",
+    "session_id": "78c002f3-cc77-4369-85af-aff04632f45c",
+    "total_cost_usd": 0.2878925,
+    "usage": {
+        "input_tokens": 13,
+        "cache_creation_input_tokens": 8580,
+        "cache_read_input_tokens": 237605,
+        "output_tokens": 3329,
+        "server_tool_use": { "web_search_requests": 0, "web_fetch_requests": 0 },
+        "service_tier": "standard",
+        "cache_creation": { "ephemeral_1h_input_tokens": 8580, "ephemeral_5m_input_tokens": 0 },
+        "inference_geo": "not_available",
+        "iterations": [
+            {
+                "input_tokens": 2,
+                "output_tokens": 418,
+                "cache_read_input_tokens": 36702,
+                "cache_creation_input_tokens": 823,
+                "cache_creation": {
+                    "ephemeral_5m_input_tokens": 0,
+                    "ephemeral_1h_input_tokens": 823
+                },
+                "type": "message"
+            }
+        ],
+        "speed": "standard"
+    },
+    "modelUsage": {
+        "claude-opus-5[1m]": {
+            "inputTokens": 13,
+            "outputTokens": 3329,
+            "cacheReadInputTokens": 237605,
+            "cacheCreationInputTokens": 8580,
+            "webSearchRequests": 0,
+            "costUSD": 0.2878925,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "canonicalModel": "claude-opus-5",
+            "provider": "firstParty"
+        }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py (new), README.md, PLAN.md (step marks); no commits -- global\n          instructions reserve git actions for you, nothing granted commits\nTree:     dirty (expected) against baseline 2100510512ad0debe1dbd3eebad84a31a1d24141:\n          M PLAN.md, M README.md, M greet.py, ?? test_greet.py, ?? __pycache__/\nGates:    python3 test_greet.py -> ok; CLI checked all four paths: bare, name, --verbose name,\n          --verbose alone. Flag position free; without flag output identical to baseline\nDeferred: __pycache__/ untracked, side effect of test importing greet. .gitignore entry not in\n          plan, left undone\n```\n\nSkipped: argparse — `--verbose` in `sys.argv[1:]` is 4 lines and keeps the existing arg handling. Add argparse when a second flag lands.",
+    "ttft_ms": 5068,
+    "ttft_stream_ms": 1994,
+    "time_to_request_ms": 103,
+    "type": "result",
+    "duration_ms": 46239,
+    "uuid": "7be0a9bd-77c3-4974-b26d-4d1339e2b561"
+}

@@ -1,1 +1,65 @@
-{"is_error":false,"duration_api_ms":25027,"num_turns":7,"stop_reason":"end_turn","session_id":"9d7b179b-87f6-445a-9059-99933b4f6f0f","total_cost_usd":0.259284,"usage":{"input_tokens":14,"cache_creation_input_tokens":14080,"cache_read_input_tokens":188128,"output_tokens":974,"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":14080,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":258,"cache_read_input_tokens":29426,"cache_creation_input_tokens":251,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":251},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-opus-5[1m]":{"inputTokens":14,"outputTokens":974,"cacheReadInputTokens":188128,"cacheCreationInputTokens":14080,"webSearchRequests":0,"costUSD":0.259284,"contextWindow":1000000,"maxOutputTokens":64000,"canonicalModel":"claude-opus-5","provider":"firstParty"}},"permission_denials":[{"tool_name":"Bash","tool_use_id":"toolu_017HuTUhWSaEHhpkGXbJnt9W","tool_input":{"command":"/bin/ls -la"}}],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subtype":"success","api_error_status":null,"result":"Read. Repo: `greet.py`, `helper.py`, `README.md`, plus `EXPECT.json`.\n\nOne mismatch to flag before I start: plan step 3 says `helpers.py`; actual file is `helper.py` (singular). Same file, assume typo — I'll edit `helper.py`.\n\nAlso note `greet.py` never calls `format_name`; step 3 change is standalone, covered only by `test_greet.py`. Not changing that unless you say so.\n\nReady when you are.","ttft_ms":1983,"ttft_stream_ms":1238,"time_to_request_ms":167,"type":"result","duration_ms":25595,"uuid":"725d1e2d-f8ba-4aa0-9c8d-67a7293bef04"}
+{
+    "is_error": false,
+    "duration_api_ms": 25027,
+    "num_turns": 7,
+    "stop_reason": "end_turn",
+    "session_id": "9d7b179b-87f6-445a-9059-99933b4f6f0f",
+    "total_cost_usd": 0.259284,
+    "usage": {
+        "input_tokens": 14,
+        "cache_creation_input_tokens": 14080,
+        "cache_read_input_tokens": 188128,
+        "output_tokens": 974,
+        "server_tool_use": { "web_search_requests": 0, "web_fetch_requests": 0 },
+        "service_tier": "standard",
+        "cache_creation": { "ephemeral_1h_input_tokens": 14080, "ephemeral_5m_input_tokens": 0 },
+        "inference_geo": "not_available",
+        "iterations": [
+            {
+                "input_tokens": 2,
+                "output_tokens": 258,
+                "cache_read_input_tokens": 29426,
+                "cache_creation_input_tokens": 251,
+                "cache_creation": {
+                    "ephemeral_5m_input_tokens": 0,
+                    "ephemeral_1h_input_tokens": 251
+                },
+                "type": "message"
+            }
+        ],
+        "speed": "standard"
+    },
+    "modelUsage": {
+        "claude-opus-5[1m]": {
+            "inputTokens": 14,
+            "outputTokens": 974,
+            "cacheReadInputTokens": 188128,
+            "cacheCreationInputTokens": 14080,
+            "webSearchRequests": 0,
+            "costUSD": 0.259284,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "canonicalModel": "claude-opus-5",
+            "provider": "firstParty"
+        }
+    },
+    "permission_denials": [
+        {
+            "tool_name": "Bash",
+            "tool_use_id": "toolu_017HuTUhWSaEHhpkGXbJnt9W",
+            "tool_input": { "command": "/bin/ls -la" }
+        }
+    ],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "Read. Repo: `greet.py`, `helper.py`, `README.md`, plus `EXPECT.json`.\n\nOne mismatch to flag before I start: plan step 3 says `helpers.py`; actual file is `helper.py` (singular). Same file, assume typo — I'll edit `helper.py`.\n\nAlso note `greet.py` never calls `format_name`; step 3 change is standalone, covered only by `test_greet.py`. Not changing that unless you say so.\n\nReady when you are.",
+    "ttft_ms": 1983,
+    "ttft_stream_ms": 1238,
+    "time_to_request_ms": 167,
+    "type": "result",
+    "duration_ms": 25595,
+    "uuid": "725d1e2d-f8ba-4aa0-9c8d-67a7293bef04"
+}

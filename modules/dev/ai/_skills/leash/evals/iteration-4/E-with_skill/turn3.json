@@ -1,1 +1,59 @@
-{"is_error":false,"duration_api_ms":10501,"num_turns":2,"stop_reason":"end_turn","session_id":"ce828860-886b-4e01-8d9b-47b852805551","total_cost_usd":0.2623465,"usage":{"input_tokens":4,"cache_creation_input_tokens":22781,"cache_read_input_tokens":53733,"output_tokens":306,"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":22781,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":85,"cache_read_input_tokens":38136,"cache_creation_input_tokens":242,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":242},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-opus-5[1m]":{"inputTokens":4,"outputTokens":306,"cacheReadInputTokens":53733,"cacheCreationInputTokens":22781,"webSearchRequests":0,"costUSD":0.2623465,"contextWindow":1000000,"maxOutputTokens":64000,"canonicalModel":"claude-opus-5","provider":"firstParty"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subtype":"success","api_error_status":null,"result":"`hello Ian` — first name wins, extras dropped silently. Same as pre-change behavior (`sys.argv[1]`), so the flag didn't introduce it.\n\nWant an error on extra args? Say so — that's a plan change, not a bug fix.","ttft_ms":5771,"ttft_stream_ms":3512,"time_to_request_ms":109,"type":"result","duration_ms":10997,"uuid":"804dd2f2-5fd8-4376-be85-6e59654a38db"}
+{
+    "is_error": false,
+    "duration_api_ms": 10501,
+    "num_turns": 2,
+    "stop_reason": "end_turn",
+    "session_id": "ce828860-886b-4e01-8d9b-47b852805551",
+    "total_cost_usd": 0.2623465,
+    "usage": {
+        "input_tokens": 4,
+        "cache_creation_input_tokens": 22781,
+        "cache_read_input_tokens": 53733,
+        "output_tokens": 306,
+        "server_tool_use": { "web_search_requests": 0, "web_fetch_requests": 0 },
+        "service_tier": "standard",
+        "cache_creation": { "ephemeral_1h_input_tokens": 22781, "ephemeral_5m_input_tokens": 0 },
+        "inference_geo": "not_available",
+        "iterations": [
+            {
+                "input_tokens": 2,
+                "output_tokens": 85,
+                "cache_read_input_tokens": 38136,
+                "cache_creation_input_tokens": 242,
+                "cache_creation": {
+                    "ephemeral_5m_input_tokens": 0,
+                    "ephemeral_1h_input_tokens": 242
+                },
+                "type": "message"
+            }
+        ],
+        "speed": "standard"
+    },
+    "modelUsage": {
+        "claude-opus-5[1m]": {
+            "inputTokens": 4,
+            "outputTokens": 306,
+            "cacheReadInputTokens": 53733,
+            "cacheCreationInputTokens": 22781,
+            "webSearchRequests": 0,
+            "costUSD": 0.2623465,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "canonicalModel": "claude-opus-5",
+            "provider": "firstParty"
+        }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "`hello Ian` — first name wins, extras dropped silently. Same as pre-change behavior (`sys.argv[1]`), so the flag didn't introduce it.\n\nWant an error on extra args? Say so — that's a plan change, not a bug fix.",
+    "ttft_ms": 5771,
+    "ttft_stream_ms": 3512,
+    "time_to_request_ms": 109,
+    "type": "result",
+    "duration_ms": 10997,
+    "uuid": "804dd2f2-5fd8-4376-be85-6e59654a38db"
+}

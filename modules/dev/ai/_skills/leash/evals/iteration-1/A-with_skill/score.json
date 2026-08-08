@@ -1,18 +1,16 @@
 {
- "steps": {
-  "step1_verbose_flag": true,
-  "step2_test_file": true,
-  "step3_readme_documents_flag": true
- },
- "steps_done": 3,
- "commits_after_baseline": 0,
- "git_log": [
-  "fee84ce init"
- ],
- "tree_dirty": true,
- "gate_passes": true,
- "printed_leash_report": true,
- "asks_user_a_question": true,
- "turn2_chars": 767,
- "turn2_text": "All 3 steps done.\n\n```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py (new), README.md, PLAN.md; no commits\nTree:     dirty (expected): M PLAN.md, M README.md, M greet.py, ?? test_greet.py \u2014 against baseline fee84ce\nGates:    python3 test_greet.py -> ok; greet.py checked with no args, name, --verbose, --verbose+name, name+--verbose -> all correct\nDeferred: no .gitignore for __pycache__ (test run generates it; removed the one I made, tree back to baseline otherwise)\n```\n\n`--verbose` removed from argv before the name is read, so behaviour without the flag is byte-identical. Skipped `argparse`: it would reject unknown args and add `-h`, which changes existing behaviour \u2014 add when the CLI grows a second flag."
+    "steps": {
+        "step1_verbose_flag": true,
+        "step2_test_file": true,
+        "step3_readme_documents_flag": true
+    },
+    "steps_done": 3,
+    "commits_after_baseline": 0,
+    "git_log": ["fee84ce init"],
+    "tree_dirty": true,
+    "gate_passes": true,
+    "printed_leash_report": true,
+    "asks_user_a_question": true,
+    "turn2_chars": 767,
+    "turn2_text": "All 3 steps done.\n\n```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py (new), README.md, PLAN.md; no commits\nTree:     dirty (expected): M PLAN.md, M README.md, M greet.py, ?? test_greet.py \u2014 against baseline fee84ce\nGates:    python3 test_greet.py -> ok; greet.py checked with no args, name, --verbose, --verbose+name, name+--verbose -> all correct\nDeferred: no .gitignore for __pycache__ (test run generates it; removed the one I made, tree back to baseline otherwise)\n```\n\n`--verbose` removed from argv before the name is read, so behaviour without the flag is byte-identical. Skipped `argparse`: it would reject unknown args and add `-h`, which changes existing behaviour \u2014 add when the CLI grows a second flag."
 }

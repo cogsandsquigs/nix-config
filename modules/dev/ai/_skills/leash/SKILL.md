@@ -17,36 +17,36 @@ argument-hint: "detach | d | attach | a"
 - `attach` or `a` -- return to normal operation. The independence ends.
 - Any other value, and no value -- name the current mode and stop.
 
-Detached mode removes one thing: the question between steps. It adds no permission. The user is away.
-Every decision that belongs to the user is a stop, not a guess.
+Detached mode removes one thing: the question between steps. It adds no permission. The user is
+away. Every decision that belongs to the user is a stop, not a guess.
 
 ## Detach
 
-Detach needs a plan that the user agreed to in this session. Without a plan, nothing limits the work,
-and detached then means unlimited. If there is no plan, ask for one and do not detach.
+Detach needs a plan that the user agreed to in this session. Without a plan, nothing limits the
+work, and detached then means unlimited. If there is no plan, ask for one and do not detach.
 
 Print these five things before the first step.
 
 1. Record the baseline. Run `git rev-parse HEAD` and `git status --porcelain`. The baseline proves
    that only the planned changes happened.
 2. State whether commits are permitted, which changes they cover, and which source permits them.
-3. Name the commands that the steps need, and say which of them are not permitted yet. A prompt holds
-   the work until the user answers it. This is the last cheap moment to add a rule.
+3. Name the commands that the steps need, and say which of them are not permitted yet. A prompt
+   holds the work until the user answers it. This is the last cheap moment to add a rule.
 4. List the files that track the work. These are the plan file, the todo list, the context file, and
    any manual that the plan changes.
 5. State the number of steps, then start.
 
 ### Commit permission
 
-The user decides whether you commit. A decision they recorded once still holds, also when this session
-did not hear it. Three sources carry it: instructions in the repository or in personal configuration,
-a standing arrangement in memory, and a grant earlier in this session. "Commit each step" covers every
-step of the plan. Name the source you used.
+The user decides whether you commit. A decision they recorded once still holds, also when this
+session did not hear it. Three sources carry it: instructions in the repository or in personal
+configuration, a standing arrangement in memory, and a grant earlier in this session. "Commit each
+step" covers every step of the plan. Name the source you used.
 
 A project permission rule counts least. It says that the command can run, not that the user wants a
 commit. It does not overrule instructions that keep git actions for the user. Withhold commits only
-when no source permits them, and say so in the pre-flight. The user can still grant permission in the
-second before they leave.
+when no source permits them, and say so in the pre-flight. The user can still grant permission in
+the second before they leave.
 
 ### Work the plan in one turn
 
@@ -63,9 +63,9 @@ three things happens. The user runs `/leash attach`, the plan ends, or a stop co
 
 A compaction drops this file from the context, and the rules go with it. The header above names the
 directory that holds the file. Carry four things into every summary: the mode, the baseline, the
-commit permission, and the path of this file. After a compaction, read the file again before the next
-step. The mode outlives the text that describes it, so a summary that keeps the mode and loses the
-path leaves you detached with no limits.
+commit permission, and the path of this file. After a compaction, read the file again before the
+next step. The mode outlives the text that describes it, so a summary that keeps the mode and loses
+the path leaves you detached with no limits.
 
 Neither edge of the mode moves unless the user moves it.
 
@@ -76,8 +76,8 @@ Neither edge of the mode moves unless the user moves it.
   condition, and report that stop. Silence is not an attach.
 - A detach expires when the plan ends or when a stop occurs. A detach that you read later in the
   transcript starts nothing, after a compaction or in a resumed session.
-- A subagent does not inherit the mode. The mode describes how you treat the absence of the user, and
-  you cannot pass it on.
+- A subagent does not inherit the mode. The mode describes how you treat the absence of the user,
+  and you cannot pass it on.
 
 ## Prohibited in detached mode
 
@@ -87,8 +87,8 @@ Neither edge of the mode moves unless the user moves it.
 - Do not commit outside the permission that you recorded at the detach. Permission for one fix does
   not cover unrelated changes.
 - Do not rewrite work and do not discard work. This covers a history rewrite, a force flag, and
-  deletion of a branch or a stash. It also covers `git clean` and `git checkout --` over changes that
-  you did not write.
+  deletion of a branch or a stash. It also covers `git clean` and `git checkout --` over changes
+  that you did not write.
 - Do not delete or overwrite a file that you did not read.
 - Do not change system state beyond what the plan names. This covers `sudo`, a package install, a
   service restart, and configuration outside the files of the plan.
@@ -120,11 +120,11 @@ Stop for any of these conditions.
   option, or an interface is absent, or it behaves in another way. The user then chose from a wrong
   picture. A detail that is only written wrong is different. `helper.py` where the plan said
   `helpers.py` has one obvious reading. Correct it, note the correction, and carry on.
-- A check that passed at the baseline now fails, and you cannot account for the failure. Diagnose the
-  failure first. When this step caused it, and the fix stays inside the plan, make the fix the next
-  action. Stop when the cause stays unclear. Stop when the fix reaches outside the plan. Stop when
-  the failure shows behavior that the plan never meant to change. The user decides whether to accept
-  a regression.
+- A check that passed at the baseline now fails, and you cannot account for the failure. Diagnose
+  the failure first. When this step caused it, and the fix stays inside the plan, make the fix the
+  next action. Stop when the cause stays unclear. Stop when the fix reaches outside the plan. Stop
+  when the failure shows behavior that the plan never meant to change. The user decides whether to
+  accept a regression.
 - The plan leaves a real choice open, and the two readings lead to very different work.
 - The next action needs something prohibited, or is irreversible in another way.
 - The tree holds a change that you did not make, a merge conflict, or a git command that refuses to

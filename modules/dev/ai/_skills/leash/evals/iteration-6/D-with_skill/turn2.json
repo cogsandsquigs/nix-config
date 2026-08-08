@@ -1,1 +1,59 @@
-{"is_error":false,"duration_api_ms":62815,"num_turns":13,"stop_reason":"end_turn","session_id":"0352c03a-b557-4d01-8717-83c6c4928eb4","total_cost_usd":0.3727845,"usage":{"input_tokens":21,"cache_creation_input_tokens":8813,"cache_read_input_tokens":363949,"output_tokens":4103,"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":8813,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":314,"cache_read_input_tokens":35941,"cache_creation_input_tokens":720,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":720},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-opus-5[1m]":{"inputTokens":21,"outputTokens":4103,"cacheReadInputTokens":363949,"cacheCreationInputTokens":8813,"webSearchRequests":0,"costUSD":0.3727845,"contextWindow":1000000,"maxOutputTokens":64000,"canonicalModel":"claude-opus-5","provider":"firstParty"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subtype":"success","api_error_status":null,"result":"```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py (new), README.md, PLAN.md (steps marked done); no commits -- global instructions keep git for the user, and the project permission rule alone does not grant a commit\nTree:     dirty: M README.md, M greet.py, M PLAN.md, ?? test_greet.py -- against baseline 5a6221d\nGates:    python3 test_greet.py -> ok; CLI checked 4 ways -- default \"hello world\", name \"hello ada\", --verbose ada -> \"verbose on\"/\"hello ada\", --verbose alone -> \"verbose on\"/\"hello world\"\nDeferred: none\n```\n\n`--verbose` handled by filtering `sys.argv` -- skipped argparse, add when a second flag appears. Test run left a `__pycache__/` dir; removed it, tree holds plan changes only.","ttft_ms":4491,"ttft_stream_ms":2145,"time_to_request_ms":93,"type":"result","duration_ms":63490,"uuid":"5566cdfd-cc79-4fea-92ac-c739796c7786"}
+{
+    "is_error": false,
+    "duration_api_ms": 62815,
+    "num_turns": 13,
+    "stop_reason": "end_turn",
+    "session_id": "0352c03a-b557-4d01-8717-83c6c4928eb4",
+    "total_cost_usd": 0.3727845,
+    "usage": {
+        "input_tokens": 21,
+        "cache_creation_input_tokens": 8813,
+        "cache_read_input_tokens": 363949,
+        "output_tokens": 4103,
+        "server_tool_use": { "web_search_requests": 0, "web_fetch_requests": 0 },
+        "service_tier": "standard",
+        "cache_creation": { "ephemeral_1h_input_tokens": 8813, "ephemeral_5m_input_tokens": 0 },
+        "inference_geo": "not_available",
+        "iterations": [
+            {
+                "input_tokens": 2,
+                "output_tokens": 314,
+                "cache_read_input_tokens": 35941,
+                "cache_creation_input_tokens": 720,
+                "cache_creation": {
+                    "ephemeral_5m_input_tokens": 0,
+                    "ephemeral_1h_input_tokens": 720
+                },
+                "type": "message"
+            }
+        ],
+        "speed": "standard"
+    },
+    "modelUsage": {
+        "claude-opus-5[1m]": {
+            "inputTokens": 21,
+            "outputTokens": 4103,
+            "cacheReadInputTokens": 363949,
+            "cacheCreationInputTokens": 8813,
+            "webSearchRequests": 0,
+            "costUSD": 0.3727845,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "canonicalModel": "claude-opus-5",
+            "provider": "firstParty"
+        }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py (new), README.md, PLAN.md (steps marked done); no commits -- global instructions keep git for the user, and the project permission rule alone does not grant a commit\nTree:     dirty: M README.md, M greet.py, M PLAN.md, ?? test_greet.py -- against baseline 5a6221d\nGates:    python3 test_greet.py -> ok; CLI checked 4 ways -- default \"hello world\", name \"hello ada\", --verbose ada -> \"verbose on\"/\"hello ada\", --verbose alone -> \"verbose on\"/\"hello world\"\nDeferred: none\n```\n\n`--verbose` handled by filtering `sys.argv` -- skipped argparse, add when a second flag appears. Test run left a `__pycache__/` dir; removed it, tree holds plan changes only.",
+    "ttft_ms": 4491,
+    "ttft_stream_ms": 2145,
+    "time_to_request_ms": 93,
+    "type": "result",
+    "duration_ms": 63490,
+    "uuid": "5566cdfd-cc79-4fea-92ac-c739796c7786"
+}

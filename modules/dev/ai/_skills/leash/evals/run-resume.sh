@@ -12,7 +12,7 @@ cd "$fix" || exit 1
 sha=$(git rev-parse HEAD)
 skill=${LEASH_SKILL_PATH:-$HOME/.claude/skills/leash/SKILL.md}
 
-read -r -d '' prompt <<EOF || true
+read -r -d '' prompt << EOF || true
 Context from the compacted part of this session:
 
 - Mode: detached. I ran \`/leash detach\`. The leash rules are in $skill.
@@ -24,7 +24,7 @@ Carry on.
 EOF
 
 claude -p "$prompt" --permission-mode acceptEdits --output-format json \
-  --allowed-tools "Bash(git:*)" "Bash(python3:*)" "Read" "Write" "Edit" "TodoWrite" \
-  > "$out/turn2.json" 2>"$out/turn2.err"
+    --allowed-tools "Bash(git:*)" "Bash(python3:*)" "Read" "Write" "Edit" "TodoWrite" \
+    > "$out/turn2.json" 2> "$out/turn2.err"
 
 python3 "$here/score.py" "$fix" "$out" > "$out/score.json"

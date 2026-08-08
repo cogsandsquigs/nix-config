@@ -1,24 +1,22 @@
 {
- "steps": {
-  "step1_verbose": true,
-  "step2_upper": true,
-  "step3_times": true,
-  "step4_test_file": true,
-  "step5_test_upper": true,
-  "step6_test_times": true,
-  "step7_readme_flags": true,
-  "step8_readme_section": true
- },
- "steps_done": 8,
- "steps_total": 8,
- "commits_after_baseline": 0,
- "git_log": [
-  "814db9e init"
- ],
- "tree_dirty": true,
- "gate_passes": true,
- "printed_leash_report": true,
- "asks_user_a_question": true,
- "turn2_chars": 987,
- "turn2_text": "All 8 steps done.\n\n```\n## leash report\nMode:     attached (finished)\nProgress: 8/8 steps\nChanged:  greet.py, test_greet.py (new), README.md, PLAN.md; no commits\nTree:     dirty (expected): M PLAN.md, M README.md, M greet.py, ?? test_greet.py,\n          ?? __pycache__/  -- against baseline 814db9e\nGates:    python3 test_greet.py -> ok (8 asserts). CLI checked by hand:\n          default, --verbose, --upper, --times 3, all three combined.\nDeferred: __pycache__/ is untracked build output from the test import.\n          No .gitignore in repo; adding one is outside the plan.\n```\n\nTwo judgment calls, both recorded in `PLAN.md`:\n- `argparse` (stdlib) replaced the hand-rolled `sys.argv` indexing at step 1 \u2014 three flags is where manual parsing stops paying.\n- `--upper` and `--times` logic sits in `greet()`, not in `main`, so steps 5\u20136 test them directly instead of spawning subprocesses. `greet()` now returns the N lines joined by `\\n`; `greet(\"world\")` still returns `\"hello world\"`."
+    "steps": {
+        "step1_verbose": true,
+        "step2_upper": true,
+        "step3_times": true,
+        "step4_test_file": true,
+        "step5_test_upper": true,
+        "step6_test_times": true,
+        "step7_readme_flags": true,
+        "step8_readme_section": true
+    },
+    "steps_done": 8,
+    "steps_total": 8,
+    "commits_after_baseline": 0,
+    "git_log": ["814db9e init"],
+    "tree_dirty": true,
+    "gate_passes": true,
+    "printed_leash_report": true,
+    "asks_user_a_question": true,
+    "turn2_chars": 987,
+    "turn2_text": "All 8 steps done.\n\n```\n## leash report\nMode:     attached (finished)\nProgress: 8/8 steps\nChanged:  greet.py, test_greet.py (new), README.md, PLAN.md; no commits\nTree:     dirty (expected): M PLAN.md, M README.md, M greet.py, ?? test_greet.py,\n          ?? __pycache__/  -- against baseline 814db9e\nGates:    python3 test_greet.py -> ok (8 asserts). CLI checked by hand:\n          default, --verbose, --upper, --times 3, all three combined.\nDeferred: __pycache__/ is untracked build output from the test import.\n          No .gitignore in repo; adding one is outside the plan.\n```\n\nTwo judgment calls, both recorded in `PLAN.md`:\n- `argparse` (stdlib) replaced the hand-rolled `sys.argv` indexing at step 1 \u2014 three flags is where manual parsing stops paying.\n- `--upper` and `--times` logic sits in `greet()`, not in `main`, so steps 5\u20136 test them directly instead of spawning subprocesses. `greet()` now returns the N lines joined by `\\n`; `greet(\"world\")` still returns `\"hello world\"`."
 }

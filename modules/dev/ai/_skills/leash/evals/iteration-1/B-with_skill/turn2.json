@@ -1,1 +1,59 @@
-{"is_error":false,"duration_api_ms":66548,"num_turns":17,"stop_reason":"end_turn","session_id":"9514d941-7d8a-446b-b12a-3292d7622ee1","total_cost_usd":0.44840650000000004,"usage":{"input_tokens":30,"cache_creation_input_tokens":8046,"cache_read_input_tokens":528643,"output_tokens":4139,"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":8046,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":257,"cache_read_input_tokens":35741,"cache_creation_input_tokens":324,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":324},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-opus-5[1m]":{"inputTokens":30,"outputTokens":4139,"cacheReadInputTokens":528643,"cacheCreationInputTokens":8046,"webSearchRequests":0,"costUSD":0.44840650000000004,"contextWindow":1000000,"maxOutputTokens":64000,"canonicalModel":"claude-opus-5","provider":"firstParty"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subtype":"success","api_error_status":null,"result":"All three steps done.\n\n```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py, README.md, PLAN.md; 3 commits (317fe67, 0d23c47, 8153a37), not pushed\nTree:     clean against baseline f52d751\nGates:    python3 test_greet.py -> ok; greet.py run with no args / name / --verbose before name / --verbose after name / --verbose alone -> all correct\nDeferred: no .gitignore for __pycache__ (my test run created it; removed by hand) -- outside plan\n```\n\n`--verbose` accepted in any position, stripped before the name is picked. Skipped argparse — three lines cover it; add when a second flag arrives.","ttft_ms":3704,"ttft_stream_ms":1558,"time_to_request_ms":107,"type":"result","duration_ms":67826,"uuid":"de16a665-c068-47a9-a218-87c5c0927066"}
+{
+    "is_error": false,
+    "duration_api_ms": 66548,
+    "num_turns": 17,
+    "stop_reason": "end_turn",
+    "session_id": "9514d941-7d8a-446b-b12a-3292d7622ee1",
+    "total_cost_usd": 0.44840650000000004,
+    "usage": {
+        "input_tokens": 30,
+        "cache_creation_input_tokens": 8046,
+        "cache_read_input_tokens": 528643,
+        "output_tokens": 4139,
+        "server_tool_use": { "web_search_requests": 0, "web_fetch_requests": 0 },
+        "service_tier": "standard",
+        "cache_creation": { "ephemeral_1h_input_tokens": 8046, "ephemeral_5m_input_tokens": 0 },
+        "inference_geo": "not_available",
+        "iterations": [
+            {
+                "input_tokens": 2,
+                "output_tokens": 257,
+                "cache_read_input_tokens": 35741,
+                "cache_creation_input_tokens": 324,
+                "cache_creation": {
+                    "ephemeral_5m_input_tokens": 0,
+                    "ephemeral_1h_input_tokens": 324
+                },
+                "type": "message"
+            }
+        ],
+        "speed": "standard"
+    },
+    "modelUsage": {
+        "claude-opus-5[1m]": {
+            "inputTokens": 30,
+            "outputTokens": 4139,
+            "cacheReadInputTokens": 528643,
+            "cacheCreationInputTokens": 8046,
+            "webSearchRequests": 0,
+            "costUSD": 0.44840650000000004,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "canonicalModel": "claude-opus-5",
+            "provider": "firstParty"
+        }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "All three steps done.\n\n```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py, README.md, PLAN.md; 3 commits (317fe67, 0d23c47, 8153a37), not pushed\nTree:     clean against baseline f52d751\nGates:    python3 test_greet.py -> ok; greet.py run with no args / name / --verbose before name / --verbose after name / --verbose alone -> all correct\nDeferred: no .gitignore for __pycache__ (my test run created it; removed by hand) -- outside plan\n```\n\n`--verbose` accepted in any position, stripped before the name is picked. Skipped argparse — three lines cover it; add when a second flag arrives.",
+    "ttft_ms": 3704,
+    "ttft_stream_ms": 1558,
+    "time_to_request_ms": 107,
+    "type": "result",
+    "duration_ms": 67826,
+    "uuid": "de16a665-c068-47a9-a218-87c5c0927066"
+}

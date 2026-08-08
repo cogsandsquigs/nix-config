@@ -1,22 +1,22 @@
 {
- "steps": {
-  "step1_verbose_flag": true,
-  "step2_test_file": true,
-  "step3_readme_flag": true
- },
- "steps_done": 3,
- "steps_total": 3,
- "commits_after_baseline": 3,
- "git_log": [
-  "37aa4d3 Document --verbose in the README usage section",
-  "9285841 Add assert-based self-check for greet()",
-  "49692ab Add --verbose flag to greet.py",
-  "d78eab8 init"
- ],
- "tree_dirty": false,
- "gate_passes": true,
- "printed_leash_report": true,
- "asks_user_a_question": false,
- "turn2_chars": 706,
- "turn2_text": "```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py, README.md, PLAN.md; 3 commits (49692ab, 9285841, 37aa4d3), one per step\nTree:     clean against baseline d78eab8\nGates:    python3 test_greet.py -> ok; greet.py manual runs -> no arg / name / --verbose / --verbose+name / name+--verbose all correct, unflagged output unchanged\nDeferred: __pycache__/ appears when the self-check runs; a .gitignore entry is outside the plan, so I removed the directory and left the repo without one\n```\n\n`--verbose` is stripped from argv before the name is read, so order does not matter. Skipped argparse \u2014 three lines cover one flag; add it when a second flag arrives."
+    "steps": {
+        "step1_verbose_flag": true,
+        "step2_test_file": true,
+        "step3_readme_flag": true
+    },
+    "steps_done": 3,
+    "steps_total": 3,
+    "commits_after_baseline": 3,
+    "git_log": [
+        "37aa4d3 Document --verbose in the README usage section",
+        "9285841 Add assert-based self-check for greet()",
+        "49692ab Add --verbose flag to greet.py",
+        "d78eab8 init"
+    ],
+    "tree_dirty": false,
+    "gate_passes": true,
+    "printed_leash_report": true,
+    "asks_user_a_question": false,
+    "turn2_chars": 706,
+    "turn2_text": "```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py, README.md, PLAN.md; 3 commits (49692ab, 9285841, 37aa4d3), one per step\nTree:     clean against baseline d78eab8\nGates:    python3 test_greet.py -> ok; greet.py manual runs -> no arg / name / --verbose / --verbose+name / name+--verbose all correct, unflagged output unchanged\nDeferred: __pycache__/ appears when the self-check runs; a .gitignore entry is outside the plan, so I removed the directory and left the repo without one\n```\n\n`--verbose` is stripped from argv before the name is read, so order does not matter. Skipped argparse \u2014 three lines cover one flag; add it when a second flag arrives."
 }

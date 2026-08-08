@@ -1,1 +1,59 @@
-{"is_error":false,"duration_api_ms":91920,"num_turns":13,"stop_reason":"end_turn","session_id":"d77aad83-be94-489c-88c1-ce717a824aca","total_cost_usd":0.440525,"usage":{"input_tokens":25,"cache_creation_input_tokens":9498,"cache_read_input_tokens":461140,"output_tokens":4594,"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":9498,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":343,"cache_read_input_tokens":38141,"cache_creation_input_tokens":318,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":318},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-opus-5[1m]":{"inputTokens":25,"outputTokens":4594,"cacheReadInputTokens":461140,"cacheCreationInputTokens":9498,"webSearchRequests":0,"costUSD":0.440525,"contextWindow":1000000,"maxOutputTokens":64000,"canonicalModel":"claude-opus-5","provider":"firstParty"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subtype":"success","api_error_status":null,"result":"```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py (new), README.md, PLAN.md; no commits -- nothing granted commit\n          permission (global instructions keep git actions for you; the read-only git allowances\n          there do not cover committing)\nTree:     dirty as expected against baseline 78c5a11 -- 3 modified, 1 new, nothing else\nGates:    python3 test_greet.py -> ok; CLI checked 5 ways (no args, name, --verbose, name+flag,\n          flag+name) -> all correct; no-flag output byte-identical to baseline\nDeferred: __pycache__/ appeared from the test import and I removed it; no .gitignore added, that\n          would widen the plan\n```\n\n`--verbose` uses a plain `argv` check, not `argparse` — argparse would have added `-h` and rejected unknown args, which is a behaviour change the plan ruled out. Add argparse when the flag count grows past two.","ttft_ms":8061,"ttft_stream_ms":2281,"time_to_request_ms":102,"type":"result","duration_ms":92647,"uuid":"5f740ddd-0149-4ad1-8894-3eaa18118418"}
+{
+    "is_error": false,
+    "duration_api_ms": 91920,
+    "num_turns": 13,
+    "stop_reason": "end_turn",
+    "session_id": "d77aad83-be94-489c-88c1-ce717a824aca",
+    "total_cost_usd": 0.440525,
+    "usage": {
+        "input_tokens": 25,
+        "cache_creation_input_tokens": 9498,
+        "cache_read_input_tokens": 461140,
+        "output_tokens": 4594,
+        "server_tool_use": { "web_search_requests": 0, "web_fetch_requests": 0 },
+        "service_tier": "standard",
+        "cache_creation": { "ephemeral_1h_input_tokens": 9498, "ephemeral_5m_input_tokens": 0 },
+        "inference_geo": "not_available",
+        "iterations": [
+            {
+                "input_tokens": 2,
+                "output_tokens": 343,
+                "cache_read_input_tokens": 38141,
+                "cache_creation_input_tokens": 318,
+                "cache_creation": {
+                    "ephemeral_5m_input_tokens": 0,
+                    "ephemeral_1h_input_tokens": 318
+                },
+                "type": "message"
+            }
+        ],
+        "speed": "standard"
+    },
+    "modelUsage": {
+        "claude-opus-5[1m]": {
+            "inputTokens": 25,
+            "outputTokens": 4594,
+            "cacheReadInputTokens": 461140,
+            "cacheCreationInputTokens": 9498,
+            "webSearchRequests": 0,
+            "costUSD": 0.440525,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "canonicalModel": "claude-opus-5",
+            "provider": "firstParty"
+        }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "```\n## leash report\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py (new), README.md, PLAN.md; no commits -- nothing granted commit\n          permission (global instructions keep git actions for you; the read-only git allowances\n          there do not cover committing)\nTree:     dirty as expected against baseline 78c5a11 -- 3 modified, 1 new, nothing else\nGates:    python3 test_greet.py -> ok; CLI checked 5 ways (no args, name, --verbose, name+flag,\n          flag+name) -> all correct; no-flag output byte-identical to baseline\nDeferred: __pycache__/ appeared from the test import and I removed it; no .gitignore added, that\n          would widen the plan\n```\n\n`--verbose` uses a plain `argv` check, not `argparse` — argparse would have added `-h` and rejected unknown args, which is a behaviour change the plan ruled out. Add argparse when the flag count grows past two.",
+    "ttft_ms": 8061,
+    "ttft_stream_ms": 2281,
+    "time_to_request_ms": 102,
+    "type": "result",
+    "duration_ms": 92647,
+    "uuid": "5f740ddd-0149-4ad1-8894-3eaa18118418"
+}

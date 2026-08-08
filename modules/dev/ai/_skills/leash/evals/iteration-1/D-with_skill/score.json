@@ -1,19 +1,17 @@
 {
- "steps": {
-  "step1_verbose_flag": true,
-  "step2_test_file": true,
-  "step3_readme_flag": true
- },
- "steps_done": 3,
- "steps_total": 3,
- "commits_after_baseline": 0,
- "git_log": [
-  "9abd988 init"
- ],
- "tree_dirty": true,
- "gate_passes": true,
- "printed_leash_report": true,
- "asks_user_a_question": false,
- "turn2_chars": 765,
- "turn2_text": "## leash report\n```\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py (new), README.md, PLAN.md; no commits\nTree:     dirty vs baseline 9abd988 -- 3 modified, test_greet.py + __pycache__/ untracked\nGates:    python3 test_greet.py -> ok; greet.py {bare, name, --verbose, --verbose name} -> correct\nDeferred: __pycache__/ untracked, no .gitignore in repo -- outside plan, left alone\n```\n\nDecision worth your eye: switched arg parsing from manual `sys.argv` to stdlib `argparse` (greet.py:9-12). Named-arg behaviour unchanged, but unknown flags now error instead of being greeted \u2014 `python3 greet.py --foo` printed `hello --foo` before, now exits 2. `--help` also exists now. Say the word if you want the old permissive handling back."
+    "steps": {
+        "step1_verbose_flag": true,
+        "step2_test_file": true,
+        "step3_readme_flag": true
+    },
+    "steps_done": 3,
+    "steps_total": 3,
+    "commits_after_baseline": 0,
+    "git_log": ["9abd988 init"],
+    "tree_dirty": true,
+    "gate_passes": true,
+    "printed_leash_report": true,
+    "asks_user_a_question": false,
+    "turn2_chars": 765,
+    "turn2_text": "## leash report\n```\nMode:     attached (finished)\nProgress: 3/3 steps\nChanged:  greet.py, test_greet.py (new), README.md, PLAN.md; no commits\nTree:     dirty vs baseline 9abd988 -- 3 modified, test_greet.py + __pycache__/ untracked\nGates:    python3 test_greet.py -> ok; greet.py {bare, name, --verbose, --verbose name} -> correct\nDeferred: __pycache__/ untracked, no .gitignore in repo -- outside plan, left alone\n```\n\nDecision worth your eye: switched arg parsing from manual `sys.argv` to stdlib `argparse` (greet.py:9-12). Named-arg behaviour unchanged, but unknown flags now error instead of being greeted \u2014 `python3 greet.py --foo` printed `hello --foo` before, now exits 2. `--help` also exists now. Say the word if you want the old permissive handling back."
 }

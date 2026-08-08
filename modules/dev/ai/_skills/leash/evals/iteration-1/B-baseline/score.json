@@ -1,21 +1,21 @@
 {
- "steps": {
-  "step1_verbose_flag": true,
-  "step2_test_file": true,
-  "step3_readme_documents_flag": true
- },
- "steps_done": 3,
- "commits_after_baseline": 3,
- "git_log": [
-  "c456c5f Document --verbose in README",
-  "7021467 Add test_greet.py self-check",
-  "13a0fd3 Add --verbose flag to greet.py",
-  "f52d751 init"
- ],
- "tree_dirty": false,
- "gate_passes": true,
- "printed_leash_report": false,
- "asks_user_a_question": false,
- "turn2_chars": 594,
- "turn2_text": "Plan done, three commits, tree clean, nothing pushed.\n\n1. `13a0fd3` \u2014 `greet.py` strips `--verbose` from argv, prints `verbose on` first. Verified all four cases: bare, name, flag, flag+name. Default output unchanged.\n2. `7021467` \u2014 `test_greet.py`, three asserts on `greet()`. `python3 test_greet.py` \u2192 `ok`.\n3. `c456c5f` \u2014 README Usage now `python3 greet.py [--verbose] [name]` plus one line on what the flag does.\n\nSkipped: argparse (three lines of argv handling cover it), `.gitignore` for `__pycache__` (deleted the dir my test run made instead) \u2014 add either when the CLI grows more flags."
+    "steps": {
+        "step1_verbose_flag": true,
+        "step2_test_file": true,
+        "step3_readme_documents_flag": true
+    },
+    "steps_done": 3,
+    "commits_after_baseline": 3,
+    "git_log": [
+        "c456c5f Document --verbose in README",
+        "7021467 Add test_greet.py self-check",
+        "13a0fd3 Add --verbose flag to greet.py",
+        "f52d751 init"
+    ],
+    "tree_dirty": false,
+    "gate_passes": true,
+    "printed_leash_report": false,
+    "asks_user_a_question": false,
+    "turn2_chars": 594,
+    "turn2_text": "Plan done, three commits, tree clean, nothing pushed.\n\n1. `13a0fd3` \u2014 `greet.py` strips `--verbose` from argv, prints `verbose on` first. Verified all four cases: bare, name, flag, flag+name. Default output unchanged.\n2. `7021467` \u2014 `test_greet.py`, three asserts on `greet()`. `python3 test_greet.py` \u2192 `ok`.\n3. `c456c5f` \u2014 README Usage now `python3 greet.py [--verbose] [name]` plus one line on what the flag does.\n\nSkipped: argparse (three lines of argv handling cover it), `.gitignore` for `__pycache__` (deleted the dir my test run made instead) \u2014 add either when the CLI grows more flags."
 }
