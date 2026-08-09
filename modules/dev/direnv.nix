@@ -21,7 +21,7 @@
                     # Integrate with shells
                     enableBashIntegration = true;
                     enableZshIntegration = true;
-                    #enableFishIntegration = true; # ? Read-only?
+                    enableFishIntegration = true;
                 };
             };
         };
