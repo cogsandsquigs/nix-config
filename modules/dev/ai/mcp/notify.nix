@@ -1,5 +1,5 @@
 # Desktop notifications: a `notify` tool the agent can call, packaged in ./_notify-package.nix, plus the
-# Claude Code Notification hook calling that same tool when Claude wants you.
+# Claude Code hooks calling that same tool when a turn ends or Claude wants you.
 #
 # The one server here that talks to no private service, so it needs no credentials and rides no `.env`.
 #
@@ -32,21 +32,30 @@
             # plugin-provided server is addressed by its scoped name. The bare key resolves to nothing,
             # silently. Claude Code exposes the tool as `mcp__plugin_hm_notify__notify`, which is where
             # to read the current scope if home-manager ever renames that plugin.
+            call = message: [
+                {
+                    type = "mcp_tool";
+                    server = "plugin:hm:notify";
+                    tool = "notify";
+                    input.message = message;
+                    timeout = 5;
+                }
+            ];
+
+            # Two events, because `Notification` alone never announces a finished turn: it fires when
+            # Claude Code decides to notify, and an ordinary turn ending is not one of those moments.
+            # `Stop` is the unconditional one. Its `cwd` is what tells two sessions apart.
             hooks = json "hooks.json" {
-                hooks.Notification = [
-                    {
-                        matcher = "agent_completed|agent_needs_input|idle_prompt|permission_prompt|elicitation_dialog";
-                        hooks = [
-                            {
-                                type = "mcp_tool";
-                                server = "plugin:hm:notify";
-                                tool = "notify";
-                                input.message = "\${message}";
-                                timeout = 5;
-                            }
-                        ];
-                    }
-                ];
+                hooks = {
+                    Notification = [
+                        {
+                            matcher = "agent_needs_input|idle_prompt|permission_prompt|elicitation_dialog";
+                            hooks = call "\${message}";
+                        }
+                    ];
+
+                    Stop = [ { hooks = call "finished in \${cwd}"; } ];
+                };
             };
 
             manifest = json "plugin.json" {
