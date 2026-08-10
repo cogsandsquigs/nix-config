@@ -19,15 +19,19 @@ LINUX_NOTIFY = "@linuxNotify@"
 # The text goes through argv, never through the script body: a `"` in an agent-supplied message
 # would otherwise close the string and run as AppleScript.
 APPLE_NOTIFY = """on run argv
-    display notification (item 1 of argv) with title (item 2 of argv)
+    display notification (item 1 of argv) with title (item 2 of argv) sound name "Ping"
 end run"""
+
+# A freedesktop hint, so the daemon decides: GNOME plays it, mako has no sound support at all and
+# drops it silently. Sound belongs to the notification either way -- nothing here spawns a player.
+LINUX_SOUND = "string:sound-name:message-new-instant"
 
 
 def send(message, title):
     if sys.platform == "darwin":
         cmd = ["/usr/bin/osascript", "-e", APPLE_NOTIFY, message, title]
     else:
-        cmd = [LINUX_NOTIFY, "-a", title, "--", title, message]
+        cmd = [LINUX_NOTIFY, "-a", title, "-h", LINUX_SOUND, "--", title, message]
     subprocess.run(cmd, check=True)
 
 
