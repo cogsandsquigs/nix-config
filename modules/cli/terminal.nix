@@ -71,6 +71,7 @@
                             # in four different faces, so the animation jittered. Emoji are exempt:
                             # ghostty always routes those to the platform emoji font.
                             font-family = [
+                                "Twitter Color Emoji" # Emoji fonts first so emojis always load
                                 "FiraCode Nerd Font Mono"
                                 "DejaVu Sans Mono"
                             ];

@@ -18,7 +18,7 @@
                 home.packages = with pkgs; [
                     nerd-fonts.fira-code
                     dejavu_fonts
-                    noto-fonts-color-emoji
+                    twemoji-color-font
                     atkinson-hyperlegible # Old version
                     atkinson-hyperlegible-next # New version (preferred!)
                 ];
