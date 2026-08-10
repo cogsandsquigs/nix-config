@@ -26,6 +26,12 @@
             # `mcp_tool` calls the tool directly: no shell, and no second implementation of the
             # notification to keep in step with the first. `${message}` is substituted from the hook's
             # own JSON input.
+            #
+            # `plugin:hm:notify`, not `notify`: home-manager ships every server in `mcpServers` through a
+            # plugin of its own named `hm` (~/.claude/skills/claude-code-home-manager), and a
+            # plugin-provided server is addressed by its scoped name. The bare key resolves to nothing,
+            # silently. Claude Code exposes the tool as `mcp__plugin_hm_notify__notify`, which is where
+            # to read the current scope if home-manager ever renames that plugin.
             hooks = json "hooks.json" {
                 hooks.Notification = [
                     {
@@ -33,7 +39,7 @@
                         hooks = [
                             {
                                 type = "mcp_tool";
-                                server = "notify";
+                                server = "plugin:hm:notify";
                                 tool = "notify";
                                 input.message = "\${message}";
                                 timeout = 5;
