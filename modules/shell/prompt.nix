@@ -113,7 +113,7 @@
                         format = "[$hostname$ssh_symbol]($style) in ";
                         style = "bold green";
                         ssh_only = false;
-                        ssh_symbol = " 🌐"; # NOTE: space in front to make room btwn it and hostname...
+                        ssh_symbol = " 🛰️ "; # NOTE: space in front to make room btwn it and hostname...
                         disabled = false;
                     };
 
