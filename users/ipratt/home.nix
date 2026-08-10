@@ -19,4 +19,5 @@ _: {
     # launch (see modules/dev/ai/mcp).
     my.user.dev.ai.mcp.gerrit.enable = true;
     my.user.dev.ai.mcp.youtrack.enable = true;
+    my.user.dev.ai.mcp.notify.enable = true;
 }
