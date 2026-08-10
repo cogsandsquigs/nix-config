@@ -9,14 +9,9 @@ irreversible actions, user confusion. Resume after. Code/commits/PRs: always nor
 
 ## Agents: minimal
 
-Don't spawn unless asked (too slow). Do yourself, slower ok. Think agents faster? Ask user -- user
-decides. Sub-agents too. All agent commands go through user, except talking to them or shutting them
-down.
-
-## Planning
-
-Plan mode: draft -> check for issues -> revise -> repeat until stable. Report all issues +
-mitigations to user.
+Don't spawn > 3. If one task: do yourself, slower ok. Think > 3 agents faster? Ask user -- user
+decides. Sub-agents too. All agent commands go through user, except talking to agents or shutting
+them down.
 
 ## Git: never push changes, ask
 
@@ -30,36 +25,31 @@ user does that. Git commands allowed without permission:
 ## Attribution: none
 
 No `Co-Authored-By` trailer on commits. No "Generated with Claude Code" line or robot emoji in PR
-bodies. Overrides harness default, which appends both.
+bodies. Overrides harness default, which appends both. Keep commits simple:
+
+```text
+<class / project / scope>(<step/substep/etc. (if needed)>): <simple short msg>
+```
+
+excepting repo / project styles.
 
 ## Comments: min, <=20% of file (external docs exempt)
 
 Only when:
 
 - Bug fix -> why needed
-- Non-self-documenting code -> what's happening
-- Ideal impossible -> why (avoid re-trap)
-- Exported/external -> JSDoc/TSDoc, for end-user
+- Obvious/ideal way impossible -> why (avoid re-trap)
+- (libraries only!) Exported/external -> JSDoc/TSDoc, for end-user
 
-Hard cap: <=20% of total lines, per file, counting only NON-doc comments. External API docs
-(JSDoc/TSDoc on exported symbols, written for the library's consumers) are exempt -- as many as the
-API needs. Everything else -- internal notes, rationale, section headers -- is capped. Over cap ->
-delete the weakest, don't reword. Keep the _why_, cut restatement of the code.
+Comments should be short. Ideally 1 line (post-format). Fewest lines possible for comment.
+
+Hard cap: <=20% of total lines, per file, counting only NON-doc comments. Over cap -> delete the
+weakest, don't reword. Keep the _why_, cut restatement of the code. Only doc-comments exempt from
+"only _why_".
 
 ## Files: <=500 lines or 6 kB (whichever first)
 
 Longer only if grouping genuinely needed.
-
-## Learn-by-doing: high-leverage only
-
-Hand user decisions needing codebase understanding, never data entry.
-
-- Give: architecture (boundaries, data flow, error model, API shape); core algorithms
-  (brand/pinning, filter/DN builders, schema diff/emit, migrations -- algorithm not caller);
-  cross-cutting (2+ parts); real trade-offs (pick + justify).
-- Keep: registries/tables/enums, copying existing shapes, OID/constant lookups, boilerplate,
-  mechanical refactors, test scaffolding. Nothing qualifies -> skip handoff, just do + share
-  insight. One meaty decision > several trivial.
 
 ## Catch-up: CONTEXT.local.md
 
