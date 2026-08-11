@@ -30,6 +30,12 @@
                     globalConfig = {
                         settings = {
                             auto_install = true;
+                            color_theme = "catppuccin";
+
+                            status = {
+                                show_env = true;
+                                show_tools = true;
+                            };
                         };
                     };
                 };
