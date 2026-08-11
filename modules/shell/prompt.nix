@@ -30,7 +30,7 @@
                     # Only what is named here renders: a module left out of `format` is inert however it
                     # is configured, so nothing below configures one that is missing.
                     format = ''
-                        [╭─](bright-black) $os$username$hostname$directory$git_branch$git_commit$git_state$git_metrics$git_status$c$cpp$rust$nodejs$bun$python$go$java$kotlin$scala$package$conda$direnv$fill $cmd_duration''${custom.zellij}
+                        [╭─](bright-black) $os$username$hostname$directory$git_branch$git_commit$git_state$git_metrics$git_status$c$cpp$rust$nodejs$bun$python$go$java$kotlin$scala$package$conda$direnv$mise$fill $cmd_duration''${custom.zellij}
                         [╰─](bright-black) $character
                     '';
 
@@ -68,6 +68,15 @@
                         denied_msg = "✗";
                         loaded_msg = "";
                         unloaded_msg = " (!)";
+                    };
+
+                    # mise detection. `$health` is its only state -- no allowed/loaded pair as direnv has.
+                    mise = {
+                        disabled = false; # NOTE: unlike direnv, upstream ships this module disabled.
+                        format = "[$symbol$health]($style) ";
+                        symbol = "mise ";
+                        healthy_symbol = "✓";
+                        unhealthy_symbol = "✗";
                     };
 
                     # Conda
