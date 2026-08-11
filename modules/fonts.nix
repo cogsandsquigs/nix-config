@@ -18,7 +18,7 @@
                 home.packages = with pkgs; [
                     nerd-fonts.fira-code
                     dejavu_fonts
-                    twemoji-color-font
+                    twitter-color-emoji
                     atkinson-hyperlegible # Old version
                     atkinson-hyperlegible-next # New version (preferred!)
                 ];
