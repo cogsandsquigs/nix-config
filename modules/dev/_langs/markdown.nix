@@ -75,12 +75,12 @@ in
 
     };
 
-    editor-specific = {
-        helix = {
-            soft-wrap = {
-                enable = true;
-                wrap-at-text-width = true;
-            };
-        };
-    };
+    # editor-specific = {
+    #     helix = {
+    #         soft-wrap = {
+    #             enable = true;
+    #             wrap-at-text-width = true;
+    #         };
+    #     };
+    # };
 }
