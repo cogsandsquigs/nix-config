@@ -26,6 +26,12 @@
                     enableBashIntegration = true;
                     enableZshIntegration = true;
                     enableFishIntegration = true;
+
+                    globalConfig = {
+                        settings = {
+                            auto_install = true;
+                        };
+                    };
                 };
             };
         };
