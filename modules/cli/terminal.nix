@@ -72,8 +72,8 @@
                             # ghostty always routes those to the platform emoji font.
                             font-family = [
                                 "FiraCode Nerd Font Mono"
-                                "Twitter Color Emoji"
                                 "DejaVu Sans Mono"
+                                "Twitter Color Emoji"
                             ];
                             font-size = cfg.fontSize;
 
