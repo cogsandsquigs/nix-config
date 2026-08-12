@@ -11,135 +11,106 @@ argument-hint: "detach | d | attach | a"
 
 # leash
 
-`$ARGUMENTS` selects the mode.
+`$ARGUMENTS`: `detach`/`d` works the agreed plan without asking to continue between steps,
+`attach`/`a` ends the independence, anything else names the current mode and stops.
 
-- `detach` or `d` -- work through the agreed plan. Do not ask to continue between steps.
-- `attach` or `a` -- return to normal operation. The independence ends.
-- Any other value, and no value -- name the current mode and stop.
-
-Detached mode removes one thing: the question between steps. It adds no permission. The user is
-away. Every decision that belongs to the user is a stop, not a guess.
+Detached removes one thing -- the question between steps. It adds no permission. The user is away,
+so every decision that belongs to the user is a stop, not a guess.
 
 ## Detach
 
-Detach needs a plan that the user agreed to in this session. Without a plan, nothing limits the
-work, and detached then means unlimited. If there is no plan, ask for one and do not detach.
+Detach needs a plan the user agreed to in this session; without one nothing limits the work, and
+detached then means unlimited, so ask for a plan instead. Print these five, then start.
 
-Print these five things before the first step.
+1. Baseline: `git rev-parse HEAD` and `git status --porcelain`, proving only planned changes
+   happened.
+2. Whether commits are permitted, what they cover, and which source permits them.
+3. The commands the steps need, and which are not permitted yet -- a prompt holds the work until the
+   user answers, and this is the last cheap moment to add a rule.
+4. The files tracking the work: plan, todo list, context file, any manual the plan changes.
+5. The number of steps.
 
-1. Record the baseline. Run `git rev-parse HEAD` and `git status --porcelain`. The baseline proves
-   that only the planned changes happened.
-2. State whether commits are permitted, which changes they cover, and which source permits them.
-3. Name the commands that the steps need, and say which of them are not permitted yet. A prompt
-   holds the work until the user answers it. This is the last cheap moment to add a rule.
-4. List the files that track the work. These are the plan file, the todo list, the context file, and
-   any manual that the plan changes.
-5. State the number of steps, then start.
+**Commit permission.** The user decides, and a decision recorded once still holds, also when this
+session did not hear it. Three sources carry it: repository or personal configuration, a standing
+arrangement in memory, a grant earlier in this session. "Commit each step" covers every step -- name
+the source. A project permission rule counts least: it says the command can run, not that the user
+wants a commit, and does not overrule instructions keeping git actions for the user. Withhold
+commits only when no source permits them, and say so in the pre-flight, since the user can still
+grant permission before they leave.
 
-### Commit permission
-
-The user decides whether you commit. A decision they recorded once still holds, also when this
-session did not hear it. Three sources carry it: instructions in the repository or in personal
-configuration, a standing arrangement in memory, and a grant earlier in this session. "Commit each
-step" covers every step of the plan. Name the source you used.
-
-A project permission rule counts least. It says that the command can run, not that the user wants a
-commit. It does not overrule instructions that keep git actions for the user. Withhold commits only
-when no source permits them, and say so in the pre-flight. The user can still grant permission in
-the second before they leave.
-
-### Work the plan in one turn
-
-The plan is one stretch of work. After a step finishes, start the next step in the same response.
-
-A turn that goes back to the user is a pause. The user is away, so a pause costs what a question
-costs. The rest of the plan waits. A progress note, a count of finished steps, and a summary of the
-last step are all pauses. Report once, at the end or at a stop.
+**One turn.** After a step finishes, start the next in the same response. A turn back to the user is
+a pause, and the user is away, so a pause costs what a question costs. A progress note, a count of
+finished steps, and a summary of the last step are all pauses. Report once, at the end or at a stop.
 
 ## The user owns the mode switch
 
-Detached is a mode of the session, not a mode of one turn. It holds in every response until one of
-three things happens. The user runs `/leash attach`, the plan ends, or a stop condition occurs.
+Detached is a mode of the session, not of one turn. It holds until the user runs `/leash attach`,
+the plan ends, or a stop occurs. A compaction drops this file and its rules, so carry the mode, the
+baseline, the commit permission, and this file's path (the header above names its directory) into
+every summary, and read the file again before the next step -- the mode outlives the text describing
+it, and a summary keeping the mode but losing the path leaves you detached with no limits.
 
-A compaction drops this file from the context, and the rules go with it. The header above names the
-directory that holds the file. Carry four things into every summary: the mode, the baseline, the
-commit permission, and the path of this file. After a compaction, read the file again before the
-next step. The mode outlives the text that describes it, so a summary that keeps the mode and loses
-the path leaves you detached with no limits.
-
-Neither edge of the mode moves unless the user moves it.
-
-- Do not detach without the command. "Go ahead", "I trust you", and "I am heading out again" are not
-  `/leash detach`. Do that work in attached mode. A user who sounds absent did not set your leash
-  length.
-- Do not attach in the middle of the plan because the work became uncomfortable. Attach for a stop
-  condition, and report that stop. Silence is not an attach.
-- A detach expires when the plan ends or when a stop occurs. A detach that you read later in the
-  transcript starts nothing, after a compaction or in a resumed session.
-- A subagent does not inherit the mode. The mode describes how you treat the absence of the user,
-  and you cannot pass it on.
+- Do not detach without the command. "Go ahead", "I trust you", "I am heading out again" are not
+  `/leash detach` -- do that work attached. A user who sounds absent did not set your leash length.
+- Do not attach mid-plan because the work became uncomfortable. Attach for a stop and report it.
+  Silence is not an attach.
+- A detach expires when the plan ends or a stop occurs; one read later in the transcript starts
+  nothing, after a compaction or in a resumed session.
+- A subagent does not inherit the mode -- it describes how you treat the absence of the user, and
+  you cannot pass it on.
 
 ## Prohibited in detached mode
 
-- Do not push and do not publish. This covers `git push`, a pull request, a comment, a review, and a
-  deployment. It also covers mail, a ticket, a message, and any MCP write tool. This holds even when
-  the plan asks for it. Outward actions belong to the user.
-- Do not commit outside the permission that you recorded at the detach. Permission for one fix does
-  not cover unrelated changes.
-- Do not rewrite work and do not discard work. This covers a history rewrite, a force flag, and
-  deletion of a branch or a stash. It also covers `git clean` and `git checkout --` over changes
-  that you did not write.
-- Do not delete or overwrite a file that you did not read.
-- Do not change system state beyond what the plan names. This covers `sudo`, a package install, a
-  service restart, and configuration outside the files of the plan.
-- Do not widen the plan. Record other useful work in the report and leave it undone.
-- Do not relax a rule that applied in attached mode. Repository instructions, memory, gates,
-  formatting, and commit cadence all still apply.
+- Pushing or publishing: `git push`, pull request, comment, review, deployment, mail, ticket,
+  message, any MCP write -- even when the plan asks. Outward actions belong to the user.
+- Committing outside the permission recorded at the detach; one fix does not cover unrelated
+  changes.
+- Rewriting or discarding work: history rewrite, force flag, deleting a branch or stash, `git clean`
+  or `git checkout --` over changes you did not write.
+- Deleting or overwriting a file you did not read.
+- Changing system state beyond what the plan names: `sudo`, package install, service restart,
+  configuration outside the plan's files.
+- Widening the plan -- record other useful work in the report and leave it undone.
+- Relaxing a rule that applied attached: repository instructions, memory, gates, formatting, and
+  commit cadence all still apply.
 
 ## Keep the record current
 
-The user cannot watch the steps, so the written record is how the user catches up. A stale record is
-worse than no record, because it reports work that did not happen. Update the tracking files as part
-of each step, not at the end. A step is not done while its record is stale.
-
-- Mark the step done where the plan already lives. Use that file, that list, or that tool. Do not
-  start a second copy.
-- Record a decision, a deviation, or a deferred item when it happens.
-- Correct a manual, a README, or a context file in the same step that makes its text wrong.
+The user cannot watch the steps, so the written record is how they catch up, and a stale one is
+worse than none because it reports work that did not happen. Update the tracking files as part of
+each step, not at the end -- a step is not done while its record is stale. Mark it done where the
+plan already lives, not in a second copy; record a decision, deviation, or deferred item when it
+happens; correct a manual, README, or context file in the same step that makes its text wrong.
 
 ## Stop conditions
 
-When a stop condition appears, finish the edit in progress, so that no file stays half written. Do
-not start the next step. Attach, then print the report.
+Finish the edit in progress so no file stays half written, do not start the next step, attach, then
+print the report. Stop when:
 
-Stop for any of these conditions.
-
-- A step fails and the plan does not contain the fix. Also stop when the same failure survives two
-  attempts.
-- The plan contradicts reality, and the difference changes what the user agreed to. A file, an
-  option, or an interface is absent, or it behaves in another way. The user then chose from a wrong
-  picture. A detail that is only written wrong is different. `helper.py` where the plan said
-  `helpers.py` has one obvious reading. Correct it, note the correction, and carry on.
-- A check that passed at the baseline now fails, and you cannot account for the failure. Diagnose
-  the failure first. When this step caused it, and the fix stays inside the plan, make the fix the
-  next action. Stop when the cause stays unclear. Stop when the fix reaches outside the plan. Stop
-  when the failure shows behavior that the plan never meant to change. The user decides whether to
-  accept a regression.
-- The plan leaves a real choice open, and the two readings lead to very different work.
+- A step fails and the plan holds no fix, or the same failure survives two attempts.
+- The plan contradicts reality and the difference changes what the user agreed to -- a file, option,
+  or interface absent or behaving another way, so the user chose from a wrong picture. A detail only
+  written wrong is different: `helper.py` where the plan said `helpers.py` has one obvious reading,
+  so correct it, note it, carry on.
+- A check that passed at the baseline now fails and you cannot account for it. Diagnose first: if
+  this step caused it and the fix stays inside the plan, fix it next. Stop if the cause stays
+  unclear, the fix reaches outside the plan, or the failure shows behavior the plan never meant to
+  change -- the user decides whether to accept a regression.
+- The plan leaves a real choice open and the two readings lead to very different work.
 - The next action needs something prohibited, or is irreversible in another way.
-- The tree holds a change that you did not make, a merge conflict, or a git command that refuses to
-  run.
-- A credential prompt, an authentication prompt, or a permission prompt blocks a command. Only the
-  user can answer it, so the session is stalled. Stop, and name the rule that unblocks the work.
+- The tree holds a change you did not make, a merge conflict, or a git command that refuses to run.
+- A credential, authentication, or permission prompt blocks a command: only the user can answer, so
+  the session is stalled -- stop, and name the rule that unblocks the work.
 - A command hangs, or repeats with no end.
 
-Doubt about what the user wants is a stop condition. Doubt about how to do the work is not. That
-doubt is the work, and your judgment is what it was in attached mode. A stop costs the user one
-message. A wrong guess while the user is away costs the user the state.
+Doubt about what the user wants is a stop. Doubt about how to do the work is not -- that doubt is
+the work, and your judgment is what it was attached. A stop costs one message; a wrong guess while
+the user is away costs them the state.
 
 ## Report
 
-Print this report at a stop, at `/leash attach`, and after the last step.
+Print this at a stop, at `/leash attach`, and after the last step. A resumed session owes it too:
+finishing the plan after a compaction still ends with the report.
 
 ```
 ## leash report
@@ -155,5 +126,4 @@ Needs you: <the decision or fix that unblocks the rest>   [omit if none]
 
 ## Attach
 
-When the mode is attached, say so and change nothing. When the mode is detached, stop as described
-above, then print the report.
+When attached, say so and change nothing. When detached, stop as above, then print the report.

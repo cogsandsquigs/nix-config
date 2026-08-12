@@ -7,11 +7,36 @@ from pathlib import Path
 fix, out = Path(sys.argv[1]), Path(sys.argv[2])
 
 
-def text(turn):
+def _events(out, turn):
+    f = out / f"{turn}.json"
+    if not f.exists():
+        return []
     try:
-        return json.loads((out / f"{turn}.json").read_text()).get("result", "")
+        d = json.loads(f.read_text())
+        return d if isinstance(d, list) else [d]
     except Exception:
-        return ""
+        return []
+
+
+def all_text(out, turn):
+    """Every assistant message, not just the last. `--output-format json` returns only the final
+    one, so a report printed before a closing remark reads as a report that never happened."""
+    parts = []
+    for e in _events(out, turn):
+        if e.get("type") == "assistant":
+            for c in e.get("message", {}).get("content", []):
+                if c.get("type") == "text":
+                    parts.append(c["text"])
+    return "\n".join(parts)
+
+
+def final_text(out, turn):
+    for e in reversed(_events(out, turn)):
+        if e.get("type") == "result":
+            return e.get("result", "") or ""
+    return ""
+def text(turn):
+    return all_text(out, turn)
 
 
 t2, t3, t4 = text("turn2"), text("turn3"), text("turn4")
