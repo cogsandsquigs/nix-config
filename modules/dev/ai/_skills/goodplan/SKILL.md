@@ -28,32 +28,47 @@ later.
 "and" and its check is one command or one observation. A step that cannot stand alone belongs merged
 into its neighbor, not padded out.
 
+Small is the goal, but so is easy to follow, and the two only fight over repetition. When the same
+mechanical edit lands on several sites, write it as one step: state the edit once, list every site,
+and give each site its own check. That is smaller on the page and easier to hold than the same
+paragraph four times with a word changed. The moment one site takes a different edit, it is its own
+step -- a reader tracking an exception buried inside a bundle carries more than two plain steps
+would ever ask of them.
+
 **Each step is fully specified.** Small is not vague. The implementer must have no decision left to
 make: give the exact location, the exact literal text of the edit, and the exact check command with
 the result that means "passed". Two implementers who follow the step must produce the same diff.
 
-Address a location as `path:symbol` -- the function, class, or named block the edit lands in, plus
-the surrounding line quoted verbatim when the symbol holds more than one edit site. Line numbers
-look precise and are not: step 2 shifts every number step 3 relies on, and the implementer is then
-choosing between the number and the text. A symbol survives its own plan.
+Address a location as `path:symbol` -- the function, class, or named block the edit lands in. Line
+numbers look precise and are not: step 2 shifts every number step 3 relies on, and the implementer
+is then choosing between the number and the text. A symbol survives its own plan. Where a symbol
+holds more than one edit site, and a long function usually does, the anchor that matters is the
+surrounding line quoted verbatim; the symbol only says which neighbourhood to search.
 
 Ban these from a step: "update accordingly", "as needed", "handle errors", "adjust the callers",
 "refactor X", "similar to Y", "etc.". Each one hides a decision. Name the callers. Name the error
 and what happens to it. Write the shape you mean. If a detail is genuinely not yet decidable, that
 is a step 1 question for the user or a "Decisions for you" entry, not a gap in a step.
 
-**A check the implementer cannot run is not a check.** Run the checks you write, in this repo, as
-you write them. If the environment cannot run them -- missing dependency, no database, no network --
-say so in the plan and make the setup the first step, because a plan whose every check is
-hypothetical is fiction with good posture. A check that compares against a baseline ("no new
-failures") carries the baseline number you measured, not the phrase.
+**A check the implementer cannot run is not a check.** Run the checks you write, as you write them.
+This skill still edits nothing: copy the repository to a scratch directory, build the change there,
+run the checks against it, record the real output, and throw the copy away. That costs a planning
+run about what an implementation run costs, and it is what separates a plan from a plausible
+document -- prototyping is how you find the defect that reading cannot, such as a test that cannot
+observe what the code it tests actually does. A check that compares against a baseline ("no new
+failures") carries the number you measured and the environment that produced it: the interpreter,
+and any dependency that was missing when you measured. If a check cannot run at all, say so in the
+plan rather than dressing up a guess, and make the setup the first step when setup is the blocker.
 
 ## Workflow
 
 ### Step 0 -- Gather
 
 Read the files that change, their callers, the types at the boundary, and the existing pattern the
-change should match. Never plan against a file you have not opened.
+change should match. Never plan against a file you have not opened. Spend this step hunting for the
+capability the repo already has, because that is where the whole plan usually collapses to one
+slice: the feature you were about to build sometimes turns out to be one call to something already
+sitting there.
 
 ### Step 1 -- Formulate
 
