@@ -21,7 +21,12 @@ this is the smallest edit that meets the goal.]
 
 ## Steps
 
-1. `path` -- [one atomic edit] -- check: [one command or observation that fails if it is wrong]
+One atomic edit per step, specified so that two implementers produce the same diff.
+
+1. **[what this step does]**
+    - Edit: `path:line` -- [the exact change: symbol, signature, literal text, insertion point]
+    - Check: `[command]` -- [the result that means it passed]
+
 2. ...
 
 ## Decisions for you

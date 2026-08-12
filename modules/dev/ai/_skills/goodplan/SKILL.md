@@ -28,6 +28,16 @@ later.
 "and" and its check is one command or one observation. A step that cannot stand alone belongs merged
 into its neighbor, not padded out.
 
+**Each step is fully specified.** Small is not vague. The implementer must have no decision left to
+make: give the exact path, the exact symbol, the exact signature or literal text of the edit, the
+exact insertion point, and the exact check command with the result that means "passed". Two
+implementers who follow the step must produce the same diff.
+
+Ban these from a step: "update accordingly", "as needed", "handle errors", "adjust the callers",
+"refactor X", "similar to Y", "etc.". Each one hides a decision. Name the callers. Name the error
+and what happens to it. Write the shape you mean. If a detail is genuinely not yet decidable, that
+is a step 1 question for the user or a "Decisions for you" entry, not a gap in a step.
+
 ## Repository orientation
 
 Shallow directory map, falling back to `find` when `tree` is absent:
@@ -43,7 +53,7 @@ command yourself. Structure comes from the files you read in step 0, not from th
 
 Copy this checklist and tick items as you go:
 
-```
+```text
 Plan progress:
 - [ ] Step 0: Gather -- read the files the goal actually touches
 - [ ] Step 1: Formulate -- draft the plan
@@ -60,7 +70,9 @@ change should match. Never plan against a file you have not opened.
 ### Step 1 -- Formulate
 
 Draft the files edited, the files created, the tech choices (data shapes, key signatures, the error
-model), and the steps.
+model), and the steps. Write each step from the file open in front of you, quoting the identifiers
+and the surrounding lines it edits. A step written from memory of the codebase is where the wiggle
+room gets in.
 
 Stop and ask the user before a **high-leverage** decision, meaning one that needs understanding of
 the codebase and is expensive to reverse: module boundaries, data flow, the error model, public API
@@ -79,6 +91,8 @@ they missed. Look for:
   dependency, an edit that breaks a caller the plan never mentions.
 - Ordering hazards: a step that needs what a later step produces.
 - Steps that are two steps, and lines the goal does not require.
+- Any step where an implementer must decide something: an unnamed caller, an unspecified signature,
+  an unstated insertion point, a check with no pass condition, or a banned phrase from above.
 - Illegal states or unhandled failures the design leaves open.
 
 List every issue. This is one pass, not a loop.
