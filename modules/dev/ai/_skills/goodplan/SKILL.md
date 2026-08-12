@@ -64,16 +64,25 @@ X", "similar to Y", "etc.". Each hides a decision. Name the callers, name the er
 to it, write the shape you mean. A detail that is genuinely not decidable yet is a question for the
 user or a "Decisions for you" entry, not a gap in a step.
 
-**A check the implementer cannot run is not a check.** Run the checks you write, as you write them.
-This skill still edits nothing: build the change in a scratch copy, run the checks there, record the
-real output, discard the copy. That costs a planning run about what an implementation run costs, and
-it is what separates a plan from a plausible document -- prototyping finds the defect reading
-cannot, such as a test that cannot observe what the code it tests actually does. A baseline
-comparison ("no new failures") carries the number you measured, the environment that produced it,
-and how to enter that environment, since a bare `pytest` assumes a path the implementer may not
-have. Write each check as they must type it, in the shell they use: `cmd; echo $?` is a syntax error
-in fish. If a check cannot run at all, say so rather than dressing up a guess, and make setup the
-first step when setup is the blocker.
+**A check the implementer cannot run is not a check.** Run things, as you write them. Reading tells
+you what the code says; only running tells you what it does, and the gap between those two is where
+plans quietly become fiction -- a test that cannot observe what the code it tests actually does, a
+library helper that under-reports, a validator that accepts what the parser then rejects.
+
+Probe the claim, not the change, and prefer the cheapest thing that could prove you wrong: a few
+lines in a scratch script, one invocation of the real command, a grep for the name you assume is
+free. Most assumptions are about code that already exists, so most probes need no copy of anything.
+Take a baseline number by running the existing suite where it stands, and check the tree afterwards,
+since a test run drops caches the repo may not ignore. Build the change in a scratch copy only when
+the claim is genuinely about the whole tree -- the suite count afterwards, the type checker, the
+formatter -- and nothing smaller can settle it, then discard the copy. The repository itself stays
+untouched either way.
+
+A baseline comparison ("no new failures") carries the number you measured, the environment that
+produced it, and how to enter that environment, since a bare `pytest` assumes a path the implementer
+may not have. Write each check as they must type it, in the shell they use: `cmd; echo $?` is a
+syntax error in fish. If a check cannot run at all, say so rather than dressing up a guess, and make
+setup the first step when setup is the blocker.
 
 ## Workflow
 
