@@ -29,11 +29,13 @@ later.
 into its neighbor, not padded out.
 
 Small is the goal, but so is easy to follow, and the two only fight over repetition. When the same
-mechanical edit lands on several sites, write it as one step: state the edit once, list every site,
-and give each site its own check. That is smaller on the page and easier to hold than the same
-paragraph four times with a word changed. The moment one site takes a different edit, it is its own
-step -- a reader tracking an exception buried inside a bundle carries more than two plain steps
-would ever ask of them.
+mechanical edit lands on several sites, write it as one step: state the edit once, name every site,
+and check it. That is smaller on the page and easier to hold than the same paragraph four times with
+a word changed. Prefer the single check that covers every site at once -- one command asserting all
+thirty-two commands now carry the flag beats thirty-two near-identical commands, and it also catches
+the site you edited that was never on the list. Fall back to a check per site only when no such
+command exists. The moment one site takes a different edit, it is its own step -- a reader tracking
+an exception buried inside a bundle carries more than two plain steps would ever ask of them.
 
 **Each step is fully specified.** Small is not vague. The implementer must have no decision left to
 make: give the exact location, the exact literal text of the edit, and the exact check command with
@@ -74,10 +76,12 @@ run about what an implementation run costs, and it is what separates a plan from
 document -- prototyping is how you find the defect that reading cannot, such as a test that cannot
 observe what the code it tests actually does. A check that compares against a baseline ("no new
 failures") carries the number you measured and the environment that produced it: the interpreter,
-and any dependency that was missing when you measured. Write each check to run in the shell the
-implementer has -- `cmd; echo $?` is a syntax error in fish, so a check written that way fails the
-rule it was meant to satisfy. If a check cannot run at all, say so in the plan rather than dressing
-up a guess, and make the setup the first step when setup is the blocker.
+and any dependency that was missing when you measured, and the plan says how to get into that
+environment rather than only what it was, because a bare `pytest` assumes a path the implementer may
+not have. Write each check as the implementer must actually type it, in the shell they use --
+`cmd; echo $?` is a syntax error in fish, so a check written that way fails the rule it was meant to
+satisfy. If a check cannot run at all, say so in the plan rather than dressing up a guess, and make
+the setup the first step when setup is the blocker.
 
 ## Workflow
 
