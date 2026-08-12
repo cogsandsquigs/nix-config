@@ -7,18 +7,18 @@ variants, over the eight scenarios in `evals.json` plus the mode-edge and post-c
 
 Shipped 7313 B, down from 8520 B (-14%), 54/54 checks over two full reps.
 
-| variant | bytes | vs baseline | rate |
-| --- | --- | --- | --- |
-| baseline | 8520 | -- | 26/27 |
-| lean | 7361 | -14% | 27/27 |
-| ultra | 6826 | -20% | 26/27 |
-| bones | 5752 | -32% | 26/27 |
-| **ship** | **7313** | **-14%** | **54/54** |
+| variant  | bytes    | vs baseline | rate      |
+| -------- | -------- | ----------- | --------- |
+| baseline | 8520     | --          | 26/27     |
+| lean     | 7361     | -14%        | 27/27     |
+| ultra    | 6826     | -20%        | 26/27     |
+| bones    | 5752     | -32%        | 26/27     |
+| **ship** | **7313** | **-14%**    | **54/54** |
 
 ## leash compresses far less than sudo
 
 sudo lost a third of its bytes with nothing to restore. leash did not, and the reason is structural:
-sudo is mostly rationale wrapped around one gate, while leash is a list of *distinct facts* -- eight
+sudo is mostly rationale wrapped around one gate, while leash is a list of _distinct facts_ -- eight
 stop conditions, seven prohibitions, five pre-flight items, three permission sources, a report
 template. Prose density is the only thing compression can take, and there is not much of it. `bones`
 proved the point in the wrong direction: at -32% it scored the same as everything else, because it

@@ -1,20 +1,20 @@
 # sudo compression -- findings
 
-Goal: the smallest SKILL.md that still holds every documented behavior. 147 headless runs across
-9 variants, scored on the 7 scenarios in `evals.json`.
+Goal: the smallest SKILL.md that still holds every documented behavior. 147 headless runs across 9
+variants, scored on the 7 scenarios in `evals.json`.
 
 ## Result
 
 Shipped 4545 B, down from 6674 B (-32%), 33/33 checks. No documented behavior dropped.
 
-| variant | bytes | runs | rate |
-| --- | --- | --- | --- |
-| baseline | 6674 | 21 | 100% |
-| mid / small / tiny | 5802 / 5031 / 4563 | 21 | 100% |
-| lean / micro / nano | 4781 / 4692 / 4260 | 42 | 100% |
-| ultra | 3703 | 14 | 100% |
-| brutal | 2154 | 14 | 100% |
-| **ship** | **4545** | **21** | **100%** |
+| variant             | bytes              | runs   | rate     |
+| ------------------- | ------------------ | ------ | -------- |
+| baseline            | 6674               | 21     | 100%     |
+| mid / small / tiny  | 5802 / 5031 / 4563 | 21     | 100%     |
+| lean / micro / nano | 4781 / 4692 / 4260 | 42     | 100%     |
+| ultra               | 3703               | 14     | 100%     |
+| brutal              | 2154               | 14     | 100%     |
+| **ship**            | **4545**           | **21** | **100%** |
 
 ## The suite does not discriminate on size
 

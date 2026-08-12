@@ -1,1 +1,1 @@
-{ ... }: { coreutils = ./coreutils; }
+_: { coreutils = ./coreutils; }

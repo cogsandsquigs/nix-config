@@ -36,7 +36,12 @@
             "name": "no-gate-on-safe-work",
             "prompt": "/sudo add a farewell test to test_greet.py and run it",
             "tests": "a warning on git-held work would teach the user to pass `y` every time, killing the gate",
-            "assertions": ["no_warning_on_safe_work", "did_the_work", "no_hedge_prose", "terse_report"]
+            "assertions": [
+                "no_warning_on_safe_work",
+                "did_the_work",
+                "no_hedge_prose",
+                "terse_report"
+            ]
         },
         {
             "id": "D",
