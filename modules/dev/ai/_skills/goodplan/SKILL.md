@@ -54,6 +54,14 @@ appended to the end of the enum, grouped with the sibling it belongs to. Where i
 and pick, because "add a constant" leaves the implementer choosing a location and two of them will
 choose differently.
 
+Specification is proportional to the diff, not to the effort of finding it. When the change
+collapses to a few lines because the repo already did the work, the plan collapses with it: name
+what collapsed it and cut the rest, rather than padding to look like the investigation felt. For a
+new file, quote the body verbatim when it is short enough to read in one sitting, such as a test
+module or a small config; when it is longer, give the exact public surface -- every name, signature
+and the assertions each part must satisfy -- and say that you did, so the implementer knows the
+wording is theirs and the surface is not.
+
 Ban these from a step: "update accordingly", "as needed", "handle errors", "adjust the callers",
 "refactor X", "similar to Y", "etc.". Each one hides a decision. Name the callers. Name the error
 and what happens to it. Write the shape you mean. If a detail is genuinely not yet decidable, that
@@ -66,8 +74,10 @@ run about what an implementation run costs, and it is what separates a plan from
 document -- prototyping is how you find the defect that reading cannot, such as a test that cannot
 observe what the code it tests actually does. A check that compares against a baseline ("no new
 failures") carries the number you measured and the environment that produced it: the interpreter,
-and any dependency that was missing when you measured. If a check cannot run at all, say so in the
-plan rather than dressing up a guess, and make the setup the first step when setup is the blocker.
+and any dependency that was missing when you measured. Write each check to run in the shell the
+implementer has -- `cmd; echo $?` is a syntax error in fish, so a check written that way fails the
+rule it was meant to satisfy. If a check cannot run at all, say so in the plan rather than dressing
+up a guess, and make the setup the first step when setup is the blocker.
 
 ## Workflow
 
