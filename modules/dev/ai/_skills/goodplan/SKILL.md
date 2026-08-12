@@ -15,83 +15,74 @@ argument-hint: "<goal to plan>"
 Plan a codebase change, attack the draft, hand over the result. This skill makes no edits. Plan mode
 is expected and fine.
 
-## Two constraints
+## Constraints
 
 **The whole plan is the smallest edit that meets the goal.** Stop at the first option that works:
 nothing to do, existing code in this repo, the standard library, an installed dependency, one line,
-then new code. No new file where an edit to an existing one serves. No extension point without a
-second caller in sight, and no config for a value that never changes. Where the change defines data,
-design types so illegal states cannot be represented, instead of runtime guards that catch them
-later.
+then new code. No new file where an edit serves, no extension point without a second caller in
+sight, no config for a value that never changes. Where the change defines data, design types so
+illegal states cannot be represented, instead of runtime guards that catch them later.
 
-**Each step is the smallest change with its own check.** Split a step until its description needs no
-"and" and its check is one command or one observation. A step that cannot stand alone belongs merged
-into its neighbor, not padded out.
+**Each step is the smallest change with its own check.** Split until the description needs no "and"
+and the check is one command or one observation. A step that cannot stand alone merges into its
+neighbour rather than being padded out.
 
-Small is the goal, but so is easy to follow, and the two only fight over repetition. When the same
-mechanical edit lands on several sites, write it as one step: state the edit once, name every site,
-and check it. That is smaller on the page and easier to hold than the same paragraph four times with
-a word changed. Prefer the single check that covers every site at once -- one command asserting all
-thirty-two commands now carry the flag beats thirty-two near-identical commands, and it also catches
-the site you edited that was never on the list. Fall back to a check per site only when no such
-command exists. The moment one site takes a different edit, it is its own step -- a reader tracking
-an exception buried inside a bundle carries more than two plain steps would ever ask of them.
+Repetition is where small and easy-to-follow fight, and there small loses. The same mechanical edit
+across many sites is one step: state the edit once, name every site, check it. Prefer the single
+check covering every site -- one command asserting all thirty-two commands carry the flag beats
+thirty-two near-identical commands, and it catches the site you edited that was never on the list.
+The moment one site takes a different edit it becomes its own step, because an exception buried in a
+bundle costs the reader more than two plain steps ever would.
 
-**Each step is fully specified.** Small is not vague. The implementer must have no decision left to
-make: give the exact location, the exact literal text of the edit, and the exact check command with
-the result that means "passed". Two implementers who follow the step must produce the same diff.
+**Each step is fully specified.** Small is not vague. Give the exact location, the exact literal
+text of the edit, and the exact check with the result that means "passed". Two implementers who
+follow the step produce the same diff.
 
-Address a location as `path:symbol` -- the function, class, or named block the edit lands in. Line
-numbers look precise and are not: step 2 shifts every number step 3 relies on, and the implementer
-is then choosing between the number and the text. A symbol survives its own plan. Where a symbol
-holds more than one edit site, and a long function usually does, the anchor that matters is the
-surrounding line quoted verbatim; the symbol only says which neighbourhood to search.
+Address a location as `path:symbol`, the function, class or block the edit lands in. Line numbers
+look precise and are not: step 2 shifts every number step 3 relies on, leaving the implementer to
+choose between the number and the text. Where a symbol holds more than one edit site, and a long
+function usually does, the anchor that matters is the surrounding line quoted verbatim; the symbol
+only says which neighbourhood to search.
 
 Something being added has no symbol to sit in yet, so address it by the neighbours it lands between:
-`path: between <symbol A> and <symbol B>`. This is the form for a new function, class, method, or
-test case, and equally for a declaration -- an import, a constant, an enum member, a route, a config
-key, a table entry -- where position carries meaning the code does not state. Where the file has a
+`path: between <symbol A> and <symbol B>`. That is the form for a new function, class, method or
+test, and equally for a declaration -- an import, a constant, an enum member, a route, a config key,
+a table entry -- where position carries meaning the code does not state. Where the file has a
 convention, name it and let the convention place the edit: alphabetical within the import block,
-appended to the end of the enum, grouped with the sibling it belongs to. Where it has none, say so
-and pick, because "add a constant" leaves the implementer choosing a location and two of them will
-choose differently.
+appended to the enum, grouped with the sibling it belongs to. Where it has none, say so and pick,
+because "add a constant" leaves two implementers choosing differently.
 
 Specification is proportional to the diff, not to the effort of finding it. When the change
 collapses to a few lines because the repo already did the work, the plan collapses with it: name
-what collapsed it and cut the rest, rather than padding to look like the investigation felt. For a
-new file, quote the body verbatim when it is short enough to read in one sitting, such as a test
-module or a small config; when it is longer, give the exact public surface -- every name, signature
-and the assertions each part must satisfy -- and say that you did, so the implementer knows the
-wording is theirs and the surface is not.
+what collapsed it and cut the rest. Quote a new file's body verbatim when it is short enough to read
+in one sitting, such as a test module or a small config; when it is longer, give the exact public
+surface -- every name, signature, and the assertions each part must satisfy -- and say that you did,
+so the implementer knows the wording is theirs and the surface is not.
 
-Ban these from a step: "update accordingly", "as needed", "handle errors", "adjust the callers",
-"refactor X", "similar to Y", "etc.". Each one hides a decision. Name the callers. Name the error
-and what happens to it. Write the shape you mean. If a detail is genuinely not yet decidable, that
-is a step 1 question for the user or a "Decisions for you" entry, not a gap in a step.
+Ban from a step: "update accordingly", "as needed", "handle errors", "adjust the callers", "refactor
+X", "similar to Y", "etc.". Each hides a decision. Name the callers, name the error and what happens
+to it, write the shape you mean. A detail that is genuinely not decidable yet is a question for the
+user or a "Decisions for you" entry, not a gap in a step.
 
 **A check the implementer cannot run is not a check.** Run the checks you write, as you write them.
-This skill still edits nothing: copy the repository to a scratch directory, build the change there,
-run the checks against it, record the real output, and throw the copy away. That costs a planning
-run about what an implementation run costs, and it is what separates a plan from a plausible
-document -- prototyping is how you find the defect that reading cannot, such as a test that cannot
-observe what the code it tests actually does. A check that compares against a baseline ("no new
-failures") carries the number you measured and the environment that produced it: the interpreter,
-and any dependency that was missing when you measured, and the plan says how to get into that
-environment rather than only what it was, because a bare `pytest` assumes a path the implementer may
-not have. Write each check as the implementer must actually type it, in the shell they use --
-`cmd; echo $?` is a syntax error in fish, so a check written that way fails the rule it was meant to
-satisfy. If a check cannot run at all, say so in the plan rather than dressing up a guess, and make
-the setup the first step when setup is the blocker.
+This skill still edits nothing: build the change in a scratch copy, run the checks there, record the
+real output, discard the copy. That costs a planning run about what an implementation run costs, and
+it is what separates a plan from a plausible document -- prototyping finds the defect reading
+cannot, such as a test that cannot observe what the code it tests actually does. A baseline
+comparison ("no new failures") carries the number you measured, the environment that produced it,
+and how to enter that environment, since a bare `pytest` assumes a path the implementer may not
+have. Write each check as they must type it, in the shell they use: `cmd; echo $?` is a syntax error
+in fish. If a check cannot run at all, say so rather than dressing up a guess, and make setup the
+first step when setup is the blocker.
 
 ## Workflow
 
 ### Step 0 -- Gather
 
-Read the files that change, their callers, the types at the boundary, and the existing pattern the
-change should match. Never plan against a file you have not opened. Spend this step hunting for the
-capability the repo already has, because that is where the whole plan usually collapses to one
-slice: the feature you were about to build sometimes turns out to be one call to something already
-sitting there.
+Read the files that change, their callers, the types at the boundary, and the pattern the change
+should match. Never plan against a file you have not opened. Hunt here for the capability the repo
+already has, because that is where a plan collapses to one slice: the feature you were about to
+build turns out to be one call to something already sitting there.
 
 ### Step 1 -- Formulate
 
@@ -100,15 +91,15 @@ model), and the steps. Write each step from the file open in front of you, quoti
 and the surrounding lines it edits. A step written from memory of the codebase is where the wiggle
 room gets in.
 
-Stop and ask the user before a **high-leverage** decision, meaning one that needs understanding of
-the codebase and is expensive to reverse: module boundaries, data flow, the error model, public API
-shape, the algorithm behind a central component, a change that spans two or more parts of the
-system, or a genuine trade-off. Give the options, recommend one, say why.
+Stop and ask before a **high-leverage** decision, one that needs understanding of the codebase and
+is expensive to reverse: module boundaries, data flow, the error model, public API shape, the
+algorithm behind a central component, a change spanning two or more parts of the system, a genuine
+trade-off. Give the options, recommend one, say why.
 
-When there is no one to ask -- you are a subagent, a batch run, or the user is away -- do not stall
-and do not silently pick. Write the question, the options and your recommendation into "Decisions
-for you", then plan on your recommendation and say in the step that it rests on that answer. The
-user reverses one section instead of re-reading the whole plan.
+With no one to ask -- you are a subagent, a batch run, or the user is away -- do not stall and do
+not silently pick. Put the question, the options and your recommendation in "Decisions for you",
+plan on the recommendation, and say in the step that it rests on that answer. The user then reverses
+one section instead of re-reading the whole plan.
 
 Decide the rest yourself: registries, tables, enums, constant and ID lookups, copying an existing
 shape, boilerplate, mechanical refactors, test scaffolding. Do not hand back data entry.
@@ -123,24 +114,22 @@ they missed. Look for:
 - Ordering hazards: a step that needs what a later step produces.
 - Steps that are two steps, and lines the goal does not require.
 - Any step where an implementer must decide something: an unnamed caller, an unspecified signature,
-  an unstated location, a check with no pass condition, or a banned phrase from above.
+  an unstated location, a check with no pass condition, or a banned phrase.
 - Illegal states or unhandled failures the design leaves open.
 
-Then attack the plan against **itself**, which is the failure the first list misses. Take each
-step's literal text and hold it against every other step that touches the same symbol: a test that
-asserts what an earlier step's code cannot do, an import one step adds and another step's assertion
-needs bound differently, a signature that drifts between the step that writes it and the step that
-calls it. Each step can be perfectly specified and the set still contradict itself, and the
-implementer then has to invent the tiebreak you were supposed to make.
+Then attack the plan against **itself**, the failure the list above misses. Hold each step's literal
+text against every other step that touches the same symbol: a test asserting what an earlier step's
+code cannot do, an import bound one way and asserted another, a signature that drifts between the
+step writing it and the step calling it. Every step can be perfectly specified and the set still
+contradict itself, and the implementer then invents the tiebreak you owed them.
 
-List every issue. This is one pass, not a loop.
+List every issue. One pass, not a loop.
 
 ### Step 3 -- Fold in
 
 Revise. Run step 2 again if the revision changed the approach, a boundary, the ordering, or the text
-of a step another step depends on, because those invalidate steps the first pass approved. A
-reworded risk note or a renamed variable does not. Stop at two passes. Anything still open becomes
-an accepted risk.
+of a step another step depends on, since those invalidate steps the first pass approved; a reworded
+risk note does not. Stop at two passes. Anything still open becomes an accepted risk.
 
 "Risks & mitigations" is the record of both passes: each finding, and either the step that now
 handles it or the reason it is accepted. The user judges the reasoning, not only the outcome.

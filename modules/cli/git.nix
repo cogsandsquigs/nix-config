@@ -103,6 +103,13 @@
                     options = {
                         diff-highlight = true;
                         features = "catppuccin-mocha";
+                        zero-style = "syntax"; # Syntax highlighting of code around commit diff!
+
+                        # Fixes file-header wrapping issues
+                        relative-paths = true;
+                        file-style = "omit";
+                        hunk-header-style = "file line-number syntax";
+                        hunk-header-decoration-style = "blue ul";
                     };
                 };
 
