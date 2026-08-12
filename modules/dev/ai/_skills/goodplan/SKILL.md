@@ -45,6 +45,15 @@ is then choosing between the number and the text. A symbol survives its own plan
 holds more than one edit site, and a long function usually does, the anchor that matters is the
 surrounding line quoted verbatim; the symbol only says which neighbourhood to search.
 
+Something being added has no symbol to sit in yet, so address it by the neighbours it lands between:
+`path: between <symbol A> and <symbol B>`. This is the form for a new function, class, method, or
+test case, and equally for a declaration -- an import, a constant, an enum member, a route, a config
+key, a table entry -- where position carries meaning the code does not state. Where the file has a
+convention, name it and let the convention place the edit: alphabetical within the import block,
+appended to the end of the enum, grouped with the sibling it belongs to. Where it has none, say so
+and pick, because "add a constant" leaves the implementer choosing a location and two of them will
+choose differently.
+
 Ban these from a step: "update accordingly", "as needed", "handle errors", "adjust the callers",
 "refactor X", "similar to Y", "etc.". Each one hides a decision. Name the callers. Name the error
 and what happens to it. Write the shape you mean. If a detail is genuinely not yet decidable, that
