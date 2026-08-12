@@ -29,38 +29,26 @@ later.
 into its neighbor, not padded out.
 
 **Each step is fully specified.** Small is not vague. The implementer must have no decision left to
-make: give the exact path, the exact symbol, the exact signature or literal text of the edit, the
-exact insertion point, and the exact check command with the result that means "passed". Two
-implementers who follow the step must produce the same diff.
+make: give the exact location, the exact literal text of the edit, and the exact check command with
+the result that means "passed". Two implementers who follow the step must produce the same diff.
+
+Address a location as `path:symbol` -- the function, class, or named block the edit lands in, plus
+the surrounding line quoted verbatim when the symbol holds more than one edit site. Line numbers
+look precise and are not: step 2 shifts every number step 3 relies on, and the implementer is then
+choosing between the number and the text. A symbol survives its own plan.
 
 Ban these from a step: "update accordingly", "as needed", "handle errors", "adjust the callers",
 "refactor X", "similar to Y", "etc.". Each one hides a decision. Name the callers. Name the error
 and what happens to it. Write the shape you mean. If a detail is genuinely not yet decidable, that
 is a step 1 question for the user or a "Decisions for you" entry, not a gap in a step.
 
-## Repository orientation
-
-Shallow directory map, falling back to `find` when `tree` is absent:
-
-```!
-tree -L 2 -d --gitignore 2>/dev/null || find . -maxdepth 2 -type d -not -path '*/.*'
-```
-
-Use this only to orient. If the map is empty or reports that shell execution was disabled, run the
-command yourself. Structure comes from the files you read in step 0, not from the map.
+**A check the implementer cannot run is not a check.** Run the checks you write, in this repo, as
+you write them. If the environment cannot run them -- missing dependency, no database, no network --
+say so in the plan and make the setup the first step, because a plan whose every check is
+hypothetical is fiction with good posture. A check that compares against a baseline ("no new
+failures") carries the baseline number you measured, not the phrase.
 
 ## Workflow
-
-Copy this checklist and tick items as you go:
-
-```text
-Plan progress:
-- [ ] Step 0: Gather -- read the files the goal actually touches
-- [ ] Step 1: Formulate -- draft the plan
-- [ ] Step 2: Red-team -- attack the draft and list every issue
-- [ ] Step 3: Fold in -- revise, and re-attack only if the revision was structural
-- [ ] Step 4: Present -- hand the user the plan
-```
 
 ### Step 0 -- Gather
 
@@ -79,6 +67,11 @@ the codebase and is expensive to reverse: module boundaries, data flow, the erro
 shape, the algorithm behind a central component, a change that spans two or more parts of the
 system, or a genuine trade-off. Give the options, recommend one, say why.
 
+When there is no one to ask -- you are a subagent, a batch run, or the user is away -- do not stall
+and do not silently pick. Write the question, the options and your recommendation into "Decisions
+for you", then plan on your recommendation and say in the step that it rests on that answer. The
+user reverses one section instead of re-reading the whole plan.
+
 Decide the rest yourself: registries, tables, enums, constant and ID lookups, copying an existing
 shape, boilerplate, mechanical refactors, test scaffolding. Do not hand back data entry.
 
@@ -92,17 +85,27 @@ they missed. Look for:
 - Ordering hazards: a step that needs what a later step produces.
 - Steps that are two steps, and lines the goal does not require.
 - Any step where an implementer must decide something: an unnamed caller, an unspecified signature,
-  an unstated insertion point, a check with no pass condition, or a banned phrase from above.
+  an unstated location, a check with no pass condition, or a banned phrase from above.
 - Illegal states or unhandled failures the design leaves open.
+
+Then attack the plan against **itself**, which is the failure the first list misses. Take each
+step's literal text and hold it against every other step that touches the same symbol: a test that
+asserts what an earlier step's code cannot do, an import one step adds and another step's assertion
+needs bound differently, a signature that drifts between the step that writes it and the step that
+calls it. Each step can be perfectly specified and the set still contradict itself, and the
+implementer then has to invent the tiebreak you were supposed to make.
 
 List every issue. This is one pass, not a loop.
 
 ### Step 3 -- Fold in
 
-Revise. Run step 2 again only if the revision changed the approach, a boundary, or the ordering,
-because a structural change can invalidate steps the first pass approved. Stop at two passes.
-Anything still open becomes an accepted risk. Keep the record of what each pass found and how it was
-resolved: the user judges the reasoning, not only the outcome.
+Revise. Run step 2 again if the revision changed the approach, a boundary, the ordering, or the text
+of a step another step depends on, because those invalidate steps the first pass approved. A
+reworded risk note or a renamed variable does not. Stop at two passes. Anything still open becomes
+an accepted risk.
+
+"Risks & mitigations" is the record of both passes: each finding, and either the step that now
+handles it or the reason it is accepted. The user judges the reasoning, not only the outcome.
 
 ### Step 4 -- Present
 

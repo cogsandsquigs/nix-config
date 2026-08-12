@@ -24,18 +24,21 @@ this is the smallest edit that meets the goal.]
 One atomic edit per step, specified so that two implementers produce the same diff.
 
 1. **[what this step does]**
-    - Edit: `path:line` -- [the exact change: symbol, signature, literal text, insertion point]
-    - Check: `[command]` -- [the result that means it passed]
+    - Edit: `path:symbol` -- [the exact change: literal before and after text, and the quoted line
+      it lands next to when the symbol holds more than one edit site]
+    - Check: `[command]` -- [the result that means it passed, with the baseline number if the result
+      is a comparison. Say "not run: [why]" if the environment could not run it.]
 
 2. ...
 
 ## Decisions for you
 
-- [Open high-leverage choice, the options, and a recommendation with its rationale. Omit if none.]
+- [Open high-leverage choice, the options, and a recommendation with its rationale. Say which steps
+  rest on the recommendation. Omit the section if there are none.]
 
 ## Risks & mitigations
 
-- [Issue found in red-team -> how the plan handles it, or why it is accepted.]
+- [Red-team finding, from either pass -> the step that now handles it, or why it is accepted.]
 
 ## Out of scope
 
