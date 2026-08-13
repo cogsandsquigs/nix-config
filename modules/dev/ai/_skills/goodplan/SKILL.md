@@ -23,9 +23,15 @@ then new code. No new file where an edit serves, no extension point without a se
 sight, no config for a value that never changes. Where the change defines data, design types so
 illegal states cannot be represented, instead of runtime guards that catch them later.
 
-**Each step is the smallest change with its own check.** Split until the description needs no "and"
-and the check is one command or one observation. A step that cannot stand alone merges into its
-neighbour rather than being padded out.
+**Each step is the smallest change with its own check, and ends in its own commit.** Split until the
+description needs no "and" and the check is one command or one observation. A step that cannot stand
+alone merges into its neighbour rather than being padded out.
+
+Commit a step once its check passes, and never before. A green step is then a fixed point: a later
+step that goes wrong reverts to a known-good tree, instead of leaving a half-applied mixture of two
+steps to unpick by hand. A step whose check fails is not committed -- fix it or revert it, then
+re-run the check. Take the message format from the repo's own history rather than inventing one, and
+stop at the commit, since pushing is the user's call and not the plan's.
 
 Repetition is where small and easy-to-follow fight, and there small loses. The same mechanical edit
 across many sites is one step: state the edit once, name every site, check it. Prefer the single

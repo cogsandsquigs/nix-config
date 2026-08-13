@@ -21,7 +21,8 @@ this is the smallest edit that meets the goal.]
 
 ## Steps
 
-One atomic edit per step, specified so that two implementers produce the same diff.
+One atomic edit per step, specified so that two implementers produce the same diff. Every step ends
+in a commit, made only once its check passes.
 
 Checks below were run with: [interpreter and version, the dependencies that matter, anything that
 was missing. Stated once here, not repeated per step.]
@@ -33,11 +34,13 @@ was missing. Stated once here, not repeated per step.]
       insert, and the convention that fixes its position if the file has one]
     - Check: `[command]` -- [the result that means it passed, with the baseline number if the result
       is a comparison. Say "not run: [why]" if the environment could not run it.]
+    - Commit: `[message in this repo's own format]` -- after the check above passes, not before.
 
 2. **[the same mechanical edit, repeated across sites]**
     - Edit, written once: [the literal before and after text]
     - Sites: `path:symbol` -- [quoted anchor line]; `path:symbol` -- [quoted anchor line]; ...
     - Check, one per site: `[command]` -- [the result that means it passed]
+    - Commit: `[message]` -- one commit for the whole bundle; it is one step.
 
 3. ...
 
