@@ -34,17 +34,18 @@
                 # Empty cwd: no repo scan, no project CLAUDE.md, no .mcp.json pickup.
                 mkdir -p /tmp/claude-ping && cd /tmp/claude-ping || exit 1
 
-                # --system-prompt REPLACES the default prompt (multi-KB of tool and environment
-                # preamble), --tools "" drops the tool definitions, and --strict-mcp-config over an
-                # empty --mcp-config skips every MCP server spawn -- and that must be a whole config,
-                # not '{}': a bare object fails schema validation on the missing mcpServers key. NOT
-                # --bare, which reads neither the OAuth token nor the keychain and so cannot touch the
-                # window this exists to open.
+                # Each flag deletes a chunk of the request: --system-prompt REPLACES the default prompt
+                # (multi-KB of preamble), --tools "" drops the tool definitions, --setting-sources ""
+                # drops ~/.claude's memory and SessionStart hooks, and --strict-mcp-config skips every
+                # MCP spawn -- over a WHOLE config, since a bare '{}' fails validation on the missing
+                # mcpServers key. NOT --bare, which reads neither the OAuth token nor the keychain and
+                # so cannot open the window this exists for.
                 timeout 60 "$CLAUDE" -p 'k' \
                     --model haiku \
                     --system-prompt 'Reply with exactly one character: k' \
                     --tools "" \
                     --mcp-config '{"mcpServers":{}}' --strict-mcp-config \
+                    --setting-sources "" \
                     --max-turns 1 \
                     --output-format text
             '';
@@ -76,7 +77,7 @@
                 };
 
                 systemd.user.timers.claude-ping = {
-                    Unit.Description = "Claude usage-window boundaries";
+                    Unit.Description = "Scheduled 'claude' ping to optimize its usage window";
 
                     Timer = {
                         OnCalendar = [
