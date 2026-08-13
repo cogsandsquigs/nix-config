@@ -94,6 +94,8 @@ setup the first step when setup is the blocker.
 
 ### Step 0 -- Gather
 
+If not already in plan mode, enter it now (EnterPlanMode) so nothing gets edited while planning.
+
 Read the files that change, their callers, the types at the boundary, and the pattern the change
 should match. Never plan against a file you have not opened. Hunt here for the capability the repo
 already has, because that is where a plan collapses to one slice: the feature you were about to
