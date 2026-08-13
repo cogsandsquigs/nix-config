@@ -20,4 +20,7 @@ _: {
     my.user.dev.ai.mcp.gerrit.enable = true;
     my.user.dev.ai.mcp.youtrack.enable = true;
     my.user.dev.ai.mcp.notify.enable = true;
+
+    # Pins the 5h window's boundaries at 10:30 / 15:30 (modules/dev/ai/claude-ping.nix).
+    my.user.dev.ai.claude-ping.enable = true;
 }
