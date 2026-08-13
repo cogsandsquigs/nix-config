@@ -21,8 +21,7 @@
                 # Open a Claude 5h usage window with minimal spend.
                 set -u
 
-                # coreutils for the script's own mkdir/timeout; CLAUDE because of nonstandard
-                # install path.
+                # coreutils for mkdir/timeout; CLAUDE because claude is not on a plain-npm path.
                 export PATH=${lib.makeBinPath [ pkgs.coreutils ]}
                 export CLAUDE=${lib.getExe pkgs.claude-code}
 
@@ -37,13 +36,15 @@
 
                 # --system-prompt REPLACES the default prompt (multi-KB of tool and environment
                 # preamble), --tools "" drops the tool definitions, and --strict-mcp-config over an
-                # empty --mcp-config skips every MCP server spawn. NOT --bare, which reads neither the
-                # OAuth token nor the keychain and so cannot touch the window this exists to open.
+                # empty --mcp-config skips every MCP server spawn -- and that must be a whole config,
+                # not '{}': a bare object fails schema validation on the missing mcpServers key. NOT
+                # --bare, which reads neither the OAuth token nor the keychain and so cannot touch the
+                # window this exists to open.
                 timeout 60 "$CLAUDE" -p 'k' \
                     --model haiku \
                     --system-prompt 'Reply with exactly one character: k' \
                     --tools "" \
-                    --mcp-config '{}' --strict-mcp-config \
+                    --mcp-config '{"mcpServers":{}}' --strict-mcp-config \
                     --max-turns 1 \
                     --output-format text
             '';
