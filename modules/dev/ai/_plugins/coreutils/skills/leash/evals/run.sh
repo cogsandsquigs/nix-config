@@ -30,11 +30,17 @@ case $sc in
     G) bash "$here/fixture.sh" "$fix" long ;;
 esac
 
+# the variant under test rides in as a project skill, so parallel runs never race a shared file
+if [ -n "${LEASH_SKILL:-}" ]; then
+    mkdir -p "$fix/.claude/skills/leash"
+    cp "$LEASH_SKILL" "$fix/.claude/skills/leash/SKILL.md"
+fi
+
 cd "$fix" || exit 1
 common=(--permission-mode acceptEdits --output-format json --allowed-tools "${allow[@]}" "${extra[@]}")
 
 claude -p "$agree" "${common[@]}" > "$out/turn1.json" 2> "$out/turn1.err"
-sid=$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1])).get("session_id",""))' "$out/turn1.json" 2> /dev/null)
+sid=$(python3 "$here/sid.py" "$out/turn1.json" 2> /dev/null)
 [ -z "$sid" ] && {
     echo "no session id" > "$out/FAILED"
     exit 1

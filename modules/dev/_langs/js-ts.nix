@@ -55,7 +55,7 @@ in
             ];
         }
         {
-            name = "efm-langserver";
+            name = "efm-langserver-js-ts";
             cmd = [
                 "efm-langserver"
                 "-c"

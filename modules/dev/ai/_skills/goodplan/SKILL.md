@@ -2,152 +2,157 @@
 name: goodplan
 description: >-
     Produces a thorough, red-teamed implementation plan for a codebase change before any code is
-    written: files edited, files created, tech choices, and steps ordered by surface area, plus the
-    open decisions and the risks found while attacking the draft. Use whenever the user asks for a
-    plan, enters plan mode, or asks "how should I build X" or "how should I approach X", especially
-    for large, multi-step, or cross-cutting changes. This skill plans only. It never edits the
-    codebase.
+    written: files edited, files created, tech choices, and the smallest ordered steps that get
+    there, plus the open decisions and the risks found while attacking the draft. Use whenever the
+    user asks for a plan, enters plan mode, or asks "how should I build X" or "how should I approach
+    X", especially for large, multi-step, or cross-cutting changes. This skill plans only. It never
+    edits the codebase.
 argument-hint: "<goal to plan>"
 ---
 
 # goodplan
 
-Plan a codebase change end to end, attack the draft, then hand over the result. This skill produces
-a plan and makes no edits. Plan mode is expected and fine.
+Plan a codebase change, attack the draft, hand over the result. This skill makes no edits. Plan mode
+is expected and fine.
 
-Prefer the smallest correct change that meets the goal. Reach for the standard library and existing
-patterns before new dependencies or abstractions, and do not plan extension points that have no
-second caller in sight. Where the change defines data, design types so illegal states are
-unrepresentable instead of planning runtime guards to catch them later. Correctness by construction
-is cheaper to plan in than to retrofit.
+## Constraints
 
-## Operating rules
+**The whole plan is the smallest edit that meets the goal.** Stop at the first option that works:
+nothing to do, existing code in this repo, the standard library, an installed dependency, one line,
+then new code. No new file where an edit serves, no extension point without a second caller in
+sight, no config for a value that never changes. Where the change defines data, design types so
+illegal states cannot be represented, instead of runtime guards that catch them later.
 
-- Plan only what the goal requires. A plan that quietly widens scope costs the user more than one
-  that asks.
-- Keep the plan as long as the change needs and no longer. Every section must carry information the
-  implementer does not already have.
+**Each step is the smallest change with its own check, and ends in its own commit.** Split until the
+description needs no "and" and the check is one command or one observation. A step that cannot stand
+alone merges into its neighbour rather than being padded out.
 
-## Repository orientation
+Commit a step once its check passes, and never before. A green step is then a fixed point: a later
+step that goes wrong reverts to a known-good tree, instead of leaving a half-applied mixture of two
+steps to unpick by hand. A step whose check fails is not committed -- fix it or revert it, then
+re-run the check. Take the message format from the repo's own history rather than inventing one, and
+stop at the commit, since pushing is the user's call and not the plan's.
 
-Shallow directory map, falling back to `find` when `tree` is absent:
+Repetition is where small and easy-to-follow fight, and there small loses. The same mechanical edit
+across many sites is one step: state the edit once, name every site, check it. Prefer the single
+check covering every site -- one command asserting all thirty-two commands carry the flag beats
+thirty-two near-identical commands, and it catches the site you edited that was never on the list.
+The moment one site takes a different edit it becomes its own step, because an exception buried in a
+bundle costs the reader more than two plain steps ever would.
 
-```!
-tree -L 2 -d --gitignore 2>/dev/null || find . -maxdepth 2 -type d -not -path '*/.*'
-```
+**Each step is fully specified.** Small is not vague. Give the exact location, the exact literal
+text of the edit, and the exact check with the result that means "passed". Two implementers who
+follow the step produce the same diff.
 
-Use this only to orient. If the map above is empty, or reports that shell execution was disabled by
-policy, run that command yourself before you start. Read the specific files the change touches
-during step 0, and do not infer structure from the map alone.
+Address a location as `path:symbol`, the function, class or block the edit lands in. Line numbers
+look precise and are not: step 2 shifts every number step 3 relies on, leaving the implementer to
+choose between the number and the text. Where a symbol holds more than one edit site, and a long
+function usually does, the anchor that matters is the surrounding line quoted verbatim; the symbol
+only says which neighbourhood to search.
+
+Something being added has no symbol to sit in yet, so address it by the neighbours it lands between:
+`path: between <symbol A> and <symbol B>`. That is the form for a new function, class, method or
+test, and equally for a declaration -- an import, a constant, an enum member, a route, a config key,
+a table entry -- where position carries meaning the code does not state. Where the file has a
+convention, name it and let the convention place the edit: alphabetical within the import block,
+appended to the enum, grouped with the sibling it belongs to. Where it has none, say so and pick,
+because "add a constant" leaves two implementers choosing differently.
+
+Specification is proportional to the diff, not to the effort of finding it. When the change
+collapses to a few lines because the repo already did the work, the plan collapses with it: name
+what collapsed it and cut the rest. Quote a new file's body verbatim when it is short enough to read
+in one sitting, such as a test module or a small config; when it is longer, give the exact public
+surface -- every name, signature, and the assertions each part must satisfy -- and say that you did,
+so the implementer knows the wording is theirs and the surface is not.
+
+Ban from a step: "update accordingly", "as needed", "handle errors", "adjust the callers", "refactor
+X", "similar to Y", "etc.". Each hides a decision. Name the callers, name the error and what happens
+to it, write the shape you mean. A detail that is genuinely not decidable yet is a question for the
+user or a "Decisions for you" entry, not a gap in a step.
+
+**A check the implementer cannot run is not a check.** Run things, as you write them. Reading tells
+you what the code says; only running tells you what it does, and the gap between those two is where
+plans quietly become fiction -- a test that cannot observe what the code it tests actually does, a
+library helper that under-reports, a validator that accepts what the parser then rejects.
+
+Probe the claim, not the change, and prefer the cheapest thing that could prove you wrong: a few
+lines in a scratch script, one invocation of the real command, a grep for the name you assume is
+free. Most assumptions are about code that already exists, so most probes need no copy of anything.
+Take a baseline number by running the existing suite where it stands, and check the tree afterwards,
+since a test run drops caches the repo may not ignore. Build the change in a scratch copy only when
+the claim is genuinely about the whole tree -- the suite count afterwards, the type checker, the
+formatter -- and nothing smaller can settle it, then discard the copy. The repository itself stays
+untouched either way.
+
+A baseline comparison ("no new failures") carries the number you measured, the environment that
+produced it, and how to enter that environment, since a bare `pytest` assumes a path the implementer
+may not have. Write each check as they must type it, in the shell they use: `cmd; echo $?` is a
+syntax error in fish. If a check cannot run at all, say so rather than dressing up a guess, and make
+setup the first step when setup is the blocker.
 
 ## Workflow
 
-Copy this checklist and tick items as you go:
-
-```
-Plan progress:
-- [ ] Step 0: Gather -- read the files the goal actually touches
-- [ ] Step 1: Formulate -- draft the plan
-- [ ] Step 2: Red-team -- attack the draft and list every issue
-- [ ] Step 3: Fold in -- revise, and re-attack only if the revision was structural
-- [ ] Step 4: Present -- hand the user the plan
-```
-
 ### Step 0 -- Gather
 
-Read the code the goal touches: the files that will change, their callers, the types and interfaces
-at the boundary, and any existing pattern the change should match. Never plan against a file you
-have not opened.
+If not already in plan mode, enter it now (EnterPlanMode) so nothing gets edited while planning.
+
+Read the files that change, their callers, the types at the boundary, and the pattern the change
+should match. Never plan against a file you have not opened. Hunt here for the capability the repo
+already has, because that is where a plan collapses to one slice: the feature you were about to
+build turns out to be one call to something already sitting there.
 
 ### Step 1 -- Formulate
 
-Draft a plan covering:
+Draft the files edited, the files created, the tech choices (data shapes, key signatures, the error
+model), and the steps. Write each step from the file open in front of you, quoting the identifiers
+and the surrounding lines it edits. A step written from memory of the codebase is where the wiggle
+room gets in.
 
-- **Files edited** -- each file, and the nature of the edit.
-- **Files created** -- each new file, and its responsibility.
-- **Tech choices** -- libraries, data shapes, key types and signatures, the error model.
-- **Steps** -- ordered by surface area, one coherent slice per step, each independently reviewable.
+Stop and ask before a **high-leverage** decision, one that needs understanding of the codebase and
+is expensive to reverse: module boundaries, data flow, the error model, public API shape, the
+algorithm behind a central component, a change spanning two or more parts of the system, a genuine
+trade-off. Give the options, recommend one, say why.
 
-Stop and ask the user before committing to a **high-leverage** decision, meaning one that needs
-understanding of the codebase and is expensive to reverse:
+With no one to ask -- you are a subagent, a batch run, or the user is away -- do not stall and do
+not silently pick. Put the question, the options and your recommendation in "Decisions for you",
+plan on the recommendation, and say in the step that it rests on that answer. The user then reverses
+one section instead of re-reading the whole plan.
 
-- Architecture: module boundaries, data flow, error model, public API shape.
-- Core logic: the algorithm behind a central component, as opposed to a routine caller of it.
-- Cross-cutting changes that span two or more parts of the system.
-- Genuine trade-offs. Present the options, recommend one, and say why.
-
-Decide the rest yourself: filling registries, tables, and enums, copying an existing shape, constant
-and ID lookups, boilerplate, mechanical refactors, test scaffolding. One meaty decision surfaced to
-the user beats a pile of trivial ones. Do not hand back data entry.
+Decide the rest yourself: registries, tables, enums, constant and ID lookups, copying an existing
+shape, boilerplate, mechanical refactors, test scaffolding. Do not hand back data entry.
 
 ### Step 2 -- Red-team
 
-Read the draft cold and adversarially, as if a different engineer wrote it and your job is to find
-what they missed. You cannot erase your own context, so compensate by attacking the plan rather than
-re-confirming it. Look for:
+Read the draft cold and adversarially, as if another engineer wrote it and your job is to find what
+they missed. Look for:
 
-- Steps that will not work against the actual code: a wrong assumption about an interface, a
-  dependency that is not there, an edit that breaks a caller the plan never mentions.
-- Ordering hazards: a step that needs something a later step produces.
+- Steps that will not work against the actual code: a wrong assumption about an interface, a missing
+  dependency, an edit that breaks a caller the plan never mentions.
+- Ordering hazards: a step that needs what a later step produces.
+- Steps that are two steps, and lines the goal does not require.
+- Any step where an implementer must decide something: an unnamed caller, an unspecified signature,
+  an unstated location, a check with no pass condition, or a banned phrase.
 - Illegal states or unhandled failures the design leaves open.
-- Odd choices a reader would question, and hidden constraints that block the ideal approach.
 
-List every issue found. This is one pass, not a loop.
+Then attack the plan against **itself**, the failure the list above misses. Hold each step's literal
+text against every other step that touches the same symbol: a test asserting what an earlier step's
+code cannot do, an import bound one way and asserted another, a signature that drifts between the
+step writing it and the step calling it. Every step can be perfectly specified and the set still
+contradict itself, and the implementer then invents the tiebreak you owed them.
+
+List every issue. One pass, not a loop.
 
 ### Step 3 -- Fold in
 
-Fold the step 2 findings into the plan. Run step 2 a second time only if the revision changed
-something structural -- the approach, a boundary, or the ordering -- because a structural change can
-invalidate steps the first pass approved. A wording fix or an added risk note does not earn a second
-pass. Stop at two passes. Anything still unresolved goes into "Risks and mitigations" as an accepted
-risk, not into a third sweep.
+Revise. Run step 2 again if the revision changed the approach, a boundary, the ordering, or the text
+of a step another step depends on, since those invalidate steps the first pass approved; a reworded
+risk note does not. Stop at two passes. Anything still open becomes an accepted risk.
 
-Keep the record of what each pass found and how it was resolved. The user sees these in the final
-plan and judges the reasoning, not only the outcome.
+"Risks & mitigations" is the record of both passes: each finding, and either the step that now
+handles it or the reason it is accepted. The user judges the reasoning, not only the outcome.
 
 ### Step 4 -- Present
 
-Present the plan in the template below, readable by both a technical human and an agent that will
-implement it. If the user accepts it, follow their instructions for implementation. This skill's job
+Fill `resources/plan-template.md` and present it. It reads for both a technical human and the agent
+that will implement it. If the user accepts the plan, follow their instructions. This skill's job
 ends at the accepted plan.
-
-## Plan template
-
-```markdown
-# Plan: [goal]
-
-## Goal
-
-[1-2 sentences: what changes, and why.]
-
-## Approach
-
-[The chosen design in a short paragraph. Name the key types and interfaces, and the error model.]
-
-## Changes
-
-**New files**
-
-- `path` -- [responsibility]
-
-**Edited files**
-
-- `path` -- [what changes, and why]
-
-## Steps
-
-1. [Surface-area slice] -- [what, and how to verify it]
-2. ...
-
-## Decisions for you
-
-- [Open high-leverage choice, the options, and a recommendation with its rationale. Omit if none.]
-
-## Risks & mitigations
-
-- [Issue found in red-team -> how the plan handles it, or why it is accepted.]
-
-## Out of scope
-
-- [What this plan deliberately does not do.]
-```

@@ -59,7 +59,7 @@ in
             except-features = [ "format" ];
         }
         {
-            name = "efm-langserver";
+            name = "efm-langserver-md";
             cmd = [
                 "efm-langserver"
                 "-c"
