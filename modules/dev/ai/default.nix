@@ -43,6 +43,26 @@
                     # marketplace: Claude auto-installs only from the trust dialog, so that route needs a
                     # manual `/plugin install` per machine. Names must not collide with ./_skills entries.
                     inherit plugins;
+
+                    rules = {
+                        code-style = ''
+                            # Code Style Guidelines
+
+                            - Use consistent formatting
+                            - Follow language conventions
+                        '';
+                        testing = ''
+                            # Testing Conventions
+
+                            - Write tests for all new features
+                            - Maintain test coverage above 80%
+                        '';
+                    };
+
+                    settings = {
+                        model = "claude-opus-4.8"; # Opus 5 kinda sucks ngl...
+                        defaultMode = "acceptEdits";
+                    };
                 };
             };
         };
