@@ -1,8 +1,0 @@
-{
-    "name": "coreutils",
-    "description": "Agent Coreutils -- Like GNU Coreutils, but for agents",
-    "version": "1.0.0",
-    "author": {
-        "name": "Ian Pratt"
-    }
-}
