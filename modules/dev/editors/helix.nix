@@ -139,6 +139,15 @@
                                             yazi_picker_script = builtins.toFile "yazi-picker.sh" ''
                                                 #!/usr/bin/env bash
 
+                                                # zellij reports 0x0 for a new pane's first ~25ms, and yazi exits rather than
+                                                # wait for a real size. Block until the pty has one, and pass it on as well.
+                                                for _ in {1..100}; do
+                                                	read -r rows cols < <(stty size 2>/dev/null)
+                                                	((cols > 0)) && break
+                                                	sleep 0.005
+                                                done
+                                                export LINES=''${rows:-24} COLUMNS=''${cols:-80}
+
                                                 # yazi sizes the terminal by ioctl on its stdout, and exits if that fails. A
                                                 # command substitution makes stdout a pipe, so stdout stays on the tty and the
                                                 # chosen path comes back on fd 3 instead.
