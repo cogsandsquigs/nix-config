@@ -10,13 +10,13 @@
             ...
         }:
         let
-            inherit (pkgs.stdenv) isDarwin;
+            inherit (pkgs.stdenv.hostPlatform) isDarwin;
             enabled = config.my.user.cli.utils.enable;
         in
         {
-            # mkMerge of per-OS mkIf, NOT `if pkgs.stdenv.isDarwin then`: this keeps the config structure
-            # static, so it never forces `pkgs` -- which in standalone home-manager depends on `config`
-            # (config.nixpkgs) and would recurse infinitely.
+            # mkMerge of per-OS mkIf, NOT `if pkgs.stdenv.hostPlatform.isDarwin then`: this keeps the
+            # config structure static, so it never forces `pkgs` -- which in standalone home-manager
+            # depends on `config` (config.nixpkgs) and would recurse infinitely.
             config = lib.mkMerge [
                 (lib.mkIf (enabled && isDarwin) {
                     # Without this, gpg-agent.conf has no `pinentry-program` line and GUI passphrase

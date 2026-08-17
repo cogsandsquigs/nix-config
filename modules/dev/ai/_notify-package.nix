@@ -19,7 +19,7 @@
 }:
 let
     # macOS takes the osascript branch instead, and osascript needs no package.
-    linuxNotify = if stdenv.isLinux then "${libnotify}/bin/notify-send" else "notify-send";
+    linuxNotify = if stdenv.hostPlatform.isLinux then "${libnotify}/bin/notify-send" else "notify-send";
 
     server =
         writers.writePython3Bin "notify-mcp"

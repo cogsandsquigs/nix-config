@@ -81,7 +81,10 @@
 
                         # libsecret ships inside the git package on Linux (not a separate package).
                         credential.helper =
-                            if pkgs.stdenv.isDarwin then "osxkeychain" else "${pkgs.gitFull}/bin/git-credential-libsecret";
+                            if pkgs.stdenv.hostPlatform.isDarwin then
+                                "osxkeychain"
+                            else
+                                "${pkgs.gitFull}/bin/git-credential-libsecret";
 
                         # signing.signer does not wire gpg.program -- set it here.
                         gpg.program = "${pkgs.gnupg}/bin/gpg";

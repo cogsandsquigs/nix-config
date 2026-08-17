@@ -69,7 +69,7 @@
                     })
                 ];
 
-                warnings = lib.optional (pkgs.stdenv.isLinux && !config.targets.genericLinux.enable) ''
+                warnings = lib.optional (pkgs.stdenv.hostPlatform.isLinux && !config.targets.genericLinux.enable) ''
                     my.user.dev.nvm.enable is set on a Linux host that does not set
                     targets.genericLinux.enable, which reads as NixOS. The node builds nvm downloads
                     need an FHS loader; without programs.nix-ld they install and then fail to execute.

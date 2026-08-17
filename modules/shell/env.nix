@@ -44,7 +44,7 @@
                 _ZO_DOCTOR = "0";
             }
             // (
-                if pkgs.stdenv.isDarwin then
+                if pkgs.stdenv.hostPlatform.isDarwin then
                     {
                         ANDROID_HOME = "$HOME/Library/Android/sdk";
                         NDK_HOME = "$HOME/Library/Android/sdk/ndk/29.0.13846066";

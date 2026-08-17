@@ -62,7 +62,7 @@
                         dependency = options.my.user.dev.ai.claude-code.enable;
                     })
                     {
-                        assertion = pkgs.stdenv.isLinux;
+                        assertion = pkgs.stdenv.hostPlatform.isLinux;
                         message = "my.user.dev.ai.claude-code.ping.enable is Linux-only (systemd user units)";
                     }
                 ];

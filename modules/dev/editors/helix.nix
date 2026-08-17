@@ -164,8 +164,8 @@
                             insert = {
                                 "C-[" = "unindent";
                                 "C-]" = "indent";
-                                "Cmd-[" = "unindent"; # lib.mkIf stdenv.isDarwin "unindent";
-                                "Cmd-]" = "indent"; # lib.mkIf stdenv.isDarwin "indent";
+                                "Cmd-[" = "unindent"; # lib.mkIf stdenv.hostPlatform.isDarwin "unindent";
+                                "Cmd-]" = "indent"; # lib.mkIf stdenv.hostPlatform.isDarwin "indent";
                             };
                         };
 

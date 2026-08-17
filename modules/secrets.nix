@@ -51,7 +51,7 @@ in
             #
             # The "Boot-out failed: 3: No such process" line just before is NOT this bug -- that is the
             # bootout finding no agent loaded, normal on a first run or post-reboot, and ignored upstream.
-            home.activation.sopsNixInstallAgent = lib.mkIf pkgs.stdenv.isDarwin (
+            home.activation.sopsNixInstallAgent = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin (
                 lib.hm.dag.entryBefore [ "sops-nix" ] ''
                     $DRY_RUN_CMD install -Dm444 -T \
                         "$newGenPath/LaunchAgents/org.nix-community.home.sops-nix.plist" \

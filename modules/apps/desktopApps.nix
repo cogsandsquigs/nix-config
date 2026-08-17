@@ -31,7 +31,7 @@
                         #spotify
                     ]
                     ++ (
-                        if pkgs.stdenv.isLinux then
+                        if pkgs.stdenv.hostPlatform.isLinux then
                             with pkgs;
                             [
                                 discord

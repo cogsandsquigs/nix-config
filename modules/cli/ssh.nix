@@ -14,7 +14,7 @@
             # `UseKeychain` is an Apple-only addition to OpenSSH. Stock OpenSSH (i.e. Ubuntu, NixOS)
             # rejects it as an unknown keyword and refuses to parse the whole config, so it must only
             # ever be emitted on Darwin.
-            keychain = optionalAttrs stdenv.isDarwin {
+            keychain = optionalAttrs stdenv.hostPlatform.isDarwin {
                 IgnoreUnknown = "UseKeychain";
                 UseKeychain = "yes";
             };
@@ -35,7 +35,7 @@
 
                     includes = [
                         # Required for Colima to work properly
-                        (mkIf stdenv.isDarwin "~/.colima/ssh_config")
+                        (mkIf stdenv.hostPlatform.isDarwin "~/.colima/ssh_config")
                     ];
 
                     # Per-host settings rules. Only what differs from stock OpenSSH: `enableDefaultConfig

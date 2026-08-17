@@ -27,7 +27,7 @@
                 # per host, since the display scale multiplies on top of it.
                 fontSize = lib.mkOption {
                     type = lib.types.numbers.positive;
-                    default = if pkgs.stdenv.isDarwin then 13 else 10;
+                    default = if pkgs.stdenv.hostPlatform.isDarwin then 13 else 10;
                     defaultText = lib.literalMD "`13` on darwin, `10` on Linux";
                     description = "ghostty font size in points (non-integer allowed).";
                 };
@@ -37,7 +37,7 @@
                 let
                     # For some reason `ghostty` pkg is linux only, but `ghostty-bin` is macos-only
                     # (binary release)
-                    ghostty-pkg = if pkgs.stdenv.isDarwin then pkgs.ghostty-bin else pkgs.ghostty;
+                    ghostty-pkg = if pkgs.stdenv.hostPlatform.isDarwin then pkgs.ghostty-bin else pkgs.ghostty;
                 in
                 lib.mkIf cfg.enable {
                     # ghostty resolves `font-family` at runtime, so a missing FiraCode falls back
@@ -119,7 +119,7 @@
                             macos-titlebar-style = "transparent";
                             macos-non-native-fullscreen = "padded-notch"; # true;
                         }
-                        // lib.optionalAttrs pkgs.stdenv.isLinux {
+                        // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
                             # ghostty's GTK path counts every high-resolution wheel event as a full
                             # click, so a free-spinning wheel scrolls ~10 notches at once in any
                             # mouse-reporting app (helix, less, lazygit). Upstream bug, no fix in 1.3.1.

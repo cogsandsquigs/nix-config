@@ -20,7 +20,7 @@
                     ]
                     ++ (
                         # Container utilities (ez docker on macos)
-                        if pkgs.stdenv.isDarwin then
+                        if pkgs.stdenv.hostPlatform.isDarwin then
                             with pkgs;
                             [
                                 colima
