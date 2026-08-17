@@ -127,25 +127,6 @@ let
             expected = false;
         };
 
-        testOptRequiresHoldsWhenUnused = {
-            expr =
-                (opt.requires {
-                    when = false;
-                    needs = false;
-                    message = "A needs B";
-                }).assertion;
-            expected = true;
-        };
-
-        testOptRequiresFailsWhenUnmet = {
-            expr =
-                (opt.requires {
-                    when = true;
-                    needs = false;
-                    message = "A needs B";
-                }).assertion;
-            expected = false;
-        };
     };
 in
 if results == [ ] then

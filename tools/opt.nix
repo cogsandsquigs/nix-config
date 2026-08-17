@@ -80,18 +80,33 @@ in
             default = null;
         };
 
-    ## safety: express "feature A requires feature B" as an assertions entry. Usage:
-    ##   config.assertions = [ (tools.opt.requires { when = cfg.enable; needs = otherCfg.enable;
-    ##                                                message = "A needs B"; }) ];
-    requires =
+    ## safety: express "this feature cannot work unless that one is on" as an assertions entry. Both
+    ## arguments are the OPTIONS, not their values -- taken from the `options` module argument, so the
+    ## message is generated from each option's own location and a rename can never leave it stale. Usage:
+    ##
+    ##   config.assertions = [
+    ##       (tools.opt.dependsOn {
+    ##           feature = options.my.user.dev.ai.claude-code.mcp.gerrit.enable;
+    ##           dependency = options.my.user.dev.ai.claude-code.enable;
+    ##       })
+    ##   ];
+    ##
+    ## `because` adds the reason when the dependency is not self-evident from the two names.
+    ##
+    ## Nothing here reads `config`, so placing this inside the feature's own `lib.mkIf` keeps a group
+    ## kill switch silent, and placing it outside makes the feature's own flag the only thing that
+    ## matters. Both are legitimate; the choice belongs to the caller.
+    dependsOn =
         {
-            when,
-            needs,
-            message,
+            feature,
+            dependency,
+            because ? null,
         }:
         {
-            assertion = (!when) || needs;
-            inherit message;
+            assertion = (!feature.value) || dependency.value;
+            message =
+                "${lib.showOption feature.loc} requires ${lib.showOption dependency.loc}"
+                + lib.optionalString (because != null) " (${because})";
         };
 
 }

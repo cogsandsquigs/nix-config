@@ -96,13 +96,13 @@ Options shared by some classes but not all stay in a `let` block instead. `modul
 declares `my.sys.secrets.enable` in its two system halves only. As a shared `options` block it would
 reach the home evaluation as well, where nothing reads `my.sys` and nothing should.
 
-A directory adds a level to the feature name. `modules/dev/ai/mcp/gerrit.nix` is the feature
-`dev.ai.mcp.gerrit`, and that feature owns the option path `my.user.dev.ai.mcp.gerrit`. A grouping
-folder is therefore a real namespace: `modules/cli/git.nix` owns `my.user.cli.git`, not
-`my.user.git`, and `modules/os/darwin/fuse.nix` owns `my.sys.os.darwin.fuse`. A folder need not own
-a feature at its own level — `apps/`, `cli/`, `desktop/`, `net/` and `os/` do not — and
-`modules/os/` also holds plumbing (`nix.nix`, `users.nix`, `home-manager.nix`) that declares no
-option anywhere.
+A directory adds a level to the feature name. `modules/dev/ai/claude-code/mcp/gerrit.nix` is the
+feature `dev.ai.claude-code.mcp.gerrit`, and that feature owns the option path
+`my.user.dev.ai.claude-code.mcp.gerrit`. A grouping folder is therefore a real namespace:
+`modules/cli/git.nix` owns `my.user.cli.git`, not `my.user.git`, and `modules/os/darwin/fuse.nix`
+owns `my.sys.os.darwin.fuse`. A folder need not own a feature at its own level — `apps/`, `cli/`,
+`desktop/`, `net/` and `os/` do not — and `modules/os/` also holds plumbing (`nix.nix`, `users.nix`,
+`home-manager.nix`) that declares no option anywhere.
 
 A folder's own feature is its `default.nix`, which names no extra level:
 `modules/dev/ai/default.nix` is the feature `dev.ai`, and it owns `my.user.dev.ai`. This is the same
@@ -121,7 +121,7 @@ first. The error surfaces as soon as a host evaluates, so `fleet-eval` catches i
 
 A name that starts with `_` is not a module. Use it for shared values, package definitions, and data
 tables. The loader skips these files. `modules/dev/_langs/` holds the language tables,
-`modules/dev/ai/mcp/_gerrit-package.nix` holds a package definition, and
+`modules/dev/ai/claude-code/mcp/_gerrit-package.nix` holds a package definition, and
 `modules/_nixpkgs-config.nix` and `modules/_overlays.nix` hold what `tools/default.nix` must also
 read from outside the module system.
 
@@ -219,8 +219,10 @@ Value options exist only for settings that differ between hosts or users, such a
 `my.user.cli.git.userName` and `my.user.shell.flakeDir`. Anything identical everywhere stays inline.
 
 Every `my.*` leaf is declared, never a free-form attribute set, so a typo like `my.user.gmes.enable`
-fails evaluation with "option does not exist". `tools.opt.requires` covers cross-feature invariants
-of the form "A needs B".
+fails evaluation with "option does not exist". `tools.opt.dependsOn` covers cross-feature invariants
+of the form "A needs B". It takes the two _options_ rather than their values — from the `options`
+module argument — and builds the message from each option's own `loc`, so renaming a feature cannot
+leave a stale path in an error string.
 
 ## Checks
 
@@ -356,7 +358,7 @@ overridden `JAVA_HOME` still feeds `$JAVA_HOME/bin`. A missing file does nothing
   through the `bass` plugin, so bash quoting rules apply everywhere. Quote values with spaces.
 - **Typical use:** the work box sets `JAVA_HOME=/usr/lib/jdk-21` to prefer a locally installed JDK
   over the Nix one, instead of hardcoding it in the flake.
-- **Credentials for MCP servers.** `my.user.dev.ai.mcp.*` defaults to `${GERRIT_HOST}`,
+- **Credentials for MCP servers.** `my.user.dev.ai.claude-code.mcp.*` defaults to `${GERRIT_HOST}`,
   `${GERRIT_USERNAME}`, `${GERRIT_PASSWORD}` (an HTTP password: Gerrit -> Settings -> HTTP
   Credentials) and `${YOUTRACK_HOST}`, `${YOUTRACK_AUTH_TOKEN}` (a permanent token, YouTrack scope).
   Claude Code expands them at launch, so they stay out of `/nix/store`. Only shells load `.env`, so

@@ -9,10 +9,11 @@
             lib,
             tools,
             config,
+            options,
             ...
         }:
         let
-            cfg = config.my.user.dev.ai.lsp;
+            cfg = config.my.user.dev.ai.claude-code.lsp;
 
             # Already resolved in modules/dev/langs.nix: which servers serve a language, and where each
             # command splits. This file only reshapes that into Claude's schema.
@@ -83,8 +84,8 @@
             conflicts = lib.filterAttrs (_: claimants: lib.length claimants > 1) claims;
         in
         {
-            options.my.user.dev.ai.lsp.enable = tools.opt.mkRiding (
-                config.my.user.dev.ai.enable && config.my.user.dev.langs.enable
+            options.my.user.dev.ai.claude-code.lsp.enable = tools.opt.mkRiding (
+                config.my.user.dev.ai.claude-code.enable && config.my.user.dev.langs.enable
             ) "language servers for Claude Code, from the langs/ toolchains";
 
             config = lib.mkIf cfg.enable {
@@ -97,10 +98,10 @@
                                 lib.mapAttrsToList (k: c: "${k} claimed by ${lib.concatStringsSep " and " c}") conflicts
                             );
                     }
-                    {
-                        assertion = config.my.user.dev.ai.enable;
-                        message = "my.user.dev.ai.lsp.enable requires my.user.dev.ai.enable";
-                    }
+                    (tools.opt.dependsOn {
+                        feature = options.my.user.dev.ai.claude-code.lsp.enable;
+                        dependency = options.my.user.dev.ai.claude-code.enable;
+                    })
                 ];
 
                 programs.claude-code.lspServers = servers;

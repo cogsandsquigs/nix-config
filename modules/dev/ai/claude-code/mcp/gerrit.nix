@@ -9,18 +9,19 @@
             lib,
             tools,
             config,
+            options,
             pkgs,
             ...
         }:
         let
-            mcp = config.my.user.dev.ai.mcp;
+            mcp = config.my.user.dev.ai.claude-code.mcp;
             cfg = mcp.gerrit;
 
             gerritMcp = pkgs.callPackage ./_gerrit-package.nix { };
         in
         {
-            options.my.user.dev.ai.mcp.gerrit = {
-                enable = tools.opt.mkDisabled "Gerrit MCP server (code review tools for the coding agents)";
+            options.my.user.dev.ai.claude-code.mcp.gerrit = {
+                enable = tools.opt.mkDisabled "Gerrit MCP server (code review tools for Claude Code)";
 
                 host = tools.opt.mkNonEmptyStr "\${GERRIT_HOST}" ''Gerrit host, no scheme (e.g. "gerrit.example.com").'';
                 username = tools.opt.mkNonEmptyStr "\${GERRIT_USERNAME}" "Gerrit account username.";
@@ -32,10 +33,10 @@
 
             config = lib.mkIf (mcp.enable && cfg.enable) {
                 assertions = [
-                    {
-                        assertion = config.my.user.dev.ai.enable;
-                        message = "my.user.dev.ai.mcp.gerrit.enable requires my.user.dev.ai.enable";
-                    }
+                    (tools.opt.dependsOn {
+                        feature = options.my.user.dev.ai.claude-code.mcp.gerrit.enable;
+                        dependency = options.my.user.dev.ai.claude-code.enable;
+                    })
                 ];
 
                 # home-manager infers `type = "stdio"` from `command` (lib.hm.mcp.addType).

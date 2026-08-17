@@ -10,15 +10,16 @@
             lib,
             tools,
             config,
+            options,
             ...
         }:
         let
-            mcp = config.my.user.dev.ai.mcp;
+            mcp = config.my.user.dev.ai.claude-code.mcp;
             cfg = mcp.youtrack;
         in
         {
-            options.my.user.dev.ai.mcp.youtrack = {
-                enable = tools.opt.mkDisabled "YouTrack MCP server (issue tracking for the coding agents)";
+            options.my.user.dev.ai.claude-code.mcp.youtrack = {
+                enable = tools.opt.mkDisabled "YouTrack MCP server (issue tracking for Claude Code)";
 
                 host = tools.opt.mkNonEmptyStr "\${YOUTRACK_HOST}" ''
                     YouTrack host, no scheme (e.g. "youtrack.example.com"). The server URL is
@@ -33,10 +34,10 @@
 
             config = lib.mkIf (mcp.enable && cfg.enable) {
                 assertions = [
-                    {
-                        assertion = config.my.user.dev.ai.enable;
-                        message = "my.user.dev.ai.mcp.youtrack.enable requires my.user.dev.ai.enable";
-                    }
+                    (tools.opt.dependsOn {
+                        feature = options.my.user.dev.ai.claude-code.mcp.youtrack.enable;
+                        dependency = options.my.user.dev.ai.claude-code.enable;
+                    })
                 ];
 
                 # `type = "http"` is inferred from `url`. Claude Code expands `${VAR}` refs inside both

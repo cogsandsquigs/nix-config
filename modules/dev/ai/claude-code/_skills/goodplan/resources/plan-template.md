@@ -4,11 +4,11 @@
 
 [1-2 sentences: what changes, and why.]
 
-Done when: `[the acceptance check -- one command or observation, and the result that means the
-goal is met. The final step runs it.]`
+Done when:
+`[the acceptance check -- one command or observation, and the result that means the goal is met. The final step runs it.]`
 
-Fails now: `[the same command run against the tree before any step, and what it prints. A check
-that already passes is measuring something other than the goal.]`
+Fails now:
+`[the same command run against the tree before any step, and what it prints. A check that already passes is measuring something other than the goal.]`
 
 ## Approach
 
@@ -27,10 +27,10 @@ this is the smallest edit that meets the goal.]
 
 ## Steps
 
-One atomic edit per step, specified so that two implementers produce the same diff. Flat plan:
-every step ends in a commit, made only once its check passes. Phased plan: group the steps under
-phases as below -- steps within a phase are mutually independent with disjoint edit sites, run in
-parallel, and the phase makes the one commit once every step and the phase check are green.
+One atomic edit per step, specified so that two implementers produce the same diff. Flat plan: every
+step ends in a commit, made only once its check passes. Phased plan: group the steps under phases as
+below -- steps within a phase are mutually independent with disjoint edit sites, run in parallel,
+and the phase makes the one commit once every step and the phase check are green.
 
 ```
 Dependencies (input to scripts/phase_sort.py):
@@ -69,7 +69,7 @@ was missing. Stated once here, not repeated per step.]
 3. ...
 
 N. **Acceptance check** -- run the "Done when" command against the finished tree; [the result that
-   means the goal is met]. No commit; nothing changes in this step.
+means the goal is met]. No commit; nothing changes in this step.
 
 ## Decisions for you
 
@@ -82,6 +82,6 @@ N. **Acceptance check** -- run the "Done when" command against the finished tree
 
 ## Out of scope
 
-- [What this plan deliberately does not do, and anything worth fixing that was noticed while
-  reading -- dead code, a bad name, a neighbouring bug -- one sentence each, ready to promote to
-  its own task.]
+- [What this plan deliberately does not do, and anything worth fixing that was noticed while reading
+  -- dead code, a bad name, a neighbouring bug -- one sentence each, ready to promote to its own
+  task.]

@@ -22,6 +22,7 @@
             pkgs,
             lib,
             config,
+            options,
             tools,
             ...
         }:
@@ -61,10 +62,10 @@
 
             config = lib.mkIf cfg.enable {
                 assertions = [
-                    (tools.opt.requires {
-                        when = cfg.enable;
-                        needs = config.my.user.shell.enable;
-                        message = "my.user.dev.nvm.enable needs my.user.shell.enable: the fish `nvm` function runs through `bass`, which that feature installs";
+                    (tools.opt.dependsOn {
+                        feature = options.my.user.dev.nvm.enable;
+                        dependency = options.my.user.shell.enable;
+                        because = "the fish `nvm` function runs through `bass`, which that feature installs";
                     })
                 ];
 

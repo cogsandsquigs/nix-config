@@ -11,11 +11,12 @@
             lib,
             tools,
             config,
+            options,
             pkgs,
             ...
         }:
         let
-            cfg = config.my.user.dev.ai.claude-ping;
+            cfg = config.my.user.dev.ai.claude-code.ping;
 
             claude-ping = pkgs.writeShellScript "claude-ping" ''
                 # Open a Claude 5h usage window with minimal spend.
@@ -51,18 +52,18 @@
             '';
         in
         {
-            options.my.user.dev.ai.claude-ping.enable =
+            options.my.user.dev.ai.claude-code.ping.enable =
                 tools.opt.mkDisabled "Scheduled ping that pins the phase of Claude's 5h usage window";
 
             config = lib.mkIf cfg.enable {
                 assertions = [
-                    {
-                        assertion = config.my.user.dev.ai.enable;
-                        message = "my.user.dev.ai.claude-ping.enable requires my.user.dev.ai.enable";
-                    }
+                    (tools.opt.dependsOn {
+                        feature = options.my.user.dev.ai.claude-code.ping.enable;
+                        dependency = options.my.user.dev.ai.claude-code.enable;
+                    })
                     {
                         assertion = pkgs.stdenv.isLinux;
-                        message = "my.user.dev.ai.claude-ping.enable is Linux-only (systemd user units)";
+                        message = "my.user.dev.ai.claude-code.ping.enable is Linux-only (systemd user units)";
                     }
                 ];
 

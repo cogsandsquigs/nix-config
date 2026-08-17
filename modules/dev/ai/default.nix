@@ -1,54 +1,17 @@
+# Coding agents. This file is the group: it installs nothing and configures no harness, it declares the
+# one switch every harness rides.
+#
+# The split exists because a harness is a *product*, not a concept. Anything only one of them can act on
+# lives under that harness -- MCP servers, language servers and the usage-window ping are all
+# `claude-code/` because pi has no MCP client, no LSP client, and no 5h window.
+#
+# What both harnesses read is payload, not a namespace level, so the loader skips it and each harness
+# imports it directly: ./_payload.nix for the instructions and the portable skills, ./_sources for the
+# third-party pins, ./_notify-package.nix for the notifier. `_agents.md` rather than a bare `AGENTS.md`,
+# so an agent working in this repo does not read it as instructions for this directory.
 {
-    home =
-        {
-            lib,
-            tools,
-            config,
-            pkgs,
-            ...
-        }:
-        let
-            # `_plugins`, like `_skills` below: payload, not a namespace level, so the loader skips it.
-            # One file per upstream, each returning `<plugin directory name> -> source`, so adding a plugin
-            # is a new file rather than an edit here. None declares an option -- a plugin worth switching
-            # off brings its own switch.
-            dir = ./_plugins;
-            files = lib.filterAttrs (n: t: t == "regular" && lib.hasSuffix ".nix" n) (builtins.readDir dir);
-            plugins = lib.mergeAttrsList (
-                lib.mapAttrsToList (n: _: import (dir + "/${n}") { inherit pkgs lib; }) files
-            );
-        in
-        {
-            options.my.user.dev.ai.enable =
-                tools.opt.mkRiding config.my.user.dev.enable "AI tooling / coding agents (for work)";
-
-            config = lib.mkIf config.my.user.dev.ai.enable {
-
-                home.packages = with pkgs; [
-                    # AI stuffs (work *blech*)
-                    claude-code
-                    ccusage
-                ];
-
-                programs.claude-code = {
-                    enable = true;
-                    context = ./context.md;
-
-                    # `_skills`, not `skills`: payload, not a namespace level, so the loader skips it
-                    # rather than reading it as the feature `dev.ai.skills`.
-                    skills = ./_skills;
-
-                    # Each loads as a personal plugin at ~/.claude/skills/<name> next session. Not a
-                    # marketplace: Claude auto-installs only from the trust dialog, so that route needs a
-                    # manual `/plugin install` per machine. Names must not collide with ./_skills entries.
-                    inherit plugins;
-
-                    rulesDir = ./_rules;
-
-                    settings = {
-                        defaultMode = "acceptEdits";
-                    };
-                };
-            };
-        };
+    home = { tools, config, ... }: {
+        options.my.user.dev.ai.enable =
+            tools.opt.mkRiding config.my.user.dev.enable "AI tooling / coding agents (for work)";
+    };
 }

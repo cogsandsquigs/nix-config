@@ -1,5 +1,6 @@
-# Desktop notifications: a `notify` tool the agent can call, packaged in ./_notify-package.nix, plus the
-# Claude Code hooks calling that same tool when a turn ends or Claude wants you.
+# Desktop notifications: a `notify` tool the agent can call, packaged in ../../_notify-package.nix, plus
+# the Claude Code hooks calling that same tool when a turn ends or Claude wants you. pi reaches the same
+# package through ../../pi/notify.nix, by a different route.
 #
 # The one server here that talks to no private service, so it needs no credentials and rides no `.env`.
 #
@@ -12,14 +13,15 @@
             lib,
             tools,
             config,
+            options,
             pkgs,
             ...
         }:
         let
-            mcp = config.my.user.dev.ai.mcp;
+            mcp = config.my.user.dev.ai.claude-code.mcp;
             cfg = mcp.notify;
 
-            notifyMcp = pkgs.callPackage ./_notify-package.nix { };
+            notifyMcp = pkgs.callPackage ../../_notify-package.nix { };
 
             json = (pkgs.formats.json { }).generate;
 
@@ -65,8 +67,7 @@
                 hooks = "./hooks/hooks.json";
             };
 
-            # A personal plugin is how a hook is declared without touching settings.json -- the same route
-            # ponytail's SessionStart hooks take (see ../_plugins).
+            # A personal plugin is how a hook is declared without touching settings.json.
             plugin = pkgs.runCommand "claude-notify-plugin" { } ''
                 mkdir -p $out/.claude-plugin $out/hooks
                 cp ${manifest} $out/.claude-plugin/plugin.json
@@ -74,10 +75,10 @@
             '';
         in
         {
-            options.my.user.dev.ai.mcp.notify = {
-                enable = tools.opt.mkDisabled "desktop notifications for the coding agents (a `notify` tool)";
+            options.my.user.dev.ai.claude-code.mcp.notify = {
+                enable = tools.opt.mkDisabled "desktop notifications for Claude Code (a `notify` tool)";
 
-                hook.enable = tools.opt.mkRiding config.my.user.dev.ai.mcp.notify.enable ''
+                hook.enable = tools.opt.mkRiding config.my.user.dev.ai.claude-code.mcp.notify.enable ''
                     Notify on Claude Code's own notifications: a turn finished, input is needed, permission
                     is being asked for.
                 '';
@@ -86,10 +87,10 @@
             config = lib.mkMerge [
                 (lib.mkIf (mcp.enable && cfg.enable) {
                     assertions = [
-                        {
-                            assertion = config.my.user.dev.ai.enable;
-                            message = "my.user.dev.ai.mcp.notify.enable requires my.user.dev.ai.enable";
-                        }
+                        (tools.opt.dependsOn {
+                            feature = options.my.user.dev.ai.claude-code.mcp.notify.enable;
+                            dependency = options.my.user.dev.ai.claude-code.enable;
+                        })
                     ];
 
                     home.packages = [ notifyMcp ]; # argv mode doubles as the CLI, for testing by hand
@@ -99,10 +100,10 @@
 
                 (lib.mkIf (mcp.enable && cfg.hook.enable) {
                     assertions = [
-                        (tools.opt.requires {
-                            when = cfg.hook.enable;
-                            needs = cfg.enable;
-                            message = "my.user.dev.ai.mcp.notify.hook.enable requires my.user.dev.ai.mcp.notify.enable (the hook calls that server's tool)";
+                        (tools.opt.dependsOn {
+                            feature = options.my.user.dev.ai.claude-code.mcp.notify.hook.enable;
+                            dependency = options.my.user.dev.ai.claude-code.mcp.notify.enable;
+                            because = "the hook calls that server's tool";
                         })
                     ];
 

@@ -3,6 +3,7 @@
         {
             lib,
             config,
+            options,
             tools,
             ...
         }:
@@ -92,10 +93,10 @@
                 # depend on that feature rather than installing a second copy of each here. helix
                 # itself comes from `programs.helix` below.
                 assertions = [
-                    (tools.opt.requires {
-                        when = config.my.user.dev.editors.helix.enable;
-                        needs = config.my.user.cli.utils.enable;
-                        message = "my.user.dev.editors.helix.enable needs my.user.cli.utils.enable: the space-mode keybinds open zellij floating panes and the yazi file picker";
+                    (tools.opt.dependsOn {
+                        feature = options.my.user.dev.editors.helix.enable;
+                        dependency = options.my.user.cli.utils.enable;
+                        because = "the space-mode keybinds open zellij floating panes and the yazi file picker";
                     })
                 ];
 

@@ -15,12 +15,24 @@ _: {
 
     # my.user.dev.editors.vscode.enable = true;
 
-    # Credentials come from GERRIT_* / YOUTRACK_* in ${flakeDir}/.env, expanded by Claude Code at
-    # launch (see modules/dev/ai/mcp).
-    my.user.dev.ai.mcp.gerrit.enable = true;
-    my.user.dev.ai.mcp.youtrack.enable = true;
-    my.user.dev.ai.mcp.notify.enable = true;
+    ## Coding agents. One block per harness: the shared payload -- instructions and the portable skills
+    ## -- needs nothing said here, so everything below is a per-harness switch.
+    my.user.dev.ai = {
+        claude-code = {
+            # Credentials come from GERRIT_* / YOUTRACK_* in ${flakeDir}/.env, expanded by Claude Code
+            # at launch (see modules/dev/ai/claude-code/mcp).
+            mcp = {
+                gerrit.enable = true;
+                youtrack.enable = true;
+                notify.enable = true;
+            };
 
-    # Pins the 5h window's boundaries at 10:30 / 15:30 (modules/dev/ai/claude-ping.nix).
-    my.user.dev.ai.claude-ping.enable = true;
+            # Pins the 5h window's boundaries at 10:30 / 15:30 (modules/dev/ai/claude-code/ping.nix).
+            ping.enable = true;
+        };
+
+        # The same notifier as claude-code's, reached as a one-shot CLI from a pi extension rather than
+        # as an MCP server (modules/dev/ai/pi/notify.nix).
+        pi.notify.enable = true;
+    };
 }
