@@ -139,7 +139,10 @@
                                             yazi_picker_script = builtins.toFile "yazi-picker.sh" ''
                                                 #!/usr/bin/env bash
 
-                                                path=$(yazi "$1" --chooser-file=/dev/stdout)
+                                                # yazi sizes the terminal by ioctl on its stdout, and exits if that fails. A
+                                                # command substitution makes stdout a pipe, so stdout stays on the tty and the
+                                                # chosen path comes back on fd 3 instead.
+                                                path=$(yazi "$1" --chooser-file=/dev/fd/3 3>&1 1>/dev/tty)
 
                                                 # Temporary: hold the pane open when yazi fails, so its message survives
                                                 # `--close-on-exit`.
