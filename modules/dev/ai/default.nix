@@ -47,7 +47,6 @@
                     rulesDir = ./_rules;
 
                     settings = {
-                        model = "claude-opus-4.8"; # Opus 5 kinda sucks ngl...
                         defaultMode = "acceptEdits";
                     };
                 };
