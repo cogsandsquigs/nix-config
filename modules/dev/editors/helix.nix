@@ -141,6 +141,13 @@
 
                                                 path=$(yazi "$1" --chooser-file=/dev/stdout)
 
+                                                # Temporary: hold the pane open when yazi fails, so its message survives
+                                                # `--close-on-exit`.
+                                                code=$?
+                                                if ((code != 0)); then
+                                                	read -rsn1 -p "picker failed ($code) -- press any key"
+                                                fi
+
                                                 # If `paths` is not empty, open it.
                                                 if [[ -n "$path" ]]; then
                                                 	zellij action toggle-floating-panes
