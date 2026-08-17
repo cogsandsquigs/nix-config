@@ -28,7 +28,6 @@
                     # AI stuffs (work *blech*)
                     claude-code
                     ccusage
-                    nodejs # ponytail's hooks run under it
                 ];
 
                 programs.claude-code = {

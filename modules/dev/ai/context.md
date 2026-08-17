@@ -47,7 +47,7 @@ Hard cap: <=20% of total lines, per file, counting only NON-doc comments. Over c
 weakest, don't reword. Keep the _why_, cut restatement of the code. Only doc-comments exempt from
 "only _why_".
 
-## Files: <=500 lines or 6 kB (whichever first)
+## Files: <=500 lines
 
 Longer only if grouping genuinely needed.
 
