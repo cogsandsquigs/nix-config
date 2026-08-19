@@ -1,13 +1,15 @@
 # pi (earendil-works/pi), a second harness for experimentation.
 #
-# It gets the shared instructions and the portable skills, and nothing else. pi ships no MCP client,
+# It gets the shared context and skills, and nothing else. pi ships no MCP client,
 # no sub-agents, no plan mode and no permission prompts -- deliberate non-goals rather than gaps, so
 # the claude-only features here have nothing to translate into. MCP is reachable through a third-party
 # extension, but there is no first-party one and pulling an unpinned npm package at runtime buys
 # nothing this box needs.
 #
 # `settings.skills` takes a list and discovers every directory holding a SKILL.md beneath each entry,
-# so bucket directories are enough and individual skills need not be named.
+# so the registry's one dir is enough and individual skills need not be named. The relative
+# `../.claude/skills` adds this machine's local project tooling, so pi rides the same local skill set
+# claude-code does.
 {
     home =
         {
@@ -20,9 +22,7 @@
         }:
         let
             cfg = config.my.user.dev.ai.pi;
-
-            mattpocock = import ../_sources/mattpocock-skills.nix { inherit pkgs; };
-            payload = import ../_payload.nix;
+            skills = import ../_skills { inherit pkgs lib; };
         in
         {
             options.my.user.dev.ai.pi.enable = tools.opt.mkDisabled "pi coding agent";
@@ -38,24 +38,21 @@
                 programs.pi-coding-agent = {
                     enable = true;
 
-                    inherit (payload) context;
+                    context = ../_agents.md;
 
                     extraPackages = with pkgs; [
                         python3
                         nodejs
                     ];
-                    # Interpolated, not `toString`: the store copy is what pi should read, so editing a
-                    # skill needs a rebuild rather than taking effect in the next session.
+
                     settings = {
                         defaultModel = "~deepseek/deepseek-v4-flash-latest";
                         defaultProvider = "openrouter";
                         skills = [
-                            "${payload.skills}"
+                            "${skills.skills.pi}"
                             "../.claude/skills" # Local project-specific claude-code skills
-                        ]
-                        ++ mattpocock.promoted;
+                        ];
                     };
-
                 };
             };
         };

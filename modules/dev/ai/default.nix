@@ -6,8 +6,8 @@
 # `claude-code/` because pi has no MCP client, no LSP client, and no 5h window.
 #
 # What both harnesses read is payload, not a namespace level, so the loader skips it and each harness
-# imports it directly: ./_payload.nix for the instructions and the portable skills, ./_sources for the
-# third-party pins, ./_notify-package.nix for the notifier. `_agents.md` rather than a bare `AGENTS.md`,
+# imports it directly: ./_skills for the registry (the instructions, the shared skills and the pinned
+# third-party sets), ./_notify-package.nix for the notifier. `_agents.md` rather than a bare `AGENTS.md`,
 # so an agent working in this repo does not read it as instructions for this directory.
 {
     home = { tools, config, ... }: {
