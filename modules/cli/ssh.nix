@@ -73,9 +73,9 @@
                         "workbox" = {
                             User = "ipratt";
                             HostName = "172.24.20.25";
-                            SetEnv = {
-                                TERM = "xterm-256color";
-                            };
+                            # SetEnv = {
+                            #     TERM = "xterm-256color";
+                            # };
                         };
                     };
                 };
