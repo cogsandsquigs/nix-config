@@ -25,7 +25,7 @@
             payload = import ../_payload.nix;
         in
         {
-            options.my.user.dev.ai.pi.enable = tools.opt.mkDisable "pi coding agent";
+            options.my.user.dev.ai.pi.enable = tools.opt.mkDisabled "pi coding agent";
 
             config = lib.mkIf cfg.enable {
                 assertions = [
