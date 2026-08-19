@@ -8,5 +8,4 @@ in
 {
     nixos = conf;
     darwin = conf;
-
 }
