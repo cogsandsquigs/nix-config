@@ -37,6 +37,7 @@ in
             enable = true;
             notify.enable = false;
         };
+        omp.enable = true;
     };
 
     sops.secrets = lib.mkIf haveGpg (tools.secrets.declare me "gpg");

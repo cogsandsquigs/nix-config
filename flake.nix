@@ -55,6 +55,16 @@
             url = "github:sidharthify/balenaEtcher-flake";
             inputs.nixpkgs.follows = "nixpkgs";
         };
+
+        ## Miscellaneous ##
+
+        # omp (oh-my-pi). Its home-manager module (`homeManagerModules.default`) is imported by
+        # `modules/dev/ai/omp`.
+        omp = {
+            url = "github:can1357/oh-my-pi/v17.3.8";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
+
     };
 
     # Plain-flake composition: every file under ./modules is an ordinary NixOS / nix-darwin /
