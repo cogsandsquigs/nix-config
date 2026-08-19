@@ -33,6 +33,7 @@
                     enable = true;
 
                     settings = {
+                        setupVersion = 1; # Necessary so it doesn't ask for setup again on start
                         modelRoles.default = "openrouter/~deepseek/deepseek-v4-flash-latest";
                         symbolPreset = "nerd";
                         theme.dark = "dark-catppuccin";
