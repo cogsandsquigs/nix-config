@@ -32,5 +32,12 @@ in
         signingKeyFile = lib.mkIf haveGpg (tools.secrets.path config me "gpg");
     };
 
+    my.user.dev.ai = {
+        pi = {
+            enable = true;
+            notify.enable = false;
+        };
+    };
+
     sops.secrets = lib.mkIf haveGpg (tools.secrets.declare me "gpg");
 }

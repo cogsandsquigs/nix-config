@@ -30,9 +30,5 @@ _: {
             # Pins the 5h window's boundaries at 10:30 / 15:30 (modules/dev/ai/claude-code/ping.nix).
             ping.enable = true;
         };
-
-        # The same notifier as claude-code's, reached as a one-shot CLI from a pi extension rather than
-        # as an MCP server (modules/dev/ai/pi/notify.nix).
-        pi.notify.enable = true;
     };
 }
