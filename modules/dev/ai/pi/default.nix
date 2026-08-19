@@ -40,9 +40,22 @@
 
                     inherit (payload) context;
 
+                    extraPackages = with pkgs; [
+                        python3
+                        nodejs
+                    ];
                     # Interpolated, not `toString`: the store copy is what pi should read, so editing a
                     # skill needs a rebuild rather than taking effect in the next session.
-                    settings.skills = [ "${payload.skills}" ] ++ mattpocock.promoted;
+                    settings = {
+                        defaultModel = "~deepseek/deepseek-v4-flash-latest";
+                        defaultProvider = "openrouter";
+                        skills = [
+                            "${payload.skills}"
+                            "../.claude/skills" # Local project-specific claude-code skills
+                        ]
+                        ++ mattpocock.promoted;
+                    };
+
                 };
             };
         };

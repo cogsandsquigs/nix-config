@@ -19,11 +19,23 @@ let
         rev = "8b78b531ab965735c5dc74f6f7a219e1e37326df";
         hash = "sha256-jsXcMkhu15MxR0zXnLLJeni0q0Aew2UxUSojl6zmOvg=";
     };
+
+    # pi discovers root .md files as skills and warns when they lack a description
+    # frontmatter. The bucket README.md files trigger these spurious warnings. Filter
+    # them out by building a copy that only contains the subdirectory skills.
+    cleaned =
+        name:
+        pkgs.runCommandLocal "mattpocock-${name}" { } ''
+            mkdir -p "$out"
+            for d in "${src}/skills/${name}"/*/; do
+                ln -sn "$d" "$out/$(basename "$d")"
+            done
+        '';
 in
 {
     inherit src;
     promoted = [
-        "${src}/skills/engineering"
-        "${src}/skills/productivity"
+        (cleaned "engineering")
+        (cleaned "productivity")
     ];
 }
