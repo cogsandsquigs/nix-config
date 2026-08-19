@@ -49,7 +49,10 @@
                         }
                     ];
 
-                    home.packages = lib.optionals (!cfg.localInstall.enable) [ ghostty-pkg ];
+                    home.packages = lib.optionals (!cfg.localInstall.enable) [
+                        ghostty-pkg
+                        ghostty-pkg.terminfo
+                    ];
 
                     programs.ghostty = {
                         enable = true;
