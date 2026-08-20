@@ -35,7 +35,7 @@
 
                     settings = {
                         setupVersion = 1; # Necessary so it doesn't ask for setup again on start
-                        modelRoles.default = "openrouter/~deepseek/deepseek-v4-flash-latest";
+                        modelRoles.default = "openrouter/openai/gpt-5.6-luna";
                         symbolPreset = "nerd";
                         theme.dark = "dark-catppuccin";
 
