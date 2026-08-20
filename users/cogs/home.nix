@@ -19,6 +19,7 @@ in
 {
     my.user.apps.games.enable = true;
     my.user.apps.desktopApps.enable = true;
+    my.user.apps.desktopUtils.enable = true;
 
     # Rides the host's class rather than a flat `true`: the sway binary comes from the system half,
     # which only a NixOS host has. The system half then follows this back (mkFollowsUsers).
