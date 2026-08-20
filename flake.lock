@@ -438,17 +438,36 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1787136491,
-        "narHash": "sha256-4ffZoaprz5rXso4xc9JIKpebB7yxzM4S3nK+/ObQKZ8=",
+        "lastModified": 1787206438,
+        "narHash": "sha256-tXgmUpJOoeEXJH44aFGtmSIn3N7ct6sbZQoWCK1KHKg=",
         "owner": "can1357",
         "repo": "oh-my-pi",
-        "rev": "858f7dd91fff9b84cf8a2c6a6bb85aa0e6d03a55",
+        "rev": "72000acfeb902e21816252699482887f34d1a5a4",
         "type": "github"
       },
       "original": {
         "owner": "can1357",
-        "ref": "v17.3.8",
         "repo": "oh-my-pi",
+        "type": "github"
+      }
+    },
+    "omp-bin-overlay": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1787187438,
+        "narHash": "sha256-TS5Uq9aWqbACQ7Myvr4cV7IEUWS+BSfUiqCL0SrUmXI=",
+        "owner": "yuxqiu",
+        "repo": "omp-nix",
+        "rev": "50e5518041d513e0c77f8eaadef417b568625ce1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "yuxqiu",
+        "repo": "omp-nix",
         "type": "github"
       }
     },
@@ -461,6 +480,7 @@
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs_2",
         "omp": "omp",
+        "omp-bin-overlay": "omp-bin-overlay",
         "sops-nix": "sops-nix"
       }
     },

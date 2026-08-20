@@ -31,6 +31,7 @@
 
                 programs.omp = {
                     enable = true;
+                    package = pkgs.oh-my-pi; # Use the OMP-bin overlay pkg (see `flake.nix`, `modules/_overlays.nix`)
 
                     settings = {
                         setupVersion = 1; # Necessary so it doesn't ask for setup again on start

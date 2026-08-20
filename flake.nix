@@ -56,12 +56,18 @@
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
+        # Provides binary releases for OMP (see below in Misc.) instead of building on-system.
+        omp-bin-overlay = {
+            url = "github:yuxqiu/omp-nix";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
+
         ## Miscellaneous ##
 
         # omp (oh-my-pi). Its home-manager module (`homeManagerModules.default`) is imported by
-        # `modules/dev/ai/omp`.
+        # `modules/dev/ai/omp`. See overlays above for the binary pkg used.
         omp = {
-            url = "github:can1357/oh-my-pi/v17.3.8";
+            url = "github:can1357/oh-my-pi";
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
