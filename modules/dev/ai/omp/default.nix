@@ -36,13 +36,22 @@
                     settings = {
                         setupVersion = 1; # Necessary so it doesn't ask for setup again on start
                         modelRoles.default = "openrouter/openai/gpt-5.6-luna";
-                        symbolPreset = "nerd";
-                        theme.dark = "dark-catppuccin";
 
                         skills.customDirectories = [
                             "${skills.skills.claude}"
                             "../.claude/skills"
                         ];
+
+                        ## Theming ##
+
+                        symbolPreset = "nerd";
+                        theme.dark = "dark-catppuccin";
+                        statusLine = {
+                            preset = "compact";
+                            separator = "powerline-thin";
+                            transparent = true;
+                            showHookStatus = true;
+                        };
                     };
                 };
             };
