@@ -34,7 +34,7 @@
                     package = pkgs.oh-my-pi; # Use the OMP-bin overlay pkg (see `flake.nix`, `modules/_overlays.nix`)
 
                     settings = {
-                        setupVersion = 1; # Necessary so it doesn't ask for setup again on start
+                        setupVersion = 2; # Necessary so it doesn't ask for setup again on start
                         modelRoles.default = "openrouter/openai/gpt-5.6-luna";
 
                         skills.customDirectories = [
@@ -46,6 +46,7 @@
 
                         symbolPreset = "nerd";
                         theme.dark = "dark-catppuccin";
+                        composer.shape = "claude";
                         statusLine = {
                             preset = "compact";
                             separator = "powerline-thin";
