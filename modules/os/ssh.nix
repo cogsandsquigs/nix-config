@@ -1,11 +1,16 @@
 let
     conf = _: {
-        # SSH terminfo enable
         environment.enableAllTerminfo = true;
+        services.openssh.enable = true;
     };
 
 in
 {
-    nixos = conf;
-    darwin = conf;
+    nixos = conf // {
+        services.openssh.settings.PasswordAuthentication = false;
+    };
+
+    darwin = conf // {
+        services.openssh.extraConfig = "PasswordAuthentication no";
+    };
 }
