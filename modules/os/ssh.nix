@@ -6,11 +6,6 @@ let
 
 in
 {
-    nixos = conf // {
-        services.openssh.settings.PasswordAuthentication = false;
-    };
-
-    darwin = conf // {
-        services.openssh.extraConfig = "PasswordAuthentication no";
-    };
+    nixos = inputs: (conf inputs) // { services.openssh.settings.PasswordAuthentication = false; };
+    darwin = inputs: (conf inputs) // { services.openssh.extraConfig = "PasswordAuthentication no"; };
 }
