@@ -34,7 +34,6 @@ in
     };
 
     my.user.dev.ai = {
-        pi.enable = true;
         omp.enable = true;
     };
 
