@@ -34,10 +34,6 @@ in
     };
 
     my.user.dev.ai = {
-        pi = {
-            enable = true;
-            notify.enable = false;
-        };
         omp.enable = true;
     };
 

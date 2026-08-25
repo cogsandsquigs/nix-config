@@ -7,8 +7,8 @@
 #
 # What both harnesses read is payload, not a namespace level, so the loader skips it and each harness
 # imports it directly: ./_skills for the registry (the instructions, the shared skills and the pinned
-# third-party sets), ./_notify-package.nix for the notifier. `_agents.md` rather than a bare `AGENTS.md`,
-# so an agent working in this repo does not read it as instructions for this directory.
+# third-party sets). `_agents.md` rather than a bare `AGENTS.md`, so an agent working in this repo does
+# not read it as instructions for this directory.
 {
     home = { tools, config, ... }: {
         options.my.user.dev.ai.enable =
