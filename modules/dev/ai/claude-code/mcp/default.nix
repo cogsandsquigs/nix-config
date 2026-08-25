@@ -1,5 +1,5 @@
 # MCP servers for Claude Code. One file per server, each owning its own
-# `my.user.dev.ai.claude-code.mcp.<name>` leaf -- all opt-in, since most talk to a private service that
+# `my.user.dev.ai.claude-code.mcp.<name>` leaf -- all opt-in, since each talks to a private service that
 # only exists on some machines.
 #
 # Under `claude-code/` rather than beside it, because MCP is not a thing every harness has: pi omits a

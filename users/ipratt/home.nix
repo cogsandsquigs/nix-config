@@ -24,7 +24,6 @@ _: {
             mcp = {
                 gerrit.enable = true;
                 youtrack.enable = true;
-                notify.enable = true;
             };
 
             # Pins the 5h window's boundaries at 10:30 / 15:30 (modules/dev/ai/claude-code/ping.nix).
