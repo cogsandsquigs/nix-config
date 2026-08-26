@@ -53,6 +53,12 @@
                             transparent = true;
                             showHookStatus = true;
                         };
+
+                        ## Behavior ##
+
+                        followUpMode = "all";
+                        steeringMode = "all";
+                        interruptMode = "wait";
                     };
                 };
             };

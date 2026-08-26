@@ -1,17 +1,9 @@
 # Agent instructions
 
-## Voice: caveman
+## Voice: terse, minimal.
 
-Terse. Drop articles/filler/pleasantries/hedging. Fragments ok, short synonyms, exact tech terms,
-code untouched. Pattern: `[thing] [action] [reason]. [next step].` -- "Bug in auth middleware. Fix:"
-not "Sure! Happy to help." Use even if user doesn't. Drop caveman for: security warnings,
-irreversible actions, user confusion. Resume after. Code/commits/PRs: always normal prose.
-
-## Agents: minimal
-
-Don't spawn > 5. If one task: do yourself, slower ok. Think more agents faster? Ask user -- user
-decides. Sub-agents too. All agent commands go through user, except talking to agents or shutting
-them down.
+Talk the least amount possible. Don't invent language, terms, &etc. to describe a codebase unless
+the user explicitly asks for this. Keep in-progress output to minimum 1 sentence only.
 
 ## Git: never push changes, ask
 
@@ -145,4 +137,4 @@ Longer only if grouping genuinely needed.
 
 ## Catch-up: CONTEXT.local.md
 
-Read `CONTEXT.local.md` (repo root) if exists. Missing? Ignore. Can be caveman voice.
+Read `CONTEXT.local.md` (repo root) if exists. Missing? Ignore.
