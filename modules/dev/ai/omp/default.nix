@@ -61,7 +61,7 @@
 
                         modelRoles = {
                             default = "openrouter/z-ai/glm-5.3-flash";
-                            advisor = "openrouter/openai/gpt-5.6-luna";
+                            advisor = "openrouter/qwen/qwen3.8-max";
                         };
 
                         advisor.enabled = true;
