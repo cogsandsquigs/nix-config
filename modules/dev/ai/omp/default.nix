@@ -35,7 +35,6 @@
 
                     settings = {
                         setupVersion = 2; # Necessary so it doesn't ask for setup again on start
-                        modelRoles.default = "openrouter/openai/gpt-5.6-luna";
 
                         skills.customDirectories = [
                             "${skills.skills.claude}"
@@ -59,6 +58,13 @@
                         followUpMode = "all";
                         steeringMode = "all";
                         interruptMode = "wait";
+
+                        modelRoles = {
+                            default = "openrouter/z-ai/glm-5.3-flash";
+                            advisor = "openrouter/openai/gpt-5.6-luna";
+                        };
+
+                        advisor.enabled = true;
                     };
                 };
             };
