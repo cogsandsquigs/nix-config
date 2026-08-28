@@ -124,7 +124,7 @@
 
                         editor = {
                             true-color = true; # Force true-color (e.g. ssh)
-                            rainbow-brackets = true; # Rainbow-colored brackets NOTE: uncomment on next major (?) release, not included yet!
+                            # rainbow-brackets = true; # Rainbow-colored brackets NOTE: uncomment on next major (?) release, not included yet!
                             mouse = true; # Allow use of the mouse
 
                             rulers = [ 100 ]; # Vertical line columns
