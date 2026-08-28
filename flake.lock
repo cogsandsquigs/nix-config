@@ -458,11 +458,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787813698,
-        "narHash": "sha256-5V9Cd1r0OWamyNDikj68kWDMl7KySpfLxOf2vlrXMAs=",
+        "lastModified": 1787906574,
+        "narHash": "sha256-8l4C5k4iHKLoIg3yqzxuBqxK+DLmp562j2FijY/O/zc=",
         "owner": "yuxqiu",
         "repo": "omp-nix",
-        "rev": "feff84b6d7b39d784cf4e7e6a3d84a78a26a5495",
+        "rev": "bbf083f680fc9d9292826b9453064653892f9b8f",
         "type": "github"
       },
       "original": {
