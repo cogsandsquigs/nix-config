@@ -36,7 +36,7 @@
             config = lib.mkIf config.my.sys.apps.desktopUtils.enable {
                 homebrew = {
                     casks = [
-                        "caffeine" # Keeps MacOS awake
+                        "amphetamine" # Keeps MacOS awake
                     ];
                 };
             };
