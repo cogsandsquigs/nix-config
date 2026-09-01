@@ -69,7 +69,7 @@ Create the state dir at the repo root and keep it out of git via `.git/info/excl
 ├── state.tsv     # category<TAB>path<TAB>line<TAB>summary — THE source of truth
 ├── findings/     # per-file findings: <path with / replaced by _>.md
 ├── agents/       # raw reviewer outputs (scratch)
-├── notes.md      # user annotations: "- path:line text"
+├── notes.md      # user annotations: "- path:line[-line] text"
 └── REPORT.md     # written at consensus (Stage 4)
 ```
 
@@ -106,28 +106,37 @@ Compile the reviewers' findings into the triage:
   actually vouch for the file; everything you'd hedge on is unsure. Reviewer disagreement on a file
   is automatically unsure.
 
-Then hand the user their side of the review. Run (execute, no need to read them):
+Then hand the user their side of the review. Launch the TUI and the pass-end watch as ONE background
+shell — a single Bash call with `run_in_background: true` (execute the scripts, no need to read
+them):
 
-```
-bash <skill-dir>/scripts/open_terminal.sh bash <skill-dir>/scripts/goodreview_tui.sh <repo>/.goodreview
+```sh
+rm -f <repo>/.goodreview/tui.done
+bash <skill-dir>/scripts/open_terminal.sh \
+    bash <skill-dir>/scripts/goodreview_tui.sh <repo>/.goodreview || exit $?
+until [ -e <repo>/.goodreview/tui.done ]; do sleep 3; done
 ```
 
-`open_terminal.sh` opens a new zellij floating pane / tmux window / GUI terminal window running the
-review app; exit code 3 means it couldn't, and then you paste the inner command for the user to run
-themselves — never treat 3 as failure of the review. The app is an fzf picker over `state.tsv`
-(plain-menu fallback without fzf): preview shows findings + the file's diff; enter jumps to the
-finding in `$EDITOR`; ctrl-g/o/u recategorizes; ctrl-a appends a line-anchored note/question to
-`notes.md`; ctrl-d ends the pass and writes `tui.done`.
+Its exit re-invokes you. Exit 0: the pass is over, reconcile. Exit 3: no terminal pane/window could
+be opened — paste the inner `goodreview_tui.sh` command for the user to run themselves and restart
+just the `until` loop as a new background shell; never treat 3 as failure of the review.
+
+The app is a guided walk over `state.tsv`, one file per screen (unsure pile first): each screen
+shows the findings and the diff, m/o/u sets the verdict and advances, c line-comments into
+`notes.md` (fzf line selection, changed lines marked), e opens `$EDITOR` at the finding, l jumps, d
+ends the pass and writes `tui.done`.
 
 While the user reviews, prepare draft fix descriptions for must-change files — but edit nothing;
 this skill reviews, it does not fix.
 
-When the user says they're done (or `tui.done` appears), reconcile:
+When the watch fires (or the user says they're done), reconcile — noting that an untouched pass is
+an answer too: the user looked and had nothing to flag, so go straight to step 3:
 
 1. Re-read `state.tsv` — their recategorizations are theirs; do not silently revert one, argue in
    chat if you disagree.
-2. Answer every `notes.md` entry: it is a question or objection anchored to `path:line`. Open the
-   location, answer concretely, and record the upshot in that file's findings entry.
+2. Answer every `notes.md` entry: it is a question or objection anchored to `path:line` (or
+   `path:first-last` for a range). Open the location, answer concretely, and record the upshot in
+   that file's findings entry.
 3. Work the remaining `unsure` pile with AskUserQuestion, a few files per round, concrete options
    per file ("promote to must-change: <reason>" / "accept as-is" / "let me look — reopen the TUI"),
    never a raw findings dump.

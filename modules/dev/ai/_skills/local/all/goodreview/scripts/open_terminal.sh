@@ -11,9 +11,9 @@ set -euo pipefail
 }
 
 if [ -n "${ZELLIJ:-}" ]; then
-    exec zellij run --floating -- "$@"
+    exec zellij run --direction down --close-on-exit -- "$@"
 elif [ -n "${TMUX:-}" ]; then
-    exec tmux new-window "$(printf '%q ' "$@")"
+    exec tmux split-window -v "$(printf '%q ' "$@")"
 fi
 
 cmdline=$(printf '%q ' "$@")
