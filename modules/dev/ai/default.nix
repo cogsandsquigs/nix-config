@@ -24,9 +24,14 @@
 
             config = lib.mkIf config.my.user.dev.ai.enable {
 
-                # Tools required for skills / etc. used across all AI agents.
+                # Tools required for skills / etc. used across all AI agents. Assumes installed:
+                #  - git
+                #  - coreutils
                 home.packages = with pkgs; [
-                    fzf # Required for `_skills/local/all/goodreview`
+                    ## Required for `_skills/local/all/goodreview` ##
+
+                    fzf
+                    less
                 ];
             };
         };

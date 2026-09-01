@@ -21,9 +21,9 @@ or extending the goodreview skill itself. SKILL.md is self-sufficient at run tim
   dir is scratch; the report is the output.
 - **TUI**: bash-driven guided walk, one file per screen, single-key verdicts, unsure pile first. A
   free-roaming fzf picker over all files was tried first and rejected by the owner as disorienting;
-  the picker survives only as the `l` jump list. fzf is kept for line selection when commenting
-  (changed lines marked `▎`) and degrades to typed line numbers without it. Browser UI was
-  explicitly last-resort and turned out unnecessary.
+  the picker survives only as the `l` jump list. fzf does line selection when commenting (changed
+  lines marked `▎`) and is REQUIRED — no fallback, by owner decision: this is a personal tool and
+  `dev.ai` guarantees fzf. Browser UI was explicitly last-resort and turned out unnecessary.
 - **Env probe**: SKILL.md carries a ```! block echoing $TERM, $TERM_PROGRAM, multiplexer, $EDITOR,
   fzf presence — so the agent knows, at activation, how to open the user-side review and whether
   fallback mode is needed.
@@ -52,15 +52,14 @@ none.
 - Reads user input from `/dev/tty` so it works when stdin is odd (spawned windows, tmux panes).
 - Exits via a "press any key" prompt; zellij is launched `--close-on-exit`, otherwise the dead pane
   lingers until the user closes it by hand.
-- `open_terminal.sh` order: zellij split pane (below, per owner preference) → tmux `split-window -v`
-  → $TERM_PROGRAM match (kitty remote, wezterm cli, ghostty, iTerm2/Terminal via osascript) → first
-  installed known terminal → print command and exit 3. Exit 3 means "hand the command to the user";
-  the agent must catch this and paste the command in chat instead of failing.
+- `open_terminal.sh` order: zellij/tmux split pane below the focused one (owner preference) → a NEW
+  terminal window that blocks until close ($TERM_PROGRAM's terminal preferred, then first installed
+  known one; gnome-terminal needs `--wait` to block) → macOS osascript (cannot block; the tui.done
+  watch covers it) → print command and exit 3. Exit 3 means "hand the command to the user"; the
+  agent must catch this and paste the command in chat instead of failing.
 
 ## Known limitations / future work
 
-- kitty remote control (`kitty @`) needs `allow_remote_control yes`; the fallback plain-launch opens
-  a fresh instance instead.
 - No per-hunk categories; granularity is the file. Notes carry line-level nuance.
 - Whole-repo mode on large repos: SKILL.md caps reviewer fan-out and tells the agent to propose a
   subtree instead. Tune there, not here.

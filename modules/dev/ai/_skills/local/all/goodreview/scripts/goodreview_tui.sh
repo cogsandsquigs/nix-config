@@ -2,8 +2,10 @@
 # goodreview TUI — guided triage over .goodreview/state.tsv.
 #
 # Walks the review file by file (unsure first): each screen shows one file's
-# findings + diff and takes a single-key verdict. Selecting lines to comment
-# on uses fzf multi-select when fzf is present.
+# findings + diff and takes a single-key verdict.
+#
+# Requires: bash 4+, fzf, git, less, coreutils. No fallbacks — this is a
+# personal tool and the environment guarantees them (dev.ai installs fzf).
 #
 # Usage: goodreview_tui.sh [state-dir]
 #   state-dir defaults to <repo-root>/.goodreview
@@ -29,10 +31,12 @@ NOTES="$DIR/notes.md"
 # where the spawning terminal put us.
 cd "$DIR/.."
 
+command -v fzf > /dev/null 2>&1 || {
+    echo "goodreview_tui: fzf is required" >&2
+    exit 1
+}
 BASE=""
 [ -s "$DIR/base" ] && BASE=$(cat "$DIR/base")
-HAVE_FZF=0
-command -v fzf > /dev/null 2>&1 && HAVE_FZF=1
 
 B=$'\e[1m' R=$'\e[31m' G=$'\e[32m' Y=$'\e[33m' C=$'\e[36m' D0=$'\e[2m' N=$'\e[0m'
 
@@ -97,42 +101,27 @@ edit_at() { # edit_at <path> <line>
 
 comment_on() { # comment_on <path>
     local path="$1" marks sel lines first last anchor c
-    if [ "$HAVE_FZF" = 1 ] && [ -f "$path" ]; then
-        marks=$(changed_lines "$path" | tr '\n' ' ')
-        sel=$(nl -ba -w4 -s'  ' "$path" | awk -v m=" $marks" \
-            'BEGIN{split(m,a," "); for(i in a) ch[a[i]]=1}
+    [ -f "$path" ] || return 0
+    marks=$(changed_lines "$path" | tr '\n' ' ')
+    sel=$(nl -ba -w4 -s'  ' "$path" | awk -v m=" $marks" \
+        'BEGIN{split(m,a," "); for(i in a) ch[a[i]]=1}
        {mark=(ch[$1]==1)?"▎":" "; print mark $0}' \
-            | fzf --multi --reverse --no-sort \
-                --prompt "lines for $path> " \
-                --header 'tab=mark line(s), enter=comment on marked, esc=cancel  (▎ = changed)') || return 0
-        lines=$(awk '{sub(/^[^0-9]*/, ""); print $1+0}' <<< "$sel" | sort -n)
-        first=$(head -1 <<< "$lines")
-        last=$(tail -1 <<< "$lines")
-        [ -n "$first" ] || return 0
-        anchor=$first
-        [ "$last" != "$first" ] && anchor="$first-$last"
-    else
-        read -rp "line or range (e.g. 12 or 12-18): " anchor < /dev/tty
-        [ -n "$anchor" ] || return 0
-    fi
+        | fzf --multi --reverse --no-sort \
+            --prompt "lines for $path> " \
+            --header 'tab=mark line(s), enter=comment on marked, esc=cancel  (▎ = changed)') || return 0
+    lines=$(awk '{sub(/^[^0-9]*/, ""); print $1+0}' <<< "$sel" | sort -n)
+    first=$(head -1 <<< "$lines")
+    last=$(tail -1 <<< "$lines")
+    [ -n "$first" ] || return 0
+    anchor=$first
+    [ "$last" != "$first" ] && anchor="$first-$last"
     read -rp "comment for $path:$anchor > " c < /dev/tty
     [ -n "$c" ] && printf -- '- %s:%s %s\n' "$path" "$anchor" "$c" >> "$NOTES"
 }
 
 pick_file() { # jump list; prints chosen path or nothing
-    if [ "$HAVE_FZF" = 1 ]; then
-        order | fzf --delimiter '\t' --with-nth 1,2,4 --no-multi --reverse \
-            --prompt 'jump to> ' | cut -f2
-    else
-        local i=0
-        order | while IFS=$'\t' read -r c p _ s; do
-            i=$((i + 1))
-            printf '%2d. [%s] %s — %s\n' "$i" "$c" "$p" "$s"
-        done
-        local n
-        read -rp "file number: " n < /dev/tty
-        order | sed -n "${n}p" | cut -f2
-    fi
+    order | fzf --delimiter '\t' --with-nth 1,2,4 --no-multi --reverse \
+        --prompt 'jump to> ' | cut -f2
 }
 
 summary() {

@@ -31,8 +31,9 @@ calls get a human. Put a file in unsure whenever you would want to say "look at 
 
 ## Environment
 
-Your terminal-integration decisions (how to open the review window, whether fzf fallback mode is
-needed, which editor to name) hang off this probe, taken at activation:
+Your terminal-integration decisions (how to open the review window, which editor to name) hang off
+this probe, taken at activation. The TUI requires fzf — no fallback; on `fzf=no`, stop and tell the
+user before Stage 3 instead of launching it:
 
 ```!
 echo "TERM=${TERM:-} TERM_PROGRAM=${TERM_PROGRAM:-}"
