@@ -21,9 +21,11 @@ or extending the goodreview skill itself. SKILL.md is self-sufficient at run tim
   dir is scratch; the report is the output.
 - **TUI**: bash-driven guided walk, one file per screen, single-key verdicts, unsure pile first. A
   free-roaming fzf picker over all files was tried first and rejected by the owner as disorienting;
-  the picker survives only as the `l` jump list. fzf does line selection when commenting (changed
+  the picker survives only as the `/` jump list. fzf does line selection when commenting (changed
   lines marked `▎`) and is REQUIRED — no fallback, by owner decision: this is a personal tool and
-  `dev.ai` guarantees fzf. Browser UI was explicitly last-resort and turned out unnecessary.
+  `dev.ai` guarantees fzf. Diffs render through delta (chosen over bat for word-level diff
+  highlighting; survey in `tui-utils-research.local.md` at repo root, gitignored); findings markdown
+  renders through bat. Browser UI was explicitly last-resort and turned out unnecessary.
 - **Env probe**: SKILL.md carries a ```! block echoing $TERM, $TERM_PROGRAM, multiplexer, $EDITOR,
   fzf presence — so the agent knows, at activation, how to open the user-side review and whether
   fallback mode is needed.
@@ -50,8 +52,8 @@ none.
 - `goodreview_tui.sh` `cd`s to the state dir's parent (the repo root) at startup: `state.tsv` paths
   are repo-relative and spawned panes inherit an arbitrary cwd.
 - Reads user input from `/dev/tty` so it works when stdin is odd (spawned windows, tmux panes).
-- Exits via a "press any key" prompt; zellij is launched `--close-on-exit`, otherwise the dead pane
-  lingers until the user closes it by hand.
+- `d` exits immediately and the pane/window closes with it; zellij needs `--close-on-exit` for that,
+  or the dead pane lingers until closed by hand.
 - `open_terminal.sh` order: zellij/tmux split pane below the focused one (owner preference) → a NEW
   terminal window that blocks until close ($TERM_PROGRAM's terminal preferred, then first installed
   known one; gnome-terminal needs `--wait` to block) → macOS osascript (cannot block; the tui.done

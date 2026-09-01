@@ -89,9 +89,10 @@ Otherwise, launch parallel reviewer subagents, one axis each, in the same turn: 
 (bugs, edge cases, error handling, concurrency), **design** (naming, duplication, module shape,
 speculative generality), and — when a spec/issue/CONTRIBUTING or standards doc exists — **spec/
 standards** conformance. Each reviewer gets the file list, the diff command, and the brief: per
-file, report findings as `path:line — what — why it matters`, severity-tagged, or state "clean" —
-under 400 words. Cold agents, not you, because you may have written or already read this code warm;
-a fresh context is the only real cold read. Save each raw report to `.goodreview/agents/<axis>.md`.
+file, report findings as `path:line — what — why it matters`, severity-tagged as `[high]`,
+`[medium]`, or `[low]` (the TUI highlights exactly those), or state "clean" — under 400 words. Cold
+agents, not you, because you may have written or already read this code warm; a fresh context is the
+only real cold read. Save each raw report to `.goodreview/agents/<axis>.md`.
 
 Scale the fan-out to the scope: a two-file diff gets one reviewer, a cross-cutting branch gets all
 three. Whole-repo mode shards the file list across reviewers instead of axes if that fits the budget
@@ -123,9 +124,9 @@ be opened — paste the inner `goodreview_tui.sh` command for the user to run th
 just the `until` loop as a new background shell; never treat 3 as failure of the review.
 
 The app is a guided walk over `state.tsv`, one file per screen (unsure pile first): each screen
-shows the findings and the diff, m/o/u sets the verdict and advances, c line-comments into
-`notes.md` (fzf line selection, changed lines marked), e opens `$EDITOR` at the finding, l jumps, d
-ends the pass and writes `tui.done`.
+shows the findings and the diff (via delta); arrows/hjkl move between files, m/o/u sets the verdict
+and advances, c line-comments into `notes.md` (fzf line selection, changed lines marked), v pages
+the full diff, / jumps, d ends the pass and writes `tui.done`.
 
 While the user reviews, prepare draft fix descriptions for must-change files — but edit nothing;
 this skill reviews, it does not fix.

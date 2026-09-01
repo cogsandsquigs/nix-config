@@ -32,6 +32,8 @@
 
                     fzf
                     less
+                    delta
+                    bat
                 ];
             };
         };

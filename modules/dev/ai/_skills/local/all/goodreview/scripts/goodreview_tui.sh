@@ -4,8 +4,9 @@
 # Walks the review file by file (unsure first): each screen shows one file's
 # findings + diff and takes a single-key verdict.
 #
-# Requires: bash 4+, fzf, git, less, coreutils. No fallbacks — this is a
-# personal tool and the environment guarantees them (dev.ai installs fzf).
+# Requires: fzf, delta, bat, less (dev.ai installs them); git and coreutils
+# assumed.
+# No fallbacks — this is a personal tool and the environment guarantees them.
 #
 # Usage: goodreview_tui.sh [state-dir]
 #   state-dir defaults to <repo-root>/.goodreview
@@ -36,7 +37,7 @@ command -v fzf > /dev/null 2>&1 || {
     exit 1
 }
 BASE=""
-[ -s "$DIR/base" ] && BASE=$(cat "$DIR/base")
+if [ -s "$DIR/base" ]; then BASE=$(cat "$DIR/base"); fi
 
 B=$'\e[1m' R=$'\e[31m' G=$'\e[32m' Y=$'\e[33m' C=$'\e[36m' D0=$'\e[2m' N=$'\e[0m'
 
@@ -77,26 +78,42 @@ show_file() { # show_file <cat> <path> <line> <summary> <pos> <total>
     local f
     f="$DIR/findings/$(printf '%s' "$2" | tr '/' '_').md"
     if [ -f "$f" ]; then
-        sed 's/^/  /' "$f"
+        bat --language=markdown --color=always --style=plain --paging=never "$f" | sed -E \
+            -e "s/\[(critical|high)\]/${B}${R}[\1]${N}/Ig" \
+            -e "s/\[(medium|med)\]/${Y}[\1]${N}/Ig" \
+            -e "s/\[(low|info|nit)\]/${D0}[\1]${N}/Ig" \
+            -e 's/^/  /'
     else
         printf '  %s(no findings recorded)%s\n' "$D0" "$N"
     fi
     echo
     if [ -n "$BASE" ]; then
         printf '%s--- diff since %s ---%s\n' "$D0" "$BASE" "$N"
-        git diff --color=always "$BASE" -- "$2" 2> /dev/null | sed -n '5,44p'
+        git diff "$BASE" -- "$2" 2> /dev/null | delta --paging never | head -44
     else
         printf '%s--- head of file ---%s\n' "$D0" "$N"
         head -40 "$2" 2> /dev/null || printf '%s(missing)%s\n' "$D0" "$N"
     fi
     echo
-    printf '%s[m]%sust-change %s[o]%sk %s[u]%snsure  %s[c]%somment lines %s[e]%sdit %s[v]%siew full diff  %s[n]%sext %s[p]%srev %s[l]%sist %s[d]%sone\n' \
-        "$B" "$N" "$B" "$N" "$B" "$N" "$B" "$N" "$B" "$N" "$B" "$N" "$B" "$N" "$B" "$N" "$B" "$N" "$B" "$N"
+    printf '%s←h  l→%s move  %s[m]%sust-change %s[o]%sk %s[u]%snsure  %s[c]%somment lines  %s[v]%siew full diff  %s[/]%s jump  %s[d]%sone\n' \
+        "$B" "$N" "$B" "$N" "$B" "$N" "$B" "$N" "$B" "$N" "$B" "$N" "$B" "$N" "$B" "$N"
 }
 
-edit_at() { # edit_at <path> <line>
-    local ed="${EDITOR:-${VISUAL:-vi}}"
-    if [ "${2:-0}" != "0" ] && [ -n "${2:-}" ]; then "$ed" "+$2" "$1"; else "$ed" "$1"; fi
+read_key() { # one keypress; arrows come back as "left"/"right"/"up"/"down"
+    local k rest
+    IFS= read -rsn1 k < /dev/tty
+    if [ "$k" = $'\e' ]; then
+        read -rsn2 -t 0.01 rest < /dev/tty || true
+        case "$rest" in
+            '[C') echo right ;;
+            '[D') echo left ;;
+            '[A') echo up ;;
+            '[B') echo down ;;
+            *) echo esc ;;
+        esac
+    else
+        echo "$k"
+    fi
 }
 
 comment_on() { # comment_on <path>
@@ -116,7 +133,7 @@ comment_on() { # comment_on <path>
     anchor=$first
     [ "$last" != "$first" ] && anchor="$first-$last"
     read -rp "comment for $path:$anchor > " c < /dev/tty
-    [ -n "$c" ] && printf -- '- %s:%s %s\n' "$path" "$anchor" "$c" >> "$NOTES"
+    if [ -n "$c" ]; then printf -- '- %s:%s %s\n' "$path" "$anchor" "$c" >> "$NOTES"; fi
 }
 
 pick_file() { # jump list; prints chosen path or nothing
@@ -131,7 +148,17 @@ summary() {
     echo
     awk -F'\t' '$1=="unsure"{printf "  still unsure: %s — %s\n", $2, $4}' "$STATE"
     echo
-    printf '%s[l]%sist/jump back in  %s[d]%sone — hand back to Claude\n' "$B" "$N" "$B" "$N"
+    printf '%s←/h%s back in  %s[/]%s jump  %s[d]%sone — hand back to Claude\n' "$B" "$N" "$B" "$N" "$B" "$N"
+}
+
+jump() { # set idx from the pick list, keep it on cancel
+    local p i
+    p=$(pick_file) || true
+    if [ -n "${p:-}" ]; then
+        for i in "${!FILES[@]}"; do
+            if [ "${FILES[$i]}" = "$p" ]; then idx=$i; fi
+        done
+    fi
 }
 
 mapfile -t FILES < <(order | cut -f2)
@@ -140,12 +167,9 @@ idx=0
 while true; do
     if [ "$idx" -ge "$TOTAL" ]; then
         summary
-        read -rsn1 key < /dev/tty
-        case "$key" in
-            l)
-                p=$(pick_file) || true
-                [ -n "${p:-}" ] && for i in "${!FILES[@]}"; do [ "${FILES[$i]}" = "$p" ] && idx=$i; done
-                ;;
+        case "$(read_key)" in
+            h | left | k | up) idx=$((TOTAL - 1)) ;;
+            /) jump ;;
             d | q) break ;;
         esac
         continue
@@ -153,8 +177,7 @@ while true; do
     path="${FILES[$idx]}"
     IFS=$'\t' read -r cat _ line sum <<< "$(row_for "$path")"
     show_file "$cat" "$path" "$line" "$sum" "$((idx + 1))" "$TOTAL"
-    read -rsn1 key < /dev/tty
-    case "$key" in
+    case "$(read_key)" in
         m)
             set_cat must-change "$path"
             idx=$((idx + 1))
@@ -168,19 +191,13 @@ while true; do
             idx=$((idx + 1))
             ;;
         c) comment_on "$path" ;;
-        e) edit_at "$path" "$line" ;;
-        v) git diff --color=always "${BASE:-HEAD}" -- "$path" 2> /dev/null | less -R ;;
-        n | "") idx=$((idx + 1)) ;;
-        p) [ "$idx" -gt 0 ] && idx=$((idx - 1)) ;;
-        l)
-            p=$(pick_file) || true
-            [ -n "${p:-}" ] && for i in "${!FILES[@]}"; do [ "${FILES[$i]}" = "$p" ] && idx=$i; done
-            ;;
+        v) git diff "${BASE:-HEAD}" -- "$path" 2> /dev/null | delta ;;
+        l | right | j | down | "") idx=$((idx + 1)) ;;
+        h | left | k | up) if [ "$idx" -gt 0 ]; then idx=$((idx - 1)); fi ;;
+        /) jump ;;
         d | q) break ;;
     esac
 done
 
 date +%s > "$DIR/tui.done"
-printf 'goodreview: pass recorded — Claude picks it up from tui.done. Press any key to close.'
-read -rsn1 < /dev/tty || true
-echo
+echo "goodreview: pass recorded — Claude picks it up from tui.done."
