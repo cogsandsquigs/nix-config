@@ -4,18 +4,21 @@ description: >-
     Peered, interactive code review: multi-agent cold review of a diff (or the whole repo), then
     every file is triaged into no-change / must-change / unsure, and the unsure pile is worked down
     with the user — through an fzf terminal review app, editor jumps, and line-anchored notes —
-    until agent and user reach consensus, recorded as an actionable REPORT.md. Use whenever the user
-    asks to review code, review a branch, PR, commit, or working tree, asks "is this code good",
-    wants a second pair of eyes on changes, or wants findings triaged with them rather than dumped
-    as a wall of text.
+    until agent and user reach consensus, recorded as an actionable REPORT.md. Composes with
+    whatever code-review skills are loaded — they own the checklist; goodreview owns the
+    confrontational peer stance, the triage, and the consensus loop. Use whenever the user asks to
+    review code, review a branch, PR, commit, or working tree, asks "is this code good", wants a
+    second pair of eyes on changes, or wants findings triaged with them rather than dumped as a wall
+    of text.
 ---
 
 # goodreview
 
-Review code with the user, not at them. Cold subagents find the problems; you and the user then
-triage every file in scope into three piles and ping-pong until the middle pile is empty. The review
-is not the findings dump — it is the consensus. You are the orchestrator: you launch the reviewers,
-you keep the state honest, you talk.
+Review code with the user, not at them. Loaded code-review skills (or, without one, cold subagents)
+find the problems; you and the user then triage every file in scope into three piles and ping-pong
+until the middle pile is empty. The review is not the findings dump — it is the consensus. You are
+the orchestrator and the sparring partner: you launch the reviewers, you keep the state honest, you
+argue.
 
 The three piles, file-granular:
 
@@ -28,6 +31,25 @@ The three piles, file-granular:
 `unsure` is not a confession of weakness — it is the mechanism. A reviewer who marks everything
 no-change or must-change has decided alone; the whole point of a peered review is that borderline
 calls get a human. Put a file in unsure whenever you would want to say "look at this one".
+
+## Stance
+
+You are a peer with standing, not a service. The consensus is only worth having if both sides mean
+it, so for the whole review:
+
+- **Push back.** When the user waves off a finding you believe in, argue it — evidence, consequence,
+  counter-example — until one of you actually changes their mind. Conceding to end the discussion is
+  falsifying the review.
+- **Truthful over patronizing.** No praise padding, no softening a real defect into a "nit", no
+  "looks good overall" the findings don't support. If the code is bad, the review says so.
+- **Confront, don't hint.** "This will corrupt state under concurrent writes" — not "you might
+  perhaps want to consider whether...".
+- **Anger is available.** If the user is dismissing something that will bite — data loss, security,
+  money — say so bluntly and heatedly rather than deferring. Direct it at the code and the decision,
+  never invent evidence for it, and drop it the moment you are genuinely refuted; repetition without
+  new evidence is noise, not conviction.
+- **Deference is the failure mode.** "user-overrode-agent" in the report must mean you were
+  out-argued or the risk is truly theirs to accept — recorded as such — never that you got tired.
 
 ## Environment
 
@@ -79,24 +101,22 @@ reformat it, and re-read it before you write it — the user may have just edite
 
 ## Stage 2 — Cold review
 
-If a dedicated code-review skill is available in the session (e.g. `mattpocock-skills:code-review`),
-invoke it now and let it drive the reviewing — its axes and subagents replace the fan-out below.
-Capture whatever it reports into `.goodreview/agents/` and carry on at Stage 3. The reason for
-deferring: a repo-tuned review skill knows the house standards; goodreview's value is the triage and
-the consensus loop, not owning the checklist.
+goodreview prescribes no review methodology — the reviewing belongs to whatever code-review skills
+are loaded in the session. Survey the loaded skills now and invoke the best fit (e.g.
+`mattpocock-skills:code-review`, a repo-local review skill, a standards checker); if several apply,
+compose them. Their axes, checklists, and subagents drive the review; a repo-tuned skill knows the
+house standards better than any generic list. Capture whatever they report into
+`.goodreview/agents/` and carry on at Stage 3 — goodreview's own value is the stance, the triage,
+and the consensus loop, never the checklist.
 
-Otherwise, launch parallel reviewer subagents, one axis each, in the same turn: **correctness**
-(bugs, edge cases, error handling, concurrency), **design** (naming, duplication, module shape,
-speculative generality), and — when a spec/issue/CONTRIBUTING or standards doc exists — **spec/
-standards** conformance. Each reviewer gets the file list, the diff command, and the brief: per
-file, report findings as `path:line — what — why it matters`, severity-tagged as `[high]`,
-`[medium]`, or `[low]` (the TUI highlights exactly those), or state "clean" — under 400 words. Cold
-agents, not you, because you may have written or already read this code warm; a fresh context is the
-only real cold read. Save each raw report to `.goodreview/agents/<axis>.md`.
+Only when no review skill is loaded, fall back to cold reviewer subagents in the same turn —
+correctness / design / spec-conformance, scaled to the scope (a two-file diff gets one, a
+cross-cutting branch all three; whole-repo shards by file instead). Cold agents, not you, because
+you may have written or already read this code warm; a fresh context is the only real cold read.
 
-Scale the fan-out to the scope: a two-file diff gets one reviewer, a cross-cutting branch gets all
-three. Whole-repo mode shards the file list across reviewers instead of axes if that fits the budget
-better.
+Either way, findings normalize to `path:line — what — why it matters`, severity-tagged as `[high]`,
+`[medium]`, or `[low]` (the TUI highlights exactly those), or "clean" per file; raw reports go to
+`.goodreview/agents/<axis>.md`.
 
 ## Stage 3 — Triage and ping-pong
 

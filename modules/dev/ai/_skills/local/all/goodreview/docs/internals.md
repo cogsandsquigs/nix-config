@@ -9,6 +9,12 @@ or extending the goodreview skill itself. SKILL.md is self-sufficient at run tim
   cold reads (same rationale as goodplan: you cannot cold-read what you wrote or watched). Consensus
   is reached by ping-pong — the agent proposes categories, the user pushes back via TUI/notes/chat,
   repeat until `unsure` is empty.
+- **Compositional, by owner decision**: goodreview owns stance, triage, and the consensus loop ONLY.
+  Review methodology is delegated to whatever code-review skills the session has loaded; the generic
+  cold fan-out is strictly the no-skill fallback.
+- **Stance, by owner decision**: confrontational peer, not deferential assistant — push back,
+  truthful over patronizing, anger available when a real defect is being waved off. Bounded by
+  evidence: never invented, dropped when refuted.
 - **Three categories, file-granular**: `no-change` / `must-change` / `unsure`. `unsure` is the work
   queue of the conversation: it holds files the agent wants human eyes on. The review is done when
   `unsure` is empty and the user agrees with `must-change`.
