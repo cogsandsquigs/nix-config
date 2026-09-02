@@ -10,8 +10,31 @@
 # third-party sets). `_agents.md` rather than a bare `AGENTS.md`, so an agent working in this repo does
 # not read it as instructions for this directory.
 {
-    home = { tools, config, ... }: {
-        options.my.user.dev.ai.enable =
-            tools.opt.mkRiding config.my.user.dev.enable "AI tooling / coding agents (for work)";
-    };
+    home =
+        {
+            pkgs,
+            lib,
+            tools,
+            config,
+            ...
+        }:
+        {
+            options.my.user.dev.ai.enable =
+                tools.opt.mkRiding config.my.user.dev.enable "AI tooling / coding agents (for work)";
+
+            config = lib.mkIf config.my.user.dev.ai.enable {
+
+                # Tools required for skills / etc. used across all AI agents. Assumes installed:
+                #  - git
+                #  - coreutils
+                home.packages = with pkgs; [
+                    ## Required for `_skills/local/all/goodreview` ##
+
+                    fzf
+                    less
+                    delta
+                    bat
+                ];
+            };
+        };
 }
