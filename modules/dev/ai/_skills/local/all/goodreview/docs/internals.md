@@ -50,12 +50,17 @@ or extending the goodreview skill itself. SKILL.md is self-sufficient at run tim
 - **Env probe**: SKILL.md carries a ```! block echoing $TERM, $TERM_PROGRAM, multiplexer, $EDITOR,
   fzf presence — so the agent knows, at activation, how to open the user-side review and whether
   fallback mode is needed.
+- **Debate transport is the primary, explicitly**: subagent peers cannot message each other, and a
+  headless eval (skill-creator, 2026-09-02) showed both debate runs deadlocking on "waiting for the
+  other antagonist's reply" until nudged. SKILL.md now names the primary as the only transport
+  (resume the receiver with the turn quoted, or spawn the next round fresh with the transcript). The
+  same eval caught `base` holding a literal `HEAD~1`, hence the resolved-hash rule.
 
 ## File contract (shared by SKILL.md, both scripts, and the agent)
 
 ```
 .goodreview/
-├── base          # git ref reviewed against, single line; empty in whole-repo mode
+├── base          # resolved base hash (git rev-parse), single line; empty in whole-repo mode
 ├── state.tsv     # category<TAB>path<TAB>line<TAB>summary  (one row per file)
 ├── verdicts.tsv  # path<TAB>verdict<TAB>confidence<TAB>agreed<TAB>summary (append-only, last wins)
 ├── findings/     # <path with / replaced by _>.md — full agent findings per file

@@ -82,18 +82,19 @@ the word if you meant a branch or the whole repo"), then proceed without waiting
 AskUserQuestion only when the situation is genuinely ambiguous (e.g. dirty working tree on top of
 the named ref — working tree included or not?).
 
-In diff mode, verify the ref resolves (`git rev-parse <base>`) and the diff is non-empty before
-anything else. The file list is `git diff --name-only <base>` (three-dot against merge-base when the
-base is a branch). In whole-repo mode it is `git ls-files`, and size is the constraint: past roughly
-60 files, don't fan out blindly — show the user the directory-level counts and agree on subtrees or
-a reviewer budget first.
+In diff mode, resolve the ref (`git rev-parse <base>`) and verify the diff is non-empty before
+anything else. Store the resolved hash — a symbolic ref like `HEAD~1` silently re-aims the whole
+review the moment history moves under it. The file list is `git diff --name-only <base>` (three-dot
+against merge-base when the base is a branch). In whole-repo mode it is `git ls-files`, and size is
+the constraint: past roughly 60 files, don't fan out blindly — show the user the directory-level
+counts and agree on subtrees or a reviewer budget first.
 
 Create the state dir at the repo root and keep it out of git via `.git/info/exclude` (never edit
 `.gitignore` — the review must not itself dirty the diff):
 
 ```
 .goodreview/
-├── base          # the ref, or empty for whole-repo
+├── base          # resolved base hash (git rev-parse), or empty for whole-repo
 ├── state.tsv     # category<TAB>path<TAB>line<TAB>summary — THE source of truth
 ├── verdicts.tsv  # path<TAB>verdict<TAB>confidence<TAB>agreed<TAB>summary (append-only, last wins)
 ├── findings/     # per-file findings: <path with / replaced by _>.md
@@ -141,8 +142,14 @@ ingest:        bash <skill-dir>/scripts/state/findings.sh <repo>/.goodreview   #
 Nothing reaches the user unexamined: the findings first survive a debate between two antagonist
 subagents. Spawn both with the `agents/antagonist.md` brief plus the findings and the diff, and
 relay between them — A's attack (kill, downgrade, escalate, add) goes verbatim to B, B's counter
-back to A, each agent continued via its own context. Three rounds maximum. You moderate and never
-vote: extract per-finding verdicts as they settle.
+back to A. Three rounds maximum. You moderate and never vote: extract per-finding verdicts as they
+settle.
+
+You are the only transport. Antagonists must never be told to message each other — subagent peers
+cannot reach one another, and a debate that waits on a peer reply deadlocks. Carry each turn
+yourself: resume the receiving antagonist with the opponent's turn quoted verbatim in your message,
+or, where resuming is unavailable, spawn the next round fresh with the full transcript so far. Tell
+each antagonist its final report IS its round.
 
 Settlement is evidence-only, burden asymmetric, confidence-gated: a finding dies only on proof the
 failure cannot happen, survives only with a concrete failure scenario, and either way only on a
