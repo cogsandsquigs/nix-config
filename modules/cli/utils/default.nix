@@ -26,6 +26,7 @@
                     inetutils
                     dust
                     fastfetch
+                    asciinema
                 ];
 
                 # `enable` is what makes any of this apply -- the settings alone are inert. It aliases
