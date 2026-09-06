@@ -1,6 +1,6 @@
 let
     conf = _: {
-        environment.enableAllTerminfo = true;
+        # environment.enableAllTerminfo = true; # NOTE: Installs pkgs, so pretty heavy if enabled
         services.openssh.enable = true;
     };
 
