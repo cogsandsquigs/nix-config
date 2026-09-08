@@ -124,9 +124,10 @@
                         }
                         // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
                             # ghostty's GTK path counts every high-resolution wheel event as a full
-                            # click, so a free-spinning wheel scrolls ~10 notches at once in any
-                            # mouse-reporting app (helix, less, lazygit). Upstream bug, no fix in 1.3.1.
-                            mouse-scroll-multiplier = "discrete:0.3";
+                            # click -- two per detent here, ~500 for a free-spin flick -- which leaves
+                            # `precision:` inert. 0.5 puts one detent back to one row, or to one report
+                            # in a mouse-reporting app (helix, less, lazygit). Upstream bug as of 1.3.1.
+                            mouse-scroll-multiplier = "discrete:0.5";
                         };
                     };
                 };
