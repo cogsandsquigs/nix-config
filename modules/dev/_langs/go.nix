@@ -59,7 +59,7 @@
 
         # gofmt would mangle a go.mod (that needs `go mod edit -fmt`), and golangci-lint has nothing
         # to say about it, so drop both and let gopls format it over LSP. No extensions: helix
-        # matches go.mod by glob, and nothing else here can express a bare filename.
+        # matches go.mod by builtin glob; `filenames = [ "go.mod" ]` is available if OMP should too.
         gomod = {
             lsp = [ "gopls" ];
             fmt = [ ];

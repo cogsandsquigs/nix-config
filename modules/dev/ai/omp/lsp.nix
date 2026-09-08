@@ -21,14 +21,15 @@
             toolchains = config.my.user.dev.langs.resolved;
 
             # One entry per (language, server) pair OMP can reach. Routing is by file extension or exact
-            # filename, so a language with no extensions (go.mod, docker-compose) has nothing to bind.
+            # basename: getServersForFile matches a `fileTypes` entry against the extension or the
+            # exact basename (both lowercased), so `filenames` travel with `extensions`.
             refs = lib.concatMap (
                 t:
                 lib.concatMap (
                     name:
                     let
                         def = t.languages.${name};
-                        keys = def.extensions;
+                        keys = def.extensions ++ def.filenames;
                     in
                     if def.servers == [ ] || keys == [ ] then
                         [ ]

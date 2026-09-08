@@ -99,13 +99,32 @@
                             Extensions this language owns, each keeping its leading dot (asserted). For
                             clients that bind a server to a file by extension instead of by language name;
                             helix is not one of them, it brings its own matching. Values mirror the plain
-                            entries of helix's builtin file types for the language. Files identified by their
-                            whole name rather than a suffix (`go.mod`, `.bashrc`) cannot be listed at all:
-                            a dotless key rejects Claude's whole config, and a dot-led one never matches,
-                            so helix's builtin globs are the only thing that catches them. Does nothing
-                            unless the language resolves to at least one server.
+                            entries of helix's builtin file types for the language. Files identified by
+                            their whole name rather than a suffix (`dune`, `.bashrc`) belong under
+                            `filenames`: a dotless key here rejects Claude's whole config, and a dot-led
+                            one never matches. Does nothing unless the language resolves to at least one
+                            server.
                         '';
                         example = [ ".ts" ];
+                        default = [ ];
+                    };
+
+                    filenames = lib.mkOption {
+                        type = lib.types.listOf lib.types.str;
+                        description = ''
+                            Whole filenames this language owns, matched by exact basename: `dune`,
+                            `dune-project`, `.bashrc`. A dot-led entry here is a real dotfile, not the
+                            broken suffix `extensions` rejects. OMP binds them through its `fileTypes`,
+                            which matches exact basenames; Claude Code binds by extension only, so
+                            these never reach it; helix needs nothing -- its builtins already match. A
+                            language helix has no builtin for needs its own toolchain entry, like the
+                            css/scss split in html-css.nix. Does nothing unless the language resolves
+                            to at least one server.
+                        '';
+                        example = [
+                            "dune"
+                            "dune-project"
+                        ];
                         default = [ ];
                     };
 
@@ -377,6 +396,16 @@
                                 assertion = lib.hasPrefix "." ext;
                                 message = "language '${name}': extension '${ext}' must keep its leading dot";
                             }) t.languages.${name}.extensions
+                        ) (lib.attrNames t.languages)
+                    ) toolchains
+                    ++ lib.concatMap (
+                        t:
+                        lib.concatMap (
+                            name:
+                            map (fn: {
+                                assertion = fn != "" && !lib.hasInfix "/" fn;
+                                message = "language '${name}': filename '${fn}' must be a bare basename";
+                            }) t.languages.${name}.filenames
                         ) (lib.attrNames t.languages)
                     ) toolchains
                     ++ lib.concatMap (

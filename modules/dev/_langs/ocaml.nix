@@ -47,5 +47,17 @@
     languages = {
         ocaml.extensions = [ ".ml" ];
         ocaml-interface.extensions = [ ".mli" ];
+
+        dune = {
+            filenames = [
+                "dune"
+                "dune-project"
+            ];
+
+            fmt = [
+                "dune"
+                "format-dune-file"
+            ];
+        };
     };
 }
