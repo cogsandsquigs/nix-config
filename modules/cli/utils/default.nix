@@ -1,4 +1,11 @@
 # General CLI utilities.
+let
+    system-util-pkgs =
+        pkgs: with pkgs; [
+            inetutils
+            fastfetch
+        ];
+in
 {
     home =
         {
@@ -23,9 +30,7 @@
                     tree
                     magic-wormhole
                     fontconfig
-                    inetutils
                     dust
-                    fastfetch
                     asciinema
                 ];
 
@@ -61,4 +66,22 @@
                 };
             };
         };
+
+    nixos =
+        {
+            pkgs,
+            lib,
+            config,
+            ...
+        }:
+        lib.mkIf config.my.user.cli.utils.enable { environment.systemPackages = system-util-pkgs pkgs; };
+
+    darwin =
+        {
+            pkgs,
+            lib,
+            config,
+            ...
+        }:
+        lib.mkIf config.my.user.cli.utils.enable { environment.systemPackages = system-util-pkgs pkgs; };
 }
