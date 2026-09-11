@@ -67,21 +67,7 @@ in
             };
         };
 
-    nixos =
-        {
-            pkgs,
-            lib,
-            config,
-            ...
-        }:
-        lib.mkIf config.my.user.cli.utils.enable { environment.systemPackages = system-util-pkgs pkgs; };
+    nixos = { pkgs, ... }: { environment.systemPackages = system-util-pkgs pkgs; };
 
-    darwin =
-        {
-            pkgs,
-            lib,
-            config,
-            ...
-        }:
-        lib.mkIf config.my.user.cli.utils.enable { environment.systemPackages = system-util-pkgs pkgs; };
+    darwin = { pkgs, ... }: { environment.systemPackages = system-util-pkgs pkgs; };
 }
