@@ -44,6 +44,13 @@
                     settings = {
                         defaultMode = "acceptEdits";
 
+                        attribution = {
+                            commit = "";
+                            pr = "";
+                            sessionUrl = false;
+                        };
+
+                        includeCoAuthoredBy = false;
                     };
                 };
             };
