@@ -38,6 +38,7 @@ in
     pkgs = with pkgs; [
         nodejs
         aube
+        pnpm
         deno
 
         typescript-language-server
