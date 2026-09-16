@@ -4,7 +4,7 @@
 # home registry to the sub-evaluation. The user unit decides the feature set, which is what keeps users
 # portable across hosts.
 #
-# A standalone home-manager host has no system layer and never reaches this file. tools/default.nix builds
+# A standalone home-manager host has no system layer and never reaches this file. lib/tools/default.nix builds
 # it directly from the user unit.
 #
 # Identical on both system classes apart from which integration module to import, so the body is written
@@ -26,7 +26,7 @@ let
                 backupFileExtension = "bak";
 
                 # The sub-evaluation does not inherit the parent's specialArgs, so this forward is
-                # irreducible. Passing `moduleArgs` -- the set tools/default.nix built -- gives a home
+                # irreducible. Passing `moduleArgs` -- the set lib/tools/default.nix built -- gives a home
                 # module the same argument surface on a system host and a standalone box by construction,
                 # rather than by two lists agreeing.
                 extraSpecialArgs = moduleArgs;

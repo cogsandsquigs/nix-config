@@ -39,7 +39,7 @@ secrets, and [import-tree] for module discovery.
 ## Repository layout
 
 - **`flake.nix`** — inputs, and outputs derived from the fleet. It names no machine.
-- **`tools/`** — the only code that knows how a host is assembled.
+- **`lib/tools/`** — the only code that knows how a host is assembled.
     - `default.nix` — the three builders and the module-argument contract.
     - `fleet.nix` — the typed schema for `hosts/` and `users/`.
     - `registry.nix` — turns `modules/` into per-class module sets.
@@ -52,7 +52,7 @@ secrets, and [import-tree] for module discovery.
 - **`hosts/`** — per-machine identity and host-only settings.
 - **`users/`** — per-user home configuration and system account.
 - **`secrets/`** — sops-encrypted material and the rules that address it. See [Secrets](#secrets).
-- **`scripts/`** — `nxm`, the one rebuild/upgrade/clean/edit entry point.
+- **`lib/scripts/`** — `nxm`, the one rebuild/upgrade/clean/edit entry point.
 - **`treefmt.toml`**, **`.prettierrc.json`**, **`statix.toml`** — formatting and lint configuration.
 - **`nix.conf`** — Nix daemon settings.
 
@@ -106,24 +106,24 @@ owns `my.sys.os.darwin.fuse`. A folder need not own a feature at its own level �
 
 A folder's own feature is its `default.nix`, which names no extra level:
 `modules/dev/ai/default.nix` is the feature `dev.ai`, and it owns `my.user.dev.ai`. This is the same
-thing `default.nix` already means in `hosts/<host>/` and in `tools/` — the thing the folder _is_ —
-and it keeps a group beside the children it groups, so `ls modules/dev/ai/` is the whole feature. A
-leaf feature is `<name>.nix`. Give it a folder and the file becomes `<name>/default.nix`, with no
+thing `default.nix` already means in `hosts/<host>/` and in `lib/tools/` — the thing the folder _is_
+— and it keeps a group beside the children it groups, so `ls modules/dev/ai/` is the whole feature.
+A leaf feature is `<name>.nix`. Give it a folder and the file becomes `<name>/default.nix`, with no
 option renamed. `import-tree` hands the loader the file path, so Nix's own folder-resolves-to-
-`default.nix` rule never comes into it — `tools/feature.nix` drops the segment itself.
+`default.nix` rule never comes into it — `lib/tools/feature.nix` drops the segment itself.
 
 That makes `modules/cli/utils.nix` and `modules/cli/utils/default.nix` two paths for one feature, so
-`tools/registry.nix` types the registry as `attrsOf (uniq deferredModule)`. Two files claiming one
-feature is then "is defined multiple times while it's expected to be unique", naming the feature,
-instead of a silent merge that would leave `feature-paths` comparing against whichever file it saw
-first. The error surfaces as soon as a host evaluates, so `fleet-eval` catches it under
+`lib/tools/registry.nix` types the registry as `attrsOf (uniq deferredModule)`. Two files claiming
+one feature is then "is defined multiple times while it's expected to be unique", naming the
+feature, instead of a silent merge that would leave `feature-paths` comparing against whichever file
+it saw first. The error surfaces as soon as a host evaluates, so `fleet-eval` catches it under
 `nix flake check`.
 
 A name that starts with `_` is not a module. Use it for shared values, package definitions, and data
 tables. The loader skips these files. `modules/dev/_langs/` holds the language tables,
 `modules/dev/ai/claude-code/mcp/_gerrit-package.nix` holds a package definition, and
-`modules/_nixpkgs-config.nix` and `modules/_overlays.nix` hold what `tools/default.nix` must also
-read from outside the module system.
+`modules/_nixpkgs-config.nix` and `modules/_overlays.nix` hold what `lib/tools/default.nix` must
+also read from outside the module system.
 
 The path is binding, not advisory. The `feature-paths` check reads the file that declares each
 `my.*` option and compares that file to the path. A file may only declare options under the feature
@@ -135,8 +135,8 @@ mirrors its option path and those options were already camelCase.
 
 ## The registry
 
-`import-tree` walks `modules/` and passes each path to `tools/registry.nix`. The registry reads the
-feature name from the path and the classes from the file's own keys, then wraps each class:
+`import-tree` walks `modules/` and passes each path to `lib/tools/registry.nix`. The registry reads
+the feature name from the path and the classes from the file's own keys, then wraps each class:
 
 ```nix
 { _class = "nixos"; _file = <path>; imports = [ <the shared options> <the class key> ]; }
@@ -151,7 +151,7 @@ option has the type `attrsOf deferredModule`. An unknown class key fails as "opt
 An entry that is not a module fails as a type error. Both errors come from the module system rather
 than from hand-written validation.
 
-`tools/default.nix` reads the registry and gives each class its own list. A NixOS host gets
+`lib/tools/default.nix` reads the registry and gives each class its own list. A NixOS host gets
 `registry.nixos`. A nix-darwin host gets `registry.darwin`. Every home-manager evaluation gets
 `registry.homeManager`.
 
@@ -170,8 +170,8 @@ attributes are `nixosModules`, `darwinModules`, and `homeModules`.
 }
 ```
 
-`tools/fleet.nix` checks these values against a schema before the flake builds anything. The schema
-uses types instead of assertions, so an error names the option that is wrong.
+`lib/tools/fleet.nix` checks these values against a schema before the flake builds anything. The
+schema uses types instead of assertions, so an error names the option that is wrong.
 
 - `class` selects the builder. The three values are `nixos`, `darwin`, and `home`.
 - `system` must suit the class. A `darwin` host cannot take a Linux platform.
@@ -237,7 +237,7 @@ nix flake check
 | `fleet-eval`    | A host stops evaluating, including a host this machine cannot build.            |
 | `feature-paths` | A file declares a `my.*` option outside the feature its path owns.              |
 | `typed-options` | A `my.*` option has no description, or uses a type that carries no information. |
-| `tools-tests`   | A unit test over `tools/` fails.                                                |
+| `tools-tests`   | A unit test over `lib/tools/` fails.                                            |
 | `lint`          | `statix` reports a finding.                                                     |
 | `fmt`           | The tree is not formatted, markdown included.                                   |
 
@@ -247,8 +247,8 @@ proves that the MacBook configuration still evaluates.
 
 `typed-options` rejects the types `attrs`, `anything`, `raw`, and `unspecified`, and follows
 composite types inward, so `attrsOf attrs` is caught too. A few values are free-form because they
-belong to a foreign schema, such as a language server's own settings. `tools/checks.nix` lists those
-exceptions by name, so the list stays short and visible.
+belong to a foreign schema, such as a language server's own settings. `lib/tools/checks.nix` lists
+those exceptions by name, so the list stays short and visible.
 
 `fmt` runs the same `treefmt.toml` that `nix fmt` and a bare `treefmt` do, so the editor, the CLI
 and the gate cannot disagree about formatting. Markdown is included, and prettier owns `.md` in both
@@ -366,7 +366,7 @@ overridden `JAVA_HOME` still feeds `$JAVA_HOME/bin`. A missing file does nothing
 
 ## Common tasks
 
-`nxm` (`scripts/nxm.py`, aliased in every shell) is the one entry point. Each subcommand has a
+`nxm` (`lib/scripts/nxm.py`, aliased in every shell) is the one entry point. Each subcommand has a
 one-letter alias.
 
 ```sh

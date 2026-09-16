@@ -1,6 +1,6 @@
 # Host identity for glorpbook (the MacBook) -- HOST-ONLY. User identity lives in users/<name>/.
 #
-# Checked against the schema in tools/fleet.nix, so an unknown user, a platform that contradicts `class`,
+# Checked against the schema in lib/tools/fleet.nix, so an unknown user, a platform that contradicts `class`,
 # or a `primaryUser` outside `users` is a type error here rather than a surprise later. The hostname is
 # this directory's name and cannot be set.
 #

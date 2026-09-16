@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Self-check for nxm's TUI and its one subprocess path. Run it: `python3
-scripts/test_nxm.py`.
+lib/scripts/test_nxm.py`.
 
 Covers what has no other way to fail loudly: the cursor arithmetic behind the
 scrolling window (wrong by one line and the display eats the line above it), and

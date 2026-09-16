@@ -1,8 +1,8 @@
 # Composition helpers. This is the ONLY place that knows how a host is assembled.
 #
-# A host declares its class in `hosts/<name>/id.nix` (see tools/fleet.nix), so the builder for it is
-# chosen from data rather than named by hand: `flake.nix` never mentions a machine. Adding a host is
-# `hosts/<name>/{id.nix,default.nix}` and nothing else.
+# A host declares its class in `hosts/<name>/id.nix` (see lib/tools/fleet.nix), so the builder for
+# it is chosen from data rather than named by hand: `flake.nix` never mentions a machine. Adding
+# a host is `hosts/<name>/{id.nix,default.nix}` and nothing else.
 #
 # Exposes:
 #   fleet, registry, root              -- the typed fleet, the feature registry, the flake root
@@ -120,7 +120,7 @@ in
 
     darwinConfigurations = lib.mapAttrs (_: mkDarwin) (ofClass "darwin");
 
-    # Keyed "<user>@<host>" -- scripts/nxm discovers the standalone target from this name.
+    # Keyed "<user>@<host>" -- lib/scripts/nxm discovers the standalone target from this name.
     homeConfigurations = lib.mapAttrs' (
         name: host: lib.nameValuePair "${host.primaryUser}@${name}" (mkHome host)
     ) (ofClass "home");

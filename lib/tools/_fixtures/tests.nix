@@ -1,4 +1,4 @@
-# Unit tests over tools/, run by `nix flake check` as the `tools-tests` derivation.
+# Unit tests over lib/tools/, run by `nix flake check` as the `tools-tests` derivation.
 #
 # `lib.runTests` comes from nixpkgs, so there is no test-framework input. It returns one entry per
 # FAILING test and an empty list when everything passes.
@@ -39,7 +39,7 @@ let
         users: (opt.mkFollowsUsers { home-manager.users = users; } [ "apps" "games" ] "games").default;
 
     results = lib.runTests {
-        # -- tools/fleet.nix, accepting a valid declaration ---------------------------------------
+        # -- lib/tools/fleet.nix, accepting a valid declaration ------------------------------------
 
         testFleetNameFromDirectory = {
             expr = ok.hosts.alpha.name;
@@ -51,7 +51,7 @@ let
             expected = "other";
         };
 
-        # -- tools/fleet.nix, rejecting invalid declarations ---------------------------------------
+        # -- lib/tools/fleet.nix, rejecting invalid declarations -----------------------------------
 
         testFleetRejectsUnknownUser = {
             expr = rejects "bad-user";
@@ -68,7 +68,7 @@ let
             expected = true;
         };
 
-        # -- tools/feature.nix ---------------------------------------------------------------------
+        # -- lib/tools/feature.nix -----------------------------------------------------------------
 
         testFeatureNameAtTopLevel = {
             expr = featureOf "secrets.nix";
@@ -97,7 +97,7 @@ let
             expected = false;
         };
 
-        # -- tools/opt.nix -------------------------------------------------------------------------
+        # -- lib/tools/opt.nix ---------------------------------------------------------------------
 
         testOptFollowsUsersReadsAPath = {
             expr = followsGames { someone.my.user.apps.games.enable = true; };

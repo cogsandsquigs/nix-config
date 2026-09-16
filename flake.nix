@@ -74,15 +74,16 @@
     };
 
     # Plain-flake composition: every file under ./modules is an ordinary NixOS / nix-darwin /
-    # home-manager module, and the directory tree *is* the import graph. `./tools` exposes the typed
-    # fleet and the builders that wire a host together.
+    # home-manager module, and the directory tree *is* the import graph. `./lib/tools` exposes
+    # the typed fleet and the builders that wire a host together.
     #
-    # No host is named here. Each machine declares its class in hosts/<name>/id.nix, and ./tools maps
-    # the fleet onto the right builder, so adding a host touches only its own directory.
+    # No host is named here. Each machine declares its class in hosts/<name>/id.nix, and
+    # ./lib/tools maps the fleet onto the right builder, so adding a host touches only its own
+    # directory.
     outputs =
         { self, ... }@inputs:
         let
-            tools = import ./tools {
+            tools = import ./lib/tools {
                 inherit inputs;
                 root = ./.;
             };
@@ -108,9 +109,9 @@
             # building them, so the gates stay cheap.
             packages = tools.forAllSystems (pkgs: tools.vmPackages pkgs.stdenv.hostPlatform.system);
 
-            # `nix flake check` -> the gates in ./tools/checks.nix. Runnable from any machine in the
-            # fleet, including the checks that cover the machines it cannot build.
-            checks = tools.forAllSystems (import ./tools/checks.nix { inherit self tools; });
+            # `nix flake check` -> the gates in ./lib/tools/checks.nix. Runnable from any machine
+            # in the fleet, including the checks that cover the machines it cannot build.
+            checks = tools.forAllSystems (import ./lib/tools/checks.nix { inherit self tools; });
 
             # `nix fmt` -> treefmt, driven by ./treefmt.toml (4-space, 100 cols -- the repo's real
             # style). Wrapped with the formatters treefmt invokes (nixfmt/shfmt/prettier) on PATH

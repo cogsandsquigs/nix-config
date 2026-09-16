@@ -14,7 +14,7 @@
 
     nixpkgs.hostPlatform = host.system;
 
-    # Hostname is the host directory's name -- see tools/fleet.nix.
+    # Hostname is the host directory's name -- see lib/tools/fleet.nix.
     networking.hostName = host.name;
 
     # TODO: replace with the generated ./hardware-configuration.nix once the machine is installed.

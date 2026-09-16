@@ -26,7 +26,7 @@
                 # Named interpreter, not the shebang's `env python3`: a devshell on $PATH otherwise
                 # decides which python runs the script. Still points at the working tree, so editing
                 # the script takes effect without a rebuild.
-                nxm = "${pkgs.python3}/bin/python3 ${flakeDir}/scripts/nxm.py";
+                nxm = "${pkgs.python3}/bin/python3 ${flakeDir}/lib/scripts/nxm.py";
             };
 
             editor = "hx";

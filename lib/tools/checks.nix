@@ -1,15 +1,15 @@
 # The gates. `nix flake check` runs all of them, from any machine in the fleet.
 #
-# Called once per platform the fleet uses (see tools/default.nix `forAllSystems`), so a check that needs
+# Called once per platform the fleet uses (see lib/tools/default.nix `forAllSystems`), so a check that needs
 # a package gets one for the right platform.
 #
 # Exposes one derivation per check:
 #   fleet-eval     -- every host still evaluates, including hosts this machine cannot build
 #   feature-paths  -- no file declares options outside the feature its path owns
 #   typed-options  -- no `my.*` option is loosely typed or undocumented
-#   tools-tests    -- unit tests over tools/, via lib.runTests
-#   lint           -- statix reports nothing (see ../statix.toml)
-#   fmt            -- the tree is already formatted (treefmt, see ../treefmt.toml)
+#   tools-tests    -- unit tests over lib/tools/, via lib.runTests
+#   lint           -- statix reports nothing (see ../../statix.toml)
+#   fmt            -- the tree is already formatted (treefmt, see ../../treefmt.toml)
 { self, tools }:
 pkgs:
 let

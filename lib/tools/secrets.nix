@@ -1,9 +1,9 @@
 let
     # A secret is addressed by (location, name): `location` is its audience folder under `secrets/` -- an
     # identity "<user>@<host>" for one machine, or a bare "<user>" for that user everywhere (see
-    # secrets/.sops.yaml for how a folder resolves to recipients). `../secrets` resolves relative to THIS
+    # secrets/.sops.yaml for how a folder resolves to recipients). `../../secrets` resolves relative to THIS
     # file, so it is the repo-root `secrets/` regardless of caller.
-    secretFile = location: name: ../secrets + "/${location}/${name}.sops";
+    secretFile = location: name: ../../secrets + "/${location}/${name}.sops";
 
     # The `sops.secrets` identifier, and so the decrypted runtime filename. FLATTENED (`/` -> `-`) so
     # "cogs@glorpbook" + "gpg" is one key, not a nested attr. Only this key is flat. The `.sops` path

@@ -19,7 +19,7 @@ name, alias and help text are declared -- main() reads the registry::
     def cmd_clean(_args: argparse.Namespace) -> None:
         ...
 
-Its self-check is scripts/test_nxm.py.
+Its self-check is lib/scripts/test_nxm.py.
 """
 
 # Deferred annotations: hints are stored as strings, never evaluated, which is what
@@ -147,9 +147,9 @@ def main() -> None:
 # LIBRARY -- TUI primitives and git/nix helpers used by the commands above.
 # =============================================================================
 
-# The repo root: one level above this script's scripts/ dir. Correct from any CWD or
+# The repo root: two levels above this script's lib/scripts/ dir. Correct from any CWD or
 # symlink, because __file__ is resolved first.
-REPO: pathlib.Path = pathlib.Path(__file__).resolve().parent.parent
+REPO: pathlib.Path = pathlib.Path(__file__).resolve().parent.parent.parent
 
 # -- TUI --------------------------------------------------------------------
 #
@@ -302,7 +302,7 @@ def _hm_target() -> str:
     """The home-manager flake attribute for this machine: $HM_TARGET, else
     "<user>@<hostname>".
 
-    tools/default.nix keys home configurations "<primaryUser>@<host directory>", so
+    lib/tools/default.nix keys home configurations "<primaryUser>@<host directory>", so
     the fallback reconstructs the key rather than looking it up. It misses only where
     the OS reports a different hostname than the directory (an FQDN, a `.local`
     suffix), and home-manager then fails naming the attribute it could not find --

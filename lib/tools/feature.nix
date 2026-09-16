@@ -6,10 +6,11 @@
 #
 # A directory is a namespace level, so it counts toward the feature name and therefore toward the option
 # path the file may declare. A folder's own feature is its `default.nix`, whose segment names no level --
-# so `cli/utils.nix` and `cli/utils/default.nix` are two paths for one feature. `tools/registry.nix`
-# types the registry so that collision is a build error rather than a silent merge.
+# so `cli/utils.nix` and `cli/utils/default.nix` are two paths for one feature.
+# `lib/tools/registry.nix` types the registry so that collision is a build error rather than a
+# silent merge.
 #
-# Used by tools/registry.nix to key the registry and by `feature-paths` to decide which options a file
+# Used by lib/tools/registry.nix to key the registry and by `feature-paths` to decide which options a file
 # may declare, so the two cannot disagree about what a path means.
 { lib, root }:
 let

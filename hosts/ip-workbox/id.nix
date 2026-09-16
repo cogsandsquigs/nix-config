@@ -1,5 +1,5 @@
 # Host identity for ip-workbox -- see hosts/glorpbook/id.nix for the convention. Checked against
-# the schema in tools/fleet.nix.
+# the schema in lib/tools/fleet.nix.
 #
 # `class = "home"` is what makes this box standalone home-manager: per-user Nix, no system layer, so
 # only its single user's home configuration applies and no system account is declared. The flake

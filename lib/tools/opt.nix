@@ -1,4 +1,4 @@
-# Our own helpers, exposed to every module as the `tools` specialArg (wired in tools/default.nix, which
+# Our own helpers, exposed to every module as the `tools` specialArg (wired in lib/tools/default.nix, which
 # records why they are not in `lib`).
 #
 #   tools.opt.*      -- option & module-authoring helpers (constructors + assertions).

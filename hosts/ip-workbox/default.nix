@@ -1,7 +1,7 @@
 # ip-workbox -- x86_64-linux work machine running Ubuntu 24.
 #
 # NOT a NixOS/nix-darwin system: Nix is per-user and this is applied with *standalone* home-manager
-# (`home-manager switch --flake ...#ipratt@ip-workbox`). `class = "home"` (./id.nix), so tools/default.nix
+# (`home-manager switch --flake ...#ipratt@ip-workbox`). `class = "home"` (./id.nix), so lib/tools/default.nix
 # builds it straight from the user unit, skipping the system-class features.
 #
 # The feature set, git identity and flake path live in the portable user unit (users/ipratt/). Username

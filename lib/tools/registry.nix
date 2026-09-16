@@ -22,7 +22,7 @@
 # `my.sys.*` inside the home evaluation, where nothing can read it.
 #
 # A directory adds a level to the feature name, and a feature may only declare options under the path it
-# owns -- see the `feature-paths` check in tools/checks.nix.
+# owns -- see the `feature-paths` check in lib/tools/checks.nix.
 {
     lib,
     importTree,
