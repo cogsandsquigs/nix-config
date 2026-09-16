@@ -19,7 +19,7 @@ in
         os.darwin.fuse.enable = true;
         net = {
             tailscale.enable = true;
-            openvpn.enable = true;
+            openvpn.enable = false;
         };
     };
 
