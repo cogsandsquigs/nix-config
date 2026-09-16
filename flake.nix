@@ -71,6 +71,13 @@
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
+        ## This repo's own library ##
+
+        # ./lib as a flake: a named interface (`lib.mkTools`, `lib.mkChecks`) instead of the parent
+        # reaching in by file path, and a library another flake can take as `?dir=lib`. A relative
+        # path input inside this git tree locks by path with no narHash, so edits to lib/ take
+        # effect immediately and never need a re-lock.
+        toolslib.url = "path:./lib";
     };
 
     # Plain-flake composition: every file under ./conf/modules is an ordinary NixOS / nix-darwin /
@@ -83,7 +90,7 @@
     outputs =
         { self, ... }@inputs:
         let
-            tools = import ./lib/tools {
+            tools = inputs.toolslib.lib.mkTools {
                 inherit inputs;
                 root = ./.;
             };
@@ -111,7 +118,7 @@
 
             # `nix flake check` -> the gates in ./lib/tools/checks.nix. Runnable from any machine
             # in the fleet, including the checks that cover the machines it cannot build.
-            checks = tools.forAllSystems (import ./lib/tools/checks.nix { inherit self tools; });
+            checks = tools.forAllSystems (inputs.toolslib.lib.mkChecks { inherit self tools; });
 
             # `nix fmt` -> treefmt, driven by ./treefmt.toml (4-space, 100 cols -- the repo's real
             # style). Wrapped with the formatters treefmt invokes (nixfmt/shfmt/prettier) on PATH

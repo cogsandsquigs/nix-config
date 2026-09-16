@@ -481,7 +481,8 @@
         "nixpkgs": "nixpkgs_2",
         "omp": "omp",
         "omp-bin-overlay": "omp-bin-overlay",
-        "sops-nix": "sops-nix"
+        "sops-nix": "sops-nix",
+        "toolslib": "toolslib"
       }
     },
     "rust-overlay": {
@@ -569,6 +570,17 @@
         "repo": "x86_64-darwin",
         "type": "github"
       }
+    },
+    "toolslib": {
+      "locked": {
+        "path": "./lib",
+        "type": "path"
+      },
+      "original": {
+        "path": "./lib",
+        "type": "path"
+      },
+      "parent": []
     },
     "treefmt-nix": {
       "inputs": {
