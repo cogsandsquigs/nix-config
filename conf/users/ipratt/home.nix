@@ -19,6 +19,8 @@ _: {
     ## -- needs nothing said here, so everything below is a per-harness switch.
     my.user.dev.ai = {
         claude-code = {
+            enable = true;
+
             # Credentials come from GERRIT_* / YOUTRACK_* in ${flakeDir}/.env, expanded by Claude Code
             # at launch (see conf/modules/dev/ai/claude-code/mcp).
             mcp = {

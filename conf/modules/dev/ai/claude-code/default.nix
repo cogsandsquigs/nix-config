@@ -15,8 +15,7 @@
             skills = import ../_skills { inherit pkgs lib; };
         in
         {
-            options.my.user.dev.ai.claude-code.enable =
-                tools.opt.mkRiding config.my.user.dev.ai.enable "Claude Code";
+            options.my.user.dev.ai.claude-code.enable = tools.opt.mkDisabled "Claude Code";
 
             config = lib.mkIf cfg.enable {
                 assertions = [
