@@ -31,7 +31,7 @@ let
         import ../feature.nix {
             inherit lib;
             root = ./ok;
-        } (./ok + "/modules/${relative}");
+        } (./ok + "/conf/modules/${relative}");
 
     # `mkFollowsUsers` takes the option path as a list. A name would miss once a feature moves into a
     # namespace folder, and a missed lookup defaults to `false`, which uninstalls rather than errors.

@@ -1,8 +1,8 @@
 # Composition helpers. This is the ONLY place that knows how a host is assembled.
 #
-# A host declares its class in `hosts/<name>/id.nix` (see lib/tools/fleet.nix), so the builder for
-# it is chosen from data rather than named by hand: `flake.nix` never mentions a machine. Adding
-# a host is `hosts/<name>/{id.nix,default.nix}` and nothing else.
+# A host declares its class in `conf/hosts/<name>/id.nix` (see lib/tools/fleet.nix), so the builder
+# for it is chosen from data rather than named by hand: `flake.nix` never mentions a machine. Adding
+# a host is `conf/hosts/<name>/{id.nix,default.nix}` and nothing else.
 #
 # Exposes:
 #   fleet, registry, root              -- the typed fleet, the feature registry, the flake root
@@ -32,13 +32,13 @@ let
     # system.
     tools = {
         opt = import ./opt.nix { inherit lib; };
-        secrets = import ./secrets.nix;
+        secrets = import ./secrets.nix { inherit root; };
     };
 
     # The module-argument contract, in one place, for all three builders. `moduleArgs` carries the set
     # itself so the home-manager sub-evaluation can be handed exactly these args (see
-    # modules/os/home-manager.nix) rather than a hand-copied list that drifts -- which it did: `isHomeOnly`
-    # once reached the top-level evaluation but never the sub-eval.
+    # conf/modules/os/home-manager.nix) rather than a hand-copied list that drifts -- which it did:
+    # `isHomeOnly` once reached the top-level evaluation but never the sub-eval.
     argsFor =
         host:
         let
@@ -58,7 +58,7 @@ let
     # glorpbook that put `system.activationScripts.postActivation` behind home-manager's, so
     # `activateSettings -u` ran after home-manager activation instead of before. The host file declares
     # its own `_class` instead, which costs no ordering.
-    hostDir = host: root + "/hosts/${host.name}";
+    hostDir = host: root + "/conf/hosts/${host.name}";
 
     mkNixos =
         host:
@@ -78,21 +78,21 @@ let
     # The user's home.nix owns the feature set, not this builder.
     #
     # System hosts get their nixpkgs config and overlays through useGlobalPkgs. A standalone config owns
-    # its own `pkgs`, so it reads the same two files modules/os/nixpkgs.nix does.
+    # its own `pkgs`, so it reads the same two files conf/modules/os/nixpkgs.nix does.
     mkHome =
         host:
         home-manager.lib.homeManagerConfiguration {
             pkgs = import nixpkgs {
                 inherit (host) system;
-                config = import (root + "/modules/_nixpkgs-config.nix");
-                overlays = import (root + "/modules/_overlays.nix") inputs;
+                config = import (root + "/conf/modules/_nixpkgs-config.nix");
+                overlays = import (root + "/conf/modules/_overlays.nix") inputs;
             };
 
             extraSpecialArgs = argsFor host;
 
             modules = lib.attrValues registry.homeManager ++ [
                 { home.username = host.primaryUser; }
-                (root + "/users/${host.primaryUser}/home.nix")
+                (root + "/conf/users/${host.primaryUser}/home.nix")
                 (hostDir host)
             ];
         };

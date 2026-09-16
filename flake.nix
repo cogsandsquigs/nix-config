@@ -35,8 +35,8 @@
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
-        # Recursive module discovery, so `modules/` needs no hand-written import lists. Deliberately
-        # the only framework-ish dependency here: its own flake.nix is `{ outputs = _: import ./.; }`,
+        # Recursive module discovery, so `conf/modules/` needs no hand-written import lists.
+        # Deliberately the only framework-ish dependency here: its own flake.nix is `{ outputs = _: import ./.; }`,
         # so it has no inputs of its own and no nixpkgs dependency (pure builtins). flake.lock grows
         # by exactly one node and there is nothing to `follows`.
         import-tree.url = "github:vic/import-tree";
@@ -50,7 +50,7 @@
 
         ## Overlays ##
 
-        # (Balena) Etcher. No nixpkgs package. Applied in modules/_overlays.nix.
+        # (Balena) Etcher. No nixpkgs package. Applied in conf/modules/_overlays.nix.
         balena-etcher = {
             url = "github:sidharthify/balenaEtcher-flake";
             inputs.nixpkgs.follows = "nixpkgs";
@@ -65,7 +65,7 @@
         ## Miscellaneous ##
 
         # omp (oh-my-pi). Its home-manager module (`homeManagerModules.default`) is imported by
-        # `modules/dev/ai/omp`. See overlays above for the binary pkg used.
+        # `conf/modules/dev/ai/omp`. See overlays above for the binary pkg used.
         omp = {
             url = "github:can1357/oh-my-pi";
             inputs.nixpkgs.follows = "nixpkgs";
@@ -73,11 +73,11 @@
 
     };
 
-    # Plain-flake composition: every file under ./modules is an ordinary NixOS / nix-darwin /
+    # Plain-flake composition: every file under ./conf/modules is an ordinary NixOS / nix-darwin /
     # home-manager module, and the directory tree *is* the import graph. `./lib/tools` exposes
     # the typed fleet and the builders that wire a host together.
     #
-    # No host is named here. Each machine declares its class in hosts/<name>/id.nix, and
+    # No host is named here. Each machine declares its class in conf/hosts/<name>/id.nix, and
     # ./lib/tools maps the fleet onto the right builder, so adding a host touches only its own
     # directory.
     outputs =

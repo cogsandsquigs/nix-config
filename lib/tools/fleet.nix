@@ -1,10 +1,10 @@
-# The typed fleet: `hosts/` and `users/` as data, checked before anything is assembled.
+# The typed fleet: `conf/hosts/` and `conf/users/` as data, checked before anything is assembled.
 #
-# Every `hosts/<name>/id.nix` is a submodule of the schema below, so a bad host declaration is a type
+# Every `conf/hosts/<name>/id.nix` is a submodule of the schema below, so a bad host declaration is a type
 # error that names the offending option. Illegal combinations are rejected by the TYPES rather than by
 # assertions:
 #
-#   - a user that has no `users/<name>/` directory
+#   - a user that has no `conf/users/<name>/` directory
 #   - a `primaryUser` that is not one of that host's own users
 #   - a platform that contradicts the host's class (a darwin host on x86_64-linux)
 #   - a `name` that disagrees with the directory (it is read-only, set from the directory)
@@ -15,8 +15,8 @@
 let
     dirsIn = path: lib.attrNames (lib.filterAttrs (_: t: t == "directory") (builtins.readDir path));
 
-    userNames = dirsIn (root + "/users");
-    hostNames = dirsIn (root + "/hosts");
+    userNames = dirsIn (root + "/conf/users");
+    hostNames = dirsIn (root + "/conf/hosts");
 
     # Which platforms each class of host can run on.
     platforms = {
@@ -92,7 +92,7 @@ in
                         description = "Every machine this flake builds, keyed by directory name.";
                     };
                 }
-                { hosts = lib.genAttrs hostNames (n: import (root + "/hosts/${n}/id.nix")); }
+                { hosts = lib.genAttrs hostNames (n: import (root + "/conf/hosts/${n}/id.nix")); }
             ];
         }).config.hosts;
 }

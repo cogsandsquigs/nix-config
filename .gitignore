@@ -5,7 +5,7 @@ registry.json
 *.log
 
 # Private age identities (/etc/nix/age/<owner>) -- secret keys sops decrypts with, NEVER commit. Only
-# the public keys (in secrets/.sops.yaml) are tracked.
+# the public keys (in conf/secrets/.sops.yaml) are tracked.
 /age/
 
 # Plaintext VPN profiles -- encrypt with sops-stash before staging, never commit raw.

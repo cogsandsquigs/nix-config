@@ -20,7 +20,7 @@ let
         inherit (tools) root;
     };
 
-    modulesDir = "${toString (tools.root + "/modules")}/";
+    modulesDir = "${toString (tools.root + "/conf/modules")}/";
 
     # Every host's top-level derivation, whatever class the host is.
     toplevels =
@@ -89,7 +89,7 @@ let
                 owner = feature decl;
             in
             if !(lib.hasPrefix modulesDir decl) then
-                [ "${lib.showOption o.loc} is declared outside modules/ (${decl})" ]
+                [ "${lib.showOption o.loc} is declared outside conf/modules/ (${decl})" ]
             else
                 lib.optional (optionPath != owner && !(lib.hasPrefix "${owner}." optionPath))
                     "${lib.showOption o.loc} is declared in ${lib.removePrefix modulesDir decl}, which owns the feature '${owner}'"

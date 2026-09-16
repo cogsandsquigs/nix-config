@@ -1,8 +1,8 @@
 # Path -> feature name. The one definition of which feature owns a file.
 #
-#   modules/cli/utils/gpg.nix      ->  "cli.utils.gpg"
-#   modules/apps/games.nix         ->  "apps.games"
-#   modules/cli/utils/default.nix  ->  "cli.utils"
+#   conf/modules/cli/utils/gpg.nix      ->  "cli.utils.gpg"
+#   conf/modules/apps/games.nix         ->  "apps.games"
+#   conf/modules/cli/utils/default.nix  ->  "cli.utils"
 #
 # A directory is a namespace level, so it counts toward the feature name and therefore toward the option
 # path the file may declare. A folder's own feature is its `default.nix`, whose segment names no level --
@@ -14,7 +14,7 @@
 # may declare, so the two cannot disagree about what a path means.
 { lib, root }:
 let
-    modulesDir = "${toString (root + "/modules")}/";
+    modulesDir = "${toString (root + "/conf/modules")}/";
 in
 path:
 let
@@ -25,7 +25,7 @@ in
 if name == [ ] then
     throw ''
         ${toString path}
-        A feature needs a name. `modules/default.nix` owns no folder, so there is no namespace for it
+        A feature needs a name. `conf/modules/default.nix` owns no folder, so there is no namespace for it
         to be the default of -- give the file the feature's own name instead.
     ''
 else

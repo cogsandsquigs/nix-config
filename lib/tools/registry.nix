@@ -1,4 +1,4 @@
-# modules/ -> { nixos = { <feature> = <module>; }; darwin = { ... }; homeManager = { ... }; }
+# conf/modules/ -> { nixos = { <feature> = <module>; }; darwin = { ... }; homeManager = { ... }; }
 #
 # `import-tree` walks the tree and hands each file to `classify`. Its defaults are the convention we
 # want -- .nix only, skip anything containing "/_" -- so it takes no configuration. `.map` receives the
@@ -141,6 +141,6 @@ in
             };
         }
 
-        ((importTree.map classify) (root + "/modules"))
+        ((importTree.map classify) (root + "/conf/modules"))
     ];
 }).config.modules
