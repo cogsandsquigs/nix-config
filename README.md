@@ -39,21 +39,26 @@ secrets, and [import-tree] for module discovery.
 ## Repository layout
 
 - **`flake.nix`** — inputs, and outputs derived from the fleet. It names no machine.
-- **`lib/tools/`** — the only code that knows how a host is assembled.
-    - `default.nix` — the three builders and the module-argument contract.
-    - `fleet.nix` — the typed schema for `conf/hosts/` and `conf/users/`.
-    - `registry.nix` — turns `conf/modules/` into per-class module sets.
-    - `feature.nix` — path to feature name, shared by the registry and the `feature-paths` check.
-    - `checks.nix` — the gates.
-    - `opt.nix` — option constructors. `secrets.nix` — sops wiring.
-    - `_fixtures/` — module trees and host stubs for `tools-tests`.
-- **`conf/modules/`** — every feature. One file per feature, keyed by class. See
-  [Module layout](#module-layout).
-- **`conf/hosts/`** — per-machine identity and host-only settings.
-- **`conf/users/`** — per-user home configuration and system account.
-- **`conf/secrets/`** — sops-encrypted material and the rules that address it. See
-  [Secrets](#secrets).
-- **`lib/scripts/`** — `nxm`, the one rebuild/upgrade/clean/edit entry point.
+- **`lib/`** — machinery. Its own flake, with no inputs of its own, consumed by the parent as
+  `inputs.toolslib` and usable from elsewhere as `?dir=lib`. A named interface, not a sandbox: paths
+  here still reach the repo root, so keep them inside `lib/` or take them from `root`.
+    - **`lib/tools/`** — the only code that knows how a host is assembled.
+        - `default.nix` — the three builders and the module-argument contract.
+        - `fleet.nix` — the typed schema for `conf/hosts/` and `conf/users/`.
+        - `registry.nix` — turns `conf/modules/` into per-class module sets.
+        - `feature.nix` — path to feature name, shared by the registry and the `feature-paths`
+          check.
+        - `checks.nix` — the gates.
+        - `opt.nix` — option constructors. `secrets.nix` — sops wiring.
+        - `_fixtures/` — module trees and host stubs for `tools-tests`.
+    - **`lib/scripts/`** — `nxm`, the one rebuild/upgrade/clean/edit entry point.
+- **`conf/`** — configuration.
+    - **`conf/modules/`** — every feature. One file per feature, keyed by class. See
+      [Module layout](#module-layout).
+    - **`conf/hosts/`** — per-machine identity and host-only settings.
+    - **`conf/users/`** — per-user home configuration and system account.
+    - **`conf/secrets/`** — sops-encrypted material and the rules that address it. See
+      [Secrets](#secrets).
 - **`treefmt.toml`**, **`.prettierrc.json`**, **`statix.toml`** — formatting and lint configuration.
 - **`nix.conf`** — Nix daemon settings.
 
