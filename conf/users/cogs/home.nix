@@ -17,24 +17,29 @@ let
     haveGpg = builtins.pathExists (../../secrets + "/${me}/gpg.sops");
 in
 {
-    my.user.apps.games.enable = true;
-    my.user.apps.desktopApps.enable = true;
-    my.user.apps.desktopUtils.enable = true;
+    my.user = {
+        apps = {
+            games.enable = true;
+            general.enable = true;
+            utils.enable = true;
+        };
 
-    # Rides the host's class rather than a flat `true`: the sway binary comes from the system half,
-    # which only a NixOS host has. The system half then follows this back (mkFollowsUsers).
-    my.user.desktop.sway.enable = host.class == "nixos";
+        # Rides the host's class rather than a flat `true`: the sway binary comes from the system
+        # half, which only a NixOS host has. The system half then follows this back
+        # (mkFollowsUsers).
+        desktop.sway.enable = host.class == "nixos";
 
-    my.user.cli.git = {
-        userName = "Ian Pratt";
-        email = "ianjdpratt@gmail.com";
-        signingKey = "E0DB58169CA551AA!";
-        signByDefault = true;
-        signingKeyFile = lib.mkIf haveGpg (tools.secrets.path config me "gpg");
-    };
+        cli.git = {
+            userName = "Ian Pratt";
+            email = "ianjdpratt@gmail.com";
+            signingKey = "E0DB58169CA551AA!";
+            signByDefault = true;
+            signingKeyFile = lib.mkIf haveGpg (tools.secrets.path config me "gpg");
+        };
 
-    my.user.dev.ai = {
-        omp.enable = true;
+        dev.ai = {
+            omp.enable = true;
+        };
     };
 
     sops.secrets = lib.mkIf haveGpg (tools.secrets.declare me "gpg");

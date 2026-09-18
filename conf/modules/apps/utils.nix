@@ -1,6 +1,6 @@
 # Personal GUI applications, that come as utilities.
 #
-# Unlike in `desktopApps.nix`, `desktopUtils.nix` are utilities -- the equivalent of `tree`, `jq`,
+# Unlike in `desktopApps.nix`, `utils.nix` are utilities -- the equivalent of `tree`, `jq`,
 # or `cat` but for desktop. e.g.: `caffeine` for MacOS
 {
 
@@ -12,10 +12,9 @@
             ...
         }:
         {
-            options.my.user.apps.desktopUtils.enable =
-                tools.opt.mkEnabled "GUI apps via Homebrew that are utilities.";
+            options.my.user.apps.utils.enable = tools.opt.mkEnabled "GUI apps via Homebrew that are utilities.";
 
-            config = lib.mkIf config.my.user.apps.desktopUtils.enable {
+            config = lib.mkIf config.my.user.apps.utils.enable {
                 # TODO: ...
             };
         };
@@ -28,12 +27,12 @@
             ...
         }:
         {
-            options.my.sys.apps.desktopUtils.enable = tools.opt.mkFollowsUsers config [
+            options.my.sys.apps.utils.enable = tools.opt.mkFollowsUsers config [
                 "apps"
-                "desktopUtils"
+                "utils"
             ] "GUI apps via Homebrew that are utilities.";
 
-            config = lib.mkIf config.my.sys.apps.desktopUtils.enable {
+            config = lib.mkIf config.my.sys.apps.utils.enable {
                 homebrew = {
                     casks = [
                         "caffeine" # Keeps MacOS awake

@@ -4,7 +4,7 @@
 # macOS for the ones whose nixpkgs builds lag upstream or do not exist.
 #
 # The filename is camelCase because a feature may only declare options under the path its own path
-# owns, and this one owns `my.{user,sys}.desktopApps`. See the `feature-paths` check.
+# owns, and this one owns `my.{user,sys}.general`. See the `feature-paths` check.
 {
     home =
         {
@@ -15,10 +15,10 @@
             ...
         }:
         {
-            options.my.user.apps.desktopApps.enable =
+            options.my.user.apps.general.enable =
                 tools.opt.mkDisabled "personal GUI apps (Discord, Obsidian, Zoom, ...)";
 
-            config = lib.mkIf config.my.user.apps.desktopApps.enable {
+            config = lib.mkIf config.my.user.apps.general.enable {
                 home.packages =
                     with pkgs;
                     [
@@ -51,12 +51,12 @@
             ...
         }:
         {
-            options.my.sys.apps.desktopApps.enable = tools.opt.mkFollowsUsers config [
+            options.my.sys.apps.general.enable = tools.opt.mkFollowsUsers config [
                 "apps"
-                "desktopApps"
+                "general"
             ] "GUI apps via Homebrew (WhatsApp, Firefox).";
 
-            config = lib.mkIf config.my.sys.apps.desktopApps.enable {
+            config = lib.mkIf config.my.sys.apps.general.enable {
                 homebrew = {
                     casks = [
                         "whatsapp" # Updated more freq. than whatsapp-for-mac nix
