@@ -26,6 +26,7 @@
                         obsidian
                         zoom-us
                         qbittorrent
+                        signal-desktop
 
                         # Fun
                         #spotify
