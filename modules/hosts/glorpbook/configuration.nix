@@ -38,7 +38,7 @@
             # install the private key there once, by hand:
             #   sudo install -m600 -D <key> /var/lib/sops-nix/key.txt
             age.sshKeyPaths = [ ];
-            age.keyFile = "/var/lib/sops-nix/key.txt";
+            age.keyFile = "../../../age/glorpbook.age";
 
             secrets = {
                 "gpg-key" = {
