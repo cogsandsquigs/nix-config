@@ -18,8 +18,6 @@ name, alias and help text are declared -- main() reads the registry::
     @command("clean", "c", "GC old nix generations")
     def cmd_clean(_args: argparse.Namespace) -> None:
         ...
-
-Its self-check is lib/scripts/test_nxm.py.
 """
 
 # Deferred annotations: hints are stored as strings, never evaluated, which is what
@@ -149,7 +147,7 @@ def main() -> None:
 
 # The repo root: two levels above this script's lib/scripts/ dir. Correct from any CWD or
 # symlink, because __file__ is resolved first.
-REPO: pathlib.Path = pathlib.Path(__file__).resolve().parent.parent.parent
+REPO: pathlib.Path = pathlib.Path(__file__).resolve().parent.parent
 
 # -- TUI --------------------------------------------------------------------
 #

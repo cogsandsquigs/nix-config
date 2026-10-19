@@ -43,7 +43,7 @@ in
                     nv = "nvim";
                     lg = "lazygit";
                     neofetch = "fastfetch"; # Neofetch via fastfetch
-                    nxm = "${pkgs.python3}/bin/python3 ${flakeDir}/lib/scripts/nxm.py";
+                    nxm = "${pkgs.python3}/bin/python3 ${flakeDir}/scripts/nxm.py";
                 };
 
                 variables = {
