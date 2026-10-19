@@ -1,140 +1,38 @@
 {
     description = ''
-        My NixOS / nix-darwin / home-manager configuration for my daily-driver devices
-        (personal MacBook + desktop, and a standalone home-manager work desktop).
+        My NixOS / nix-darwin / home-manager configuration for my daily-driver devices.
     '';
 
+    outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
+
     inputs = {
-        # Main packages repo
-        nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; # Unstable
-        # nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05"; # Stable
+        nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-        # MacOS config
         nix-darwin = {
-            url = "github:nix-darwin/nix-darwin/master"; # Unstable
-            # url = "github:nix-darwin/nix-darwin/nix-darwin-26.05"; # Stable
+            url = "github:nix-darwin/nix-darwin/master";
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
-        ## Tools ##
-
-        # Home Manager
-        home-manager = {
-            url = "github:nix-community/home-manager/master"; # Unstable
-            # url = "github:nix-community/home-manager/release-26.05"; # Stable
-            inputs.nixpkgs.follows = "nixpkgs";
-        };
-
-        # Determinate Nix is Determinate Systems' validated and secure downstream distribution of
-        # NixOS/nix.
-        #  - https://determinate.systems/nix/
-        #  - https://docs.determinate.systems/guides/nix-darwin/
-        # Determinate 3.* module
         determinate = {
             url = "https://flakehub.com/f/DeterminateSystems/determinate/3";
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
-        # Recursive module discovery, so `conf/modules/` needs no hand-written import lists.
-        # Deliberately the only framework-ish dependency here: its own flake.nix is `{ outputs = _: import ./.; }`,
-        # so it has no inputs of its own and no nixpkgs dependency (pure builtins). flake.lock grows
-        # by exactly one node and there is nothing to `follows`.
-        import-tree.url = "github:vic/import-tree";
+        import-tree.url = "github:denful/import-tree/v0.3.0";
 
-        ## Secrets and such ##
+        flake-parts = {
+            url = "github:hercules-ci/flake-parts";
+            inputs.nixpkgs-lib.follows = "nixpkgs";
+        };
+
+        home-manager = {
+            url = "github:nix-community/home-manager";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
 
         sops-nix = {
             url = "github:Mic92/sops-nix";
             inputs.nixpkgs.follows = "nixpkgs";
         };
-
-        ## Overlays ##
-
-        # (Balena) Etcher. No nixpkgs package. Applied in conf/modules/_overlays.nix.
-        balena-etcher = {
-            url = "github:sidharthify/balenaEtcher-flake";
-            inputs.nixpkgs.follows = "nixpkgs";
-        };
-
-        # Provides binary releases for OMP (see below in Misc.) instead of building on-system.
-        omp-bin-overlay = {
-            url = "github:yuxqiu/omp-nix";
-            inputs.nixpkgs.follows = "nixpkgs";
-        };
-
-        ## Miscellaneous ##
-
-        # omp (oh-my-pi). Its home-manager module (`homeManagerModules.default`) is imported by
-        # `conf/modules/dev/ai/omp`. See overlays above for the binary pkg used.
-        omp = {
-            url = "github:can1357/oh-my-pi";
-            inputs.nixpkgs.follows = "nixpkgs";
-        };
-
-        ## This repo's own library ##
-
-        # ./lib as a flake: a named interface (`lib.mkTools`, `lib.mkChecks`) instead of the parent
-        # reaching in by file path, and a library another flake can take as `?dir=lib`. A relative
-        # path input inside this git tree locks by path with no narHash, so edits to lib/ take
-        # effect immediately and never need a re-lock.
-        toolslib.url = "path:./lib";
     };
-
-    # Plain-flake composition: every file under ./conf/modules is an ordinary NixOS / nix-darwin /
-    # home-manager module, and the directory tree *is* the import graph. `./lib/tools` exposes
-    # the typed fleet and the builders that wire a host together.
-    #
-    # No host is named here. Each machine declares its class in conf/hosts/<name>/id.nix, and
-    # ./lib/tools maps the fleet onto the right builder, so adding a host touches only its own
-    # directory.
-    outputs =
-        { self, ... }@inputs:
-        let
-            tools = inputs.toolslib.lib.mkTools {
-                inherit inputs;
-                root = ./.;
-            };
-        in
-        {
-            inherit (tools)
-                fleet
-                nixosConfigurations
-                darwinConfigurations
-                homeConfigurations
-                ;
-
-            # The feature registry, as the standard per-class module outputs. `nix flake show` then
-            # lists every feature and its class -- the index the deleted default.nix import lists used
-            # to approximate, except this one cannot be out of date.
-            nixosModules = tools.registry.nixos;
-            darwinModules = tools.registry.darwin;
-            homeModules = tools.registry.homeManager;
-
-            # `nix build .#<host>-vm` -> a bootable QEMU VM of that NixOS host. Derived from the
-            # fleet like everything else, so this still names no machine. A platform with no NixOS
-            # host of its own simply gets an empty set. `nix flake check` evaluates these and skips
-            # building them, so the gates stay cheap.
-            packages = tools.forAllSystems (pkgs: tools.vmPackages pkgs.stdenv.hostPlatform.system);
-
-            # `nix flake check` -> the gates in ./lib/tools/checks.nix. Runnable from any machine
-            # in the fleet, including the checks that cover the machines it cannot build.
-            checks = tools.forAllSystems (inputs.toolslib.lib.mkChecks { inherit self tools; });
-
-            # `nix fmt` -> treefmt, driven by ./treefmt.toml (4-space, 100 cols -- the repo's real
-            # style). Wrapped with the formatters treefmt invokes (nixfmt/shfmt/prettier) on PATH
-            # so `nix fmt` is self-contained and matches editor + `treefmt` output.
-            formatter = tools.forAllSystems (
-                pkgs:
-                pkgs.writeShellApplication {
-                    name = "treefmt";
-                    runtimeInputs = [
-                        pkgs.treefmt
-                        pkgs.nixfmt
-                        pkgs.shfmt
-                        pkgs.prettier
-                    ];
-                    text = ''exec treefmt "$@"'';
-                }
-            );
-        };
 }

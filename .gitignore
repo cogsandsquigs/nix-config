@@ -1,15 +1,14 @@
+# Nix testing / temporary build results
+result/
+
+# Host secret keys
+age/
+
 *.crt
 nix.conf*
 nix.custom.conf*
 registry.json
 *.log
-
-# Private age identities (/etc/nix/age/<owner>) -- secret keys sops decrypts with, NEVER commit. Only
-# the public keys (in conf/secrets/.sops.yaml) are tracked.
-/age/
-
-# Plaintext VPN profiles -- encrypt with sops-stash before staging, never commit raw.
-*.ovpn
 
 # Machine-local runtime env overrides, sourced at shell startup. Never commit.
 .env
@@ -18,13 +17,6 @@ registry.json
 # whatever is untracked -- so an unignored image gets committed and pushed.
 *.qcow2
 
-# `nix build` Outputs
-result
-result-*
-
 # Python bytecode, written whenever lib/scripts/test_nxm.py imports nxm. `nxm rebuild` stages whatever is
 # untracked, so an unignored cache gets committed.
 __pycache__/
-
-# Misc.
-*.local.md

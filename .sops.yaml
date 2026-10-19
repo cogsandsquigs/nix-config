@@ -1,0 +1,6 @@
+keys:
+  - &glorpbook age1ek6jya4jtmshz3fdvp4aahdte32pjysllcpwl69jw4epnqpwxgsq6lh80x
+
+creation_rules:
+  - path_regex: "modules/secrets/values/glorpbook/.*"
+    age: *glorpbook
