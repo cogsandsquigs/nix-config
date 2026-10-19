@@ -1,7 +1,7 @@
 # The base NixOS / Nix-Darwin configuration all devices share. This file is intended for modifying
 # basal, shared things things only, and NOT for style / packages / etc. Those should be set
 # elsewhere, and then included (imported) here if it is a "base" item.
-{ self, ... }: {
+{ self, config,... }: {
     flake.modules.nixos.base = {
         imports = [
             self.modules.nixos.nix
@@ -9,6 +9,8 @@
             self.modules.nixos.shell
             self.modules.nixos.home-manager
         ];
+
+        users.defaultUserShell = pkgs.fish;
     };
 
     flake.modules.darwin.base = {
@@ -31,6 +33,8 @@
                 touchIdAuth = true;
                 watchIdAuth = true;
             };
+
+            users.users.${config.me.username}.shell = pkgs.fish;
         };
     };
 }
