@@ -1,4 +1,5 @@
 # Shell configuration
+{ self, config, ... }:
 let
     os-shared = { pkgs, ... }: {
         environment.shells = [
@@ -12,12 +13,23 @@ let
             zsh.enable = true;
             bash.enable = true;
         };
+
+        home-manager.users.${config.me.username} = {
+            imports = [ self.modules.homeManager.shell ];
+        };
     };
 in
 {
     flake.modules = {
-        nixos.shell = os-shared;
-        darwin.shell = os-shared;
+        nixos.shell = { pkgs, ... }: {
+            imports = [ os-shared ];
+            users.defaultUserShell = pkgs.fish;
+        };
+
+        darwin.shell = { pkgs, ... }: {
+            imports = [ os-shared ];
+            users.users.${config.me.username}.shell = pkgs.fish;
+        };
 
         homeManager.shell =
             {
@@ -30,19 +42,18 @@ in
                 inherit (lib.strings) concatMapStrings;
                 inherit (lib.attrsets) mapAttrsToList;
 
-                # Where this repo is checked out. Machine-local overrides live in ${flakeDir}/.env.
-                # TODO: adjust to your real checkout path.
-                flakeDir = "${config.home.homeDirectory}/nix-config";
+                # TODO: adjust if this changes per-host.
+                flakeDir = "/etc/nix";
 
                 aliases = {
                     # `ls`, `ll`, `la`, `lt`, `lla` come from programs.eza, which carries the flags.
                     # Defining `ls` here would override the whole set with one entry.
-                    du = "dust";
-                    cat = "bat"; # Better cat via `bat`
-                    cd = "z"; # Better cd via `zoxide`
+                    # du = "dust";
+                    # cat = "bat"; # Better cat via `bat`
+                    # cd = "z"; # Better cd via `zoxide`
                     nv = "nvim";
                     lg = "lazygit";
-                    neofetch = "fastfetch"; # Neofetch via fastfetch
+                    # neofetch = "fastfetch"; # Neofetch via fastfetch
                     nxm = "${pkgs.python3}/bin/python3 ${flakeDir}/scripts/nxm.py";
                 };
 

@@ -23,12 +23,13 @@
         system.primaryUser = config.me.username; # TODO: set to your real macOS username
         nixpkgs.hostPlatform = "aarch64-darwin";
 
-        users.users.cogs.home = "/Users/${config.me.username}"; # Required by the home-manager darwin module.
+        users.users.${config.me.username}.home = "/Users/${config.me.username}"; # Required by the home-manager darwin module.
 
-        home-manager.users.cogs = {
+        home-manager.users.${config.me.username} = {
             home.stateVersion = "25.05";
             imports = [
                 self.modules.homeManager.apps # All my applications
+                self.modules.homeManager.develop # Developer stuff
             ];
         };
 

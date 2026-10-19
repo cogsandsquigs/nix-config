@@ -15,25 +15,27 @@
 
         # Configuring helix for this language
         programs.helix = {
-            language = [
-                {
-                    name = "rust";
-                    auto-format = true;
-                    formatter = {
-                        command = "rustfmt";
+            languages = {
+                language = [
+                    {
+                        name = "rust";
+                        auto-format = true;
+                        formatter = {
+                            command = "rustfmt";
+                        };
+                        language-servers = [ "rust-analyzer" ];
+                    }
+                ];
+
+                language-server.rust-analyzer = {
+                    cmd = [ "rust-analyzer" ];
+                    config.rust-analyzer = {
+                        check.command = "clippy";
+                        procMacro.enable = true;
+                        cargo.buildScripts.enable = true;
                     };
-                    language-servers = [ "rust-analyzer" ];
-                }
-            ];
 
-            language-server.rust-analyzer = {
-                cmd = [ "rust-analyzer" ];
-                config.rust-analyzer = {
-                    check.command = "clippy";
-                    procMacro.enable = true;
-                    cargo.buildScripts.enable = true;
                 };
-
             };
         };
     };
