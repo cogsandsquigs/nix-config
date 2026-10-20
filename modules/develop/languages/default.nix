@@ -1,6 +1,7 @@
 { self, ... }: {
     flake.modules.homeManager."develop/languages" = {
         imports = [
+            self.modules.homeManager."develop/languages/c-cpp"
             self.modules.homeManager."develop/languages/julia"
             self.modules.homeManager."develop/languages/nix"
             self.modules.homeManager."develop/languages/pest"
