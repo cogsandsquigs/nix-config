@@ -32,12 +32,7 @@ in
         };
 
         homeManager.shell =
-            {
-                pkgs,
-                lib,
-                config,
-                ...
-            }:
+            { pkgs, lib, ... }:
             let
                 inherit (lib.strings) concatMapStrings;
                 inherit (lib.attrsets) mapAttrsToList;
