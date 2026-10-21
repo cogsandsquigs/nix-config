@@ -9,6 +9,8 @@
             llvmPackages_21.clang-tools
             pkg-config
 
+            libc
+            libcxx
         ];
 
         # Set up editor
