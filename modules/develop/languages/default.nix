@@ -7,6 +7,7 @@
             self.modules.homeManager."develop/languages/pest"
             self.modules.homeManager."develop/languages/python"
             self.modules.homeManager."develop/languages/rust"
+            self.modules.homeManager."develop/languages/toml"
         ];
     };
 }
