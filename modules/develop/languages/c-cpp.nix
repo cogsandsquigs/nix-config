@@ -20,10 +20,16 @@
                     {
                         name = "c";
                         auto-format = true;
+                        formatter = {
+                            command = "clang-format";
+                        };
                     }
                     {
                         name = "cpp";
                         auto-format = true;
+                        formatter = {
+                            command = "clang-format";
+                        };
                     }
                 ];
 
