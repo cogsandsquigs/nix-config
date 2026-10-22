@@ -36,10 +36,6 @@
                 language-servers.clangd = {
                     command = "clangd";
                     timeout = 60;
-                    args = [
-                        "-e"
-                        "using LanguageServer; runserver();"
-                    ];
                 };
             };
         };
