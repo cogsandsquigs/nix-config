@@ -9,7 +9,7 @@
                         name = "toml";
                         auto-format = true;
                         language-server = [ "taplo" ];
-                        format = {
+                        formatter = {
                             command = "taplo";
                             args = [
                                 "fmt"
