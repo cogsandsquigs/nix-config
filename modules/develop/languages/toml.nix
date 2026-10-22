@@ -8,7 +8,7 @@
                     {
                         name = "toml";
                         auto-format = true;
-                        language-server = [ "taplo" ];
+                        language-servers = [ "taplo" ];
                         formatter = {
                             command = "taplo";
                             args = [
