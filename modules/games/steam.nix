@@ -10,7 +10,7 @@
         };
     };
 
-    flake.modules.darwin."games/steam" = {
+    flake.modules.darwin."games/steam" = { pkgs, ... }: {
         homebrew = {
             casks = [
                 "steam"
@@ -23,5 +23,7 @@
                 "cabextract"
             ];
         };
+
+        environment.systemPackages = [ pkgs.p7zip ]; # required for heroic winetricks for some reason?
     };
 }
