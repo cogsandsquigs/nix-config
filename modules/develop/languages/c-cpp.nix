@@ -1,7 +1,7 @@
 {
     flake.modules.homeManager."develop/languages/c-cpp" = { pkgs, ... }: {
         home.packages = with pkgs; [
-            # bear # TODO: fails rn
+            bear
             compiledb
             cmake
             llvmPackages_21.clang
