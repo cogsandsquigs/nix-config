@@ -11,6 +11,17 @@
     };
 
     flake.modules.darwin."games/steam" = {
-        homebrew.casks = [ "steam" ];
+        homebrew = {
+            casks = [
+                "steam"
+                "heroic" # Windows -> Mac games
+            ];
+
+            # All 2 below required for heroic winetricks for some reason?
+            brews = [
+                "zenity"
+                "cabextract"
+            ];
+        };
     };
 }
