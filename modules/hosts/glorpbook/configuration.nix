@@ -30,6 +30,7 @@
             imports = [
                 self.modules.homeManager.apps # All my applications
                 self.modules.homeManager.develop # Developer stuff
+                self.modules.homeManager.games # All my gaming stuffs.
             ];
         };
 
