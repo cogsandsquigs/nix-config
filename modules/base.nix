@@ -8,6 +8,7 @@
             self.modules.nixos.fonts
             self.modules.nixos.shell
             self.modules.nixos.home-manager
+            self.modules.nixos.fixes
         ];
     };
 
@@ -17,6 +18,7 @@
             self.modules.darwin.fonts
             self.modules.darwin.shell
             self.modules.darwin.home-manager
+            self.modules.darwin.fixes
 
             # darwin-only
             self.modules.darwin.homebrew
