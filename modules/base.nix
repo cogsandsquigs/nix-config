@@ -22,8 +22,7 @@
 
             # darwin-only
             self.modules.darwin.homebrew
-            self.modules.darwin."apps/browsers"
-            self.modules.darwin."apps/messaging"
+            self.modules.darwin.apps
         ];
 
         # Add ability to used TouchID for sudo authentication

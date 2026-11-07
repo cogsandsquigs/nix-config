@@ -9,5 +9,12 @@
         self.modules.homeManager."apps/helix"
         self.modules.homeManager."apps/zellij"
         self.modules.homeManager."apps/yazi"
+        self.modules.homeManager."apps/pdfs"
+    ];
+
+    flake.modules.darwin.apps.imports = [
+        self.modules.darwin."apps/browsers"
+        self.modules.darwin."apps/messaging"
+        self.modules.darwin."apps/pdfs"
     ];
 }
