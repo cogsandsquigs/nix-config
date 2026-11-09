@@ -10,7 +10,7 @@
             cargo-watch
             cargo-workspaces
             cargo-license
-            trunk
+            # trunk
         ];
 
         # Configuring helix for this language
