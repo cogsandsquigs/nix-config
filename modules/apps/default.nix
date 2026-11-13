@@ -1,5 +1,5 @@
 { self, ... }: {
-    flake.modules.homeManager.apps.imports = map (n: self.modules.darwin.${n}) [
+    flake.modules.homeManager.apps.imports = map (n: self.modules.homeManager.${n}) [
         "apps/ghostty"
         "apps/git"
         "apps/ssh"
