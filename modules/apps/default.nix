@@ -10,6 +10,7 @@
         self.modules.homeManager."apps/zellij"
         self.modules.homeManager."apps/yazi"
         self.modules.homeManager."apps/pdfs"
+        self.modules.homeManager."apps/zoom"
     ];
 
     flake.modules.darwin.apps.imports = [
