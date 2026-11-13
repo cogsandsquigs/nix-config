@@ -1,3 +1,3 @@
 {
-    flake.modules.homeManager."apps/zoom" = { pkgs, ... }: { home.pacakges = with pkgs; [ zoom-us ]; };
+    flake.modules.homeManager."apps/zoom" = { pkgs, ... }: { home.packages = with pkgs; [ zoom-us ]; };
 }
