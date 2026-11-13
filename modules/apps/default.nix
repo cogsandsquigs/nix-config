@@ -11,6 +11,7 @@
         self.modules.homeManager."apps/yazi"
         self.modules.homeManager."apps/pdfs"
         self.modules.homeManager."apps/zoom"
+        self.modules.homeManager."apps/pomodoro"
     ];
 
     flake.modules.darwin.apps.imports = [
