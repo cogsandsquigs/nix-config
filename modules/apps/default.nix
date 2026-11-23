@@ -12,6 +12,7 @@
         "apps/pdfs"
         "apps/zoom"
         "apps/pomodoro"
+        "apps/just"
     ];
 
     flake.modules.darwin.apps.imports = map (n: self.modules.darwin.${n}) [
