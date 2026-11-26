@@ -9,7 +9,7 @@
         "apps/helix"
         "apps/zellij"
         "apps/yazi"
-        "apps/pdfs"
+        "apps/documents"
         "apps/zoom"
         "apps/pomodoro"
         "apps/just"
@@ -18,7 +18,7 @@
     flake.modules.darwin.apps.imports = map (n: self.modules.darwin.${n}) [
         "apps/browsers"
         "apps/messaging"
-        "apps/pdfs"
+        "apps/documents"
         "apps/pomodoro"
     ];
 }
